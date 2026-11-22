@@ -8,7 +8,7 @@ import { CheckIcon, LightningIcon, LightningSlashIcon, XIcon } from '@phosphor-i
 import { foggMissing, foggPoint, type Episode } from '@shape/content';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
-import { Burst, FAMILY, NibSays, StageTitle } from '../kit';
+import { Burst, FAMILY_SOLID, NibSays, StageTitle } from '../kit';
 import { FoggChart, foggXY } from '../scenes/Fogg';
 import { SC } from '../scenes/shared';
 import type { GameResult } from './DiamondSort';
@@ -72,7 +72,7 @@ export function FoggFix({ game, onDone }: { game: Game; onDone: (results: GameRe
           <motion.button key={l.id} type="button" onClick={() => pick(l.id)} disabled={!!picked} whileTap={{ scale: 0.96 }}
             className={cx('flex flex-col rounded-2xl px-3 py-3 text-left text-white transition disabled:cursor-default', picked && l.id !== picked && l.id !== card.lane && 'opacity-50',
               picked && l.id === card.lane && 'ring-4 ring-mint-500')}
-            style={{ background: FAMILY[[1, 2, 3][k]] }}>
+            style={{ background: FAMILY_SOLID[[1, 2, 3][k]] }}>
             <span className="text-md font-bold">{l.label}</span>
             <span className="text-xs font-medium opacity-90">{l.hint}</span>
           </motion.button>

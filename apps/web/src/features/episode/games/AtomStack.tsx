@@ -9,7 +9,7 @@ import type { Episode } from '@shape/content';
 import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
-import { Burst, FAMILY, NibSays, StageTitle } from '../kit';
+import { Burst, FAMILY_SOLID, NibSays, StageTitle } from '../kit';
 import { PartArt } from '../scenes/Atomic';
 import type { GameResult } from './DiamondSort';
 import { play } from '@/lib/sound';
@@ -83,7 +83,7 @@ export function AtomStack({ game, onDone }: { game: Game; onDone: (results: Game
               className={cx('flex min-h-20 items-center gap-3 rounded-2xl bg-primary p-2 pr-3 text-left ring-2 ring-inset transition-colors hover:bg-primary_hover disabled:cursor-default',
                 miss && l.id === card.lane ? 'ring-mint-600' : 'ring-secondary')}
               style={{ marginInline: `${k * 4}%` }}>
-              <span className="flex w-28 shrink-0 flex-col rounded-xl px-3 py-2 text-white" style={{ background: FAMILY[k] }}>
+              <span className="flex w-28 shrink-0 flex-col rounded-xl px-3 py-2 text-white" style={{ background: FAMILY_SOLID[k] }}>
                 <span className="text-sm font-bold">{l.label}</span>
                 <span className="text-[11px] leading-tight font-medium opacity-90">{l.hint}</span>
               </span>

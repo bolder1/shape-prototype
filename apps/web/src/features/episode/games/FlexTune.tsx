@@ -9,7 +9,7 @@ import type { Episode } from '@shape/content';
 import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
-import { Burst, FAMILY, NibSays, StageTitle } from '../kit';
+import { Burst, FAMILY_SOLID, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
 import { play } from '@/lib/sound';
 
@@ -30,7 +30,7 @@ function Box({ f, changed }: { f: Flex; changed?: keyof Flex }) {
         style={{ flexDirection: f['flex-direction'] as 'row', justifyContent: f['justify-content'], alignItems: f['align-items'], gap: f.gap }}>
         {[48, 80, 32].map((h, i) => (
           <motion.span key={i} layout transition={springs.pop} className="grid min-w-14 place-items-center rounded-lg px-3 text-xs font-bold text-white"
-            style={{ background: FAMILY[i], minHeight: f['align-items'] === 'stretch' ? undefined : h }}>{i + 1}</motion.span>
+            style={{ background: FAMILY_SOLID[i], minHeight: f['align-items'] === 'stretch' ? undefined : h }}>{i + 1}</motion.span>
         ))}
       </div>
       <pre className="rounded-xl bg-[#0f172a] p-3 font-mono text-xs leading-6 text-[#e2e8f0]">
@@ -114,7 +114,7 @@ export function FlexTune({ game, onDone }: { game: Game; onDone: (results: GameR
           <motion.button key={l.id} type="button" onClick={() => pick(l.id)} disabled={!!picked} whileTap={{ scale: 0.96 }}
             className={cx('flex flex-col rounded-2xl px-3 py-3 text-left text-white transition disabled:cursor-default', picked && l.id !== picked && l.id !== card.lane && 'opacity-50',
               picked && l.id === card.lane && 'ring-4 ring-mint-500')}
-            style={{ background: FAMILY[k % 4] }}>
+            style={{ background: FAMILY_SOLID[k % 4] }}>
             <span className="font-mono text-sm font-bold">{l.label}</span>
             <span className="text-xs font-medium opacity-90">{l.hint}</span>
           </motion.button>
