@@ -32,7 +32,11 @@ export const DISTINCTION_AT = 90;
  * A criterion with no level counts as 0.
  */
 export function scoreBoss(rubric: BossCriterion[], levels: Record<string, Level>): BossScore {
-  // TODO(human)
-  void rubric; void levels;
-  return { percent: 0, verdict: 'retry', blockers: [] };
+  const max = rubric.reduce((sum, c) => sum + c.weight * 3, 0);
+  const got = rubric.reduce((sum, c) => sum + c.weight * (levels[c.id] ?? 0), 0);
+  const percent = max ? Math.round((got / max) * 100) : 0;
+  // A required line below Solid fails the brief, whatever the total.
+  const blockers = rubric.filter(c => c.required && (levels[c.id] ?? 0) < 2).map(c => c.id);
+  const verdict: BossVerdict = blockers.length ? 'retry' : percent >= DISTINCTION_AT ? 'distinction' : percent >= PASS_AT ? 'pass' : 'retry';
+  return { percent, verdict, blockers };
 }
