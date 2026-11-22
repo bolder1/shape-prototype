@@ -1,12 +1,14 @@
 import { fd1 } from './chapters/fd-1';
 import { fd2 } from './chapters/fd-2';
 import { rs1 } from './chapters/rs-1';
+import { ia1 } from './chapters/ia-1';
 import { fd1_1 } from './episodes/fd-1-1';
 import { fd1_2 } from './episodes/fd-1-2';
 import { fd1_3 } from './episodes/fd-1-3';
 import { fd1_4 } from './episodes/fd-1-4';
 import { fd2_1, fd2_2, fd2_3, fd2_4 } from './episodes/fd-2';
 import { rs1_1, rs1_2, rs1_3, rs1_4 } from './episodes/rs-1';
+import { ia1_1, ia1_2, ia1_3, ia1_4 } from './episodes/ia-1';
 import type { Exercise, LessonContent } from './schema';
 import type { Episode } from './episode';
 
@@ -16,14 +18,15 @@ export * from './episode';
 /** Lessons that have the rich episode format, keyed by lesson id. The rest play as classic lessons. */
 export const EPISODES: Record<string, Episode> = { 'fd.1-1': fd1_1, 'fd.1-2': fd1_2, 'fd.1-3': fd1_3, 'fd.1-4': fd1_4,
   'fd.2-1': fd2_1, 'fd.2-2': fd2_2, 'fd.2-3': fd2_3, 'fd.2-4': fd2_4,
-  'rs.1-1': rs1_1, 'rs.1-2': rs1_2, 'rs.1-3': rs1_3, 'rs.1-4': rs1_4 };
+  'rs.1-1': rs1_1, 'rs.1-2': rs1_2, 'rs.1-3': rs1_3, 'rs.1-4': rs1_4,
+  'ia.1-1': ia1_1, 'ia.1-2': ia1_2, 'ia.1-3': ia1_3, 'ia.1-4': ia1_4 };
 export * from './grade';
 export * from './boss';
 export * from './boss-grade';
 export * from './bosses';
 
 /** Chapters with playable content, keyed by curriculum chapter id. Lessons are in curriculum order. */
-export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1 };
+export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1 };
 
 export const hasContent = (chapterId: string) => !!CONTENT[chapterId]?.length;
 

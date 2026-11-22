@@ -25,6 +25,10 @@ import { Flashlight } from './games/Flashlight';
 import { ScaleSort } from './games/ScaleSort';
 import { QuestionForge } from './games/QuestionForge';
 import { RedPen } from './games/RedPen';
+import { JargonSwap } from './games/JargonSwap';
+import { CrowdSort } from './games/CrowdSort';
+import { PatternFit } from './games/PatternFit';
+import { TreeTest } from './games/TreeTest';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -59,6 +63,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'scale-sort': ScaleSort,
   'question-forge': QuestionForge,
   'red-pen': RedPen,
+  'jargon-swap': JargonSwap,
+  'crowd-sort': CrowdSort,
+  'pattern-fit': PatternFit,
+  'tree-test': TreeTest,
 };
 
 interface Props {

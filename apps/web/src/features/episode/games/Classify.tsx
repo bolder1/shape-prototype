@@ -12,7 +12,8 @@ import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 
-export function Classify({ game, title, onDone }: { game: Game; title: string; onDone: (results: GameResult[]) => void }) {
+/** `laneArt` draws a picture on each lane button (e.g. a wireframe of the pattern). */
+export function Classify({ game, title, onDone, laneArt }: { game: Game; title: string; onDone: (results: GameResult[]) => void; laneArt?: (laneId: string) => React.ReactNode }) {
   const [deck, setDeck] = useState(game.cards);
   const [results, setResults] = useState<Record<string, boolean>>({});
   const [feedback, setFeedback] = useState<{ chose: string; ok: boolean } | null>(null);
@@ -47,11 +48,12 @@ export function Classify({ game, title, onDone }: { game: Game; title: string; o
         data-current-card>
         {card.label}
       </motion.div>
-      <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${game.lanes.length}, minmax(0, 1fr))` }}>
+      <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${laneArt && game.lanes.length > 2 ? 2 : game.lanes.length}, minmax(0, 1fr))` }}>
         {game.lanes.map((l, i) => (
           <motion.button key={l.id} type="button" onClick={() => choose(l.id)} disabled={!!feedback} whileTap={{ scale: 0.96 }}
             className={cx('rounded-2xl px-3 py-4 text-md font-bold text-white transition disabled:opacity-60', feedback?.ok === false && l.id === card.lane && 'ring-4 ring-mint-500')}
             style={{ background: FAMILY[[0, 1, 3, 2][i % 4]] }}>
+            {laneArt && <span className="mb-2 flex justify-center" aria-hidden>{laneArt(l.id)}</span>}
             {l.label}
           </motion.button>
         ))}

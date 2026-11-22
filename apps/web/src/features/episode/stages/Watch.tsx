@@ -23,6 +23,10 @@ import { ExploreCheckScene } from '../scenes/ExploreCheck';
 import { QualQuantScene } from '../scenes/QualQuant';
 import { ResearchQuestionScene } from '../scenes/ResearchQuestion';
 import { BiasScene } from '../scenes/Bias';
+import { MentalModelsScene } from '../scenes/MentalModels';
+import { CardSortScene } from '../scenes/CardSort';
+import { NavPatternsScene } from '../scenes/NavPatterns';
+import { SitemapScene } from '../scenes/Sitemap';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -39,6 +43,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'qual-quant': QualQuantScene,
   'research-question': ResearchQuestionScene,
   bias: BiasScene,
+  'mental-models': MentalModelsScene,
+  'card-sort': CardSortScene,
+  'nav-patterns': NavPatternsScene,
+  sitemap: SitemapScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

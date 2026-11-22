@@ -91,9 +91,43 @@ const rs1: BossBriefInput = {
   },
 };
 
+const ia1: BossBriefInput = {
+  chapterId: 'ia.1',
+  title: 'Untangle the Profile tab',
+  minutes: 35,
+  scenario: [
+    'Thali, a food-delivery app, keeps adding things to its Profile tab. It is now one flat list of 16 rows, in the order they were built:',
+    'Edit profile · Refund status · Saved addresses · Thali One membership · Payment methods · Order history · Notification settings · Coupons · Language · Help centre · Gift card balance · Dietary preferences · Report an issue · Refer a friend · Privacy & data · Log out.',
+    'Support tickets say people can’t find refunds, coupons or how to change their address. Restructure the tab so people can find things, and say how you’d check it works.',
+  ],
+  fields: [
+    { id: 'groups', label: 'Your groups', kind: 'list', items: 4, minWords: 6, hint: 'Name each group in the user’s words and list the rows inside it. Every one of the 16 rows needs a home.', placeholder: 'Your orders: Order history, Refund status, Report an issue' },
+    { id: 'decisions', label: 'Hard calls', kind: 'long', minWords: 25, hint: 'Which rows could live in two places, and where did you put them? Did you rename, merge or move anything out of the tab?' },
+    { id: 'test', label: 'How you’d check it', kind: 'long', minWords: 15, hint: 'Which method, with whom, and which tasks? Use the support complaints.' },
+  ],
+  rubric: [
+    { id: 'complete', label: 'Every row has a home', strong: 'All 16 rows appear exactly once, or a row is deliberately cross-linked or removed with a reason.', weight: 1, required: true },
+    { id: 'user-model', label: 'Groups follow the user’s model', strong: 'Groups reflect what people are trying to do (orders and problems with them, money, offers, my details), not how the company is organised. Labels are plain words, not jargon.', weight: 2, required: true },
+    { id: 'balanced', label: 'Balanced structure', strong: 'About 3–5 groups of 2–6 rows. Nothing too wide (a 10-row group) or pointlessly deep. Log out sits apart from everyday rows.', weight: 2 },
+    { id: 'ambiguous', label: 'Handles the ambiguous rows', strong: 'Spots the rows people could look for in two places (Refund status, Gift card balance, Report an issue) and chooses deliberately, e.g. a cross-link.', weight: 2 },
+    { id: 'test', label: 'A real test plan', strong: 'Proposes a tree test or closed card sort with 15+ target users, using tasks drawn from the support tickets (find refund status, apply a coupon, change address).', weight: 1 },
+  ],
+  tips: ['Start from the support tickets: the three things people can’t find should be the easiest to reach.', 'If a group name could be on any app’s menu (“Other”, “More”), it’s not doing its job.'],
+  example: {
+    groups: [
+      'Your orders: Order history, Refund status, Report an issue',
+      'Money & offers: Payment methods, Gift card balance, Coupons, Thali One membership, Refer a friend',
+      'You: Edit profile, Saved addresses, Dietary preferences',
+      'App settings: Notification settings, Language, Privacy & data, Help centre, and Log out separated at the bottom',
+    ],
+    decisions: 'Refund status could be under Orders or Money; tickets show people think of a refund as part of an order, so it lives in Your orders with a link from Payment methods. Gift card balance goes with money, not offers, because people use it to pay. Help centre moves to settings but Report an issue stays with orders, where problems happen.',
+    test: 'A tree test with 20 Thali users, with tasks from the tickets: “Check whether your refund came through”, “Use the coupon you got by SMS”, “Change where your food is delivered”. I’d look at first-click success and where wrong clicks go.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
