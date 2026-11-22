@@ -191,9 +191,44 @@ const cw1: BossBriefInput = {
   },
 };
 
+const st1: BossBriefInput = {
+  chapterId: 'st.1',
+  title: 'Pick the top 3 of 10',
+  minutes: 40,
+  scenario: [
+    'You’re the designer on Thali, a lunch-delivery app. This quarter’s outcome: more weekly orders from regulars (people who ordered at least 3 times last month). There’s room for three projects.',
+    'The requests (reach = regulars affected per month; effort in weeks): 1 One-tap reorder (reach 9,000; 2 wks). 2 Dark mode (12,000; 3 wks). 3 Lunchtime reminder with your usual (8,000; 1 wk). 4 Group orders with colleagues (2,000; 6 wks). 5 Voice search (12,000; 8 wks). 6 Free delivery over ₹199 (10,000; 1 wk, costs margin). 7 Recipe blog (1,000; 4 wks). 8 Fix slow checkout on older Android phones (5,000; 3 wks). 9 Loyalty tiers (6,000; 8 wks). 10 Weekly lunch plan set once (4,000; 4 wks).',
+    'The CEO loves voice search. Support says checkout on older phones is the top complaint.',
+  ],
+  fields: [
+    { id: 'scores', label: 'Your RICE estimates for the main contenders', kind: 'long', minWords: 30, hint: 'Give impact (3 massive, 2 high, 1 medium, 0.5 low) and confidence (%) for at least five requests, and show the score.' },
+    { id: 'top', label: 'Your top 3, in order', kind: 'list', items: 3, minWords: 8, hint: 'For each: the request and why it moves weekly orders from regulars.' },
+    { id: 'no', label: 'What you’d say no to, and how you’d tell the CEO', kind: 'long', minWords: 20, hint: 'Be kind and specific: tie the answer back to the outcome and the numbers.' },
+    { id: 'measure', label: 'How you’ll know it worked', kind: 'text', minWords: 8, hint: 'Which number, measured how, after how long?' },
+  ],
+  rubric: [
+    { id: 'outcome', label: 'Tied to the outcome', strong: 'Every top pick is argued in terms of weekly orders from regulars, not general appeal. Requests that don’t serve regulars (recipe blog, dark mode) are recognised as off-outcome.', weight: 2, required: true },
+    { id: 'rice', label: 'Sensible RICE scoring', strong: 'Uses reach and effort from the brief, states impact and confidence on a scale, does the maths right, and lets confidence drop for unproven ideas like voice search.', weight: 2, required: true },
+    { id: 'judgment', label: 'Judgment beyond the numbers', strong: 'Spots trade-offs the score hides (free delivery costs margin; the checkout bug is a basic that’s broken) and explains any departure from pure score order.', weight: 2 },
+    { id: 'no', label: 'A good no', strong: 'Says no to voice search respectfully, with the numbers and the outcome, and offers what would change the decision (e.g. evidence of demand).', weight: 1 },
+    { id: 'measure', label: 'Measurable success', strong: 'Names the metric (weekly orders per regular), a baseline or target and a time frame.', weight: 1 },
+  ],
+  tips: ['Score first, then argue. If you break the score order, say why.'],
+  example: {
+    scores: 'One-tap reorder: 9,000 × 2 × 80% ÷ 2 = 7,200. Lunchtime reminder: 8,000 × 1 × 80% ÷ 1 = 6,400. Free delivery over ₹199: 10,000 × 1 × 50% ÷ 1 = 5,000. Fix slow checkout: 5,000 × 2 × 90% ÷ 3 = 3,000. Voice search: 12,000 × 0.5 × 20% ÷ 8 = 150. Dark mode: 12,000 × 0.25 × 80% ÷ 3 = 800.',
+    top: [
+      'One-tap reorder: regulars reorder the same lunch, and removing steps makes the repeat order effortless.',
+      'Lunchtime reminder with your usual: it’s cheap, and interviews say regulars simply forget. It pairs with one-tap reorder.',
+      'Fix slow checkout on older Android phones: it scores below free delivery, but it’s a broken basic, the top support complaint, and we lose orders we already won.',
+    ],
+    no: 'Voice search scores 150 against 7,200 for reorder: few regulars would use it, we have no evidence they want it, and it takes 8 weeks. I’d tell the CEO it’s parked, not dead: if a quick test shows demand, it comes back with higher confidence.',
+    measure: 'Weekly orders per regular, from 1.2 to 1.5 within six weeks of the three launches, compared with last quarter.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

@@ -9,7 +9,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'explore-check', 'qual-quant', 'research-question', 'bias',
   'mental-models', 'card-sort', 'nav-patterns', 'sitemap',
   'spacing-scale', 'responsive-grid', 'whitespace', 'alignment',
-  'clear-clever', 'button-labels', 'error-messages', 'empty-states']);
+  'clear-clever', 'button-labels', 'error-messages', 'empty-states',
+  'outcome-output', 'opportunity-tree', 'prioritization']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -32,12 +33,16 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `button-forge`: needs `rounds` (build a button label from tiles), then the cards are classified.
  *  - `error-doctor`: lanes `vague`, `nofix`, `blame`, `good`; every card not in `good` needs a `note` (a better message).
  *  - `empty-match`: lanes `first`, `done`, `noresults`, `error` (each drawn as its own empty screen).
+ *  - `rung-sort`: lanes `problem`, `outcome`, `output`.
+ *  - `ost-grow`: two to four lanes (opportunities); cards are solutions hung under them.
+ *  - `rice-duel`: lanes `a`, `b`; every card's `visual` is two ideas, "Name|reach|impact|confidence%|effort;Name|…" (see `riceIdeas`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
   'flashlight', 'scale-sort', 'question-forge', 'red-pen',
   'jargon-swap', 'crowd-sort', 'pattern-fit', 'tree-test',
   'spacing-fix', 'column-span', 'line-cut', 'align-snap',
-  'glance-test', 'button-forge', 'error-doctor', 'empty-match']);
+  'glance-test', 'button-forge', 'error-doctor', 'empty-match',
+  'rung-sort', 'ost-grow', 'rice-duel']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -97,4 +102,14 @@ export const Episode = z.object({
   ladder: z.array(Question.extend({ hint: z.string().min(1) })).min(4).max(6),
 });
 export type Episode = z.infer<typeof Episode>;
+
+/** One idea in a RICE duel. Confidence is a percentage. */
+export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }
+/** Parses a `rice-duel` card's visual: "Name|reach|impact|confidence%|effort;Name|…". */
+export const riceIdeas = (visual: string): RiceIdea[] => visual.split(';').map(part => {
+  const [name, reach, impact, confidence, effort] = part.split('|');
+  return { name, reach: Number(reach), impact: Number(impact), confidence: Number(confidence), effort: Number(effort) };
+});
+/** Reach × Impact × Confidence ÷ Effort. */
+export const riceScore = (i: RiceIdea) => (i.reach * i.impact * (i.confidence / 100)) / i.effort;
 export type EpisodeQuestion = z.infer<typeof Question>;

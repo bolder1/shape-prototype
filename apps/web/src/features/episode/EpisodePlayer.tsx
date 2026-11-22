@@ -37,6 +37,9 @@ import { GlanceTest } from './games/GlanceTest';
 import { ButtonForge } from './games/ButtonForge';
 import { ErrorDoctor } from './games/ErrorDoctor';
 import { EmptyMatch } from './games/EmptyMatch';
+import { RungSort } from './games/RungSort';
+import { OstGrow } from './games/OstGrow';
+import { RiceDuel } from './games/RiceDuel';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -83,6 +86,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'button-forge': ButtonForge,
   'error-doctor': ErrorDoctor,
   'empty-match': EmptyMatch,
+  'rung-sort': RungSort,
+  'ost-grow': OstGrow,
+  'rice-duel': RiceDuel,
 };
 
 interface Props {

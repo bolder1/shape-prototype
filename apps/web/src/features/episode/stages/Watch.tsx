@@ -35,6 +35,9 @@ import { ClearCleverScene } from '../scenes/ClearClever';
 import { ButtonLabelsScene } from '../scenes/ButtonLabels';
 import { ErrorMessagesScene } from '../scenes/ErrorMessages';
 import { EmptyStatesScene } from '../scenes/EmptyStates';
+import { OutcomeOutputScene } from '../scenes/OutcomeOutput';
+import { OpportunityTreeScene } from '../scenes/OpportunityTree';
+import { PrioritizationScene } from '../scenes/Prioritization';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -63,6 +66,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'button-labels': ButtonLabelsScene,
   'error-messages': ErrorMessagesScene,
   'empty-states': EmptyStatesScene,
+  'outcome-output': OutcomeOutputScene,
+  'opportunity-tree': OpportunityTreeScene,
+  prioritization: PrioritizationScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

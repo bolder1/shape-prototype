@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, findExercise, lessonById } from './index';
+import { EPISODES, Episode, Exercise, findExercise, lessonById, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -47,6 +47,18 @@ describe('episodes', () => {
       if (ep.game.id === 'glance-test') for (const c of ep.game.cards) if (c.lane === lanes[0]) expect(c.note).toBeTruthy();   // every unclear line gets a rewrite
       if (ep.game.id === 'error-doctor') { expect(lanes).toEqual(['vague', 'nofix', 'blame', 'good']); for (const c of ep.game.cards) if (c.lane !== 'good') expect(c.note).toBeTruthy(); }   // every bad error gets a better one
       if (ep.game.id === 'empty-match') expect(lanes).toEqual(['first', 'done', 'noresults', 'error']);   // the screens the game draws
+      if (ep.game.id === 'rung-sort') expect(lanes).toEqual(['problem', 'outcome', 'output']);   // the three rungs
+      if (ep.game.id === 'rice-duel') {   // two well-formed ideas, and the marked lane really wins on RICE
+        expect(lanes).toEqual(['a', 'b']);
+        for (const c of ep.game.cards) {
+          const ideas = riceIdeas(c.visual ?? '');
+          expect(ideas).toHaveLength(2);
+          for (const i of ideas) for (const n of [i.reach, i.impact, i.confidence, i.effort]) expect(n).toBeGreaterThan(0);
+          const [a, b] = ideas.map(riceScore);
+          expect(a).not.toBe(b);
+          expect(c.lane).toBe(a > b ? 'a' : 'b');
+        }
+      }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });
