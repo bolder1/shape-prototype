@@ -159,9 +159,41 @@ const ui1: BossBriefInput = {
   },
 };
 
+const cw1: BossBriefInput = {
+  chapterId: 'cw.1',
+  title: 'Rewrite a broken onboarding',
+  minutes: 30,
+  scenario: [
+    'Paisa, a savings app, has a three-screen onboarding. Most people quit before finishing. Every string on it is below. Rewrite them so a first-time user gets through without thinking.',
+    'Screen 1 · Welcome. Headline: “Unlock financial freedom 🚀”. Body: “Leverage our synergistic ecosystem to optimise your wealth journey.” Button: “Let’s go!”',
+    'Screen 2 · Phone number. Label: “MSISDN”. Button: “Submit”. Error when a 9-digit number is typed: “Error 4012: invalid input”.',
+    'Screen 3 · Home, first visit. The savings goals list is empty and says only “No data.”',
+  ],
+  fields: [
+    { id: 'welcome', label: 'Screen 1: headline, body and button', kind: 'long', minWords: 15, hint: 'Say what the app does for this person and what the button leads to.' },
+    { id: 'phone', label: 'Screen 2: label, button and error', kind: 'long', minWords: 15, hint: 'Plain label, a verb-plus-object button, and an error that says what’s wrong and how to fix it.' },
+    { id: 'empty', label: 'Screen 3: the empty goals list', kind: 'long', minWords: 12, hint: 'What goes here, why it’s empty, and one action.' },
+    { id: 'principles', label: 'The rules you followed', kind: 'list', items: 3, minWords: 5, hint: 'Three short rules a teammate could use on the next screen.' },
+  ],
+  rubric: [
+    { id: 'clear', label: 'Clear over clever', strong: 'The welcome says plainly what Paisa does for the user (e.g. save a little every day towards a goal). No jargon (“synergistic”, “leverage”, “MSISDN”) and no slogan that needs decoding.', weight: 2, required: true },
+    { id: 'buttons', label: 'Buttons say what happens', strong: 'Every button is a verb plus object or outcome (“Set a savings goal”, “Send OTP”), never “Submit” or “Let’s go!”.', weight: 2, required: true },
+    { id: 'error', label: 'A helpful error', strong: 'The error says what’s wrong and how to fix it (“Phone numbers need 10 digits”), shown at the field, without blame or codes.', weight: 2 },
+    { id: 'empty', label: 'A useful empty state', strong: 'Explains what goals are, that there are none yet, and gives one clear action to create the first goal.', weight: 1 },
+    { id: 'rules', label: 'Reusable rules', strong: 'Three rules a teammate could apply elsewhere (e.g. “verb + object on every button”, “errors say what and how”).', weight: 1 },
+  ],
+  tips: ['Read your strings in two seconds each, as if on a crowded bus. Anything you have to reread, rewrite.'],
+  example: {
+    welcome: 'Headline: “Save a little every day.” Body: “Set a goal, like a phone or a trip, and Paisa puts aside small amounts for you.” Button: “Set my first goal”.',
+    phone: 'Label: “Mobile number”. Button: “Send OTP”. Error under the field: “Mobile numbers need 10 digits. You’ve entered 9.”',
+    empty: '“Your savings goals will show up here. You haven’t set one yet.” Button: “Create a goal”.',
+    principles: ['Say what the app does, not what it dreams of', 'Every button is a verb plus what it acts on', 'Errors say what went wrong and how to fix it'],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

@@ -8,7 +8,8 @@ import { z } from 'zod';
 export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thinking', 'product-team', 'gestalt', 'hierarchy', 'ux-laws', 'cognitive-load',
   'explore-check', 'qual-quant', 'research-question', 'bias',
   'mental-models', 'card-sort', 'nav-patterns', 'sitemap',
-  'spacing-scale', 'responsive-grid', 'whitespace', 'alignment']);
+  'spacing-scale', 'responsive-grid', 'whitespace', 'alignment',
+  'clear-clever', 'button-labels', 'error-messages', 'empty-states']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -27,11 +28,16 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `column-span`: lane ids are column counts that divide 12 (e.g. `3`, `4`, `6`, `12`).
  *  - `line-cut`: two lanes; cards in the FIRST lane are the ones to cut; each card's `note` is shown after.
  *  - `align-snap`: lanes `left`, `center`, `right`.
+ *  - `glance-test`: two lanes; cards in the FIRST lane are the unclear ones and each needs a `note` (a clear rewrite).
+ *  - `button-forge`: needs `rounds` (build a button label from tiles), then the cards are classified.
+ *  - `error-doctor`: lanes `vague`, `nofix`, `blame`, `good`; every card not in `good` needs a `note` (a better message).
+ *  - `empty-match`: lanes `first`, `done`, `noresults`, `error` (each drawn as its own empty screen).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
   'flashlight', 'scale-sort', 'question-forge', 'red-pen',
   'jargon-swap', 'crowd-sort', 'pattern-fit', 'tree-test',
-  'spacing-fix', 'column-span', 'line-cut', 'align-snap']);
+  'spacing-fix', 'column-span', 'line-cut', 'align-snap',
+  'glance-test', 'button-forge', 'error-doctor', 'empty-match']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

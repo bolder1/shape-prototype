@@ -1,0 +1,115 @@
+// Chapter cw.1 · UX writing basics. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const cw1: LessonContent[] = [
+  {
+    id: 'cw.1-1', title: 'Clear > clever', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'People glance, they don’t read',
+        body: ['Interface text is read in a second or two, often mid-task. If a line makes people stop and decode it, it has failed.',
+          'Say plainly what something is or what will happen. Save the jokes for moments when nothing is at stake.'] },
+      { type: 'pick', id: 'p1', prompt: 'A food app’s sign-up headline. Which is best?',
+        explanation: 'It says what you get, for whom, at a glance. The others are clever but say nothing.',
+        options: [
+          { id: 'a', label: 'Unleash your inner foodie' },
+          { id: 'b', label: 'Order lunch from 200 kitchens near you' },
+          { id: 'c', label: 'Hunger, meet your match' },
+          { id: 'd', label: 'The future of food is here' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Clear or clever?',
+        explanation: 'Clear lines say what happens. Clever lines make you work out what they mean.',
+        buckets: [{ id: 'clear', label: 'Clear' }, { id: 'clever', label: 'Clever' }],
+        items: [
+          { id: 'a', label: 'Track your order', bucket: 'clear' },
+          { id: 'b', label: 'Where’s my grub at?', bucket: 'clever' },
+          { id: 'c', label: 'Save 20% on your first order', bucket: 'clear' },
+          { id: 'd', label: 'Magic awaits', bucket: 'clever' },
+          { id: 'e', label: 'Your payment didn’t go through', bucket: 'clear' },
+          { id: 'f', label: 'Houston, we have a problem', bucket: 'clever' },
+        ] },
+    ],
+  },
+  {
+    id: 'cw.1-2', title: 'Buttons & CTAs', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Say what happens when I tap',
+        body: ['A good button label is a verb plus an object: “Delete photos”, “Pay ₹450”, “Send invite”.',
+          '“OK”, “Submit” and “Yes” make people reread the question. A specific label can be understood on its own.'] },
+      { type: 'pick', id: 'p1', prompt: 'A dialog asks “Delete 3 photos?” Best confirm button?',
+        explanation: 'It repeats the action, so nobody has to reread the question to know what they’re agreeing to.',
+        options: [
+          { id: 'a', label: 'OK' },
+          { id: 'b', label: 'Yes' },
+          { id: 'c', label: 'Delete 3 photos' },
+          { id: 'd', label: 'Submit' },
+        ], correct: 'c' },
+      { type: 'pick', id: 'p2', prompt: 'The last step of checkout. Which button?',
+        explanation: 'It says exactly what happens, including the amount, at the moment people commit.',
+        options: [
+          { id: 'a', label: 'Continue' },
+          { id: 'b', label: 'Pay ₹450' },
+          { id: 'c', label: 'Submit' },
+          { id: 'd', label: 'Next' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Specific or vague?',
+        explanation: 'Specific labels name the action. Vague ones could be on any button.',
+        buckets: [{ id: 'sp', label: 'Specific' }, { id: 'va', label: 'Vague' }],
+        items: [
+          { id: 'a', label: 'Send invite', bucket: 'sp' },
+          { id: 'b', label: 'OK', bucket: 'va' },
+          { id: 'c', label: 'Book table for 4', bucket: 'sp' },
+          { id: 'd', label: 'Submit', bucket: 'va' },
+        ] },
+    ],
+  },
+  {
+    id: 'cw.1-3', title: 'Error messages that help', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'What happened, and what to do',
+        body: ['A helpful error says what went wrong and how to fix it, in plain words, next to the problem.',
+          'It never blames the person. “Invalid input” and “Error 4012” leave people stuck.'] },
+      { type: 'pick', id: 'p1', prompt: 'Someone types a UPI ID without the @. Best message?',
+        explanation: 'It says what’s missing and shows the right format, so the fix is obvious.',
+        options: [
+          { id: 'a', label: 'Invalid input' },
+          { id: 'b', label: 'Error 4012' },
+          { id: 'c', label: 'You entered it wrong' },
+          { id: 'd', label: 'UPI IDs need an @, like name@bank' },
+        ], correct: 'd' },
+      { type: 'sort', id: 's1', prompt: 'Helps or hurts?',
+        explanation: 'Helpful errors explain and point to a fix. Hurtful ones are vague, technical or blame people.',
+        buckets: [{ id: 'h', label: 'Helps' }, { id: 'x', label: 'Hurts' }],
+        items: [
+          { id: 'a', label: 'Something went wrong', bucket: 'x' },
+          { id: 'b', label: 'Passwords need at least 8 characters', bucket: 'h' },
+          { id: 'c', label: 'Illegal operation', bucket: 'x' },
+          { id: 'd', label: 'No internet. We’ll retry when you’re back online.', bucket: 'h' },
+        ] },
+    ],
+  },
+  {
+    id: 'cw.1-4', title: 'Empty states', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Nothing here, yet',
+        body: ['An empty screen is a moment to explain what will appear here and how to get started.',
+          'A good empty state has three parts: what this place is for, why it’s empty, and one clear next step.'] },
+      { type: 'pick', id: 'p1', prompt: 'A new user opens “Saved recipes”. Best empty state?',
+        explanation: 'It explains what the screen is for and gives one action to fill it.',
+        options: [
+          { id: 'a', label: '“No items.”' },
+          { id: 'b', label: '“Nothing to show.”' },
+          { id: 'c', label: '“Save recipes you love and find them here. Browse recipes”' },
+          { id: 'd', label: 'A blank white screen' },
+        ], correct: 'c' },
+      { type: 'sort', id: 's1', prompt: 'What kind of empty is it?',
+        explanation: 'First-use screens teach and invite. A screen someone just cleared can celebrate.',
+        buckets: [{ id: 'first', label: 'First use' }, { id: 'done', label: 'All done' }],
+        items: [
+          { id: 'a', label: 'A new user’s empty order history', bucket: 'first' },
+          { id: 'b', label: 'Your to-do list after ticking off everything', bucket: 'done' },
+          { id: 'c', label: 'An inbox after reading every message', bucket: 'done' },
+          { id: 'd', label: 'Favourites before you’ve favourited anything', bucket: 'first' },
+        ] },
+    ],
+  },
+];
