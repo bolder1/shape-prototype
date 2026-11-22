@@ -42,6 +42,10 @@ import { ScriptShapeScene } from '../scenes/ScriptShape';
 import { ProbingScene } from '../scenes/Probing';
 import { JobsScene } from '../scenes/Jobs';
 import { ContextVisitScene } from '../scenes/ContextVisit';
+import { TypeAnatomyScene } from '../scenes/TypeAnatomy';
+import { TypeScaleScene } from '../scenes/TypeScale';
+import { FontPairingScene } from '../scenes/FontPairing';
+import { MeasureScene } from '../scenes/Measure';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -77,6 +81,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   probing: ProbingScene,
   jobs: JobsScene,
   'context-visit': ContextVisitScene,
+  'type-anatomy': TypeAnatomyScene,
+  'type-scale': TypeScaleScene,
+  'font-pairing': FontPairingScene,
+  measure: MeasureScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

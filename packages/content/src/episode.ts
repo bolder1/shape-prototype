@@ -11,7 +11,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'spacing-scale', 'responsive-grid', 'whitespace', 'alignment',
   'clear-clever', 'button-labels', 'error-messages', 'empty-states',
   'outcome-output', 'opportunity-tree', 'prioritization',
-  'script-shape', 'probing', 'jobs', 'context-visit']);
+  'script-shape', 'probing', 'jobs', 'context-visit',
+  'type-anatomy', 'type-scale', 'font-pairing', 'measure']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -42,6 +43,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *    cards in the FIRST lane are weak follow-ups and each needs a `note` (a better one).
  *  - `job-forge`: needs `rounds` (build a job story from tiles), then the cards are classified.
  *  - `ask-watch`: lanes `ask`, `watch`.
+ *  - `anatomy-pin`: lanes `cap`, `x`, `base`, `desc` (the lines of a letter, drawn on a giant word).
+ *  - `size-it`: lanes `display`, `heading`, `body`, `small`; every card's `visual` names a piece of the reading screen it sizes.
+ *  - `pair-judge`: lanes `works`, `clash`; every card's `visual` is "headingFont|weight|bodyFont|weight" (or `five`) and has a `note`.
+ *  - `measure-tune`: lanes `measure`, `leading`, `ok`; every card's `visual` is "characters|lineHeight" (see `measureVerdict`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
   'flashlight', 'scale-sort', 'question-forge', 'red-pen',
@@ -49,7 +54,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'spacing-fix', 'column-span', 'line-cut', 'align-snap',
   'glance-test', 'button-forge', 'error-doctor', 'empty-match',
   'rung-sort', 'ost-grow', 'rice-duel',
-  'script-builder', 'chat-probe', 'job-forge', 'ask-watch']);
+  'script-builder', 'chat-probe', 'job-forge', 'ask-watch',
+  'anatomy-pin', 'size-it', 'pair-judge', 'measure-tune']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -119,4 +125,14 @@ export const riceIdeas = (visual: string): RiceIdea[] => visual.split(';').map(p
 });
 /** Reach × Impact × Confidence ÷ Effort. */
 export const riceScore = (i: RiceIdea) => (i.reach * i.impact * (i.confidence / 100)) / i.effort;
+/** A body-text setting in a `measure-tune` card: characters per line and line height. */
+export interface MeasureSetting { chars: number; leading: number }
+/** Parses a `measure-tune` card's visual: "characters|lineHeight". */
+export const measureSetting = (visual: string): MeasureSetting => { const [chars, leading] = visual.split('|').map(Number); return { chars, leading }; };
+/** Comfortable body text: 45–75 characters a line, line height 1.4–1.7. */
+export const MEASURE = { chars: [45, 75], leading: [1.4, 1.7] } as const;
+const within = (n: number, [lo, hi]: readonly [number, number]) => n >= lo && n <= hi;
+/** What to fix first in a body-text setting: the line length, then the line height. */
+export const measureVerdict = (s: MeasureSetting): 'measure' | 'leading' | 'ok' =>
+  !within(s.chars, MEASURE.chars) ? 'measure' : !within(s.leading, MEASURE.leading) ? 'leading' : 'ok';
 export type EpisodeQuestion = z.infer<typeof Question>;

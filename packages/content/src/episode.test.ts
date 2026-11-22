@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, findExercise, lessonById, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, findExercise, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -64,6 +64,26 @@ describe('episodes', () => {
           const [a, b] = ideas.map(riceScore);
           expect(a).not.toBe(b);
           expect(c.lane).toBe(a > b ? 'a' : 'b');
+        }
+      }
+      if (ep.game.id === 'anatomy-pin') expect(lanes).toEqual(['cap', 'x', 'base', 'desc']);   // the lines the game draws
+      if (ep.game.id === 'size-it') { expect(lanes).toEqual(['display', 'heading', 'body', 'small']); for (const c of ep.game.cards) expect(['title', 'byline', 'caption', 'section1', 'para1', 'section2', 'para2', 'tabs']).toContain(c.visual); }   // pieces of the screen it draws
+      if (ep.game.id === 'pair-judge') {   // fonts the game can set, and a reason for every verdict
+        expect(lanes).toEqual(['works', 'clash']);
+        for (const c of ep.game.cards) {
+          expect(c.note).toBeTruthy();
+          if (c.visual === 'five') continue;
+          const [h, hw, b, bw] = (c.visual ?? '').split('|');
+          for (const f of [h, b]) expect(['serif', 'times', 'sans', 'verdana', 'tahoma', 'script', 'display', 'mono']).toContain(f);
+          for (const w of [hw, bw]) expect(Number(w)).toBeGreaterThan(0);
+        }
+      }
+      if (ep.game.id === 'measure-tune') {   // the marked lane is what the numbers say, and only one thing is wrong
+        expect(lanes).toEqual(['measure', 'leading', 'ok']);
+        for (const c of ep.game.cards) {
+          const s = measureSetting(c.visual ?? '');
+          expect(c.lane).toBe(measureVerdict(s));
+          if (c.lane === 'measure') expect(measureVerdict({ ...s, chars: 60 })).toBe('ok');
         }
       }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines

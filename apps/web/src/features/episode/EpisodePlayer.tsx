@@ -44,6 +44,10 @@ import { ScriptBuilder } from './games/ScriptBuilder';
 import { ChatProbe } from './games/ChatProbe';
 import { JobForge } from './games/JobForge';
 import { AskWatch } from './games/AskWatch';
+import { AnatomyPin } from './games/AnatomyPin';
+import { SizeIt } from './games/SizeIt';
+import { PairJudge } from './games/PairJudge';
+import { MeasureTune } from './games/MeasureTune';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -97,6 +101,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'chat-probe': ChatProbe,
   'job-forge': JobForge,
   'ask-watch': AskWatch,
+  'anatomy-pin': AnatomyPin,
+  'size-it': SizeIt,
+  'pair-judge': PairJudge,
+  'measure-tune': MeasureTune,
 };
 
 interface Props {

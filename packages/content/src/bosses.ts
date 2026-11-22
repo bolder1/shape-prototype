@@ -260,9 +260,42 @@ const rs2: BossBriefInput = {
   },
 };
 
+const ui2: BossBriefInput = {
+  chapterId: 'ui.2',
+  title: 'Set the type for a reading app',
+  minutes: 40,
+  scenario: [
+    'Kahani is a short-story app for phones and tablets. Right now every screen uses text sizes picked by eye: 14, 15, 17, 18, 21, 22 and 30px, in three different fonts, and story text runs edge to edge on tablets at line height 1.2.',
+    'Set one type scale for the whole app and apply it to two screens. The Library screen lists stories: a screen title, a “Continue reading” card (story title, author, “12 min left”), and a list of stories, each with a title, author and a one-line blurb. The Story screen shows a story title, author and reading time, then the story text with a few section breaks.',
+  ],
+  fields: [
+    { id: 'scale', label: 'Your type scale', kind: 'long', minWords: 15, hint: 'Base size, ratio, and every step with a name and what it’s for.', placeholder: 'Base 16, ratio 1.25: small 13 (…), body 16 (…), …' },
+    { id: 'fonts', label: 'Fonts, and why', kind: 'text', minWords: 12, hint: 'One or two fonts, the weights you’ll use, and why they suit long reading.' },
+    { id: 'screens', label: 'Each screen, set', kind: 'list', items: 2, minWords: 25, hint: 'One item per screen. Give every piece of text a step, a weight and (for body text) a line height.' },
+    { id: 'reading', label: 'Line length and leading for story text', kind: 'text', minWords: 12, hint: 'How you keep story text comfortable on a phone and on a tablet.' },
+  ],
+  rubric: [
+    { id: 'scale', label: 'A real scale', strong: 'A base around 16–18px and one ratio, with steps rounded and named by role. No leftover near-duplicates like 17 and 18.', weight: 2, required: true },
+    { id: 'reading', label: 'Comfortable story text', strong: 'Story text at the base size or one step up, line height about 1.5, and a maximum width of about 65 characters on tablets.', weight: 2, required: true },
+    { id: 'hierarchy', label: 'Clear levels on both screens', strong: 'Titles, headings, body and details each use a distinct step or weight, and the same role uses the same step on both screens.', weight: 2 },
+    { id: 'fonts', label: 'Restrained pairing', strong: 'One or two clearly different fonts, a body font chosen for reading, and only a few weights.', weight: 1 },
+    { id: 'details', label: 'Typographic details', strong: 'Mentions at least one detail such as tighter leading for big titles, tabular figures for times, or left-aligned body text.', weight: 1 },
+  ],
+  tips: ['Start from the story text: pick its size and line height first, then build the scale up and down from it.', 'Check the two screens side by side. A story title should look the same on both.'],
+  example: {
+    scale: 'Base 16, ratio 1.25, rounded: Small 13 (author, time left, tab labels), Body 16 (blurbs, UI text), Large 20 (story text, and story titles in lists), Heading 25 (screen titles, section breaks), Display 31 (story title on the Story screen).',
+    fonts: 'A serif (Source Serif) for story text and the Story title, because it’s calm for long reading; one sans (Inter) in Regular and Semibold for all UI text. Four files in total.',
+    screens: [
+      'Library: “Library” Heading 25 Semibold sans. Continue card: story title Large 20 Semibold, author Small 13, “12 min left” Small 13 with tabular figures. Each list row: title Large 20 Semibold, author Small 13, blurb Body 16 at 1.5, one line.',
+      'Story: title Display 31 serif at line height 1.2, author and reading time Small 13 sans on one line, story text Large 20 serif at line height 1.6, section breaks as Heading 25 serif with 32px space above.',
+    ],
+    reading: 'Story text gets max-width 65ch, centred in the screen on tablets, left-aligned inside. On phones it’s about 35 characters a line, which is normal; I keep it at 20px rather than shrinking it to fit more.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
