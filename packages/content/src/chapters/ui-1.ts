@@ -1,0 +1,116 @@
+// Chapter ui.1 · Layout & spacing. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const ui1: LessonContent[] = [
+  {
+    id: 'ui.1-1', title: 'The 8-pt grid', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'A short list of allowed spaces',
+        body: ['An 8-point grid means every space is a multiple of 8 (8, 16, 24, 32…), with 4 for very tight gaps.',
+          'A small scale stops random values like 13px or 22px. Layouts look calmer, and designers and engineers stop debating pixels.'] },
+      { type: 'pick', id: 'p1', prompt: 'A card uses gaps of 7px, 13px and 22px. What’s the best fix?',
+        explanation: 'Snapping to the nearest steps on the scale keeps the intent and makes the rhythm consistent.',
+        options: [
+          { id: 'a', label: 'Snap them to 8, 16 and 24' },
+          { id: 'b', label: 'Make them all 13px' },
+          { id: 'c', label: 'Leave them, nobody notices' },
+          { id: 'd', label: 'Remove all spacing' },
+        ], correct: 'a' },
+      { type: 'sort', id: 's1', prompt: 'Tight, medium or loose?',
+        explanation: 'Things that belong together get small gaps. Separate groups get big ones.',
+        buckets: [{ id: 't', label: 'Tight (4–8)' }, { id: 'm', label: 'Medium (16–24)' }, { id: 'l', label: 'Loose (32+)' }],
+        items: [
+          { id: 'a', label: 'An icon and its label', bucket: 't' },
+          { id: 'b', label: 'Padding inside a card', bucket: 'm' },
+          { id: 'c', label: 'Between two page sections', bucket: 'l' },
+          { id: 'd', label: 'A field label and its input', bucket: 't' },
+          { id: 'e', label: 'Between cards in a list', bucket: 'm' },
+          { id: 'f', label: 'Above a new chapter heading', bucket: 'l' },
+        ] },
+    ],
+  },
+  {
+    id: 'ui.1-2', title: 'Columns & responsive grids', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Columns, gutters, margins',
+        body: ['A layout grid splits the page into columns with gutters between them and margins at the edges.',
+          'Desktop often uses 12 columns, tablet 8 and phone 4. Items span a number of columns, so the same layout adapts to each width.'] },
+      { type: 'pick', id: 'p1', prompt: 'On a 12-column grid, how many columns does each card span to fit 3 per row?',
+        explanation: '12 ÷ 3 = 4. Twelve divides evenly by 2, 3, 4 and 6, which is why it’s so popular.',
+        options: [
+          { id: 'a', label: '3' },
+          { id: 'b', label: '4' },
+          { id: 'c', label: '6' },
+          { id: 'd', label: '12' },
+        ], correct: 'b' },
+      { type: 'pick', id: 'p2', prompt: 'Four product cards in a row on desktop. What usually happens on a phone?',
+        explanation: 'On a 4-column phone grid, each card spans all 4 columns (or 2 for a two-up grid), so they stack.',
+        options: [
+          { id: 'a', label: 'They shrink to a quarter of the phone width' },
+          { id: 'b', label: 'They scroll sideways off screen' },
+          { id: 'c', label: 'They stack, spanning the full width (or two per row)' },
+          { id: 'd', label: 'They disappear' },
+        ], correct: 'c' },
+      { type: 'sort', id: 's1', prompt: 'Gutter or margin?',
+        explanation: 'Gutters are the gaps between columns. Margins are the space at the left and right edges of the page.',
+        buckets: [{ id: 'g', label: 'Gutter' }, { id: 'm', label: 'Margin' }],
+        items: [
+          { id: 'a', label: 'The gap between two cards side by side', bucket: 'g' },
+          { id: 'b', label: 'The space between the screen edge and the content', bucket: 'm' },
+          { id: 'c', label: 'The gap between an article and its sidebar', bucket: 'g' },
+          { id: 'd', label: 'The 16px on each side of a phone layout', bucket: 'm' },
+        ] },
+    ],
+  },
+  {
+    id: 'ui.1-3', title: 'Whitespace as structure', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Space groups things',
+        body: ['Whitespace isn’t empty: it tells people what belongs together. Small gaps join things, big gaps separate them.',
+          'Often you can delete lines, boxes and dividers and let space do the grouping. The screen gets calmer and easier to scan.'] },
+      { type: 'pick', id: 'p1', prompt: 'A settings screen has a divider under every row and a box around every group. It feels noisy. Best first fix?',
+        explanation: 'Grouping by space removes visual noise while keeping the structure clear.',
+        options: [
+          { id: 'a', label: 'Thicker dividers' },
+          { id: 'b', label: 'Remove most lines and use bigger gaps between groups' },
+          { id: 'c', label: 'Add colour to every box' },
+          { id: 'd', label: 'Make the text smaller' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Can space replace it, or does it carry meaning?',
+        explanation: 'Decoration that only separates can go. Lines that show state (focus, error, selection) or dense data need to stay.',
+        buckets: [{ id: 'cut', label: 'Space can replace it' }, { id: 'keep', label: 'Keep it' }],
+        items: [
+          { id: 'a', label: 'A line under every heading', bucket: 'cut' },
+          { id: 'b', label: 'A red border on an invalid field', bucket: 'keep' },
+          { id: 'c', label: 'A box around each paragraph', bucket: 'cut' },
+          { id: 'd', label: 'The focus ring on the active input', bucket: 'keep' },
+        ] },
+    ],
+  },
+  {
+    id: 'ui.1-4', title: 'Alignment', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Invisible lines',
+        body: ['Aligned elements share an edge or a centre line. People can’t see the line, but they feel when it’s missing.',
+          'Left-align text people read. Right-align numbers so digits line up. Centre only short, standalone content.'] },
+      { type: 'sort', id: 's1', prompt: 'How should each be aligned?',
+        explanation: 'Reading text: left. Numbers and amounts: right. Short standalone messages: centre.',
+        buckets: [{ id: 'l', label: 'Left' }, { id: 'c', label: 'Centre' }, { id: 'r', label: 'Right' }],
+        items: [
+          { id: 'a', label: 'A paragraph of body text', bucket: 'l' },
+          { id: 'b', label: 'Prices in a table column', bucket: 'r' },
+          { id: 'c', label: 'A short empty-state message', bucket: 'c' },
+          { id: 'd', label: 'Form labels', bucket: 'l' },
+          { id: 'e', label: 'Amounts on a bank statement', bucket: 'r' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Why does a long centred paragraph read badly?',
+        explanation: 'Each line starts in a different place, so the eye has to hunt for the start of every line.',
+        options: [
+          { id: 'a', label: 'Centred text is always too small' },
+          { id: 'b', label: 'Every line starts at a different place, so the eye hunts' },
+          { id: 'c', label: 'It uses more ink' },
+          { id: 'd', label: 'Screen readers skip it' },
+        ], correct: 'b' },
+    ],
+  },
+];

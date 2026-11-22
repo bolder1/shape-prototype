@@ -7,7 +7,8 @@ import { z } from 'zod';
 /** Animated scenes (one per lesson). Each is a pure function of time, so it can be scrubbed like a video. */
 export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thinking', 'product-team', 'gestalt', 'hierarchy', 'ux-laws', 'cognitive-load',
   'explore-check', 'qual-quant', 'research-question', 'bias',
-  'mental-models', 'card-sort', 'nav-patterns', 'sitemap']);
+  'mental-models', 'card-sort', 'nav-patterns', 'sitemap',
+  'spacing-scale', 'responsive-grid', 'whitespace', 'alignment']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -22,10 +23,15 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `crowd-sort`: two to four lanes; every card has `agree` (share of participants who chose its lane).
  *  - `pattern-fit`: lane ids are drawn as wireframes: `tab`, `side`, `hub`, `step`.
  *  - `tree-test`: two to four lanes (top-level sections); every card is a task whose `note` is the page's path.
+ *  - `spacing-fix`: lanes `t`, `m`, `l` (tight, medium, loose); every card has a `visual` the game draws (a pair of elements).
+ *  - `column-span`: lane ids are column counts that divide 12 (e.g. `3`, `4`, `6`, `12`).
+ *  - `line-cut`: two lanes; cards in the FIRST lane are the ones to cut; each card's `note` is shown after.
+ *  - `align-snap`: lanes `left`, `center`, `right`.
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
   'flashlight', 'scale-sort', 'question-forge', 'red-pen',
-  'jargon-swap', 'crowd-sort', 'pattern-fit', 'tree-test']);
+  'jargon-swap', 'crowd-sort', 'pattern-fit', 'tree-test',
+  'spacing-fix', 'column-span', 'line-cut', 'align-snap']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

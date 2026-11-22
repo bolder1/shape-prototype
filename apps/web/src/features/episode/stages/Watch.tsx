@@ -27,6 +27,10 @@ import { MentalModelsScene } from '../scenes/MentalModels';
 import { CardSortScene } from '../scenes/CardSort';
 import { NavPatternsScene } from '../scenes/NavPatterns';
 import { SitemapScene } from '../scenes/Sitemap';
+import { SpacingScaleScene } from '../scenes/SpacingScale';
+import { ResponsiveGridScene } from '../scenes/ResponsiveGrid';
+import { WhitespaceScene } from '../scenes/Whitespace';
+import { AlignmentScene } from '../scenes/Alignment';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -47,6 +51,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'card-sort': CardSortScene,
   'nav-patterns': NavPatternsScene,
   sitemap: SitemapScene,
+  'spacing-scale': SpacingScaleScene,
+  'responsive-grid': ResponsiveGridScene,
+  whitespace: WhitespaceScene,
+  alignment: AlignmentScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

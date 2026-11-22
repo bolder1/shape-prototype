@@ -30,14 +30,18 @@ describe('episodes', () => {
       for (const c of ep.game.cards) expect(lanes).toContain(c.lane);
       // Every lane gets at least one card, so the game can fill every part of the diamond.
       for (const l of lanes) expect(ep.game.cards.some(c => c.lane === l)).toBe(true);
-      if (['swipe-sort', 'myth-pop', 'squint-test', 'chunk-lab', 'flashlight', 'scale-sort', 'question-forge', 'red-pen', 'jargon-swap'].includes(ep.game.id)) expect(lanes).toHaveLength(2);   // two-way games
+      if (['swipe-sort', 'myth-pop', 'squint-test', 'chunk-lab', 'flashlight', 'scale-sort', 'question-forge', 'red-pen', 'jargon-swap', 'line-cut'].includes(ep.game.id)) expect(lanes).toHaveLength(2);   // two-way games
       if (ep.game.id === 'question-forge') expect(ep.game.rounds?.length).toBeGreaterThan(0);   // the forge needs tiles
       if (ep.game.id === 'red-pen') for (const c of ep.game.cards) expect(c.note).toBeTruthy();   // every line gets its explanation
       if (ep.game.id === 'jargon-swap') for (const c of ep.game.cards) if (c.lane === lanes[0]) expect(c.note).toBeTruthy();   // every system label gets its rewrite
       if (ep.game.id === 'crowd-sort') for (const c of ep.game.cards) expect(c.agree).toBeGreaterThan(50);   // the answer is the majority's lane
       if (ep.game.id === 'pattern-fit') for (const l of lanes) expect(['tab', 'side', 'hub', 'step']).toContain(l);   // lanes the game can draw
       if (ep.game.id === 'tree-test') for (const c of ep.game.cards) expect(c.note).toBeTruthy();   // every task shows its path
-      if (['gestalt-hunt', 'squint-test'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
+      if (ep.game.id === 'line-cut') for (const c of ep.game.cards) expect(c.note).toBeTruthy();   // every line gets its reason
+      if (ep.game.id === 'spacing-fix') expect(lanes).toEqual(['t', 'm', 'l']);   // the sizes the game animates to
+      if (ep.game.id === 'column-span') for (const l of lanes) expect(12 % Number(l)).toBe(0);   // spans that tile a 12-column row
+      if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
+      if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });
     it(`${id}: beats and the story gap fit inside the scene`, () => {
       const at = ep.scene.beats.map(b => b.at);

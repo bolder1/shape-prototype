@@ -125,9 +125,43 @@ const ia1: BossBriefInput = {
   },
 };
 
+const ui1: BossBriefInput = {
+  chapterId: 'ui.1',
+  title: 'Fix three broken cards',
+  minutes: 30,
+  scenario: [
+    'A grocery app’s developer built three cards by eye. They work, but they feel messy. You may only use this spacing scale: 4 · 8 · 16 · 24 · 32 · 48.',
+    'Product card: 13px padding. Image → name 5px, name → price 22px, price → “Add” button 9px. The name is centred, the price is left-aligned and the button is right-aligned.',
+    'Order summary: rows “Items ₹420”, “Delivery ₹30”, “Total ₹450”. Labels are left-aligned, amounts sit right after each label (not lined up). Every row has a divider, and there is 6px between rows and 6px above Total.',
+    'Profile card: avatar → name 18px, name → city 17px, city → “Edit profile” button 3px. The avatar is centred, the text is left-aligned.',
+  ],
+  fields: [
+    { id: 'fixes', label: 'Your fix for each card', kind: 'list', items: 3, minWords: 15, hint: 'Give every gap a value from the scale and say how you’d align things. One item per card.', placeholder: 'Product card: padding 16; image → name 8; …' },
+    { id: 'rule', label: 'The rule you followed', kind: 'long', minWords: 12, hint: 'How did you decide which gaps are small and which are big?' },
+    { id: 'lines', label: 'Lines you removed or kept', kind: 'text', minWords: 6, hint: 'Which dividers did you cut, and did anything need to stay?' },
+  ],
+  rubric: [
+    { id: 'on-scale', label: 'Every value is on the scale', strong: 'Every gap and padding uses 4, 8, 16, 24, 32 or 48. No leftover 13s or 22s.', weight: 2, required: true },
+    { id: 'grouping', label: 'Spacing shows grouping', strong: 'Related things get small gaps (name → price, city under name) and separate parts get bigger ones (above Total, before the button). Inside never exceeds between.', weight: 2, required: true },
+    { id: 'alignment', label: 'Sensible alignment', strong: 'Each card uses one alignment edge; amounts are right-aligned so they line up; centred items are short and deliberate.', weight: 2 },
+    { id: 'lines', label: 'Space over lines', strong: 'Removes the per-row dividers in the summary and uses a bigger gap (or a single divider) above Total instead.', weight: 1 },
+    { id: 'rule', label: 'A clear rule', strong: 'States a reusable rule, e.g. “4–8 inside a group, 16–24 inside a card, 32+ between sections”.', weight: 1 },
+  ],
+  tips: ['Snap each value to its nearest step first, then check that small gaps sit inside groups and big ones between.'],
+  example: {
+    fixes: [
+      'Product card: padding 16; image → name 8; name → price 4 (they belong together); price → button 16. Left-align the name and price with the button full width, so everything shares one edge.',
+      'Order summary: drop the row dividers; 8 between rows, 24 above Total with one divider there; right-align all amounts in one column with tabular figures so ₹420, ₹30 and ₹450 line up.',
+      'Profile card: padding 24; avatar → name 16; name → city 4; city → button 24. Left-align the avatar too, so the card has one edge instead of two.',
+    ],
+    rule: 'Tight (4–8) between things that describe the same item, medium (16–24) inside a card and before actions, loose (32+) between sections. A gap inside a group is never bigger than a gap between groups.',
+    lines: 'Removed all three summary dividers; kept a single line above Total because it marks the sum.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

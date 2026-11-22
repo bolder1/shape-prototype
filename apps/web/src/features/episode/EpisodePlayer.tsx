@@ -29,6 +29,10 @@ import { JargonSwap } from './games/JargonSwap';
 import { CrowdSort } from './games/CrowdSort';
 import { PatternFit } from './games/PatternFit';
 import { TreeTest } from './games/TreeTest';
+import { SpacingFix } from './games/SpacingFix';
+import { ColumnSpan } from './games/ColumnSpan';
+import { LineCut } from './games/LineCut';
+import { AlignSnap } from './games/AlignSnap';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -67,6 +71,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'crowd-sort': CrowdSort,
   'pattern-fit': PatternFit,
   'tree-test': TreeTest,
+  'spacing-fix': SpacingFix,
+  'column-span': ColumnSpan,
+  'line-cut': LineCut,
+  'align-snap': AlignSnap,
 };
 
 interface Props {
