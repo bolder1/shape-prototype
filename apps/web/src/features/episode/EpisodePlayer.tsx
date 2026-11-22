@@ -131,7 +131,7 @@ function Run({ episode, title, eyebrow, name, exitHref, next, onComplete, onRepl
               return { stage: 'ladder', id: q.id, correct: !!a?.correct, unseen: !a };
             }))} />}
             {stage === 'grade' && saved && (
-              <GradeCard result={gradeEpisode(scored)} title={title} episode={eyebrow} name={name} xp={saved.xp} streak={saved.streak} newDay={saved.newDay}
+              <GradeCard lessonId={episode.lessonId} result={gradeEpisode(scored)} title={title} episode={eyebrow} name={name} xp={saved.xp} streak={saved.streak} newDay={saved.newDay}
                 next={next} onReplay={onReplay} exitHref={exitHref} />
             )}
           </motion.div>

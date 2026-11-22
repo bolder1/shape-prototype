@@ -6,7 +6,11 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
+// Absolute base for link previews (share cards). Set NEXT_PUBLIC_SITE_URL once there's a domain; Vercel previews use their own URL.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: { default: "Shape: become a complete product designer", template: "%s · Shape" },
   description: "Map your design skills, see the designer you can become, and follow a path built for you.",
 };

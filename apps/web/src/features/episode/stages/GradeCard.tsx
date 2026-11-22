@@ -8,11 +8,14 @@ import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import type { gradeEpisode } from '../scoring';
 import { NibSays } from '../kit';
+import { ShareCard } from './ShareCard';
+
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 
 const GradeCard3D = dynamic(() => import('./GradeCard3D'), { ssr: false, loading: () => <div className="h-full w-full animate-pulse rounded-3xl bg-secondary" /> });
 
-export function GradeCard({ result, title, episode, name, xp, streak, newDay, next, onReplay, exitHref }: {
-  result: ReturnType<typeof gradeEpisode>; title: string; episode: string; name: string; xp: number; streak: number; newDay: boolean;
+export function GradeCard({ lessonId, result, title, episode, name, xp, streak, newDay, next, onReplay, exitHref }: {
+  lessonId: string; result: ReturnType<typeof gradeEpisode>; title: string; episode: string; name: string; xp: number; streak: number; newDay: boolean;
   next?: { href: string; label: string }; onReplay: () => void; exitHref: string;
 }) {
   const face = {
@@ -63,6 +66,10 @@ export function GradeCard({ result, title, episode, name, xp, streak, newDay, ne
           ))}
         </ul>
 
+        <div className="flex flex-wrap items-center justify-center gap-2 rounded-2xl bg-secondary p-3">
+          <span className="px-2 text-sm font-semibold text-secondary">Show it off</span>
+          <ShareCard data={{ l: lessonId, g: result.grade, p: result.percent, r: result.right, t: result.total, x: xp, s: streak, n: name, d: today() }} title={title} label={result.label} />
+        </div>
         <div className="flex flex-wrap justify-center gap-3">
           <Button size="xl" color="secondary" iconLeading={ArrowCounterClockwiseIcon} onPress={onReplay}>Replay episode</Button>
           {next ? <Button size="xl" href={next.href}>{next.label}</Button> : <Button size="xl" href={exitHref}>Back home</Button>}
