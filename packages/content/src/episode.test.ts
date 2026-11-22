@@ -173,6 +173,18 @@ describe('episodes', () => {
       if (ep.game.id === 'case-order') expect(lanes).toEqual(['context', 'process', 'solution', 'outcome']);   // case study sections, in order
       if (ep.game.id === 'portfolio-crit') { expect(lanes).toEqual(['weak', 'strong']); for (const c of ep.game.cards) expect(c.note).toBeTruthy(); }
       if (ep.game.id === 'whiteboard-step') expect(lanes).toEqual(['clarify', 'users', 'ideas', 'measure']);
+      if (ep.game.id === 'edge-branch') { expect(lanes).toEqual(['email', 'code', 'password', 'done']); for (const c of ep.game.cards) expect(c.note).toBeTruthy(); }   // flow steps, in order; every branch has a recovery
+      if (ep.game.id === 'step-trim') { expect(lanes).toEqual(['cut', 'merge', 'defer', 'keep']); for (const c of ep.game.cards) { expect(c.note).toBeTruthy(); expect((c.visual ?? '').length).toBeGreaterThan(0); expect((c.visual ?? '').length).toBeLessThanOrEqual(10); } expect(ep.game.cards.filter(c => c.lane === 'merge').length).toBeGreaterThanOrEqual(2); }   // a merge needs a partner; strip labels fit
+      if (ep.game.id === 'state-pick') {   // the phone draws every state; empty and error need a title, a line and a button, success a title and a line
+        expect(lanes).toEqual(['empty', 'loading', 'error', 'success']);
+        for (const c of ep.game.cards) {
+          expect(c.note).toBeTruthy();
+          const parts = (c.visual ?? '').split('|');
+          if (c.lane === 'empty' || c.lane === 'error') expect(parts).toHaveLength(3);
+          if (c.lane === 'success') expect(parts).toHaveLength(2);
+          parts.forEach((x, k) => expect(x.length).toBeLessThanOrEqual([26, 32, 24][k]));   // title (16px bold), line (12px), button: each fits the 240-wide phone
+        }
+      }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

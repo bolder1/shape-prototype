@@ -78,6 +78,9 @@ import { FeFlow } from './games/FeFlow';
 import { CaseOrder } from './games/CaseOrder';
 import { PortfolioCrit } from './games/PortfolioCrit';
 import { WhiteboardStep } from './games/WhiteboardStep';
+import { EdgeBranch } from './games/EdgeBranch';
+import { StepTrim } from './games/StepTrim';
+import { StatePick } from './games/StatePick';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -165,6 +168,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'case-order': CaseOrder,
   'portfolio-crit': PortfolioCrit,
   'whiteboard-step': WhiteboardStep,
+  'edge-branch': EdgeBranch,
+  'step-trim': StepTrim,
+  'state-pick': StatePick,
 };
 
 interface Props {

@@ -21,7 +21,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'brand-layers', 'positioning', 'moodboard',
   'business-models', 'unit-economics', 'buying-journey',
   'dom-tree', 'box-model', 'frontend-build',
-  'case-study', 'portfolio-crit', 'whiteboard']);
+  'case-study', 'portfolio-crit', 'whiteboard',
+  'happy-path', 'fewer-steps', 'ui-states']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -85,6 +86,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `case-order`: lanes `context`, `process`, `solution`, `outcome` (sections of a case study page; drag or tap).
  *  - `portfolio-crit`: lanes `weak`, `strong`; every card needs a `note` (how a reviewer would see it).
  *  - `whiteboard-step`: lanes `clarify`, `users`, `ideas`, `measure` (whiteboard columns, in order).
+ *  - `edge-branch`: lanes `email`, `code`, `password`, `done` (steps of a password reset, in order); every card needs a `note` (its recovery).
+ *  - `step-trim`: lanes `cut`, `merge`, `defer`, `keep`; every card needs a short `visual` (its screen's name in the flow strip) and a `note`.
+ *  - `state-pick`: lanes `empty`, `loading`, `error`, `success` (the phone draws each); every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -103,7 +107,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'brand-layer', 'voice-fit', 'mood-build',
   'model-match', 'unit-calc', 'buyer-role',
   'tag-match', 'flex-tune', 'fe-flow',
-  'case-order', 'portfolio-crit', 'whiteboard-step']);
+  'case-order', 'portfolio-crit', 'whiteboard-step',
+  'edge-branch', 'step-trim', 'state-pick']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

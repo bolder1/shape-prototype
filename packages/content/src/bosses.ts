@@ -609,9 +609,47 @@ const ld2: BossBriefInput = {
   },
 };
 
+const ia2: BossBriefInput = {
+  chapterId: 'ia.2',
+  title: 'Map the reset-password flow',
+  minutes: 45,
+  scenario: [
+    'Dabba’s support inbox gets dozens of “I can’t get back into my account” messages a week. The current reset flow was designed for the happy path only: anything unexpected ends in “Something went wrong”.',
+    'Map the complete reset-password flow: the happy path, the edge cases at each step with their way back, and the states each screen needs. Keep it as short as it can be without losing clarity.',
+  ],
+  fields: [
+    { id: 'happy', label: 'The happy path, step by step', kind: 'list', items: 4, minWords: 4, hint: 'One screen or action per item, from “Forgot password?” to signed in.' },
+    { id: 'edges', label: 'Edge cases and their way back', kind: 'list', items: 5, minWords: 10, hint: 'For each: the step where it happens, what goes wrong, and how the person gets back on the path.' },
+    { id: 'states', label: 'States for the code screen', kind: 'long', minWords: 30, hint: 'What the code screen shows while waiting, on success, on a wrong or expired code, and if nothing arrives.' },
+    { id: 'error', label: 'One error message, written out', kind: 'text', minWords: 10, hint: 'The exact words for one failure: what happened and what to do next.' },
+    { id: 'trim', label: 'A step you cut, merged or deferred', kind: 'text', minWords: 15, hint: 'Which step, what you did with it, and why clarity didn’t suffer.' },
+  ],
+  rubric: [
+    { id: 'coverage', label: 'Edge cases covered', strong: 'Covers wrong input, slow or missing messages, expiry and interruption across different steps, not just one screen.', weight: 2, required: true },
+    { id: 'recovery', label: 'No dead ends', strong: 'Every edge case returns the person to the path without losing what they typed or starting over.', weight: 2, required: true },
+    { id: 'states', label: 'States designed', strong: 'The code screen has distinct waiting, success, error and nothing-arrived states, each saying what to do next.', weight: 2 },
+    { id: 'privacy', label: 'Safe by design', strong: 'Never reveals whether an email has an account, and asks about signing out other devices.', weight: 1 },
+    { id: 'lean', label: 'Lean but clear', strong: 'Removes or combines a step with a clear reason, and keeps steps that prevent mistakes.', weight: 1 },
+  ],
+  tips: ['Ask of every step: what if it’s wrong, slow, missing or interrupted?', 'Draw an arrow back to the path for every branch. If you can’t, it’s a dead end.'],
+  example: {
+    happy: ['Tap “Forgot password?” on the sign-in screen', 'Check the email filled in from sign-in and tap Send code', 'Type the six-digit code that arrives', 'Choose a new password and land back where you were, signed in'],
+    edges: [
+      'Enter email: a typo like gmial.com. Suggest “Did you mean gmail.com?” before sending, then continue.',
+      'Enter email: no account exists. Show the same “If an account exists, we’ve sent a code” message, with a link to sign up.',
+      'Enter code: nothing arrives. After 30 seconds show “Resend code” and “Send by SMS instead”, staying on the same screen.',
+      'Enter code: the code expired. Say so and offer “Send a new code”; the new code replaces the old one in place.',
+      'New password: the connection drops on Save. Keep the typed password, show “You’re offline”, and retry when the connection returns.',
+    ],
+    states: 'Waiting: the six boxes are ready with a countdown “Resend in 0:30”. Success: a tick, then straight to the new-password screen. Wrong code: the boxes shake, stay filled, and the text says “That code doesn’t match. Check the latest message.” Expired: “This code has expired” with a Send a new code button. Nothing arrived: after 30 seconds, resend and SMS options appear.',
+    error: '“That code has expired. We’ve sent a new one to your phone ending 4417.”',
+    trim: 'I merged the separate “Enter your email” screen into Send code: the address from sign-in is already filled in, so most people just tap Send. They can still edit it, so nobody sends a code to the wrong place.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
