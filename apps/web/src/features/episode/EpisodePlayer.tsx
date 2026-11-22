@@ -72,6 +72,9 @@ import { MoodBuild } from './games/MoodBuild';
 import { ModelMatch } from './games/ModelMatch';
 import { UnitCalc } from './games/UnitCalc';
 import { BuyerRole } from './games/BuyerRole';
+import { TagMatch } from './games/TagMatch';
+import { FlexTune } from './games/FlexTune';
+import { FeFlow } from './games/FeFlow';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -153,6 +156,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'model-match': ModelMatch,
   'unit-calc': UnitCalc,
   'buyer-role': BuyerRole,
+  'tag-match': TagMatch,
+  'flex-tune': FlexTune,
+  'fe-flow': FeFlow,
 };
 
 interface Props {

@@ -19,7 +19,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'spectrum', 'pour', 'colour-blind', 'targets',
   'funnel', 'aha', 'fogg', 'dark-patterns',
   'brand-layers', 'positioning', 'moodboard',
-  'business-models', 'unit-economics', 'buying-journey']);
+  'business-models', 'unit-economics', 'buying-journey',
+  'dom-tree', 'box-model', 'frontend-build']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -77,6 +78,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `model-match`: lanes `sub`, `mkt`, `ads`, `free` (each drawn as a money-flow diagram).
  *  - `unit-calc`: lanes `losing`, `risky`, `healthy`; every card's `visual` is "price|months|margin%|CAC" and its lane follows `unitHealth`.
  *  - `buyer-role`: lanes `user`, `buyer`, `it`, `proc` (the B2B buying group).
+ *  - `tag-match`: lanes `header`, `nav`, `main`, `footer` (regions of a page wireframe; drag or tap).
+ *  - `flex-tune`: lanes `direction`, `justify`, `align`, `gap`; every card's `visual` is the CSS declaration that solves it, for its lane's property.
+ *  - `fe-flow`: lanes `design`, `component`, `data`, `ship` (stations of a pipeline).
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -93,7 +97,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'persona-spectrum', 'pour-sort', 'cvd-fix', 'target-spot',
   'funnel-leak', 'aha-path', 'fogg-fix', 'dark-spot',
   'brand-layer', 'voice-fit', 'mood-build',
-  'model-match', 'unit-calc', 'buyer-role']);
+  'model-match', 'unit-calc', 'buyer-role',
+  'tag-match', 'flex-tune', 'fe-flow']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

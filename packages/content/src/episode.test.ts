@@ -163,6 +163,13 @@ describe('episodes', () => {
         }
       }
       if (ep.game.id === 'buyer-role') expect(lanes).toEqual(['user', 'buyer', 'it', 'proc']);
+      if (ep.game.id === 'tag-match') expect(lanes).toEqual(['header', 'nav', 'main', 'footer']);   // page regions
+      if (ep.game.id === 'flex-tune') {   // the answer's CSS uses the property its lane names
+        expect(lanes).toEqual(['direction', 'justify', 'align', 'gap']);
+        const prop: Record<string, string> = { direction: 'flex-direction', justify: 'justify-content', align: 'align-items', gap: 'gap' };
+        for (const c of ep.game.cards) expect((c.visual ?? '').startsWith(`${prop[c.lane]}: `)).toBe(true);
+      }
+      if (ep.game.id === 'fe-flow') expect(lanes).toEqual(['design', 'component', 'data', 'ship']);
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

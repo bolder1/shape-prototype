@@ -70,6 +70,9 @@ import { MoodboardScene } from '../scenes/Moodboard';
 import { BusinessModelsScene } from '../scenes/BusinessModels';
 import { UnitEconomicsScene } from '../scenes/UnitEconomics';
 import { BuyingJourneyScene } from '../scenes/BuyingJourney';
+import { DomTreeScene } from '../scenes/DomTree';
+import { BoxModelScene } from '../scenes/BoxModel';
+import { FrontendBuildScene } from '../scenes/FrontendBuild';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -133,6 +136,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'business-models': BusinessModelsScene,
   'unit-economics': UnitEconomicsScene,
   'buying-journey': BuyingJourneyScene,
+  'dom-tree': DomTreeScene,
+  'box-model': BoxModelScene,
+  'frontend-build': FrontendBuildScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

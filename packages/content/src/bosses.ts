@@ -541,9 +541,41 @@ const bz1: BossBriefInput = {
   },
 };
 
+const dc1: BossBriefInput = {
+  chapterId: 'dc.1',
+  title: 'Rebuild a screen in HTML and CSS',
+  minutes: 90,
+  scenario: [
+    'Pick one screen you designed in Studio (or any simple screen: a sign-up form, a product card list, a settings page) and rebuild it in plain HTML and CSS. Use any free online editor, such as CodePen.',
+    'Use semantic elements, flexbox or grid for layout, and CSS variables for your colours and spacing. It doesn’t need to be pixel-perfect; it needs to be structured the way a developer would build it. Share the link.',
+  ],
+  fields: [
+    { id: 'screen', label: 'The screen and the link', kind: 'text', minWords: 10, hint: 'What the screen is, and a link to your code.' },
+    { id: 'structure', label: 'Your HTML structure', kind: 'long', minWords: 25, hint: 'The landmarks and key elements you used, and why (e.g. a real <button>, labels on inputs, one <h1>).' },
+    { id: 'layout', label: 'Your layout choices', kind: 'long', minWords: 25, hint: 'Where you used flexbox or grid, with the gap, padding and alignment, and how they map to your Figma auto layout.' },
+    { id: 'tokens', label: 'Tokens as CSS variables', kind: 'text', minWords: 12, hint: 'The variables you defined (colours, spacing, radius) and where they’re used.' },
+    { id: 'learned', label: 'What surprised you', kind: 'text', minWords: 15, hint: 'One thing that was harder than expected, and what you’d design differently now.' },
+  ],
+  rubric: [
+    { id: 'semantics', label: 'Semantic HTML', strong: 'Uses landmarks, a single h1 with ordered headings, real buttons and links, and labelled form fields.', weight: 2, required: true },
+    { id: 'layout', label: 'Modern layout', strong: 'Layout uses flexbox and/or grid with gap and padding (no absolute positioning hacks), mirroring auto layout.', weight: 2, required: true },
+    { id: 'tokens', label: 'Tokens in code', strong: 'Colours, spacing and radius come from CSS variables named by role, reused across the screen.', weight: 2 },
+    { id: 'states', label: 'States considered', strong: 'Includes at least hover and focus styles, and mentions empty, loading or error states where they apply.', weight: 1 },
+    { id: 'reflection', label: 'Design insight', strong: 'Names a concrete design habit that would make handoff easier next time.', weight: 1 },
+  ],
+  tips: ['Write the HTML first with no CSS at all. If it reads sensibly unstyled, the structure is right.', 'Recreate your auto layout frames one by one as flex containers: direction, gap, padding, alignment.'],
+  example: {
+    screen: 'The sign-up screen for Dabba, my tiffin subscription idea. Code: codepen.io/… (Dabba sign-up).',
+    structure: 'A <header> with the logo, a <main> containing one <h1> “Get lunch from tomorrow”, and a <form> with three <label>/<input> pairs (name, phone, hostel), a plan choice as radio buttons inside a <fieldset> with a <legend>, and a real <button type="submit">. A <footer> holds the terms link.',
+    layout: 'The form is a flex column with gap: 16px and padding: 24px, matching my auto layout frame. The two plan cards sit in a grid with grid-template-columns: 1fr 1fr and gap: 12px, falling to one column under 400px. The header is a flex row with justify-content: space-between and align-items: center.',
+    tokens: ':root defines --color-primary, --color-surface, --color-text, --space-2 to --space-6 and --radius-md. Buttons, cards and inputs all use them, so a theme change is one edit.',
+    learned: 'Radio buttons styled as cards were harder than expected: I had to keep the real input for keyboard use. Next time I’ll design selected and focused states for the plan cards up front.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
