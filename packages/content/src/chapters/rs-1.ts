@@ -1,0 +1,116 @@
+// Chapter rs.1 · Research basics. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const rs1: LessonContent[] = [
+  {
+    id: 'rs.1-1', title: 'Generative vs. evaluative', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Explore or check',
+        body: ['Generative research explores: what do people need, do and struggle with? It happens before you know what to build.',
+          'Evaluative research checks: does this design work? It happens once you have something to test.'] },
+      { type: 'sort', id: 's1', prompt: 'Generative or evaluative?',
+        explanation: 'If you’re learning about people and problems, it’s generative. If you’re testing a design, it’s evaluative.',
+        buckets: [{ id: 'g', label: 'Generative' }, { id: 'e', label: 'Evaluative' }],
+        items: [
+          { id: 'a', label: 'Shadowing a shop owner for a day', bucket: 'g' },
+          { id: 'b', label: 'Usability test of a new checkout', bucket: 'e' },
+          { id: 'c', label: 'Interviews about how families plan trips', bucket: 'g' },
+          { id: 'd', label: 'A/B test of two headlines', bucket: 'e' },
+          { id: 'e', label: 'Diary study of a week of commuting', bucket: 'g' },
+          { id: 'f', label: 'Five-second test of a landing page', bucket: 'e' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'You have no product yet, only a hunch that freelancers struggle with taxes. What research first?',
+        explanation: 'With no design to test, you need generative research to learn whether the problem is real and what it looks like.',
+        options: [
+          { id: 'a', label: 'Usability test a prototype' },
+          { id: 'b', label: 'Generative interviews with freelancers' },
+          { id: 'c', label: 'An A/B test' },
+          { id: 'd', label: 'Analytics review' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'rs.1-2', title: 'Qual vs. quant: when each lies', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Why and how many',
+        body: ['Qualitative research (interviews, observation) tells you why. Quantitative research (analytics, surveys) tells you how many.',
+          'Each lies on its own: five interviews can’t prove a trend, and a chart can’t explain a behaviour.'] },
+      { type: 'pick', id: 'p1', prompt: 'Analytics show 60% of people drop off on the payment page. What does this tell you?',
+        explanation: 'Quant shows where and how much, not why. You now know where to look; qualitative research tells you what is going wrong.',
+        options: [
+          { id: 'a', label: 'Exactly why they leave' },
+          { id: 'b', label: 'Where the problem is, but not why' },
+          { id: 'c', label: 'That the price is too high' },
+          { id: 'd', label: 'Nothing useful' },
+        ], correct: 'b' },
+      { type: 'pick', id: 'p2', prompt: 'Three of five interviewees love a feature. Your stakeholder says, “60% of users want it.” What’s wrong?',
+        explanation: 'Five interviews reveal reasons and patterns, not percentages. Turning a tiny qualitative sample into a statistic is a classic way research lies.',
+        options: [
+          { id: 'a', label: 'Nothing, the maths is right' },
+          { id: 'b', label: 'Five people can’t represent all users as a percentage' },
+          { id: 'c', label: 'It should be 3 out of 5, not 60%' },
+          { id: 'd', label: 'Interviews are never useful' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Which method fits each question best?',
+        explanation: 'How many / how often → quantitative. Why / how / what is it like → qualitative.',
+        buckets: [{ id: 'ql', label: 'Qualitative' }, { id: 'qn', label: 'Quantitative' }],
+        items: [
+          { id: 'a', label: 'Why do people abandon their cart?', bucket: 'ql' },
+          { id: 'b', label: 'How many people use the search?', bucket: 'qn' },
+          { id: 'c', label: 'What does planning a wedding feel like?', bucket: 'ql' },
+          { id: 'd', label: 'Did the new layout raise sign-ups?', bucket: 'qn' },
+        ] },
+    ],
+  },
+  {
+    id: 'rs.1-3', title: 'Writing a research question', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'A good question is something you can learn',
+        body: ['Research questions are what you want to learn, not what you will ask people.',
+          'Strong ones are specific, open (not yes/no) and free of your preferred answer.'] },
+      { type: 'pick', id: 'p1', prompt: 'Which is the strongest research question?',
+        explanation: 'It is specific (who, what) and open, and it doesn’t assume the answer. The others are yes/no, vague, or already contain the solution.',
+        options: [
+          { id: 'a', label: 'Do people like our app?' },
+          { id: 'b', label: 'Should we add a dark mode?' },
+          { id: 'c', label: 'How do first-time investors decide which fund to pick, and what makes them hesitate?' },
+          { id: 'd', label: 'Is the design good?' },
+        ], correct: 'c' },
+      { type: 'pick', id: 'p2', prompt: 'Rewrite “Would users want a reminder feature?” Which version is best?',
+        explanation: 'It focuses on real behaviour and existing workarounds instead of asking people to predict wanting a feature.',
+        options: [
+          { id: 'a', label: 'Would users love a reminder feature?' },
+          { id: 'b', label: 'How do users currently remember to pay bills, and where does that break down?' },
+          { id: 'c', label: 'How many users want reminders?' },
+          { id: 'd', label: 'What colour should reminders be?' },
+        ], correct: 'b' },
+      { type: 'order', id: 'o1', prompt: 'Turn a stakeholder hunch into research. Put the steps in order.',
+        explanation: 'Name the assumption, turn it into an open question, choose a method that can answer it, then decide what result would change your mind.',
+        items: [
+          { id: 'a', label: 'Write down the assumption: “People forget to pay bills”' },
+          { id: 'b', label: 'Turn it into an open question about behaviour' },
+          { id: 'c', label: 'Pick a method that can answer it' },
+          { id: 'd', label: 'Agree what result would change the plan' },
+        ] },
+    ],
+  },
+  {
+    id: 'rs.1-4', title: 'Bias spotting in questions', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'How questions lead people',
+        body: ['Leading questions hint at the answer you want. Hypothetical questions ask people to predict the future, which they do badly.',
+          'Priming tells people what others think before they answer.'] },
+      { type: 'spot', id: 'sp1', mock: 'interview-script', prompt: 'Tap the three biased questions in this interview script.',
+        explanation: 'Question 2 leads (“don’t you find…”), question 4 is hypothetical (“would you use…”), and question 6 primes with what “most people” think.',
+        targets: ['q2', 'q4', 'q6'] },
+      { type: 'pick', id: 'p1', prompt: 'Which is the least biased way to ask about price?',
+        explanation: 'It asks about real past behaviour without suggesting an answer.',
+        options: [
+          { id: 'a', label: 'Isn’t our app a bargain at ₹199?' },
+          { id: 'b', label: 'Would you pay ₹199 for this?' },
+          { id: 'c', label: 'Tell me about the last app you paid for. What made it worth it?' },
+          { id: 'd', label: 'Most people think ₹199 is fair, do you agree?' },
+        ], correct: 'c' },
+    ],
+  },
+];

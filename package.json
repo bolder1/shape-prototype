@@ -1,0 +1,18 @@
+{
+  "name": "shape",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @shape/web",
+    "build": "npm run build -w @shape/web",
+    "test": "npm test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "seed:sql": "npm run seed:sql -w @shape/engine"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

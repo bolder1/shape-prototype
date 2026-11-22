@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shape · Find Your T</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="logo"><span class="logo-mark" id="logoTee"></span>Shape</div>
+    <div class="progress" aria-hidden="true"><i id="progressFill"></i></div>
+    <button class="toggle-t" id="toggleT" aria-pressed="true"><span>🧊</span><b>Hide T</b></button>
+  </header>
+
+  <main class="chat" id="chat">
+    <div class="thread" id="thread" aria-live="polite"></div>
+    <form class="composer" id="composer" autocomplete="off">
+      <input id="input" placeholder="Type your answer, or tap a card above" aria-label="Message Tee">
+      <button class="send" aria-label="Send">➤</button>
+    </form>
+  </main>
+
+  <aside class="tpanel" id="tpanel">
+    <div class="tpanel-head"><b>Your T</b><span id="tCaption">Builds as you answer</span></div>
+    <div class="tcanvas" id="tcanvas"></div>
+    <div class="tlegend" id="tlegend"><span><i class="now"></i>Today</span><span><i class="goal"></i>Your goal</span><span class="drag">Drag to spin</span></div>
+  </aside>
+</div>
+
+<div class="stage" id="stage" hidden></div>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script type="module" src="app.mjs"></script>
+</body>
+</html>
