@@ -10,7 +10,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'mental-models', 'card-sort', 'nav-patterns', 'sitemap',
   'spacing-scale', 'responsive-grid', 'whitespace', 'alignment',
   'clear-clever', 'button-labels', 'error-messages', 'empty-states',
-  'outcome-output', 'opportunity-tree', 'prioritization']);
+  'outcome-output', 'opportunity-tree', 'prioritization',
+  'script-shape', 'probing', 'jobs', 'context-visit']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -36,13 +37,19 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `rung-sort`: lanes `problem`, `outcome`, `output`.
  *  - `ost-grow`: two to four lanes (opportunities); cards are solutions hung under them.
  *  - `rice-duel`: lanes `a`, `b`; every card's `visual` is two ideas, "Name|reach|impact|confidence%|effort;Name|…" (see `riceIdeas`).
+ *  - `script-builder`: lanes `open`, `broad`, `deep`, `close` (the parts of an interview script, in order).
+ *  - `chat-probe`: two lanes; every card's `visual` is what the participant just said, `label` is the follow-up;
+ *    cards in the FIRST lane are weak follow-ups and each needs a `note` (a better one).
+ *  - `job-forge`: needs `rounds` (build a job story from tiles), then the cards are classified.
+ *  - `ask-watch`: lanes `ask`, `watch`.
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
   'flashlight', 'scale-sort', 'question-forge', 'red-pen',
   'jargon-swap', 'crowd-sort', 'pattern-fit', 'tree-test',
   'spacing-fix', 'column-span', 'line-cut', 'align-snap',
   'glance-test', 'button-forge', 'error-doctor', 'empty-match',
-  'rung-sort', 'ost-grow', 'rice-duel']);
+  'rung-sort', 'ost-grow', 'rice-duel',
+  'script-builder', 'chat-probe', 'job-forge', 'ask-watch']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

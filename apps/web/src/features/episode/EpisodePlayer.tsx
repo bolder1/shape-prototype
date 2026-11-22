@@ -40,6 +40,10 @@ import { EmptyMatch } from './games/EmptyMatch';
 import { RungSort } from './games/RungSort';
 import { OstGrow } from './games/OstGrow';
 import { RiceDuel } from './games/RiceDuel';
+import { ScriptBuilder } from './games/ScriptBuilder';
+import { ChatProbe } from './games/ChatProbe';
+import { JobForge } from './games/JobForge';
+import { AskWatch } from './games/AskWatch';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -89,6 +93,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'rung-sort': RungSort,
   'ost-grow': OstGrow,
   'rice-duel': RiceDuel,
+  'script-builder': ScriptBuilder,
+  'chat-probe': ChatProbe,
+  'job-forge': JobForge,
+  'ask-watch': AskWatch,
 };
 
 interface Props {

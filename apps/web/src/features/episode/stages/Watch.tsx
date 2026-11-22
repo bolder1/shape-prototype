@@ -38,6 +38,10 @@ import { EmptyStatesScene } from '../scenes/EmptyStates';
 import { OutcomeOutputScene } from '../scenes/OutcomeOutput';
 import { OpportunityTreeScene } from '../scenes/OpportunityTree';
 import { PrioritizationScene } from '../scenes/Prioritization';
+import { ScriptShapeScene } from '../scenes/ScriptShape';
+import { ProbingScene } from '../scenes/Probing';
+import { JobsScene } from '../scenes/Jobs';
+import { ContextVisitScene } from '../scenes/ContextVisit';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -69,6 +73,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'outcome-output': OutcomeOutputScene,
   'opportunity-tree': OpportunityTreeScene,
   prioritization: PrioritizationScene,
+  'script-shape': ScriptShapeScene,
+  probing: ProbingScene,
+  jobs: JobsScene,
+  'context-visit': ContextVisitScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

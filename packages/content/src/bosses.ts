@@ -226,9 +226,43 @@ const st1: BossBriefInput = {
   },
 };
 
+const rs2: BossBriefInput = {
+  chapterId: 'rs.2',
+  title: 'Interview three people',
+  minutes: 120,
+  scenario: [
+    'This one happens in the real world. Pick an everyday habit, like how people pay bills, plan meals, commute or save money, and interview three real people about it (friends and family count). 20–30 minutes each, with their consent.',
+    'Hand in your script and your notes. Notes should record what people said and did, kept separate from what you think it means. Then name what you saw across all three.',
+  ],
+  fields: [
+    { id: 'habit', label: 'The habit, and who you spoke to', kind: 'text', minWords: 10, hint: 'The habit, plus a line on each person (no full names).' },
+    { id: 'script', label: 'Your core questions', kind: 'list', items: 5, minWords: 6, hint: 'From warm-up to deep dive. Open, about real past behaviour.' },
+    { id: 'notes', label: 'Notes, one item per person', kind: 'list', items: 3, minWords: 30, hint: 'Quotes and observed behaviour first. Mark your interpretations clearly, e.g. “I think…”.' },
+    { id: 'patterns', label: 'What you saw across all three', kind: 'long', minWords: 30, hint: 'One or two patterns, one surprise, and one thing you’d ask differently next time.' },
+  ],
+  rubric: [
+    { id: 'questions', label: 'Open questions about real behaviour', strong: 'Core questions are open (“Walk me through…”, “Tell me about the last time…”), ask about the past rather than predictions, and don’t lead.', weight: 2, required: true },
+    { id: 'shape', label: 'A script with shape', strong: 'Moves from warm-up to broad questions to a specific recent story.', weight: 1 },
+    { id: 'notes', label: 'Observation separate from interpretation', strong: 'Notes record quotes and behaviour, with interpretations clearly marked as such. Includes at least one verbatim quote per person.', weight: 2, required: true },
+    { id: 'patterns', label: 'Patterns across people', strong: 'Names a pattern seen in at least two of the three, supported by notes, and a surprise or contradiction.', weight: 2 },
+    { id: 'reflection', label: 'Honest reflection', strong: 'Names a specific question or moment they’d handle differently (e.g. “I led with ‘was it hard?’”).', weight: 1 },
+  ],
+  tips: ['Ask “tell me about the last time…” more than any other question.', 'Write quotes word for word, in quotation marks. Your summary of them goes on a separate line.'],
+  example: {
+    habit: 'How people pay household bills. A, 58, retired teacher; B, 31, software tester; C, 24, college student living with her parents.',
+    script: ['Tell me a bit about your household and who handles what.', 'How do you keep track of bills that are coming up?', 'Walk me through the last bill you paid, from remembering it to it being done.', 'Tell me about a time a bill payment went wrong.', 'Is there anything about this I should have asked?'],
+    notes: [
+      'A: “My son sets them up, I just press the button he shows me.” Keeps a paper list of due dates on the fridge. Checks the bank SMS twice before believing it’s paid. I think: trust comes from the SMS, not the app.',
+      'B: “I pay everything the minute the reminder comes, or I forget.” Showed me five apps with reminders. Missed the water bill last month because it has no reminder. I think: reminders are the real product for him.',
+      'C: “Dad pays, I just tell him the amount.” Uses screenshots of bills on WhatsApp to send to her father. I think: one person pays for the family; others are messengers.',
+    ],
+    patterns: 'Pattern: in two of three homes one person pays and others pass on information (A’s son, C’s father), often over WhatsApp screenshots. Surprise: B is the most digital but missed a bill, because he relies entirely on reminders. Next time I’d stop asking “was that hard?”, which led A to agree.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

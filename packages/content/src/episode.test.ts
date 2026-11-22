@@ -16,6 +16,10 @@ describe('findExercise', () => {
     expect(() => Exercise.parse(button)).not.toThrow();
     expect(button?.type === 'pick' && button.options.find(o => o.id === button.correct)?.label).toBe('Pay ₹450');
     expect(button?.type === 'pick' && button.explanation).toContain('names the action');
+    const job = findExercise('rs.2-3', 'game.r1');
+    expect(() => Exercise.parse(job)).not.toThrow();
+    expect(job?.type === 'pick' && job.prompt).toContain('job story');
+    expect(job?.type === 'pick' && job.explanation).toContain('progress wanted');
     expect(findExercise('fd.1-2', 'quiz.nope')).toBeUndefined();
   });
 });
@@ -34,8 +38,8 @@ describe('episodes', () => {
       for (const c of ep.game.cards) expect(lanes).toContain(c.lane);
       // Every lane gets at least one card, so the game can fill every part of the diamond.
       for (const l of lanes) expect(ep.game.cards.some(c => c.lane === l)).toBe(true);
-      if (['swipe-sort', 'myth-pop', 'squint-test', 'chunk-lab', 'flashlight', 'scale-sort', 'question-forge', 'red-pen', 'jargon-swap', 'line-cut', 'glance-test', 'button-forge'].includes(ep.game.id)) expect(lanes).toHaveLength(2);   // two-way games
-      if (['question-forge', 'button-forge'].includes(ep.game.id)) expect(ep.game.rounds?.length).toBeGreaterThan(0);   // the forges need tiles
+      if (['swipe-sort', 'myth-pop', 'squint-test', 'chunk-lab', 'flashlight', 'scale-sort', 'question-forge', 'red-pen', 'jargon-swap', 'line-cut', 'glance-test', 'button-forge', 'chat-probe', 'job-forge', 'ask-watch'].includes(ep.game.id)) expect(lanes).toHaveLength(2);   // two-way games
+      if (['question-forge', 'button-forge', 'job-forge'].includes(ep.game.id)) expect(ep.game.rounds?.length).toBeGreaterThan(0);   // the forges need tiles
       if (ep.game.id === 'red-pen') for (const c of ep.game.cards) expect(c.note).toBeTruthy();   // every line gets its explanation
       if (ep.game.id === 'jargon-swap') for (const c of ep.game.cards) if (c.lane === lanes[0]) expect(c.note).toBeTruthy();   // every system label gets its rewrite
       if (ep.game.id === 'crowd-sort') for (const c of ep.game.cards) expect(c.agree).toBeGreaterThan(50);   // the answer is the majority's lane
@@ -47,6 +51,9 @@ describe('episodes', () => {
       if (ep.game.id === 'glance-test') for (const c of ep.game.cards) if (c.lane === lanes[0]) expect(c.note).toBeTruthy();   // every unclear line gets a rewrite
       if (ep.game.id === 'error-doctor') { expect(lanes).toEqual(['vague', 'nofix', 'blame', 'good']); for (const c of ep.game.cards) if (c.lane !== 'good') expect(c.note).toBeTruthy(); }   // every bad error gets a better one
       if (ep.game.id === 'empty-match') expect(lanes).toEqual(['first', 'done', 'noresults', 'error']);   // the screens the game draws
+      if (ep.game.id === 'script-builder') expect(lanes).toEqual(['open', 'broad', 'deep', 'close']);   // script parts, in order
+      if (ep.game.id === 'chat-probe') for (const c of ep.game.cards) { expect(c.visual).toBeTruthy(); if (c.lane === lanes[0]) expect(c.note).toBeTruthy(); }   // a quote to answer; weak follow-ups get a better one
+      if (ep.game.id === 'ask-watch') expect(lanes).toEqual(['ask', 'watch']);
       if (ep.game.id === 'rung-sort') expect(lanes).toEqual(['problem', 'outcome', 'output']);   // the three rungs
       if (ep.game.id === 'rice-duel') {   // two well-formed ideas, and the marked lane really wins on RICE
         expect(lanes).toEqual(['a', 'b']);
