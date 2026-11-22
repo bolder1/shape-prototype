@@ -10,6 +10,7 @@ import { cx } from '@/utils/cx';
 import { Burst, NibSays, StageTitle } from '../kit';
 import { Classify } from './Classify';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 type Round = NonNullable<Game['rounds']>[number];
@@ -21,7 +22,11 @@ function ForgeRound({ round, index, total, onDone }: { round: Round; index: numb
   const [verdict, setVerdict] = useState<boolean | null>(null);
   const built = placed.map(id => tiles.find(t => t.id === id)!.text);
 
-  const forge = () => setVerdict(built.length === round.answer.length && built.every((w, i) => w === round.answer[i]));
+  const forge = () => {
+    const ok = built.length === round.answer.length && built.every((w, i) => w === round.answer[i]);
+    play(ok ? 'correct' : 'wrong');
+    setVerdict(ok);
+  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -42,7 +47,7 @@ function ForgeRound({ round, index, total, onDone }: { round: Round; index: numb
         {tiles.map(t => placed.includes(t.id)
           ? <span key={t.id} className="rounded-xl bg-secondary px-3 py-2 text-md font-semibold text-transparent select-none" aria-hidden>{t.text}</span>
           : (
-            <motion.button key={t.id} type="button" layoutId={t.id} onClick={() => verdict === null && setPlaced(p => [...p, t.id])} whileTap={{ scale: 0.95 }}
+            <motion.button key={t.id} type="button" layoutId={t.id} onClick={() => { if (verdict === null) { play('tap'); setPlaced(p => [...p, t.id]); } }} whileTap={{ scale: 0.95 }}
               className="rounded-xl bg-primary px-3 py-2 text-md font-semibold text-primary shadow-sm ring-1 ring-secondary ring-inset hover:bg-primary_hover">{t.text}</motion.button>
           ))}
       </div>

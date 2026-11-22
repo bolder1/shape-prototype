@@ -10,6 +10,7 @@ import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 const D = '#101828', M = '#98A2B3', L = '#D0D5DD', B = '#222F4F', P = '#3B6FF5', R = '#D9467A', A = '#B97508';
@@ -46,6 +47,7 @@ export function SquintTest({ game, onDone }: { game: Game; onDone: (results: Gam
   const judge = (laneId: string) => {
     if (answer) return;
     const ok = laneId === card.lane;
+    play(ok ? 'correct' : 'wrong');
     setAnswer(laneId);
     setResults(r => ({ ...r, [card.id]: ok }));
     if (ok) setScore(s => s + (peeked ? 5 : 10));

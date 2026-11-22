@@ -8,6 +8,7 @@ import { springs } from '@shape/ui';
 import { cx } from '@/utils/cx';
 import { FAMILY, NibSays } from '../kit';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 
@@ -21,6 +22,7 @@ export function Classify({ game, title, onDone }: { game: Game; title: string; o
   const choose = (laneId: string) => {
     if (!card || feedback) return;
     const ok = laneId === card.lane;
+    play(ok ? 'correct' : 'wrong');
     const nextResults = card.id in results ? results : { ...results, [card.id]: ok };
     setResults(nextResults);
     setFeedback({ chose: laneId, ok });

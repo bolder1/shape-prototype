@@ -10,6 +10,7 @@ import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 const INK = 'var(--color-text-primary)', BLUE = 'var(--color-family-discover)', AMBER = 'var(--color-family-design)', MUTED = 'var(--color-text-quaternary)';
@@ -52,9 +53,11 @@ export function GestaltHunt({ game, onDone }: { game: Game; onDone: (results: Ga
 
   const toggle = (id: string) => {
     if (revealed) return;
+    play('tap');
     setPicked(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   };
   const lockIn = () => {
+    play(game.cards.every(c => (c.lane === lane.id) === picked.has(c.id)) ? 'correct' : 'wrong');
     setRevealed(true);
     setHistory(h => { const n = { ...h }; for (const id of picked) n[id] = [...(n[id] ?? []), lane.id]; return n; });
   };

@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { FAMILY, NibSays, StageTitle } from '../kit';
+import { play } from '@/lib/sound';
 
 export function Takeaways({ items, onDone }: { items: { title: string; body: string }[]; onDone: () => void }) {
   const [shown, setShown] = useState(1);
@@ -14,7 +15,7 @@ export function Takeaways({ items, onDone }: { items: { title: string; body: str
       <StageTitle eyebrow="Takeaways" title={`${items.length} things to keep`} />
       <div className="grid gap-4 sm:grid-cols-3" style={{ perspective: 900 }}>
         {items.map((it, i) => (
-          <motion.button key={it.title} type="button" onClick={() => setShown(s => Math.max(s, i + 1))} disabled={i !== shown}
+          <motion.button key={it.title} type="button" onClick={() => { play('flip'); setShown(s => Math.max(s, i + 1)); }} disabled={i !== shown}
             initial={false} animate={{ rotateY: i < shown ? 0 : 180 }} transition={{ ...springs.gentle, delay: i < shown ? 0.05 : 0 }}
             style={{ transformStyle: 'preserve-3d' }} aria-label={i < shown ? `${it.title}. ${it.body}` : 'Hidden takeaway'}
             className="relative h-48 text-left disabled:cursor-default">
@@ -32,7 +33,7 @@ export function Takeaways({ items, onDone }: { items: { title: string; body: str
       </div>
       <NibSays mood={all ? 'cheer' : 'idle'}>{all ? 'That’s the whole lesson. Time to prove it, fast.' : 'Tap the next card to flip it.'}</NibSays>
       <div className="flex justify-end">
-        {all ? <Button size="xl" onPress={onDone}>Start the rapid quiz</Button> : <Button size="xl" color="secondary" onPress={() => setShown(s => s + 1)}>Flip next</Button>}
+        {all ? <Button size="xl" onPress={onDone}>Start the rapid quiz</Button> : <Button size="xl" color="secondary" onPress={() => { play('flip'); setShown(s => s + 1); }}>Flip next</Button>}
       </div>
     </div>
   );

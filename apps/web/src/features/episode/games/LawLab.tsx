@@ -12,6 +12,7 @@ import { cx } from '@/utils/cx';
 import { NibSays, StageTitle } from '../kit';
 import { Classify } from './Classify';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 type Exp = 'fitts' | 'hick' | 'jakob';
@@ -50,6 +51,7 @@ function Experiment({ exp, onDone }: { exp: (typeof EXPS)[number]; onDone: () =>
   useEffect(() => { started.current = performance.now(); }, [trial]);
   const start = () => { started.current = performance.now(); setArmed(true); };
   const hit = () => {
+    play('pop');
     setTimes(t => [...t, performance.now() - started.current]);
     if (trial === 0) { setTrial(1); setArmed(exp.id !== 'fitts'); } else setTrial(2);
   };

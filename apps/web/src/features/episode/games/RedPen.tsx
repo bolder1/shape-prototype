@@ -10,6 +10,7 @@ import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 
@@ -20,7 +21,7 @@ export function RedPen({ game, onDone }: { game: Game; onDone: (results: GameRes
   const correct = (c: Game['cards'][number]) => struck.has(c.id) === (c.lane === strikeLane);
   const right = game.cards.filter(correct).length;
 
-  const toggle = (id: string) => { if (handedIn) return; setStruck(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; }); };
+  const toggle = (id: string) => { if (handedIn) return; play('tap'); setStruck(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; }); };
 
   return (
     <div className="flex flex-col gap-5">
@@ -60,7 +61,7 @@ export function RedPen({ game, onDone }: { game: Game; onDone: (results: GameRes
       {!handedIn ? (
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm text-tertiary">{struck.size} struck. Tap a line again to un-strike it.</p>
-          <Button size="lg" onPress={() => setHandedIn(true)} isDisabled={!struck.size}>Hand it in</Button>
+          <Button size="lg" onPress={() => { play('reveal'); setHandedIn(true); }} isDisabled={!struck.size}>Hand it in</Button>
         </div>
       ) : (
         <div className="flex flex-col gap-3">

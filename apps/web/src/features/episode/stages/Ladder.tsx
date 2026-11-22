@@ -10,6 +10,7 @@ import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, Choice, Nib, choiceState, type ChoiceState } from '../kit';
+import { play } from '@/lib/sound';
 
 export interface LadderResult { answered: { id: string; correct: boolean }[]; banked: number; reached: number }
 
@@ -35,15 +36,17 @@ export function Ladder({ questions, onDone }: { questions: Episode['ladder']; on
   const lockIn = () => {
     if (!picked) return;
     setPhase('suspense');
+    play('drumroll');
     setTimeout(() => {
       const correct = picked === q.correct;
       setAnswered(a => [...a, { id: q.id, correct }]);
+      play(correct ? 'reveal' : 'wrong');
       setPhase('reveal');
     }, 1600);
   };
   const next = () => {
     const last = answered.at(-1);
-    if (!last?.correct || i + 1 >= questions.length) { setPhase('over'); return; }
+    if (!last?.correct || i + 1 >= questions.length) { if (last?.correct) play('fanfare'); setPhase('over'); return; }
     setI(i + 1); setPicked(null); setPhase('ask'); setAskNib(null);
   };
   const useFifty = () => {

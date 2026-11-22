@@ -12,6 +12,7 @@ import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 interface Outcome { correct: boolean; by: 'pop' | 'top'; at: number }
@@ -46,7 +47,10 @@ export function MythPop({ game, onDone }: { game: Game; onDone: (results: GameRe
     return () => clearInterval(id);
   }, [start, order, popLane]);
 
-  const pop = (id: string, lane: string) => setOutcome(o => (o[id] ? o : { ...o, [id]: { correct: lane === popLane, by: 'pop', at: el } }));
+  const pop = (id: string, lane: string) => {
+    if (!outcome[id]) play(lane === popLane ? 'pop' : 'wrong');
+    setOutcome(o => (o[id] ? o : { ...o, [id]: { correct: lane === popLane, by: 'pop', at: el } }));
+  };
 
   const decided = order.map(c => outcome[c.id]).filter(Boolean) as Outcome[];
   const right = decided.filter(o => o.correct).length;

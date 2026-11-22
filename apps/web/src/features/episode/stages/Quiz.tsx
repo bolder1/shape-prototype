@@ -8,6 +8,7 @@ import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, Choice, StageTitle, choiceState } from '../kit';
+import { play } from '@/lib/sound';
 
 export interface QuizResult { id: string; correct: boolean; points: number }
 
@@ -17,6 +18,7 @@ export function Quiz({ quiz, onDone }: { quiz: Episode['quiz']; onDone: (results
   const [revealed, setRevealed] = useState(false);
   const [left, setLeft] = useState(quiz.seconds);
   const [results, setResults] = useState<QuizResult[]>([]);
+  const lastTick = useRef(0);
   const started = useRef(performance.now());
   const q = quiz.questions[i];
   const score = results.reduce((s, r) => s + r.points, 0);
@@ -30,6 +32,9 @@ export function Quiz({ quiz, onDone }: { quiz: Episode['quiz']; onDone: (results
     const tick = () => {
       const l = Math.max(0, quiz.seconds - (performance.now() - started.current) / 1000);
       setLeft(l);
+      // A tick for each of the last three seconds.
+      const s = Math.ceil(l);
+      if (s <= 3 && s > 0 && s !== lastTick.current) { lastTick.current = s; play('tick'); }
       if (l <= 0) { answer(null); return; }
       raf = requestAnimationFrame(tick);
     };
@@ -42,6 +47,7 @@ export function Quiz({ quiz, onDone }: { quiz: Episode['quiz']; onDone: (results
     if (revealed) return;
     const correct = id === q.correct;
     const remaining = Math.max(0, quiz.seconds - (performance.now() - started.current) / 1000);
+    play(correct ? 'correct' : 'wrong');
     setPicked(id); setRevealed(true);
     setResults(r => [...r, { id: q.id, correct, points: correct ? 100 + Math.round(remaining * 10) : 0 }]);
   }

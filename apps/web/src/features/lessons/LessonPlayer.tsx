@@ -9,6 +9,7 @@ import { ProgressBarBase } from '@/components/base/progress-indicators/progress-
 import { cx } from '@/utils/cx';
 import type { StepResult } from '../progress/store';
 import { ConceptView, OrderView, PickView, SortView, SpotView, TuneView } from './exercises';
+import { play } from '@/lib/sound';
 
 export interface PlayerStep { key: string; exercise: Exercise }
 export interface CompletionInfo { xp: number; streak: number; newDay: boolean }
@@ -44,6 +45,7 @@ export function LessonPlayer({ eyebrow, steps, exitHref, next, onComplete, doneT
   const check = useCallback(() => {
     if (!step || isConcept || !ready || result) return;
     const g = grade(step.exercise, answer);
+    play(g.correct ? 'correct' : 'wrong');
     setResult(g);
     setResults(prev => {
       const p = prev[step.key];

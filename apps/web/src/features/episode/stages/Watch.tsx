@@ -23,6 +23,7 @@ import { ExploreCheckScene } from '../scenes/ExploreCheck';
 import { QualQuantScene } from '../scenes/QualQuant';
 import { ResearchQuestionScene } from '../scenes/ResearchQuestion';
 import { BiasScene } from '../scenes/Bias';
+import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
 const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>> = {
@@ -94,7 +95,7 @@ export function Watch({ episode, mode, onDone }: { episode: Episode; mode: 'watc
   };
 
   const answer = (id: string) => { if (revealed) return; setPicked(id); };
-  const lockIn = () => { setRevealed(true); };
+  const lockIn = () => { play(picked === gap.correct ? 'correct' : 'wrong'); setRevealed(true); };
   const continueStory = () => setPlaying(true);
 
   return (

@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { FireIcon, HouseIcon, LightningIcon, MapTrifoldIcon, TrophyIcon } from '@phosphor-icons/react/ssr';
 import { cx } from '@/utils/cx';
 import { doneToday, liveStreak, useProgress } from '../progress/store';
+import { SoundToggle } from '@/components/SoundToggle';
 
 const NAV = [
   { href: '/play', label: 'Home', icon: HouseIcon },
@@ -33,6 +34,7 @@ export function AppHeader({ name, wide }: { name?: string; wide?: boolean }) {
           })}
         </nav>
         <div className="ml-auto flex items-center gap-2">
+          <SoundToggle />
           <span className={cx('inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold ring-1 ring-inset', today ? 'bg-warning-primary text-warning-primary ring-[#FEDF89]' : 'bg-primary text-tertiary ring-secondary')}
             title={today ? 'Today counts toward your streak' : 'Finish a lesson to keep your streak'}>
             <FireIcon className="size-4" weight={today ? 'fill' : 'regular'} />{liveStreak(streak)}<span className="sr-only">day streak</span>

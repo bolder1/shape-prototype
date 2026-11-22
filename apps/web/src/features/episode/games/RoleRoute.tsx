@@ -12,6 +12,7 @@ import type { PhosphorIcon } from '@/lib/skills';
 import { cx } from '@/utils/cx';
 import { Burst, FAMILY, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 const SECONDS = 9;
@@ -34,6 +35,7 @@ export function RoleRoute({ game, onDone }: { game: Game; onDone: (results: Game
   const resolve = (chose: string | null) => {
     if (!card || feedback) return;
     const ok = chose === card.lane;
+    play(ok ? 'correct' : 'wrong');
     setResults(r => (card.id in r ? r : { ...r, [card.id]: ok }));
     setFeedback({ chose, owner: card.lane, ok });
     if (ok) setCounts(c => ({ ...c, [card.lane]: (c[card.lane] ?? 0) + 1 }));

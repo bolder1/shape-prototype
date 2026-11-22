@@ -10,6 +10,7 @@ import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 // Where the cards hide (percent of the board).
@@ -28,7 +29,7 @@ export function Flashlight({ game, onDone }: { game: Game; onDone: (results: Gam
     const r = board.current!.getBoundingClientRect();
     setLight({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
   };
-  const answer = (cardId: string, laneId: string) => { setAnswers(a => ({ ...a, [cardId]: laneId })); setOpen(null); };
+  const answer = (cardId: string, laneId: string) => { play(game.cards.find(c => c.id === cardId)?.lane === laneId ? 'correct' : 'wrong'); setAnswers(a => ({ ...a, [cardId]: laneId })); setOpen(null); };
 
   if (done) {
     return (

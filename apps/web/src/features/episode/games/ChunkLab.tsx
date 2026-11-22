@@ -11,6 +11,7 @@ import { cx } from '@/utils/cx';
 import { NibSays, StageTitle } from '../kit';
 import { Classify } from './Classify';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 const ROUNDS = [
@@ -57,7 +58,7 @@ function MemoryRound({ round, onDone }: { round: (typeof ROUNDS)[number]; onDone
         </>
       )}
       {phase === 'recall' && (
-        <form className="flex w-full max-w-sm flex-col gap-3" onSubmit={e => { e.preventDefault(); onDone(recall(typed, round.answer)); }}>
+        <form className="flex w-full max-w-sm flex-col gap-3" onSubmit={e => { e.preventDefault(); play('reveal'); onDone(recall(typed, round.answer)); }}>
           <label htmlFor={`recall-${round.id}`} className="text-md font-semibold text-primary">Type what you remember, in order</label>
           <input id={`recall-${round.id}`} autoFocus autoComplete="off" value={typed} onChange={e => setTyped(e.target.value.toUpperCase())}
             className="rounded-xl bg-primary px-4 py-3 text-center font-mono text-xl font-bold tracking-widest text-primary ring-2 ring-secondary outline-none ring-inset focus:ring-brand-solid" />

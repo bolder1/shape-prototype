@@ -10,6 +10,7 @@ import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, FAMILY, NibSays, StageTitle } from '../kit';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 export interface GameResult { id: string; correct: boolean }
@@ -38,6 +39,7 @@ export function DiamondSort({ game, onDone }: { game: Game; onDone: (results: Ga
   const send = (laneId: string) => {
     if (!card || flash) return;
     const ok = card.lane === laneId;
+    play(ok ? 'combo' : 'wrong', combo + 1);
     setResults(r => (card.id in r ? r : { ...r, [card.id]: ok }));
     if (ok) {
       setFlash({ lane: laneId, ok: true });

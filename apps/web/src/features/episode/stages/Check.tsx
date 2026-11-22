@@ -6,6 +6,7 @@ import type { EpisodeQuestion } from '@shape/content';
 import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { Burst, Choice, NibSays, StageTitle, choiceState } from '../kit';
+import { play } from '@/lib/sound';
 
 export function Check({ questions, onDone }: { questions: EpisodeQuestion[]; onDone: (results: { id: string; correct: boolean }[]) => void }) {
   const [i, setI] = useState(0);
@@ -16,6 +17,7 @@ export function Check({ questions, onDone }: { questions: EpisodeQuestion[]; onD
 
   const pick = (id: string) => {
     if (picked) return;
+    play(id === q.correct ? 'correct' : 'wrong');
     setPicked(id);
     setResults(r => [...r, { id: q.id, correct: id === q.correct }]);
   };

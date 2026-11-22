@@ -9,6 +9,7 @@ import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 const COLORS = ['var(--color-family-grow)', 'var(--color-family-discover)'];
@@ -26,6 +27,7 @@ export function ScaleSort({ game, onDone }: { game: Game; onDone: (results: Game
   const drop = (laneId: string) => {
     if (!card || feedback) return;
     const ok = card.lane === laneId;
+    play(ok ? 'correct' : 'wrong');
     setResults(r => (card.id in r ? r : { ...r, [card.id]: ok }));
     setFeedback({ ok, owner: card.lane });
     if (ok) setPans(p => ({ ...p, [laneId]: [...(p[laneId] ?? []), card.label] }));

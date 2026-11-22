@@ -30,6 +30,8 @@ import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
 import { Takeaways } from './stages/Takeaways';
 import { Watch } from './stages/Watch';
+import { play } from '@/lib/sound';
+import { SoundToggle } from '@/components/SoundToggle';
 
 const STAGES = [
   { key: 'watch', label: 'Watch', icon: PlayCircleIcon },
@@ -90,7 +92,7 @@ function Run({ episode, title, eyebrow, name, exitHref, next, onComplete, onRepl
   })();
   const Game = GAMES[episode.game.id];
   const add = (items: Scored[]) => setScored(s => [...s, ...items]);
-  const go = (k: StageKey) => { setStage(k); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const go = (k: StageKey) => { play('whoosh'); setStage(k); window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
   const finish = (ladderItems: Scored[]) => {
     const all = [...scored, ...ladderItems];
@@ -124,6 +126,7 @@ function Run({ episode, title, eyebrow, name, exitHref, next, onComplete, onRepl
               );
             })}
           </ol>
+          <SoundToggle />
         </div>
       </header>
 

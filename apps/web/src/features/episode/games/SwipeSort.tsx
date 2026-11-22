@@ -11,6 +11,7 @@ import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
 import { Burst, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
+import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 type Cue = 'idle' | 'left' | 'right' | 'wrong';
@@ -33,6 +34,7 @@ export function SwipeSort({ game, onDone }: { game: Game; onDone: (results: Game
   const decide = useCallback((laneId: string) => {
     if (!card || cue !== 'idle') return;
     const ok = card.lane === laneId;
+    play(ok ? 'combo' : 'wrong', streak + 1);
     setResults(r => (card.id in r ? r : { ...r, [card.id]: ok }));
     if (ok) {
       setCue(laneId === left.id ? 'left' : 'right');
@@ -44,7 +46,7 @@ export function SwipeSort({ game, onDone }: { game: Game; onDone: (results: Game
       setStreak(0); setHearts(h => Math.max(0, h - 1));
       setTimeout(() => { setDeck(d => [...d.slice(1), d[0]]); setCue('idle'); setMiss(null); setTurn(n => n + 1); }, 1700);
     }
-  }, [card, cue, left.id, mult]);
+  }, [card, cue, left.id, mult, streak]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
