@@ -99,6 +99,15 @@ describe('episodes', () => {
           for (const edge of [3, 4.5]) expect(Math.abs(r - edge)).toBeGreaterThan(0.2);
         }
       }
+      if (ep.game.id === 'atom-stack') { expect(lanes).toEqual(['atom', 'molecule', 'organism', 'template']); for (const c of ep.game.cards) expect(['icon', 'button', 'label', 'search', 'field', 'avatar', 'header', 'grid', 'layout', 'checkout']).toContain(c.visual); }   // levels and parts the game draws
+      if (ep.game.id === 'token-swap') { expect(lanes).toEqual(['color', 'space', 'text', 'radius']); for (const c of ep.game.cards) expect(['button-fill', 'link', 'gap', 'padding', 'title', 'title2', 'button-radius', 'card-radius']).toContain(c.visual); }   // elements the mock binds
+      if (ep.game.id === 'debt-hunt') {   // every "matches" button is the same style; every drift really differs and says how
+        expect(lanes).toEqual(['debt', 'ok']);
+        const style = (c: { visual?: string }) => (c.visual ?? '').split('|').slice(0, 4).join('|');
+        const system = new Set(ep.game.cards.filter(c => c.lane === 'ok').map(style));
+        expect(system.size).toBe(1);
+        for (const c of ep.game.cards) if (c.lane === 'debt') { expect(system.has(style(c))).toBe(false); expect(c.note).toBeTruthy(); }
+      }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

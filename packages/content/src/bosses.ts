@@ -328,9 +328,43 @@ const ui3: BossBriefInput = {
   },
 };
 
+const ds1: BossBriefInput = {
+  chapterId: 'ds.1',
+  title: 'Audit a real app',
+  minutes: 60,
+  scenario: [
+    'This one uses a real product. Pick an app or website you use often (a food, banking, travel or shopping app works well) and audit it like a design-systems team would.',
+    'Screenshot at least eight screens. Cut out every button and every text colour you can find and group them side by side. Count the variants, decide which are intentional and which are drift, and propose a smaller set.',
+  ],
+  fields: [
+    { id: 'app', label: 'The app and the screens you covered', kind: 'text', minWords: 10, hint: 'Name the app and list the screens (at least eight).' },
+    { id: 'buttons', label: 'Button inventory', kind: 'long', minWords: 30, hint: 'How many distinct buttons, and how they differ (colour, corners, padding, weight, size). Which are intentional variants and which are drift?' },
+    { id: 'colours', label: 'Colour inventory', kind: 'long', minWords: 25, hint: 'How many distinct text and background colours, roughly. Note near-duplicates (two greys that are almost the same).' },
+    { id: 'proposal', label: 'Your consolidated set', kind: 'list', items: 3, minWords: 12, hint: 'Three items: the buttons you’d keep, the colour tokens you’d keep, and the first thing you’d replace and why.' },
+  ],
+  rubric: [
+    { id: 'evidence', label: 'A real inventory', strong: 'Covers eight or more screens and gives counts for buttons and colours, with specific differences named (e.g. “radius 4 on Cart, 8 elsewhere”).', weight: 2, required: true },
+    { id: 'judgement', label: 'Drift vs. intent', strong: 'Separates intentional variants (destructive, secondary, small) from accidental drift, with a reason for each call.', weight: 2, required: true },
+    { id: 'proposal', label: 'A smaller, clear set', strong: 'Proposes a short set of button variants and named colour tokens that covers every real need.', weight: 2 },
+    { id: 'priority', label: 'Sensible first step', strong: 'Picks a first fix based on use and impact (e.g. the primary button, used on every screen), not just the ugliest one.', weight: 1 },
+    { id: 'tokens', label: 'Uses system language', strong: 'Names tokens by role (color-primary, text-muted) and refers to components and variants rather than screens.', weight: 1 },
+  ],
+  tips: ['Screenshot first, judge later. Group everything on one big canvas before you decide anything.', 'Zoom in on near-duplicates. Two greys that look the same are the most common drift.'],
+  example: {
+    app: 'A food delivery app. Screens: home, search results, restaurant page, dish details, cart, checkout, order tracking, profile, help.',
+    buttons: '11 distinct buttons. Intentional: primary (filled), secondary (outline), destructive (red “Cancel order”), small “Add” on dishes. Drift: three primary fills (#E23744, #E03546, #D9363E), corners of 6px on cart vs 8px elsewhere, a pill-shaped “Apply coupon”, and bold vs semibold labels between checkout and home.',
+    colours: 'About 14 text colours and 9 backgrounds. Five greys for secondary text that are nearly identical (#6B6B6B, #707070, #696969, #757575, #6E6E6E). Two off-white backgrounds a single step apart. The brand red appears in four slightly different values.',
+    proposal: [
+      'Buttons: primary, secondary, destructive and small, each in one size scale with radius 8 and semibold labels.',
+      'Colour tokens: color-primary (one red), text-primary, text-muted (one grey), surface, surface-raised, border, plus error and success.',
+      'First fix: the primary button, because it appears on every screen and has three different reds, so one change makes the whole app feel consistent.',
+    ],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

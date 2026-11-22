@@ -52,6 +52,9 @@ import { HslDial } from './games/HslDial';
 import { RampPick } from './games/RampPick';
 import { TokenRoute } from './games/TokenRoute';
 import { ContrastCheck } from './games/ContrastCheck';
+import { AtomStack } from './games/AtomStack';
+import { TokenSwap } from './games/TokenSwap';
+import { DebtHunt } from './games/DebtHunt';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -113,6 +116,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'ramp-pick': RampPick,
   'token-route': TokenRoute,
   'contrast-check': ContrastCheck,
+  'atom-stack': AtomStack,
+  'token-swap': TokenSwap,
+  'debt-hunt': DebtHunt,
 };
 
 interface Props {

@@ -50,6 +50,9 @@ import { ColourModelsScene } from '../scenes/ColourModels';
 import { PaletteBuildScene } from '../scenes/PaletteBuild';
 import { SemanticColourScene } from '../scenes/SemanticColour';
 import { ContrastDarkScene } from '../scenes/ContrastDark';
+import { AtomicScene } from '../scenes/Atomic';
+import { TokensScene } from '../scenes/Tokens';
+import { InconsistencyScene } from '../scenes/Inconsistency';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -93,6 +96,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'palette-build': PaletteBuildScene,
   'semantic-colour': SemanticColourScene,
   'contrast-dark': ContrastDarkScene,
+  atomic: AtomicScene,
+  tokens: TokensScene,
+  inconsistency: InconsistencyScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

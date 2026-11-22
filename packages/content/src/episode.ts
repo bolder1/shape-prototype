@@ -13,7 +13,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'outcome-output', 'opportunity-tree', 'prioritization',
   'script-shape', 'probing', 'jobs', 'context-visit',
   'type-anatomy', 'type-scale', 'font-pairing', 'measure',
-  'colour-models', 'palette-build', 'semantic-colour', 'contrast-dark']);
+  'colour-models', 'palette-build', 'semantic-colour', 'contrast-dark',
+  'atomic', 'tokens', 'inconsistency']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -51,6 +52,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `hsl-dial`: lanes `h`, `s`, `l`; every card's `visual` is a change "h,s,l>h,s,l" where only the card's dial moves (see `hslDial`).
  *  - `ramp-pick`: lanes `tint`, `border`, `solid`, `ink` (zones of a 50–900 ramp); every card's `visual` names the element it paints.
  *  - `token-route`: lanes `error`, `success`, `warning`, `info`; every card's `label` is the message a toast shows.
+ *  - `atom-stack`: lanes `atom`, `molecule`, `organism`, `template` (bottom to top); every card's `visual` names the part it draws.
+ *  - `token-swap`: lanes `color`, `space`, `text`, `radius` (each lane's `label` is the token name); every card's `visual` names the screen element it binds.
+ *  - `debt-hunt`: lanes `debt`, `ok`; every card's `visual` is a button "bg|radius|paddingX|weight|label"; `ok` cards all match one system style, `debt` cards differ and need a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -61,7 +65,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'rung-sort', 'ost-grow', 'rice-duel',
   'script-builder', 'chat-probe', 'job-forge', 'ask-watch',
   'anatomy-pin', 'size-it', 'pair-judge', 'measure-tune',
-  'hsl-dial', 'ramp-pick', 'token-route', 'contrast-check']);
+  'hsl-dial', 'ramp-pick', 'token-route', 'contrast-check',
+  'atom-stack', 'token-swap', 'debt-hunt']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
