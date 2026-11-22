@@ -1,0 +1,11 @@
+# Not needed to build or run the web app; keeps uploads small.
+# Patterns start with "/" so they match only at the repo root: a bare "engine/" would also drop packages/engine.
+/assets/concepts/
+/prototype/
+/curriculum/
+/engine/
+/db/
+/scripts/serve.mjs
+/.claude/
+**/.next/
+**/node_modules/
