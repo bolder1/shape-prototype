@@ -75,6 +75,9 @@ import { BuyerRole } from './games/BuyerRole';
 import { TagMatch } from './games/TagMatch';
 import { FlexTune } from './games/FlexTune';
 import { FeFlow } from './games/FeFlow';
+import { CaseOrder } from './games/CaseOrder';
+import { PortfolioCrit } from './games/PortfolioCrit';
+import { WhiteboardStep } from './games/WhiteboardStep';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -159,6 +162,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'tag-match': TagMatch,
   'flex-tune': FlexTune,
   'fe-flow': FeFlow,
+  'case-order': CaseOrder,
+  'portfolio-crit': PortfolioCrit,
+  'whiteboard-step': WhiteboardStep,
 };
 
 interface Props {

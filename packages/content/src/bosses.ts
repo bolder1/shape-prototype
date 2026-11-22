@@ -573,9 +573,45 @@ const dc1: BossBriefInput = {
   },
 };
 
+const ld2: BossBriefInput = {
+  chapterId: 'ld.2',
+  title: 'Write your case study',
+  minutes: 90,
+  scenario: [
+    'Turn your Studio product (or the strongest project you have) into a portfolio case study a hiring manager could skim in under a minute and read in five.',
+    'Write it in the structure from this chapter. Be specific about the problem, your part, the key decisions and what changed. If you don’t have hard numbers, use honest qualitative evidence.',
+  ],
+  fields: [
+    { id: 'title', label: 'Title and one-line summary', kind: 'text', minWords: 15, hint: 'A title that names the problem, plus one sentence: the problem, your role, the result.' },
+    { id: 'context', label: 'Context and your role', kind: 'long', minWords: 30, hint: 'The problem, who it affected, and exactly what you owned (team, timeline, constraints).' },
+    { id: 'process', label: 'Process: three key decisions', kind: 'list', items: 3, minWords: 20, hint: 'For each: what you learned or tried, and the decision it led to.' },
+    { id: 'outcome', label: 'Solution and outcome', kind: 'long', minWords: 30, hint: 'What you designed, the evidence it worked (numbers, test results or quotes), and one honest trade-off.' },
+    { id: 'learned', label: 'What you’d do differently', kind: 'text', minWords: 15, hint: 'One specific reflection.' },
+  ],
+  rubric: [
+    { id: 'summary', label: 'Skimmable summary', strong: 'The title and first line state the problem, the role and the result; a reviewer knows the story in seconds.', weight: 2, required: true },
+    { id: 'decisions', label: 'Decisions, not steps', strong: 'Each process item links an insight or test to a specific design decision, rather than listing activities.', weight: 2, required: true },
+    { id: 'role', label: 'Clear ownership', strong: 'States exactly what the author did, with whom, and under what constraints.', weight: 2 },
+    { id: 'evidence', label: 'Honest evidence', strong: 'Shows results with real numbers or credible qualitative evidence, and names a trade-off.', weight: 1 },
+    { id: 'reflection', label: 'Real reflection', strong: 'A specific lesson the author would apply next time, not a generic one.', weight: 1 },
+  ],
+  tips: ['Write the one-line summary last, once you know the story.', 'Read it aloud in 40 seconds. If the problem, your part and the result aren’t clear, restructure.'],
+  example: {
+    title: '“Getting students their first tiffin in two taps.” I was the solo designer on Dabba’s sign-up; first-order completion went from 31% to 58% in testing.',
+    context: 'Dabba sells ₹99 home-style lunches to college students. Most people who opened the app never ordered: sign-up asked for nine fields before showing a menu. I was the only designer, working with one developer for four weeks; we couldn’t change the payment provider.',
+    process: [
+      'Watching five students sign up showed they quit at the address form, so I moved hostel selection to a single picker of known campus pickup points.',
+      'Students didn’t trust a new food service, so I showed real tiffin photos and the cook’s name before asking for anything.',
+      'A test of two plan pages showed weekly plans felt safer than monthly, so weekly became the default with monthly as a saving.',
+    ],
+    outcome: 'The new flow asks for phone, hostel and plan, then payment: four steps instead of nine. In moderated tests with 12 students, first-order completion rose from 31% to 58%. Trade-off: we dropped dietary preferences from sign-up; they now appear after the first order.',
+    learned: 'I’d recruit test participants from the second campus earlier; their pickup points behaved differently and I only found out after launch.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

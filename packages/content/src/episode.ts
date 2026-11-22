@@ -20,7 +20,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'funnel', 'aha', 'fogg', 'dark-patterns',
   'brand-layers', 'positioning', 'moodboard',
   'business-models', 'unit-economics', 'buying-journey',
-  'dom-tree', 'box-model', 'frontend-build']);
+  'dom-tree', 'box-model', 'frontend-build',
+  'case-study', 'portfolio-crit', 'whiteboard']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -81,6 +82,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `tag-match`: lanes `header`, `nav`, `main`, `footer` (regions of a page wireframe; drag or tap).
  *  - `flex-tune`: lanes `direction`, `justify`, `align`, `gap`; every card's `visual` is the CSS declaration that solves it, for its lane's property.
  *  - `fe-flow`: lanes `design`, `component`, `data`, `ship` (stations of a pipeline).
+ *  - `case-order`: lanes `context`, `process`, `solution`, `outcome` (sections of a case study page; drag or tap).
+ *  - `portfolio-crit`: lanes `weak`, `strong`; every card needs a `note` (how a reviewer would see it).
+ *  - `whiteboard-step`: lanes `clarify`, `users`, `ideas`, `measure` (whiteboard columns, in order).
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -98,7 +102,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'funnel-leak', 'aha-path', 'fogg-fix', 'dark-spot',
   'brand-layer', 'voice-fit', 'mood-build',
   'model-match', 'unit-calc', 'buyer-role',
-  'tag-match', 'flex-tune', 'fe-flow']);
+  'tag-match', 'flex-tune', 'fe-flow',
+  'case-order', 'portfolio-crit', 'whiteboard-step']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

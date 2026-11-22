@@ -73,6 +73,9 @@ import { BuyingJourneyScene } from '../scenes/BuyingJourney';
 import { DomTreeScene } from '../scenes/DomTree';
 import { BoxModelScene } from '../scenes/BoxModel';
 import { FrontendBuildScene } from '../scenes/FrontendBuild';
+import { CaseStudyScene } from '../scenes/CaseStudy';
+import { PortfolioCritScene } from '../scenes/PortfolioCrit';
+import { WhiteboardScene } from '../scenes/Whiteboard';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -139,6 +142,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'dom-tree': DomTreeScene,
   'box-model': BoxModelScene,
   'frontend-build': FrontendBuildScene,
+  'case-study': CaseStudyScene,
+  'portfolio-crit': PortfolioCritScene,
+  whiteboard: WhiteboardScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

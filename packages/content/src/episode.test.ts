@@ -170,6 +170,9 @@ describe('episodes', () => {
         for (const c of ep.game.cards) expect((c.visual ?? '').startsWith(`${prop[c.lane]}: `)).toBe(true);
       }
       if (ep.game.id === 'fe-flow') expect(lanes).toEqual(['design', 'component', 'data', 'ship']);
+      if (ep.game.id === 'case-order') expect(lanes).toEqual(['context', 'process', 'solution', 'outcome']);   // case study sections, in order
+      if (ep.game.id === 'portfolio-crit') { expect(lanes).toEqual(['weak', 'strong']); for (const c of ep.game.cards) expect(c.note).toBeTruthy(); }
+      if (ep.game.id === 'whiteboard-step') expect(lanes).toEqual(['clarify', 'users', 'ideas', 'measure']);
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

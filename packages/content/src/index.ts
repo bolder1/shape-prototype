@@ -15,6 +15,7 @@ import { gr1 } from './chapters/gr-1';
 import { br1 } from './chapters/br-1';
 import { bz1 } from './chapters/bz-1';
 import { dc1 } from './chapters/dc-1';
+import { ld2 } from './chapters/ld-2';
 import { fd1_1 } from './episodes/fd-1-1';
 import { fd1_2 } from './episodes/fd-1-2';
 import { fd1_3 } from './episodes/fd-1-3';
@@ -35,6 +36,7 @@ import { gr1_1, gr1_2, gr1_3, gr1_4 } from './episodes/gr-1';
 import { br1_1, br1_2, br1_3 } from './episodes/br-1';
 import { bz1_1, bz1_2, bz1_3 } from './episodes/bz-1';
 import { dc1_1, dc1_2, dc1_3 } from './episodes/dc-1';
+import { ld2_1, ld2_2, ld2_3 } from './episodes/ld-2';
 import type { Exercise, LessonContent } from './schema';
 import type { Episode } from './episode';
 
@@ -58,14 +60,15 @@ export const EPISODES: Record<string, Episode> = { 'fd.1-1': fd1_1, 'fd.1-2': fd
   'gr.1-1': gr1_1, 'gr.1-2': gr1_2, 'gr.1-3': gr1_3, 'gr.1-4': gr1_4,
   'br.1-1': br1_1, 'br.1-2': br1_2, 'br.1-3': br1_3,
   'bz.1-1': bz1_1, 'bz.1-2': bz1_2, 'bz.1-3': bz1_3,
-  'dc.1-1': dc1_1, 'dc.1-2': dc1_2, 'dc.1-3': dc1_3 };
+  'dc.1-1': dc1_1, 'dc.1-2': dc1_2, 'dc.1-3': dc1_3,
+  'ld.2-1': ld2_1, 'ld.2-2': ld2_2, 'ld.2-3': ld2_3 };
 export * from './grade';
 export * from './boss';
 export * from './boss-grade';
 export * from './bosses';
 
 /** Chapters with playable content, keyed by curriculum chapter id. Lessons are in curriculum order. */
-export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1, 'gr.1': gr1, 'br.1': br1, 'bz.1': bz1, 'dc.1': dc1 };
+export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1, 'gr.1': gr1, 'br.1': br1, 'bz.1': bz1, 'dc.1': dc1, 'ld.2': ld2 };
 
 export const hasContent = (chapterId: string) => !!CONTENT[chapterId]?.length;
 
