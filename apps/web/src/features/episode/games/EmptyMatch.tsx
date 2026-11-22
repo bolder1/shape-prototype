@@ -9,16 +9,17 @@ import type { Episode } from '@shape/content';
 import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
-import { Burst, FAMILY, NibSays, StageTitle } from '../kit';
+import { Burst, FAMILY, FAMILY_SOLID, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
 import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
-const TEMPLATE: Record<string, { icon: Icon; line: string; sub: string; btn: string; color: string }> = {
-  first: { icon: BookmarkSimpleIcon, line: 'Nothing here yet', sub: 'Here’s what will show up, and how to add the first one.', btn: 'Get started', color: FAMILY[0] },
-  done: { icon: CheckCircleIcon, line: 'All done!', sub: 'You cleared everything. Nice work.', btn: 'Back to home', color: 'var(--color-mint-600)' },
-  noresults: { icon: MagnifyingGlassIcon, line: 'No matches', sub: 'Try another word, or clear your filters.', btn: 'Clear filters', color: FAMILY[3] },
-  error: { icon: WifiSlashIcon, line: 'Couldn’t load this', sub: 'Your data is safe. Check your connection and retry.', btn: 'Try again', color: 'var(--color-fg-error-primary)' },
+// color tints the icon; solid fills the mock button under white text (each 4.5:1 or more with white, both themes).
+const TEMPLATE: Record<string, { icon: Icon; line: string; sub: string; btn: string; color: string; solid: string }> = {
+  first: { icon: BookmarkSimpleIcon, line: 'Nothing here yet', sub: 'Here’s what will show up, and how to add the first one.', btn: 'Get started', color: FAMILY[0], solid: FAMILY_SOLID[0] },
+  done: { icon: CheckCircleIcon, line: 'All done!', sub: 'You cleared everything. Nice work.', btn: 'Back to home', color: 'var(--color-mint-600)', solid: 'var(--color-mint-700)' },
+  noresults: { icon: MagnifyingGlassIcon, line: 'No matches', sub: 'Try another word, or clear your filters.', btn: 'Clear filters', color: FAMILY[3], solid: FAMILY_SOLID[3] },
+  error: { icon: WifiSlashIcon, line: 'Couldn’t load this', sub: 'Your data is safe. Check your connection and retry.', btn: 'Try again', color: 'var(--color-fg-error-primary)', solid: 'var(--color-bg-error-solid)' },
 };
 
 export function EmptyMatch({ game, onDone }: { game: Game; onDone: (results: GameResult[]) => void }) {
@@ -84,7 +85,7 @@ export function EmptyMatch({ game, onDone }: { game: Game; onDone: (results: Gam
                 </span>
                 <span className="text-md font-bold text-primary">{tpl.line}</span>
                 <span className="text-xs text-tertiary">{tpl.sub}</span>
-                <span className="mt-2 rounded-lg px-4 py-2 text-sm font-semibold text-white" style={{ background: tpl.color }}>{tpl.btn}</span>
+                <span className="mt-2 rounded-lg px-4 py-2 text-sm font-semibold text-white" style={{ background: tpl.solid }}>{tpl.btn}</span>
               </motion.div>
             ) : <span className="text-sm text-quaternary">Empty. But why?</span>}
           </div>
