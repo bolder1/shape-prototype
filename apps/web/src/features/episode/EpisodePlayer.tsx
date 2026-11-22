@@ -4,12 +4,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { FilmSlateIcon, GameControllerIcon, LadderIcon, LightbulbIcon, LightningIcon, ListChecksIcon, MedalIcon, PlayCircleIcon, PlayIcon, TimerIcon, XIcon } from '@phosphor-icons/react/ssr';
-import type { Episode } from '@shape/content';
+import { findExercise, type Episode } from '@shape/content';
 import { springs } from '@shape/ui';
 import { cx } from '@/utils/cx';
 import type { StepResult } from '../progress/store';
 import { Nib } from './kit';
 import { gradeEpisode, type Scored } from './scoring';
+import { Coach } from './coach/Coach';
+import type { Missed } from './coach/offline';
 import { Check } from './stages/Check';
 import { DiamondSort, type GameResult } from './games/DiamondSort';
 import { SwipeSort } from './games/SwipeSort';
@@ -79,6 +81,13 @@ function Run({ episode, title, eyebrow, name, exitHref, next, onComplete, onRepl
   const [scored, setScored] = useState<Scored[]>([]);
   const [saved, setSaved] = useState<{ xp: number; streak: number; newDay: boolean } | null>(null);
   const index = STAGES.findIndex(s => s.key === stage);
+  // The most recent miss, resolved from our own content, so Nib can explain it.
+  const missed = (() => {
+    const last = [...scored].reverse().find(s => !s.correct && !s.unseen);
+    const ex = last && findExercise(episode.lessonId, `${last.stage}.${last.id}`);
+    if (!ex || ex.type !== 'pick') return undefined;
+    return { prompt: ex.prompt, answer: ex.options.find(o => o.id === ex.correct)?.label ?? '', explanation: ex.explanation } satisfies Missed;
+  })();
   const Game = GAMES[episode.game.id];
   const add = (items: Scored[]) => setScored(s => [...s, ...items]);
   const go = (k: StageKey) => { setStage(k); window.scrollTo({ top: 0, behavior: 'smooth' }); };
@@ -118,6 +127,7 @@ function Run({ episode, title, eyebrow, name, exitHref, next, onComplete, onRepl
         </div>
       </header>
 
+      <Coach episode={episode} stage={stage} missed={missed} />
       <main className="mx-auto w-full max-w-3xl px-4 pt-6 pb-24 md:pt-8">
           <motion.div key={stage} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.25 }}>
             {stage === 'watch' && <Watch episode={episode} mode="watch" onDone={() => go('check')} />}
