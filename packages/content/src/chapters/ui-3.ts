@@ -1,0 +1,105 @@
+// Chapter ui.3 · Colour. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const ui3: LessonContent[] = [
+  {
+    id: 'ui.3-1', title: 'Colour models (HSL/OKLCH)', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Three dials instead of a code',
+        body: ['A hex code like #2563EB is hard to adjust by hand. HSL describes the same colour with three dials: hue (which colour), saturation (how vivid) and lightness (how light or dark).',
+          'HSL has a catch: a yellow and a blue at the same HSL lightness look very different in brightness. OKLCH fixes this. Its lightness matches what eyes see, so shades built with it stay even across hues.'] },
+      { type: 'sort', id: 's1', prompt: 'Which dial do you turn?',
+        explanation: 'Hue changes which colour it is, saturation how vivid it is, and lightness how light or dark it is.',
+        buckets: [{ id: 'h', label: 'Hue' }, { id: 's', label: 'Saturation' }, { id: 'l', label: 'Lightness' }],
+        items: [
+          { id: 'a', label: 'Turn the blue button green', bucket: 'h' },
+          { id: 'b', label: 'Make the red less vivid, more dusty', bucket: 's' },
+          { id: 'c', label: 'A darker blue for the hover state', bucket: 'l' },
+          { id: 'd', label: 'Shift the orange towards red', bucket: 'h' },
+          { id: 'e', label: 'A pale tint for a background', bucket: 'l' },
+          { id: 'f', label: 'Make a grey-ish green more vivid', bucket: 's' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'You build shades of yellow and blue at the same HSL lightness. The yellow looks far brighter. Why?',
+        explanation: 'HSL lightness is maths, not perception. OKLCH’s lightness is built to match what people see.',
+        options: [
+          { id: 'a', label: 'Your screen is broken' },
+          { id: 'b', label: 'HSL lightness doesn’t match how bright colours look' },
+          { id: 'c', label: 'Yellow is always darker' },
+          { id: 'd', label: 'Blue has more saturation' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'ui.3-2', title: 'Building a palette', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'One colour becomes a ramp',
+        body: ['A palette starts with a few base colours (a brand colour and a neutral grey) and turns each into a ramp of shades, often numbered 50 (palest) to 900 (darkest).',
+          'Each part of the ramp has a job. Pale tints for backgrounds, light shades for borders, the middle for buttons and links, and the darkest shades for text.'] },
+      { type: 'sort', id: 's1', prompt: 'Which part of the ramp?',
+        explanation: 'Tints sit behind things, the middle fills solid elements, and the darkest shades carry text.',
+        buckets: [{ id: 'tint', label: 'Tint · 50–100' }, { id: 'solid', label: 'Solid · 500–600' }, { id: 'ink', label: 'Ink · 800–900' }],
+        items: [
+          { id: 'a', label: 'Background of a selected row', bucket: 'tint' },
+          { id: 'b', label: 'Primary button fill', bucket: 'solid' },
+          { id: 'c', label: 'Text on a pale blue badge', bucket: 'ink' },
+          { id: 'd', label: 'A highlighted banner background', bucket: 'tint' },
+          { id: 'e', label: 'A link in body text', bucket: 'solid' },
+          { id: 'f', label: 'Headings on a white page', bucket: 'ink' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Your app uses 14 slightly different blues, picked screen by screen. Best fix?',
+        explanation: 'One ramp with named steps replaces near-duplicates and makes every blue a deliberate choice.',
+        options: [
+          { id: 'a', label: 'Keep them, variety is good' },
+          { id: 'b', label: 'Replace them all with one blue' },
+          { id: 'c', label: 'One blue ramp of about 10 steps, each with a job' },
+          { id: 'd', label: 'Add more blues for each new screen' },
+        ], correct: 'c' },
+    ],
+  },
+  {
+    id: 'ui.3-3', title: 'Semantic colour', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Name colours by meaning',
+        body: ['Semantic colours are named for what they mean, not what they look like: error, success, warning and info, instead of red, green, yellow and blue.',
+          'Colour alone isn’t enough. About 1 in 12 men has some colour blindness, so pair colour with an icon and words. And keep your brand colour away from meanings: a red brand makes every button look like an error.'] },
+      { type: 'sort', id: 's1', prompt: 'Which meaning?',
+        explanation: 'Error is for something that failed, success for something done, warning for something that needs attention soon.',
+        buckets: [{ id: 'error', label: 'Error' }, { id: 'success', label: 'Success' }, { id: 'warning', label: 'Warning' }],
+        items: [
+          { id: 'a', label: 'Payment failed', bucket: 'error' },
+          { id: 'b', label: 'Profile saved', bucket: 'success' },
+          { id: 'c', label: 'Your plan ends in 3 days', bucket: 'warning' },
+          { id: 'd', label: 'This field is required', bucket: 'error' },
+          { id: 'e', label: 'Order delivered', bucket: 'success' },
+          { id: 'f', label: 'Low battery: 10% left', bucket: 'warning' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'An error field is shown with only a red border. What’s missing?',
+        explanation: 'Some people can’t tell red from other colours. An icon and a message make the error clear to everyone.',
+        options: [
+          { id: 'a', label: 'A thicker red border' },
+          { id: 'b', label: 'An icon and a message saying what’s wrong' },
+          { id: 'c', label: 'A red background on the whole page' },
+          { id: 'd', label: 'Nothing, red means error' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'ui.3-4', title: 'Contrast & dark mode', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Readable for everyone, in both themes',
+        body: ['Contrast is the difference in brightness between text and its background, written as a ratio. WCAG AA asks for at least 4.5:1 for body text and 3:1 for large text and icons.',
+          'Dark mode isn’t an inverted light mode. Use dark greys rather than pure black, make raised surfaces lighter, soften very bright colours, and check contrast again in the dark theme.'] },
+      { type: 'tune', id: 't1', mock: 'contrast-label', prompt: 'Darken the helper text until it’s readable for everyone (WCAG AA, 4.5:1).',
+        explanation: 'Body-size text needs at least 4.5:1 contrast against its background. Faint grey text looks elegant in a mockup and fails real people.',
+        min: 20, max: 90, step: 1, start: 30, target: [55, 90], unit: '% darkness' },
+      { type: 'pick', id: 'p1', prompt: 'Which is the best dark-mode background?',
+        explanation: 'Very dark grey is easier on the eyes than pure black, and leaves room to show raised surfaces as lighter greys.',
+        options: [
+          { id: 'a', label: 'Pure black #000000' },
+          { id: 'b', label: 'A very dark grey like #121417' },
+          { id: 'c', label: 'Your brand colour' },
+          { id: 'd', label: 'Inverted colours of the light theme' },
+        ], correct: 'b' },
+    ],
+  },
+];

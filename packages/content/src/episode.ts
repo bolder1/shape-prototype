@@ -12,7 +12,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'clear-clever', 'button-labels', 'error-messages', 'empty-states',
   'outcome-output', 'opportunity-tree', 'prioritization',
   'script-shape', 'probing', 'jobs', 'context-visit',
-  'type-anatomy', 'type-scale', 'font-pairing', 'measure']);
+  'type-anatomy', 'type-scale', 'font-pairing', 'measure',
+  'colour-models', 'palette-build', 'semantic-colour', 'contrast-dark']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -47,6 +48,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `size-it`: lanes `display`, `heading`, `body`, `small`; every card's `visual` names a piece of the reading screen it sizes.
  *  - `pair-judge`: lanes `works`, `clash`; every card's `visual` is "headingFont|weight|bodyFont|weight" (or `five`) and has a `note`.
  *  - `measure-tune`: lanes `measure`, `leading`, `ok`; every card's `visual` is "characters|lineHeight" (see `measureVerdict`).
+ *  - `hsl-dial`: lanes `h`, `s`, `l`; every card's `visual` is a change "h,s,l>h,s,l" where only the card's dial moves (see `hslDial`).
+ *  - `ramp-pick`: lanes `tint`, `border`, `solid`, `ink` (zones of a 50–900 ramp); every card's `visual` names the element it paints.
+ *  - `token-route`: lanes `error`, `success`, `warning`, `info`; every card's `label` is the message a toast shows.
+ *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
   'flashlight', 'scale-sort', 'question-forge', 'red-pen',
@@ -55,7 +60,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'glance-test', 'button-forge', 'error-doctor', 'empty-match',
   'rung-sort', 'ost-grow', 'rice-duel',
   'script-builder', 'chat-probe', 'job-forge', 'ask-watch',
-  'anatomy-pin', 'size-it', 'pair-judge', 'measure-tune']);
+  'anatomy-pin', 'size-it', 'pair-judge', 'measure-tune',
+  'hsl-dial', 'ramp-pick', 'token-route', 'contrast-check']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -135,4 +141,29 @@ const within = (n: number, [lo, hi]: readonly [number, number]) => n >= lo && n 
 /** What to fix first in a body-text setting: the line length, then the line height. */
 export const measureVerdict = (s: MeasureSetting): 'measure' | 'leading' | 'ok' =>
   !within(s.chars, MEASURE.chars) ? 'measure' : !within(s.leading, MEASURE.leading) ? 'leading' : 'ok';
+/** An HSL colour: hue 0–360, saturation and lightness 0–100. */
+export type Hsl = [number, number, number];
+/** Parses a `hsl-dial` card's visual: "h,s,l>h,s,l". */
+export const hslChange = (visual: string): { from: Hsl; to: Hsl } => {
+  const [from, to] = visual.split('>').map(part => part.split(',').map(Number) as Hsl);
+  return { from, to };
+};
+/** The one dial a change turns, or null when it turns none or several. */
+export const hslDial = ({ from, to }: { from: Hsl; to: Hsl }): 'h' | 's' | 'l' | null => {
+  const moved = (['h', 's', 'l'] as const).filter((_, i) => from[i] !== to[i]);
+  return moved.length === 1 ? moved[0] : null;
+};
+
+/** WCAG relative luminance of a #rrggbb colour. */
+const luminance = (hex: string) => {
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(c => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+/** WCAG contrast ratio between two #rrggbb colours, from 1 to 21. */
+export const contrastRatio = (a: string, b: string) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+/** WCAG AA: 4.5:1 for body text, 3:1 for large text and icons. */
+export const contrastLane = (ratio: number): 'pass' | 'large' | 'fail' => (ratio >= 4.5 ? 'pass' : ratio >= 3 ? 'large' : 'fail');
 export type EpisodeQuestion = z.infer<typeof Question>;

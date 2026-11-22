@@ -293,9 +293,44 @@ const ui2: BossBriefInput = {
   },
 };
 
+const ui3: BossBriefInput = {
+  chapterId: 'ui.3',
+  title: 'A light and dark palette that passes',
+  minutes: 45,
+  scenario: [
+    'Kosh is a budgeting app. Its colours were picked screen by screen: 11 blues, 6 greys, a red that’s also the brand colour, and a dark mode made by inverting everything. Support gets complaints that grey labels are hard to read and that “everything looks like an error”.',
+    'Build one palette with a light and a dark theme. Every text and icon pair must pass WCAG AA (4.5:1 for body text, 3:1 for large text and icons). Use a contrast checker (any free one) and report the numbers.',
+  ],
+  fields: [
+    { id: 'ramps', label: 'Your ramps', kind: 'long', minWords: 20, hint: 'Brand, neutral and semantic ramps: how many steps, built how (HSL or OKLCH), and a few key values.', placeholder: 'Brand: indigo, 10 steps in OKLCH, 600 = #4F46E5 …' },
+    { id: 'roles', label: 'Role tokens in both themes', kind: 'list', items: 4, minWords: 10, hint: 'One item per role (e.g. text, muted text, surface, primary button). Say which ramp step it uses in light and in dark.' },
+    { id: 'checks', label: 'Contrast checks', kind: 'long', minWords: 20, hint: 'At least six pairs with their ratios, covering both themes. Say what you changed when something failed.' },
+    { id: 'semantic', label: 'Brand vs. error', kind: 'text', minWords: 12, hint: 'How you separated the brand from error, and how errors read without colour.' },
+  ],
+  rubric: [
+    { id: 'contrast', label: 'Passes AA, with numbers', strong: 'Reports at least six real ratios across both themes; body text is 4.5:1 or more, large text and icons 3:1 or more, and failures were fixed.', weight: 2, required: true },
+    { id: 'ramps', label: 'Real ramps', strong: 'A brand ramp, a neutral ramp and semantic colours, each with named steps built on a consistent method (ideally OKLCH), replacing the one-off colours.', weight: 2, required: true },
+    { id: 'dark', label: 'Dark mode done properly', strong: 'Dark grey base rather than pure black, lighter raised surfaces, adjusted (not inverted) brand and text colours, chosen through role tokens.', weight: 2 },
+    { id: 'semantic', label: 'Meaning separated from brand', strong: 'Brand moves away from error red, semantic tokens are named by meaning, and errors use an icon and words too.', weight: 1 },
+    { id: 'tokens', label: 'Role tokens', strong: 'Components use roles (text, muted, surface, primary) that point at ramp steps, so themes swap pointers rather than colours.', weight: 1 },
+  ],
+  tips: ['Do the neutrals first. Text, surfaces and borders are most of the screen, and most contrast problems live there.', 'Check the muted text and the brand-coloured links in dark mode. They fail most often.'],
+  example: {
+    ramps: 'Brand moves from red to indigo, 10 steps in OKLCH (L from 0.97 to 0.28, hue 275); 600 = #4F46E5. Neutral: 10 greys with a hint of indigo, 50 = #F8F9FC to 900 = #111320. Semantic: error red, success green, warning amber, info blue, each with a tint (100), a solid (600) and a text shade (800).',
+    roles: [
+      'Text: neutral-900 in light (#111320) and neutral-50 in dark (#F8F9FC), for all body copy.',
+      'Muted text: neutral-600 in light (#525771), neutral-300 in dark (#B7BACB).',
+      'Surface: white in light; neutral-900 base (#111320) with raised cards at neutral-800 (#1C1F2E) in dark.',
+      'Primary button: brand-600 with white text in light; brand-400 with neutral-900 text in dark.',
+    ],
+    checks: 'Light: text on white 18.1:1; muted text on white 7.4:1; white on brand-600 6.3:1; error-800 on error-100 7.9:1. Dark: text on base 17.2:1; muted on base 9.6:1 (was neutral-500 at 3.1:1, failed, moved to 300); neutral-900 on brand-400 7.0:1; brand link brand-300 on base 7.8:1 (brand-600 was only 3.0:1).',
+    semantic: 'Brand is now indigo, so nothing brand-coloured looks like an error. Errors use error-600 with a warning icon and a message saying what to fix, so they still read in greyscale.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

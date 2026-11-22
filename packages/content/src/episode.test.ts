@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, findExercise, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, findExercise, contrastLane, contrastRatio, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -84,6 +84,19 @@ describe('episodes', () => {
           const s = measureSetting(c.visual ?? '');
           expect(c.lane).toBe(measureVerdict(s));
           if (c.lane === 'measure') expect(measureVerdict({ ...s, chars: 60 })).toBe('ok');
+        }
+      }
+      if (ep.game.id === 'hsl-dial') { expect(lanes).toEqual(['h', 's', 'l']); for (const c of ep.game.cards) expect(hslDial(hslChange(c.visual ?? ''))).toBe(c.lane); }   // only the marked dial moves
+      if (ep.game.id === 'ramp-pick') { expect(lanes).toEqual(['tint', 'border', 'solid', 'ink']); for (const c of ep.game.cards) expect(['row', 'button', 'badge', 'input', 'banner', 'link', 'heading', 'divider']).toContain(c.visual); }   // zones and elements the game draws
+      if (ep.game.id === 'token-route') expect(lanes).toEqual(['error', 'success', 'warning', 'info']);   // the tokens the toast can take
+      if (ep.game.id === 'contrast-check') {   // the marked lane is what WCAG says, and no pair sits on a threshold
+        expect(lanes).toEqual(['pass', 'large', 'fail']);
+        for (const c of ep.game.cards) {
+          const [fg, bg] = (c.visual ?? '').split('|');
+          for (const hex of [fg, bg]) expect(hex).toMatch(/^#[0-9a-f]{6}$/i);
+          const r = contrastRatio(fg, bg);
+          expect(c.lane).toBe(contrastLane(r));
+          for (const edge of [3, 4.5]) expect(Math.abs(r - edge)).toBeGreaterThan(0.2);
         }
       }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines

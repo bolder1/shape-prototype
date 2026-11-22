@@ -46,6 +46,10 @@ import { TypeAnatomyScene } from '../scenes/TypeAnatomy';
 import { TypeScaleScene } from '../scenes/TypeScale';
 import { FontPairingScene } from '../scenes/FontPairing';
 import { MeasureScene } from '../scenes/Measure';
+import { ColourModelsScene } from '../scenes/ColourModels';
+import { PaletteBuildScene } from '../scenes/PaletteBuild';
+import { SemanticColourScene } from '../scenes/SemanticColour';
+import { ContrastDarkScene } from '../scenes/ContrastDark';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -85,6 +89,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'type-scale': TypeScaleScene,
   'font-pairing': FontPairingScene,
   measure: MeasureScene,
+  'colour-models': ColourModelsScene,
+  'palette-build': PaletteBuildScene,
+  'semantic-colour': SemanticColourScene,
+  'contrast-dark': ContrastDarkScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

@@ -33,7 +33,8 @@ function Paragraph({ s, lines = 6 }: { s: MeasureSetting; lines?: number }) {
   );
 }
 
-function Tune({ label, value, min, max, step, ok, fmt, onChange }: { label: string; value: number; min: number; max: number; step: number; ok: boolean; fmt: (v: number) => string; onChange: (v: number) => void }) {
+/** A labelled slider whose readout turns mint when the value is in range. Shared by the tuning games. */
+export function Tune({ label, value, min, max, step, ok, fmt, onChange }: { label: string; value: number; min: number; max: number; step: number; ok: boolean; fmt: (v: number) => string; onChange: (v: number) => void }) {
   return (
     <Slider minValue={min} maxValue={max} step={step} value={value} onChange={v => onChange(v as number)} className="flex flex-col gap-2">
       <div className="flex justify-between text-sm">

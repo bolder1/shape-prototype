@@ -48,6 +48,10 @@ import { AnatomyPin } from './games/AnatomyPin';
 import { SizeIt } from './games/SizeIt';
 import { PairJudge } from './games/PairJudge';
 import { MeasureTune } from './games/MeasureTune';
+import { HslDial } from './games/HslDial';
+import { RampPick } from './games/RampPick';
+import { TokenRoute } from './games/TokenRoute';
+import { ContrastCheck } from './games/ContrastCheck';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -105,6 +109,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'size-it': SizeIt,
   'pair-judge': PairJudge,
   'measure-tune': MeasureTune,
+  'hsl-dial': HslDial,
+  'ramp-pick': RampPick,
+  'token-route': TokenRoute,
+  'contrast-check': ContrastCheck,
 };
 
 interface Props {
