@@ -67,6 +67,9 @@ import { DarkPatternsScene } from '../scenes/DarkPatterns';
 import { BrandLayersScene } from '../scenes/BrandLayers';
 import { PositioningScene } from '../scenes/Positioning';
 import { MoodboardScene } from '../scenes/Moodboard';
+import { BusinessModelsScene } from '../scenes/BusinessModels';
+import { UnitEconomicsScene } from '../scenes/UnitEconomics';
+import { BuyingJourneyScene } from '../scenes/BuyingJourney';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -127,6 +130,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'brand-layers': BrandLayersScene,
   positioning: PositioningScene,
   moodboard: MoodboardScene,
+  'business-models': BusinessModelsScene,
+  'unit-economics': UnitEconomicsScene,
+  'buying-journey': BuyingJourneyScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

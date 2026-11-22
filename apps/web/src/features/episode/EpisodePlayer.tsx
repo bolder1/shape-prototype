@@ -69,6 +69,9 @@ import { DarkSpot } from './games/DarkSpot';
 import { BrandLayer } from './games/BrandLayer';
 import { VoiceFit } from './games/VoiceFit';
 import { MoodBuild } from './games/MoodBuild';
+import { ModelMatch } from './games/ModelMatch';
+import { UnitCalc } from './games/UnitCalc';
+import { BuyerRole } from './games/BuyerRole';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -147,6 +150,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'brand-layer': BrandLayer,
   'voice-fit': VoiceFit,
   'mood-build': MoodBuild,
+  'model-match': ModelMatch,
+  'unit-calc': UnitCalc,
+  'buyer-role': BuyerRole,
 };
 
 interface Props {

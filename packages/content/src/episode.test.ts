@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, findExercise, contrastLane, contrastRatio, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, findExercise, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -151,6 +151,18 @@ describe('episodes', () => {
       if (ep.game.id === 'brand-layer') expect(lanes).toEqual(['logo', 'identity', 'brand']);   // rings, inside out
       if (ep.game.id === 'voice-fit') { expect(lanes).toEqual(['off', 'on']); for (const c of ep.game.cards) expect(c.note).toBeTruthy(); }
       if (ep.game.id === 'mood-build') { expect(lanes).toEqual(['drop', 'keep']); for (const c of ep.game.cards) { expect(['palette-warm', 'palette-neon', 'type-serif', 'type-grunge', 'photo-sunrise', 'photo-crowd', 'texture-paper', 'texture-glitch', 'icon-line', 'icon-3d']).toContain(c.visual); expect(c.note).toBeTruthy(); } }
+      if (ep.game.id === 'model-match') expect(lanes).toEqual(['sub', 'mkt', 'ads', 'free']);
+      if (ep.game.id === 'unit-calc') {   // the marked health is what the maths says, and no card sits on a threshold
+        expect(lanes).toEqual(['losing', 'risky', 'healthy']);
+        for (const c of ep.game.cards) {
+          const n = unitNumbers(c.visual ?? '');
+          for (const v of [n.price, n.months, n.margin, n.cac]) expect(v).toBeGreaterThan(0);
+          const ratio = n.ltv / n.cac;
+          expect(c.lane).toBe(unitHealth(ratio));
+          for (const edge of [1, 3]) expect(Math.abs(ratio - edge)).toBeGreaterThan(0.15);
+        }
+      }
+      if (ep.game.id === 'buyer-role') expect(lanes).toEqual(['user', 'buyer', 'it', 'proc']);
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

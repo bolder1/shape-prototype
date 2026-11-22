@@ -498,9 +498,52 @@ const br1: BossBriefInput = {
   },
 };
 
+const bz1: BossBriefInput = {
+  chapterId: 'bz.1',
+  title: 'Map the business model canvas',
+  minutes: 60,
+  scenario: [
+    'Take your Studio product (or any product idea you’re working on) and fill in the business model canvas: the nine blocks that describe how it creates, delivers and captures value.',
+    'Then do the unit economics on the back of an envelope, and name two design decisions the model implies. Rough numbers are fine; say where each one comes from.',
+  ],
+  fields: [
+    { id: 'product', label: 'The product', kind: 'text', minWords: 10, hint: 'One or two lines: what it is and who it’s for.' },
+    { id: 'canvas', label: 'The canvas, block by block', kind: 'list', items: 9, minWords: 5, hint: 'One item per block: customer segments, value proposition, channels, customer relationships, revenue streams, key resources, key activities, key partners, cost structure.' },
+    { id: 'economics', label: 'Unit economics', kind: 'long', minWords: 25, hint: 'Price, months a customer stays, margin, LTV, and an estimated CAC. Is LTV at least 3× CAC? Show the sums.' },
+    { id: 'design', label: 'Two design decisions the model implies', kind: 'list', items: 2, minWords: 15, hint: 'What the model means for the product: what to optimise, what to avoid, which metric matters.' },
+  ],
+  rubric: [
+    { id: 'canvas', label: 'A coherent canvas', strong: 'All nine blocks filled with specifics, and they connect: the revenue stream matches the segment, the costs match the activities.', weight: 2, required: true },
+    { id: 'economics', label: 'Honest unit economics', strong: 'Shows LTV = price × months × margin, an estimated CAC with a source or assumption, and a clear verdict on the ratio.', weight: 2, required: true },
+    { id: 'design', label: 'Design follows the model', strong: 'Each decision ties a design choice to the model (e.g. retention features for a subscription, seller tools for a marketplace).', weight: 2 },
+    { id: 'segment', label: 'A focused segment', strong: 'Names a specific first customer segment rather than “everyone”.', weight: 1 },
+    { id: 'risks', label: 'Knows the weak spot', strong: 'Points out the riskiest block or assumption and how to test it.', weight: 1 },
+  ],
+  tips: ['Start with the customer segment and value proposition; the other blocks follow from them.', 'Use 1 ÷ monthly churn to estimate how many months a customer stays.'],
+  example: {
+    product: 'Dabba, a ₹99-a-day tiffin subscription for college students living away from home.',
+    canvas: [
+      'Customer segments: students in hostels and PGs near three Pune campuses.',
+      'Value proposition: home-style lunch on campus, ₹99, no cooking, no delivery fees.',
+      'Channels: campus ambassadors, Instagram, WhatsApp groups, the app.',
+      'Customer relationships: self-serve app, WhatsApp support, monthly feedback polls.',
+      'Revenue streams: weekly and monthly subscriptions paid by UPI autopay.',
+      'Key resources: partner home cooks, delivery riders, the ordering app.',
+      'Key activities: menu planning, cook quality checks, daily lunchtime delivery.',
+      'Key partners: home cooks, a packaging supplier, college canteens for pickup points.',
+      'Cost structure: food from cooks, riders, packaging, marketing to students.',
+    ],
+    economics: 'Monthly revenue ₹2,200 (22 lunches). Margin about 25% after cooks, riders and packaging, so ₹550 a month. Monthly churn about 12% (exams and holidays), so customers stay about 8 months. LTV ≈ ₹2,200 × 8 × 25% = ₹4,400. CAC from ambassador referrals is about ₹600. LTV ÷ CAC ≈ 7: healthy, if churn holds in the holidays.',
+    design: [
+      'Pause, don’t cancel: let students pause during exams and holidays in one tap, because churn is our biggest risk and pausing keeps them as subscribers.',
+      'Make referral the main growth loop: a one-tap “bring a hostel-mate” flow, since referred students cost a fraction of Instagram ads and lower CAC.',
+    ],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

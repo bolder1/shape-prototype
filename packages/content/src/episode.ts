@@ -18,7 +18,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'fidelity', 'question-proto', 'proto-links',
   'spectrum', 'pour', 'colour-blind', 'targets',
   'funnel', 'aha', 'fogg', 'dark-patterns',
-  'brand-layers', 'positioning', 'moodboard']);
+  'brand-layers', 'positioning', 'moodboard',
+  'business-models', 'unit-economics', 'buying-journey']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -73,6 +74,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `brand-layer`: lanes `logo`, `identity`, `brand` (drawn as rings, inside out).
  *  - `voice-fit`: needs `rounds` (forge a positioning statement), then lanes `off`, `on`; every card needs a `note`.
  *  - `mood-build`: lanes `drop`, `keep`; every card's `visual` names a tile the game draws and has a `note`.
+ *  - `model-match`: lanes `sub`, `mkt`, `ads`, `free` (each drawn as a money-flow diagram).
+ *  - `unit-calc`: lanes `losing`, `risky`, `healthy`; every card's `visual` is "price|months|margin%|CAC" and its lane follows `unitHealth`.
+ *  - `buyer-role`: lanes `user`, `buyer`, `it`, `proc` (the B2B buying group).
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -88,7 +92,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'fidelity-pick', 'proto-scope', 'wire-flow',
   'persona-spectrum', 'pour-sort', 'cvd-fix', 'target-spot',
   'funnel-leak', 'aha-path', 'fogg-fix', 'dark-spot',
-  'brand-layer', 'voice-fit', 'mood-build']);
+  'brand-layer', 'voice-fit', 'mood-build',
+  'model-match', 'unit-calc', 'buyer-role']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -205,4 +210,8 @@ export const leakiestStep = (counts: number[]) => { const r = funnelRates(counts
 export const foggPoint = (visual: string) => { const [m, a, p] = visual.split(',').map(Number); return { m, a, p }; };
 /** Which factor is missing: no prompt, then low motivation, then low ability. */
 export const foggMissing = ({ m, a, p }: { m: number; a: number; p: number }): 'prompt' | 'motivation' | 'ability' => (!p ? 'prompt' : m <= 3 ? 'motivation' : 'ability');
+/** Parses a `unit-calc` card's visual: "price|months|margin%|CAC". */
+export const unitNumbers = (visual: string) => { const [price, months, margin, cac] = visual.split('|').map(Number); return { price, months, margin, cac, ltv: price * months * (margin / 100) }; };
+/** LTV ÷ CAC: below 1 loses money on each customer, 3 or more is healthy. */
+export const unitHealth = (ratio: number): 'losing' | 'risky' | 'healthy' => (ratio < 1 ? 'losing' : ratio < 3 ? 'risky' : 'healthy');
 export type EpisodeQuestion = z.infer<typeof Question>;
