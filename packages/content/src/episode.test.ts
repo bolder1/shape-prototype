@@ -20,6 +20,10 @@ describe('findExercise', () => {
     expect(() => Exercise.parse(job)).not.toThrow();
     expect(job?.type === 'pick' && job.prompt).toContain('job story');
     expect(job?.type === 'pick' && job.explanation).toContain('progress wanted');
+    const scope = findExercise('pr.1-2', 'game.r1');
+    expect(() => Exercise.parse(scope)).not.toThrow();
+    expect(scope?.type === 'pick' && scope.options.find(o => o.id === scope.correct)?.label).toBe('Can first-time users change the delivery address after ordering, without help?');
+    expect(scope?.type === 'pick' && scope.explanation).toContain('how you’d know it worked');
     expect(findExercise('fd.1-2', 'quiz.nope')).toBeUndefined();
   });
 });
@@ -39,7 +43,7 @@ describe('episodes', () => {
       // Every lane gets at least one card, so the game can fill every part of the diamond.
       for (const l of lanes) expect(ep.game.cards.some(c => c.lane === l)).toBe(true);
       if (['swipe-sort', 'myth-pop', 'squint-test', 'chunk-lab', 'flashlight', 'scale-sort', 'question-forge', 'red-pen', 'jargon-swap', 'line-cut', 'glance-test', 'button-forge', 'chat-probe', 'job-forge', 'ask-watch'].includes(ep.game.id)) expect(lanes).toHaveLength(2);   // two-way games
-      if (['question-forge', 'button-forge', 'job-forge'].includes(ep.game.id)) expect(ep.game.rounds?.length).toBeGreaterThan(0);   // the forges need tiles
+      if (['question-forge', 'button-forge', 'job-forge', 'proto-scope'].includes(ep.game.id)) expect(ep.game.rounds?.length).toBeGreaterThan(0);   // the forges need tiles
       if (ep.game.id === 'red-pen') for (const c of ep.game.cards) expect(c.note).toBeTruthy();   // every line gets its explanation
       if (ep.game.id === 'jargon-swap') for (const c of ep.game.cards) if (c.lane === lanes[0]) expect(c.note).toBeTruthy();   // every system label gets its rewrite
       if (ep.game.id === 'crowd-sort') for (const c of ep.game.cards) expect(c.agree).toBeGreaterThan(50);   // the answer is the majority's lane
@@ -108,6 +112,9 @@ describe('episodes', () => {
         expect(system.size).toBe(1);
         for (const c of ep.game.cards) if (c.lane === 'debt') { expect(system.has(style(c))).toBe(false); expect(c.note).toBeTruthy(); }
       }
+      if (ep.game.id === 'fidelity-pick') expect(lanes).toEqual(['paper', 'wire', 'hifi', 'code']);   // rungs, cheapest first
+      if (ep.game.id === 'proto-scope') { expect(lanes).toEqual(['cut', 'keep']); for (const c of ep.game.cards) expect(c.note).toBeTruthy(); }   // every call explained
+      if (ep.game.id === 'wire-flow') expect(lanes).toEqual(['navigate', 'overlay', 'back', 'change']);   // actions the game animates
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

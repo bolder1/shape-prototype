@@ -53,6 +53,9 @@ import { ContrastDarkScene } from '../scenes/ContrastDark';
 import { AtomicScene } from '../scenes/Atomic';
 import { TokensScene } from '../scenes/Tokens';
 import { InconsistencyScene } from '../scenes/Inconsistency';
+import { FidelityScene } from '../scenes/Fidelity';
+import { QuestionProtoScene } from '../scenes/QuestionProto';
+import { ProtoLinksScene } from '../scenes/ProtoLinks';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -99,6 +102,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   atomic: AtomicScene,
   tokens: TokensScene,
   inconsistency: InconsistencyScene,
+  fidelity: FidelityScene,
+  'question-proto': QuestionProtoScene,
+  'proto-links': ProtoLinksScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

@@ -55,6 +55,9 @@ import { ContrastCheck } from './games/ContrastCheck';
 import { AtomStack } from './games/AtomStack';
 import { TokenSwap } from './games/TokenSwap';
 import { DebtHunt } from './games/DebtHunt';
+import { FidelityPick } from './games/FidelityPick';
+import { ProtoScope } from './games/ProtoScope';
+import { WireFlow } from './games/WireFlow';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -119,6 +122,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'atom-stack': AtomStack,
   'token-swap': TokenSwap,
   'debt-hunt': DebtHunt,
+  'fidelity-pick': FidelityPick,
+  'proto-scope': ProtoScope,
+  'wire-flow': WireFlow,
 };
 
 interface Props {

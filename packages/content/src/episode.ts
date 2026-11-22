@@ -14,7 +14,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'script-shape', 'probing', 'jobs', 'context-visit',
   'type-anatomy', 'type-scale', 'font-pairing', 'measure',
   'colour-models', 'palette-build', 'semantic-colour', 'contrast-dark',
-  'atomic', 'tokens', 'inconsistency']);
+  'atomic', 'tokens', 'inconsistency',
+  'fidelity', 'question-proto', 'proto-links']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -55,6 +56,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `atom-stack`: lanes `atom`, `molecule`, `organism`, `template` (bottom to top); every card's `visual` names the part it draws.
  *  - `token-swap`: lanes `color`, `space`, `text`, `radius` (each lane's `label` is the token name); every card's `visual` names the screen element it binds.
  *  - `debt-hunt`: lanes `debt`, `ok`; every card's `visual` is a button "bg|radius|paddingX|weight|label"; `ok` cards all match one system style, `debt` cards differ and need a `note`.
+ *  - `fidelity-pick`: lanes `paper`, `wire`, `hifi`, `code` (cheapest to dearest; the game charges each lane's cost).
+ *  - `proto-scope`: needs `rounds` (forge the prototype's question), then lanes `cut`, `keep`; every card needs a `note`.
+ *  - `wire-flow`: lanes `navigate`, `overlay`, `back`, `change` (Figma prototype actions the game plays back).
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -66,7 +70,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'script-builder', 'chat-probe', 'job-forge', 'ask-watch',
   'anatomy-pin', 'size-it', 'pair-judge', 'measure-tune',
   'hsl-dial', 'ramp-pick', 'token-route', 'contrast-check',
-  'atom-stack', 'token-swap', 'debt-hunt']);
+  'atom-stack', 'token-swap', 'debt-hunt',
+  'fidelity-pick', 'proto-scope', 'wire-flow']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

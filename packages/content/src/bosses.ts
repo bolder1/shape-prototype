@@ -362,9 +362,39 @@ const ds1: BossBriefInput = {
   },
 };
 
+const pr1: BossBriefInput = {
+  chapterId: 'pr.1',
+  title: 'A prototype that answers one question',
+  minutes: 90,
+  scenario: [
+    'Yatra, a bus-ticket app, is adding seat selection. The team argues about whether people will understand a seat map on a small phone screen, or whether a simple list (“Window, lower deck, seat 14”) works better.',
+    'Build a clickable prototype (Figma or any tool) that answers one specific question about this, test it with at least three people, and report what you learned. Share a link to the prototype.',
+  ],
+  fields: [
+    { id: 'question', label: 'Your question', kind: 'text', minWords: 12, hint: 'Who, what task, and how you’ll know it worked.' },
+    { id: 'scope', label: 'What you built, and what you left out', kind: 'long', minWords: 25, hint: 'Fidelity level, the screens on the path, and what you deliberately skipped. Include the prototype link.' },
+    { id: 'test', label: 'The test', kind: 'long', minWords: 20, hint: 'The task you gave, who tried it, and what you watched for.' },
+    { id: 'answer', label: 'The answer', kind: 'long', minWords: 25, hint: 'What happened, what it means for the question, and what you’d build or test next.' },
+  ],
+  rubric: [
+    { id: 'question', label: 'A sharp question', strong: 'Names who, the task and a signal of success (e.g. “Can first-time bus travellers pick a window seat on the lower deck within 30 seconds, without help?”).', weight: 2, required: true },
+    { id: 'scope', label: 'Scoped to the question', strong: 'Builds only the screens on the task’s path at the lowest fidelity that can answer it, and says what was left out and why.', weight: 2, required: true },
+    { id: 'test', label: 'A real test', strong: 'At least three people did a task (not a tour); the report notes what they did, not just what they said.', weight: 2 },
+    { id: 'answer', label: 'An honest answer', strong: 'States what the evidence says about the question, including surprises, and a concrete next step.', weight: 1 },
+    { id: 'craft', label: 'Working prototype', strong: 'Connections work end to end with a clear starting point, and overlays or variants are used where they fit.', weight: 1 },
+  ],
+  tips: ['Write the question before opening Figma. If you can’t say what would count as success, the question isn’t ready.', 'Give testers a scenario, e.g. “You get travel sick. Book a seat for tomorrow’s 7 am bus.”'],
+  example: {
+    question: 'Can first-time users pick a lower-deck window seat on the seat map within 30 seconds, without help?',
+    scope: 'A clickable wireframe in Figma (grey boxes, real seat numbers): bus results, seat map with a deck switch, seat selected state, and the passenger details screen. Left out login, payment and search filters, since the task starts with a bus already chosen. Link: figma.com/proto/… (seat map test).',
+    test: 'Three people (my cousin, a colleague, a neighbour), each given the scenario “you get travel sick, book a window seat on the lower deck for tomorrow’s 7 am bus”. I timed them and noted where they hesitated or tapped wrongly.',
+    answer: 'Two of three succeeded in under 20 seconds. One didn’t notice the upper/lower deck switch and picked an upper seat, thinking it was lower. So the map works, but the deck switch is easy to miss. Next: make the decks two clear tabs above the map and re-test with three new people.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
