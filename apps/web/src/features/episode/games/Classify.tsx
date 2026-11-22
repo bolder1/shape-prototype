@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 import type { Episode } from '@shape/content';
 import { springs } from '@shape/ui';
 import { cx } from '@/utils/cx';
-import { FAMILY, NibSays } from '../kit';
+import { FAMILY_SOLID, NibSays } from '../kit';
 import type { GameResult } from './DiamondSort';
 import { play } from '@/lib/sound';
 
@@ -52,7 +52,7 @@ export function Classify({ game, title, onDone, laneArt }: { game: Game; title: 
         {game.lanes.map((l, i) => (
           <motion.button key={l.id} type="button" onClick={() => choose(l.id)} disabled={!!feedback} whileTap={{ scale: 0.96 }}
             className={cx('rounded-2xl px-3 py-4 text-md font-bold text-white transition disabled:opacity-60', feedback?.ok === false && l.id === card.lane && 'ring-4 ring-mint-500')}
-            style={{ background: FAMILY[[0, 1, 3, 2][i % 4]] }}>
+            style={{ background: FAMILY_SOLID[[0, 1, 3, 2][i % 4]] }}>
             {laneArt && <span className="mb-2 flex justify-center" aria-hidden>{laneArt(l.id)}</span>}
             {l.label}
           </motion.button>

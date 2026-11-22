@@ -75,7 +75,7 @@ export function JargonSwap({ game, onDone }: { game: Game; onDone: (results: Gam
                 <div className="grid grid-cols-2 gap-3">
                   {[sys, user].map((l, k) => (
                     <motion.button key={l.id} type="button" whileTap={{ scale: 0.96 }} onClick={() => call(l.id)}
-                      className="rounded-2xl px-3 py-4 text-left text-white" style={{ background: k ? 'var(--color-family-grow)' : 'var(--color-family-build)' }}>
+                      className="rounded-2xl px-3 py-4 text-left text-white" style={{ background: k ? 'var(--color-family-grow-solid)' : 'var(--color-family-build-solid)' }}>
                       <span className="block text-md font-bold">{l.label}</span>
                       <span className="block text-xs font-medium opacity-90">{l.hint}</span>
                     </motion.button>

@@ -9,7 +9,7 @@ import type { Episode } from '@shape/content';
 import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
-import { Burst, FAMILY, NibSays, StageTitle } from '../kit';
+import { Burst, FAMILY_SOLID, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
 import { play } from '@/lib/sound';
 
@@ -57,7 +57,7 @@ export function OstGrow({ game, onDone }: { game: Game; onDone: (results: GameRe
                 <motion.button type="button" onClick={() => hang(l.id)} disabled={!card} whileTap={{ scale: 0.97 }}
                   animate={isWrong ? { x: [0, -8, 8, -4, 0] } : {}} transition={{ duration: 0.4 }}
                   className={cx('w-full rounded-xl px-2 py-2.5 text-center text-sm font-bold text-white ring-2 ring-inset transition disabled:cursor-default', isWrong ? 'ring-error' : 'ring-transparent')}
-                  style={{ background: FAMILY[[1, 3, 0][k % 3]] }}>
+                  style={{ background: FAMILY_SOLID[[1, 3, 0][k % 3]] }}>
                   {l.label}
                 </motion.button>
                 {sols.map(c => (

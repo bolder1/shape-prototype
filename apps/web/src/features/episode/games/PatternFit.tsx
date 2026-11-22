@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 import type { Episode } from '@shape/content';
 import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
-import { FAMILY, NibSays, StageTitle } from '../kit';
+import { FAMILY_SOLID, NibSays, StageTitle } from '../kit';
 import { Classify } from './Classify';
 import type { GameResult } from './DiamondSort';
 
@@ -35,7 +35,7 @@ export function PatternFit({ game, onDone }: { game: Game; onDone: (results: Gam
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {game.lanes.map((l, i) => (
           <motion.div key={l.id} initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ ...springs.pop, delay: i * 0.08 }}
-            className="flex flex-col items-center gap-2 rounded-2xl px-3 py-4 text-center text-white" style={{ background: FAMILY[[0, 1, 3, 2][i % 4]] }}>
+            className="flex flex-col items-center gap-2 rounded-2xl px-3 py-4 text-center text-white" style={{ background: FAMILY_SOLID[[0, 1, 3, 2][i % 4]] }}>
             <PatternArt id={l.id} size={72} />
             <span className="text-md font-bold">{l.label}</span>
             <span className="text-xs font-medium opacity-90">{l.hint}</span>

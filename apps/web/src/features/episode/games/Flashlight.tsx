@@ -64,8 +64,8 @@ export function Flashlight({ game, onDone }: { game: Game; onDone: (results: Gam
               </button>
               {open === c.id && !a && (
                 <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={springs.pop} className="mt-1.5 grid grid-cols-2 gap-1.5">
-                  <button type="button" onClick={() => answer(c.id, explore.id)} className="rounded-xl bg-[var(--color-family-discover)] px-2 py-2 text-xs font-bold text-white">{explore.label}</button>
-                  <button type="button" onClick={() => answer(c.id, check.id)} className="rounded-xl bg-[var(--color-family-grow)] px-2 py-2 text-xs font-bold text-white">{check.label}</button>
+                  <button type="button" onClick={() => answer(c.id, explore.id)} className="rounded-xl bg-[var(--color-family-discover-solid)] px-2 py-2 text-xs font-bold text-white">{explore.label}</button>
+                  <button type="button" onClick={() => answer(c.id, check.id)} className="rounded-xl bg-[var(--color-family-grow-solid)] px-2 py-2 text-xs font-bold text-white">{check.label}</button>
                 </motion.div>
               )}
             </div>

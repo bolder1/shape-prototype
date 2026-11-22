@@ -15,6 +15,7 @@
   - brand  = midnight (#1E2A4A at 600): chrome, primary actions, focus. Set in theme.css.
   - mint   = progress and reward only (bars, streaks, XP, completed states). Never for chrome.
   - family = four skill families; validated categorical set (CVD-safe, ≥3:1 on white).
+    White text on a family fill is only 3.7–4.4:1: use the -solid variants (FAMILY_SOLID in episode/kit.tsx).
   Contrast checks: brand-600 13.2:1 on white · mint-600 4.0:1 on white, 3.4:1 on track · mint-700 text 5.2:1.
 */
 @theme {
@@ -33,6 +34,12 @@
   --color-family-design: #B97508;
   --color-family-grow: #8B5CF6;
   --color-family-build: #D9467A;
+
+  /* Solid = same hue, slightly darker, for fills that carry white text (WCAG 4.5:1 for body text). */
+  --color-family-discover-solid: #346AF5; /* 4.64:1 with white */
+  --color-family-design-solid: #A36707;   /* 4.67:1 */
+  --color-family-grow-solid: #8452F5;     /* 4.66:1 */
+  --color-family-build-solid: #D5336C;    /* 4.65:1 */
 }
 
 @utility scrollbar-hide {
