@@ -14,7 +14,8 @@ import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 type Round = NonNullable<Game['rounds']>[number];
-const SLOT = [{ k: 'Situation', c: 'var(--color-family-discover)' }, { k: 'Motivation', c: 'var(--color-family-design)' }, { k: 'Outcome', c: 'var(--color-mint-600)' }];
+// Slot labels are white text on these fills, so they use the darker solids (4.5:1 or more with white).
+const SLOT = [{ k: 'Situation', c: 'var(--color-family-discover-solid)' }, { k: 'Motivation', c: 'var(--color-family-design-solid)' }, { k: 'Outcome', c: 'var(--color-mint-700)' }];
 
 function ForgeRound({ round, index, total, onDone }: { round: Round; index: number; total: number; onDone: (correct: boolean) => void }) {
   // Fixed shuffle so tiles never sit in answer order.

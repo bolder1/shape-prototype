@@ -17,6 +17,8 @@ type Game = Episode['game'];
 type Cue = 'idle' | 'left' | 'right' | 'wrong';
 const HEARTS = 3;
 const LEFT_C = 'var(--color-family-discover)', RIGHT_C = 'var(--color-family-grow)';
+// The lane buttons carry white text, so they take the darker solid fills; the stamps keep the family colour.
+const LEFT_SOLID = 'var(--color-family-discover-solid)', RIGHT_SOLID = 'var(--color-family-grow-solid)';
 
 export function SwipeSort({ game, onDone }: { game: Game; onDone: (results: GameResult[]) => void }) {
   const [left, right] = game.lanes;
@@ -106,11 +108,11 @@ export function SwipeSort({ game, onDone }: { game: Game; onDone: (results: Game
 
       <div className="grid grid-cols-2 gap-3">
         <button type="button" onClick={() => decide(left.id)} disabled={cue !== 'idle'}
-          className="flex items-center justify-center gap-2 rounded-2xl px-4 py-4 text-lg font-bold text-white transition active:scale-95 disabled:opacity-50" style={{ background: LEFT_C }}>
+          className="flex items-center justify-center gap-2 rounded-2xl px-4 py-4 text-lg font-bold text-white transition active:scale-95 disabled:opacity-50" style={{ background: LEFT_SOLID }}>
           <ArrowLeftIcon className="size-5" weight="bold" />{left.label}
         </button>
         <button type="button" onClick={() => decide(right.id)} disabled={cue !== 'idle'}
-          className="flex items-center justify-center gap-2 rounded-2xl px-4 py-4 text-lg font-bold text-white transition active:scale-95 disabled:opacity-50" style={{ background: RIGHT_C }}>
+          className="flex items-center justify-center gap-2 rounded-2xl px-4 py-4 text-lg font-bold text-white transition active:scale-95 disabled:opacity-50" style={{ background: RIGHT_SOLID }}>
           {right.label}<ArrowRightIcon className="size-5" weight="bold" />
         </button>
       </div>

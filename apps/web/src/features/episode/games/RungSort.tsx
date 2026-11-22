@@ -13,6 +13,8 @@ import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
 const COLOR: Record<string, string> = { problem: 'var(--color-family-design)', outcome: 'var(--color-mint-600)', output: 'var(--color-family-discover)' };
+// Darker fills for the chips, which carry white text (4.5:1 or more with white).
+const SOLID: Record<string, string> = { problem: 'var(--color-family-design-solid)', outcome: 'var(--color-mint-700)', output: 'var(--color-family-discover-solid)' };
 
 export function RungSort({ game, onDone }: { game: Game; onDone: (results: GameResult[]) => void }) {
   const [deck, setDeck] = useState(game.cards);
@@ -78,7 +80,7 @@ export function RungSort({ game, onDone }: { game: Game; onDone: (results: GameR
               {here.length > 0 && (
                 <span className="flex flex-wrap gap-1.5">
                   {here.map(c => <motion.span key={c.id} layout initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={springs.pop}
-                    className="rounded-lg px-2 py-1 text-xs font-semibold text-white" style={{ background: COLOR[l.id] }}>{c.label}</motion.span>)}
+                    className="rounded-lg px-2 py-1 text-xs font-semibold text-white" style={{ background: SOLID[l.id] }}>{c.label}</motion.span>)}
                 </span>
               )}
             </motion.button>

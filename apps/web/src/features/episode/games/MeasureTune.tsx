@@ -9,7 +9,7 @@ import { Label, Slider, SliderThumb, SliderTrack } from 'react-aria-components';
 import { MEASURE, measureSetting, measureVerdict, type Episode, type MeasureSetting } from '@shape/content';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
-import { Burst, FAMILY, NibSays, StageTitle } from '../kit';
+import { Burst, FAMILY_SOLID, NibSays, StageTitle } from '../kit';
 import { PARAGRAPH, wrap } from '../scenes/Measure';
 import type { GameResult } from './DiamondSort';
 import { play } from '@/lib/sound';
@@ -121,7 +121,7 @@ export function MeasureTune({ game, onDone }: { game: Game; onDone: (results: Ga
           <motion.button key={l.id} type="button" onClick={() => pick(l.id)} disabled={!!picked} whileTap={{ scale: 0.96 }}
             className={cx('flex flex-col rounded-2xl px-3 py-3 text-left text-white transition disabled:cursor-default', picked && l.id !== picked && l.id !== card.lane && 'opacity-50',
               picked && l.id === card.lane && 'ring-4 ring-mint-500')}
-            style={{ background: FAMILY[[0, 1, 3][k]] }}>
+            style={{ background: FAMILY_SOLID[[0, 1, 3][k]] }}>
             <span className="text-md font-bold">{l.label}</span>
             <span className="text-xs font-medium opacity-90">{l.hint}</span>
           </motion.button>

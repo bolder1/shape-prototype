@@ -7,6 +7,11 @@ import { springs } from '@shape/ui';
 import { cx } from '@/utils/cx';
 
 export const FAMILY = ['var(--color-family-discover)', 'var(--color-family-design)', 'var(--color-family-grow)', 'var(--color-family-build)'];
+/**
+ * FAMILY in the same order, darkened to pass 4.5:1 with white. Use for any fill that carries white text.
+ * Spelled out in full so Tailwind's scanner sees each variable; a computed name gets tree-shaken from the CSS.
+ */
+export const FAMILY_SOLID = ['var(--color-family-discover-solid)', 'var(--color-family-design-solid)', 'var(--color-family-grow-solid)', 'var(--color-family-build-solid)'];
 
 export type NibMood = 'idle' | 'think' | 'cheer' | 'sad';
 

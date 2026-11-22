@@ -9,7 +9,7 @@ import type { Episode } from '@shape/content';
 import { springs } from '@shape/ui';
 import { Button } from '@/components/base/buttons/button';
 import { cx } from '@/utils/cx';
-import { Burst, FAMILY, NibSays, StageTitle } from '../kit';
+import { Burst, FAMILY_SOLID, NibSays, StageTitle } from '../kit';
 import type { GameResult } from './DiamondSort';
 import { play } from '@/lib/sound';
 
@@ -81,7 +81,7 @@ export function CrowdSort({ game, onDone }: { game: Game; onDone: (results: Game
           return (
             <div key={l.id} className={cx('flex min-h-24 flex-col gap-2 rounded-2xl p-3 sm:min-h-40 ring-2 ring-inset transition-colors', held ? 'bg-primary_hover ring-brand' : 'bg-primary ring-secondary')}>
               <button type="button" onClick={() => drop(l.id)} disabled={!held || revealed}
-                className="flex flex-col rounded-xl px-3 py-2 text-left text-white disabled:cursor-default" style={{ background: FAMILY[i % 4] }}>
+                className="flex flex-col rounded-xl px-3 py-2 text-left text-white disabled:cursor-default" style={{ background: FAMILY_SOLID[i % 4] }}>
                 <span className="text-md font-bold">{l.label}</span>
                 <span className="text-xs font-medium opacity-90">{l.hint}</span>
               </button>
