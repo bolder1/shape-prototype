@@ -428,9 +428,43 @@ const ax1: BossBriefInput = {
   },
 };
 
+const gr1: BossBriefInput = {
+  chapterId: 'gr.1',
+  title: 'Find the drop-offs in a real onboarding',
+  minutes: 60,
+  scenario: [
+    'Install an app you’ve never used (a fintech, fitness, learning or shopping app works well) and go through its onboarding as a new user. Screenshot every screen from first open until you reach what you think is the aha moment.',
+    'Find the three biggest drop-off risks: places where a new user is most likely to give up. Use the funnel, Fogg’s model (motivation, ability, prompt) and your dark-pattern radar to explain each one, and propose a fix.',
+  ],
+  fields: [
+    { id: 'app', label: 'The app, and its aha moment', kind: 'text', minWords: 12, hint: 'Name the app and say what you think the aha moment is, and why.' },
+    { id: 'path', label: 'The path to aha', kind: 'long', minWords: 25, hint: 'Every step from first open to the aha, numbered. Mark which steps the aha truly needs.' },
+    { id: 'risks', label: 'Three drop-off risks', kind: 'list', items: 3, minWords: 20, hint: 'For each: the step, why people might quit (motivation, ability or prompt), and how you’d measure it.' },
+    { id: 'fixes', label: 'Your fixes, and what you’d test first', kind: 'long', minWords: 25, hint: 'A fix per risk, plus which one you’d test first and the metric that would show it worked.' },
+  ],
+  rubric: [
+    { id: 'aha', label: 'A credible aha moment', strong: 'Names a specific action where value is felt (not “sign-up”), with a reason it predicts people staying.', weight: 2, required: true },
+    { id: 'diagnosis', label: 'Diagnosed, not just described', strong: 'Each risk is explained with motivation, ability or prompt (or a named dark pattern), tied to a specific step.', weight: 2, required: true },
+    { id: 'path', label: 'Path mapped', strong: 'Lists every step to the aha and separates what the aha needs from what could move later or go.', weight: 2 },
+    { id: 'fixes', label: 'Fixes that fit the diagnosis', strong: 'Each fix addresses the missing factor (e.g. defer sign-up for an ability problem) and stays ethical.', weight: 1 },
+    { id: 'metric', label: 'Measurable', strong: 'Names a step-to-step conversion or activation metric to check whether the fix worked.', weight: 1 },
+  ],
+  tips: ['Count the taps and the typing between first open and the aha. Every one is a chance to quit.', 'Notice the moments you hesitated. Hesitation is where real users leave.'],
+  example: {
+    app: 'A UPI investing app. I think the aha is seeing your first mutual fund SIP set up, with the date of the first debit, because that’s when it feels real.',
+    path: '1 Splash · 2 Phone number and OTP · 3 Email · 4 PAN number · 5 Selfie for KYC · 6 Bank account · 7 Risk questionnaire (12 questions) · 8 Fund recommendations · 9 Choose amount and date · 10 Set up UPI autopay (aha). Steps 2, 4, 5, 6, 9 and 10 are needed for a real SIP; 3 and 7 could move later or shrink.',
+    risks: [
+      'Step 5, selfie KYC: ability. It needs good light and a steady camera, and failed twice for me with no tip on why. Measure: KYC start to KYC complete.',
+      'Step 7, 12-question risk quiz: motivation and ability. It feels like an exam before any value. Measure: drop-off within the questionnaire, question by question.',
+      'Step 3, email: ability with no clear reason. It asks for email before explaining why. Measure: email screen exit rate.',
+    ],
+    fixes: 'Selfie: add live guidance (“move closer to a window”) and a retry tip after a failure. Quiz: cut to three questions and offer “browse funds first”. Email: move it after the first SIP, for statements. I’d test the quiz change first, since it touches everyone; success is a higher share of sign-ups reaching step 9 within a day.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

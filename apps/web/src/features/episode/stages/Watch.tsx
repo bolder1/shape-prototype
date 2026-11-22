@@ -60,6 +60,10 @@ import { SpectrumScene } from '../scenes/Spectrum';
 import { PourScene } from '../scenes/Pour';
 import { ColourBlindScene } from '../scenes/ColourBlind';
 import { TargetsScene } from '../scenes/Targets';
+import { FunnelScene } from '../scenes/Funnel';
+import { AhaScene } from '../scenes/Aha';
+import { FoggScene } from '../scenes/Fogg';
+import { DarkPatternsScene } from '../scenes/DarkPatterns';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -113,6 +117,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   pour: PourScene,
   'colour-blind': ColourBlindScene,
   targets: TargetsScene,
+  funnel: FunnelScene,
+  aha: AhaScene,
+  fogg: FoggScene,
+  'dark-patterns': DarkPatternsScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

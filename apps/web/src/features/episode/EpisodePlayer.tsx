@@ -62,6 +62,10 @@ import { PersonaSpectrum } from './games/PersonaSpectrum';
 import { PourSort } from './games/PourSort';
 import { CvdFix } from './games/CvdFix';
 import { TargetSpot } from './games/TargetSpot';
+import { FunnelLeak } from './games/FunnelLeak';
+import { AhaPath } from './games/AhaPath';
+import { FoggFix } from './games/FoggFix';
+import { DarkSpot } from './games/DarkSpot';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -133,6 +137,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'pour-sort': PourSort,
   'cvd-fix': CvdFix,
   'target-spot': TargetSpot,
+  'funnel-leak': FunnelLeak,
+  'aha-path': AhaPath,
+  'fogg-fix': FoggFix,
+  'dark-spot': DarkSpot,
 };
 
 interface Props {

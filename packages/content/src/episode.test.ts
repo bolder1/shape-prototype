@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, findExercise, contrastLane, contrastRatio, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, findExercise, contrastLane, contrastRatio, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -124,6 +124,28 @@ describe('episodes', () => {
       if (ep.game.id === 'pour-sort') expect(lanes).toEqual(['p', 'o', 'u', 'r']);   // the four pillars
       if (ep.game.id === 'cvd-fix') { expect(lanes).toEqual(['broken', 'clear']); for (const c of ep.game.cards) { expect(['chart-rg', 'chart-labels', 'dots', 'dots-icons', 'error-border', 'error-message', 'link-colour', 'link-underline', 'heat-rg', 'heat-blue']).toContain(c.visual); expect(c.note).toBeTruthy(); } }
       if (ep.game.id === 'target-spot') { expect(lanes).toEqual(['problem', 'ok']); for (const c of ep.game.cards) { expect(['close-small', 'pay-button', 'links-close', 'focus-ring', 'no-focus', 'stepper', 'tiny-check', 'tabs']).toContain(c.visual); expect(c.note).toBeTruthy(); } }
+      if (ep.game.id === 'funnel-leak') {   // the marked step really leaks most, by a clear margin
+        expect(lanes).toEqual(['acq', 'act', 'ret', 'rev']);
+        for (const c of ep.game.cards) {
+          const counts = funnelCounts(c.visual ?? '');
+          expect(counts).toHaveLength(5);
+          for (let i = 1; i < 5; i++) expect(counts[i]).toBeLessThanOrEqual(counts[i - 1]);
+          expect(c.lane).toBe(leakiestStep(counts));
+          const r = [...funnelRates(counts)].sort((x, y) => x - y);
+          expect(r[1] - r[0]).toBeGreaterThanOrEqual(0.03);
+        }
+      }
+      if (ep.game.id === 'aha-path') { expect(lanes).toEqual(['before', 'later', 'cut']); for (const c of ep.game.cards) expect(c.note).toBeTruthy(); }
+      if (ep.game.id === 'fogg-fix') {   // exactly one factor is missing, and it's the marked one
+        expect(lanes).toEqual(['motivation', 'ability', 'prompt']);
+        for (const c of ep.game.cards) {
+          const pt = foggPoint(c.visual ?? '');
+          expect(c.lane).toBe(foggMissing(pt));
+          const weak = [pt.m <= 3, pt.a <= 3, pt.p === 0].filter(Boolean).length;
+          expect(weak).toBe(1);
+        }
+      }
+      if (ep.game.id === 'dark-spot') { expect(lanes).toEqual(['dark', 'fair']); for (const c of ep.game.cards) { expect(['confirmshame', 'decline-plain', 'preticked', 'optin', 'fake-timer', 'real-deadline', 'cancel-call', 'cancel-easy', 'hidden-fee', 'total-upfront']).toContain(c.visual); expect(c.note).toBeTruthy(); } }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

@@ -16,7 +16,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'colour-models', 'palette-build', 'semantic-colour', 'contrast-dark',
   'atomic', 'tokens', 'inconsistency',
   'fidelity', 'question-proto', 'proto-links',
-  'spectrum', 'pour', 'colour-blind', 'targets']);
+  'spectrum', 'pour', 'colour-blind', 'targets',
+  'funnel', 'aha', 'fogg', 'dark-patterns']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -64,6 +65,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `pour-sort`: lanes `p`, `o`, `u`, `r` (Perceivable, Operable, Understandable, Robust), drawn as pillars.
  *  - `cvd-fix`: lanes `broken`, `clear`; every card's `visual` names a mini design the game draws (and simulates for colour blindness) and has a `note`.
  *  - `target-spot`: lanes `problem`, `ok`; every card's `visual` names an element of the checkout mock and has a `note`.
+ *  - `funnel-leak`: lanes `acq`, `act`, `ret`, `rev`; every card's `visual` is a funnel "visitors|sign-ups|activated|retained|paying" and its lane is the leakiest step (see `leakiestStep`).
+ *  - `aha-path`: lanes `before`, `later`, `cut`; every card needs a `note`.
+ *  - `fogg-fix`: lanes `motivation`, `ability`, `prompt`; every card's `visual` is "motivation,ability,prompt" (1–9, 1–9, 0/1) and its lane is the missing factor (see `foggMissing`).
+ *  - `dark-spot`: lanes `dark`, `fair`; every card's `visual` names a mini UI the game draws and has a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -77,7 +82,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'hsl-dial', 'ramp-pick', 'token-route', 'contrast-check',
   'atom-stack', 'token-swap', 'debt-hunt',
   'fidelity-pick', 'proto-scope', 'wire-flow',
-  'persona-spectrum', 'pour-sort', 'cvd-fix', 'target-spot']);
+  'persona-spectrum', 'pour-sort', 'cvd-fix', 'target-spot',
+  'funnel-leak', 'aha-path', 'fogg-fix', 'dark-spot']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -182,4 +188,16 @@ export const contrastRatio = (a: string, b: string) => {
 };
 /** WCAG AA: 4.5:1 for body text, 3:1 for large text and icons. */
 export const contrastLane = (ratio: number): 'pass' | 'large' | 'fail' => (ratio >= 4.5 ? 'pass' : ratio >= 3 ? 'large' : 'fail');
+/** The four steps between funnel stages, in order. */
+export const FUNNEL_STEPS = ['acq', 'act', 'ret', 'rev'] as const;
+/** Parses a `funnel-leak` card's visual into stage counts. */
+export const funnelCounts = (visual: string) => visual.split('|').map(Number);
+/** Conversion rate of each step (stage n+1 ÷ stage n). */
+export const funnelRates = (counts: number[]) => counts.slice(1).map((n, i) => n / counts[i]);
+/** The step with the lowest conversion. */
+export const leakiestStep = (counts: number[]) => { const r = funnelRates(counts); return FUNNEL_STEPS[r.indexOf(Math.min(...r))]; };
+/** Parses a `fogg-fix` card's visual: "motivation,ability,prompt". */
+export const foggPoint = (visual: string) => { const [m, a, p] = visual.split(',').map(Number); return { m, a, p }; };
+/** Which factor is missing: no prompt, then low motivation, then low ability. */
+export const foggMissing = ({ m, a, p }: { m: number; a: number; p: number }): 'prompt' | 'motivation' | 'ability' => (!p ? 'prompt' : m <= 3 ? 'motivation' : 'ability');
 export type EpisodeQuestion = z.infer<typeof Question>;

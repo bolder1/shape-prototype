@@ -11,6 +11,7 @@ import { ui3 } from './chapters/ui-3';
 import { ds1 } from './chapters/ds-1';
 import { pr1 } from './chapters/pr-1';
 import { ax1 } from './chapters/ax-1';
+import { gr1 } from './chapters/gr-1';
 import { fd1_1 } from './episodes/fd-1-1';
 import { fd1_2 } from './episodes/fd-1-2';
 import { fd1_3 } from './episodes/fd-1-3';
@@ -27,6 +28,7 @@ import { ui3_1, ui3_2, ui3_3, ui3_4 } from './episodes/ui-3';
 import { ds1_1, ds1_2, ds1_3 } from './episodes/ds-1';
 import { pr1_1, pr1_2, pr1_3 } from './episodes/pr-1';
 import { ax1_1, ax1_2, ax1_3, ax1_4 } from './episodes/ax-1';
+import { gr1_1, gr1_2, gr1_3, gr1_4 } from './episodes/gr-1';
 import type { Exercise, LessonContent } from './schema';
 import type { Episode } from './episode';
 
@@ -46,14 +48,15 @@ export const EPISODES: Record<string, Episode> = { 'fd.1-1': fd1_1, 'fd.1-2': fd
   'ui.3-1': ui3_1, 'ui.3-2': ui3_2, 'ui.3-3': ui3_3, 'ui.3-4': ui3_4,
   'ds.1-1': ds1_1, 'ds.1-2': ds1_2, 'ds.1-3': ds1_3,
   'pr.1-1': pr1_1, 'pr.1-2': pr1_2, 'pr.1-3': pr1_3,
-  'ax.1-1': ax1_1, 'ax.1-2': ax1_2, 'ax.1-3': ax1_3, 'ax.1-4': ax1_4 };
+  'ax.1-1': ax1_1, 'ax.1-2': ax1_2, 'ax.1-3': ax1_3, 'ax.1-4': ax1_4,
+  'gr.1-1': gr1_1, 'gr.1-2': gr1_2, 'gr.1-3': gr1_3, 'gr.1-4': gr1_4 };
 export * from './grade';
 export * from './boss';
 export * from './boss-grade';
 export * from './bosses';
 
 /** Chapters with playable content, keyed by curriculum chapter id. Lessons are in curriculum order. */
-export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1 };
+export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1, 'gr.1': gr1 };
 
 export const hasContent = (chapterId: string) => !!CONTENT[chapterId]?.length;
 
