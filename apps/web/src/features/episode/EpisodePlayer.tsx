@@ -58,6 +58,10 @@ import { DebtHunt } from './games/DebtHunt';
 import { FidelityPick } from './games/FidelityPick';
 import { ProtoScope } from './games/ProtoScope';
 import { WireFlow } from './games/WireFlow';
+import { PersonaSpectrum } from './games/PersonaSpectrum';
+import { PourSort } from './games/PourSort';
+import { CvdFix } from './games/CvdFix';
+import { TargetSpot } from './games/TargetSpot';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -125,6 +129,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'fidelity-pick': FidelityPick,
   'proto-scope': ProtoScope,
   'wire-flow': WireFlow,
+  'persona-spectrum': PersonaSpectrum,
+  'pour-sort': PourSort,
+  'cvd-fix': CvdFix,
+  'target-spot': TargetSpot,
 };
 
 interface Props {

@@ -56,6 +56,10 @@ import { InconsistencyScene } from '../scenes/Inconsistency';
 import { FidelityScene } from '../scenes/Fidelity';
 import { QuestionProtoScene } from '../scenes/QuestionProto';
 import { ProtoLinksScene } from '../scenes/ProtoLinks';
+import { SpectrumScene } from '../scenes/Spectrum';
+import { PourScene } from '../scenes/Pour';
+import { ColourBlindScene } from '../scenes/ColourBlind';
+import { TargetsScene } from '../scenes/Targets';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -105,6 +109,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   fidelity: FidelityScene,
   'question-proto': QuestionProtoScene,
   'proto-links': ProtoLinksScene,
+  spectrum: SpectrumScene,
+  pour: PourScene,
+  'colour-blind': ColourBlindScene,
+  targets: TargetsScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

@@ -392,9 +392,45 @@ const pr1: BossBriefInput = {
   },
 };
 
+const ax1: BossBriefInput = {
+  chapterId: 'ax.1',
+  title: 'Audit a landing page for accessibility',
+  minutes: 60,
+  scenario: [
+    'Pick a real landing page (a startup, a bank, a college, a government service) and audit it against the 15-point checklist below, using only your browser: a contrast checker, the Tab key, zoom to 200%, and a screen reader or the browser’s accessibility tree if you can.',
+    'Checklist: 1 Text contrast 4.5:1 · 2 Large text and icons 3:1 · 3 Colour is never the only signal · 4 Meaningful images have alt text · 5 Videos have captions · 6 Everything works with the keyboard · 7 Focus is always visible · 8 Tab order follows the page · 9 Touch targets at least 44 px · 10 Page works at 200% zoom · 11 Headings form a logical outline · 12 Links say where they go (no bare “click here”) · 13 Form fields have visible labels · 14 Errors explain how to fix them · 15 Nothing flashes or auto-plays without control.',
+  ],
+  fields: [
+    { id: 'page', label: 'The page you audited', kind: 'text', minWords: 8, hint: 'Name it and say what it’s for. No need to share private details.' },
+    { id: 'findings', label: 'Your top five failures', kind: 'list', items: 5, minWords: 15, hint: 'For each: the checklist number, where it happens, how you tested it, and who it affects.' },
+    { id: 'passes', label: 'What the page does well', kind: 'text', minWords: 12, hint: 'At least three checklist points it passes, with evidence.' },
+    { id: 'fixes', label: 'Fixes, in priority order', kind: 'long', minWords: 30, hint: 'What you’d fix first and why: think impact on users and how many people it blocks.' },
+  ],
+  rubric: [
+    { id: 'evidence', label: 'Tested, not guessed', strong: 'Each finding names how it was tested (contrast ratio, Tab key, zoom, screen reader) and gives specifics such as ratios or element names.', weight: 2, required: true },
+    { id: 'coverage', label: 'Covers the checklist', strong: 'Findings and passes together touch most of the 15 points across perception, keyboard, structure and forms.', weight: 2, required: true },
+    { id: 'impact', label: 'Names who is affected', strong: 'Connects each failure to people on the spectrum (e.g. keyboard users, low vision, colour blindness, one-handed use).', weight: 2 },
+    { id: 'priority', label: 'Sensible priorities', strong: 'Puts blockers first (e.g. keyboard traps, unlabelled forms) ahead of minor issues, and says why.', weight: 1 },
+    { id: 'fixes', label: 'Concrete fixes', strong: 'Each fix is specific enough to act on (e.g. “darken #9CA3AF helper text to #6B7280, 4.8:1”).', weight: 1 },
+  ],
+  tips: ['Start with the Tab key. Put the mouse away and try to complete the page’s main task.', 'Zoom to 200% and see what breaks before you check anything else.'],
+  example: {
+    page: 'The landing page of a food delivery startup, built to get people to download the app.',
+    findings: [
+      '#1 Text contrast: the light grey subheading (#A3A3A3 on white) is 2.5:1, checked with a contrast checker. Low-vision users and anyone in sunlight will struggle.',
+      '#7 Focus visible: the “Download” and nav links show no focus ring when tabbing; the site sets outline: none. Keyboard users can’t tell where they are.',
+      '#4 Alt text: the hero image of the app has no alt attribute, so a screen reader reads the file name “hero_v3_final.png”.',
+      '#12 Links: three “Learn more” links go to different pages. Screen reader users listing links hear “Learn more” three times with no context.',
+      '#9 Targets: the footer social icons are 20 px with 6 px between them; on a phone, I hit the wrong one twice.',
+    ],
+    passes: 'Headings follow a clear H1 to H3 outline (#11). The page reflows cleanly at 200% zoom (#10). The sign-up form has visible labels above every field (#13).',
+    fixes: 'First, restore visible focus (#7), because keyboard users can’t use the page at all without it. Second, darken the subheading to at least #6B7280 (#1), which affects every visitor. Third, add alt text to the hero (#4) and rename the “Learn more” links (#12), both quick fixes for screen reader users. Last, enlarge and space the footer icons (#9).',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

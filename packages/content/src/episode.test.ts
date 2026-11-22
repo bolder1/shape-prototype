@@ -115,6 +115,15 @@ describe('episodes', () => {
       if (ep.game.id === 'fidelity-pick') expect(lanes).toEqual(['paper', 'wire', 'hifi', 'code']);   // rungs, cheapest first
       if (ep.game.id === 'proto-scope') { expect(lanes).toEqual(['cut', 'keep']); for (const c of ep.game.cards) expect(c.note).toBeTruthy(); }   // every call explained
       if (ep.game.id === 'wire-flow') expect(lanes).toEqual(['navigate', 'overlay', 'back', 'change']);   // actions the game animates
+      if (ep.game.id === 'persona-spectrum') {   // a full 3 × 3 matrix: one person per sense and lane
+        expect(lanes).toEqual(['perm', 'temp', 'sit']);
+        const cells = ep.game.cards.map(c => `${c.visual}:${c.lane}`);
+        expect(new Set(cells).size).toBe(9);
+        for (const c of ep.game.cards) expect(['touch', 'see', 'hear']).toContain(c.visual);
+      }
+      if (ep.game.id === 'pour-sort') expect(lanes).toEqual(['p', 'o', 'u', 'r']);   // the four pillars
+      if (ep.game.id === 'cvd-fix') { expect(lanes).toEqual(['broken', 'clear']); for (const c of ep.game.cards) { expect(['chart-rg', 'chart-labels', 'dots', 'dots-icons', 'error-border', 'error-message', 'link-colour', 'link-underline', 'heat-rg', 'heat-blue']).toContain(c.visual); expect(c.note).toBeTruthy(); } }
+      if (ep.game.id === 'target-spot') { expect(lanes).toEqual(['problem', 'ok']); for (const c of ep.game.cards) { expect(['close-small', 'pay-button', 'links-close', 'focus-ring', 'no-focus', 'stepper', 'tiny-check', 'tabs']).toContain(c.visual); expect(c.note).toBeTruthy(); } }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

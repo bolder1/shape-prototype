@@ -15,7 +15,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'type-anatomy', 'type-scale', 'font-pairing', 'measure',
   'colour-models', 'palette-build', 'semantic-colour', 'contrast-dark',
   'atomic', 'tokens', 'inconsistency',
-  'fidelity', 'question-proto', 'proto-links']);
+  'fidelity', 'question-proto', 'proto-links',
+  'spectrum', 'pour', 'colour-blind', 'targets']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -59,6 +60,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `fidelity-pick`: lanes `paper`, `wire`, `hifi`, `code` (cheapest to dearest; the game charges each lane's cost).
  *  - `proto-scope`: needs `rounds` (forge the prototype's question), then lanes `cut`, `keep`; every card needs a `note`.
  *  - `wire-flow`: lanes `navigate`, `overlay`, `back`, `change` (Figma prototype actions the game plays back).
+ *  - `persona-spectrum`: lanes `perm`, `temp`, `sit`; every card's `visual` is a sense (`touch`, `see`, `hear`) and each sense × lane cell holds exactly one card.
+ *  - `pour-sort`: lanes `p`, `o`, `u`, `r` (Perceivable, Operable, Understandable, Robust), drawn as pillars.
+ *  - `cvd-fix`: lanes `broken`, `clear`; every card's `visual` names a mini design the game draws (and simulates for colour blindness) and has a `note`.
+ *  - `target-spot`: lanes `problem`, `ok`; every card's `visual` names an element of the checkout mock and has a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -71,7 +76,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'anatomy-pin', 'size-it', 'pair-judge', 'measure-tune',
   'hsl-dial', 'ramp-pick', 'token-route', 'contrast-check',
   'atom-stack', 'token-swap', 'debt-hunt',
-  'fidelity-pick', 'proto-scope', 'wire-flow']);
+  'fidelity-pick', 'proto-scope', 'wire-flow',
+  'persona-spectrum', 'pour-sort', 'cvd-fix', 'target-spot']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
