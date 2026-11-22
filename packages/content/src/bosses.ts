@@ -462,9 +462,45 @@ const gr1: BossBriefInput = {
   },
 };
 
+const br1: BossBriefInput = {
+  chapterId: 'br.1',
+  title: 'Write a brand platform',
+  minutes: 60,
+  scenario: [
+    'Pick a product: your own idea, a side project, or a fictional one (for example, a tiffin subscription for students, or an app that helps families split chores). Write the brand platform a design team would use to make every decision about it.',
+    'A brand platform has three parts: purpose (why it exists beyond money), positioning (who it’s for, what it beats, why), and personality (how it behaves and sounds). Show how the personality would change one real screen.',
+  ],
+  fields: [
+    { id: 'product', label: 'The product', kind: 'text', minWords: 12, hint: 'What it is, who uses it, and the main alternative people use today.' },
+    { id: 'purpose', label: 'Purpose', kind: 'text', minWords: 12, hint: 'One or two sentences: why it exists, beyond making money.' },
+    { id: 'positioning', label: 'Positioning statement', kind: 'long', minWords: 20, hint: 'For [audience] who [need], [brand] is the [category] that [benefit], unlike [alternative]. Then a line on why that space is open.' },
+    { id: 'personality', label: 'Personality traits', kind: 'list', items: 3, minWords: 10, hint: 'One trait per item: the trait, what it isn’t, and one example of it in copy or design.' },
+    { id: 'applied', label: 'One screen, before and after', kind: 'long', minWords: 25, hint: 'Pick a real screen (an empty state, an error, onboarding). Write the generic version and the on-brand version, and say what changed.' },
+  ],
+  rubric: [
+    { id: 'positioning', label: 'Sharp positioning', strong: 'Names a specific audience, a real need, a clear benefit and a named alternative, in a space competitors don’t clearly own.', weight: 2, required: true },
+    { id: 'personality', label: 'Usable personality', strong: 'Three distinct traits, each with a “not” and a concrete example a designer or writer could follow.', weight: 2, required: true },
+    { id: 'applied', label: 'Applied to the product', strong: 'The before/after screen clearly shows the traits in copy and design choices, not just adjectives.', weight: 2 },
+    { id: 'purpose', label: 'A believable purpose', strong: 'States why the product matters to people, beyond revenue, in plain words.', weight: 1 },
+    { id: 'consistency', label: 'Hangs together', strong: 'Purpose, positioning and personality point the same way; nothing contradicts.', weight: 1 },
+  ],
+  tips: ['Write the “unlike” part first. If you can’t name what you beat, the positioning isn’t sharp yet.', 'Test each trait on an error message. Personality is easy on a homepage and hard when things go wrong.'],
+  example: {
+    product: 'Dabba, a tiffin subscription for college students living away from home. Today they rely on canteen food, instant noodles or skipping meals.',
+    purpose: 'To make sure no student away from home goes without a proper, affordable meal.',
+    positioning: 'For students away from home who miss real food but have no time or kitchen, Dabba is the tiffin subscription that brings home-style meals to campus for ₹99, unlike food delivery apps built for occasional treats. Delivery apps compete on variety and speed; nobody owns “everyday, affordable, homely”.',
+    personality: [
+      'Caring, not smothering: we check in, we don’t nag. “Exams this week? We’ll keep lunch simple and on time.”',
+      'Cheerful, not childish: light jokes, no baby talk. “Your dabba is on its way. Rotis are warm, promises are kept.”',
+      'Dependable, not dull: plain facts, on time, every time. “Arriving 12:40 at Hostel B gate.”',
+    ],
+    applied: 'Empty orders screen. Generic: “No orders yet. Start ordering now!” On-brand: “Your first dabba is one tap away. Pick a plan, we’ll handle lunch from tomorrow.” Plus a warm illustration of a steel tiffin and the price, ₹99 a day, upfront. It’s caring (we’ll handle it), dependable (tomorrow, a clear price) and gently cheerful.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

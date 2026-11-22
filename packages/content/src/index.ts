@@ -12,6 +12,7 @@ import { ds1 } from './chapters/ds-1';
 import { pr1 } from './chapters/pr-1';
 import { ax1 } from './chapters/ax-1';
 import { gr1 } from './chapters/gr-1';
+import { br1 } from './chapters/br-1';
 import { fd1_1 } from './episodes/fd-1-1';
 import { fd1_2 } from './episodes/fd-1-2';
 import { fd1_3 } from './episodes/fd-1-3';
@@ -29,6 +30,7 @@ import { ds1_1, ds1_2, ds1_3 } from './episodes/ds-1';
 import { pr1_1, pr1_2, pr1_3 } from './episodes/pr-1';
 import { ax1_1, ax1_2, ax1_3, ax1_4 } from './episodes/ax-1';
 import { gr1_1, gr1_2, gr1_3, gr1_4 } from './episodes/gr-1';
+import { br1_1, br1_2, br1_3 } from './episodes/br-1';
 import type { Exercise, LessonContent } from './schema';
 import type { Episode } from './episode';
 
@@ -49,14 +51,15 @@ export const EPISODES: Record<string, Episode> = { 'fd.1-1': fd1_1, 'fd.1-2': fd
   'ds.1-1': ds1_1, 'ds.1-2': ds1_2, 'ds.1-3': ds1_3,
   'pr.1-1': pr1_1, 'pr.1-2': pr1_2, 'pr.1-3': pr1_3,
   'ax.1-1': ax1_1, 'ax.1-2': ax1_2, 'ax.1-3': ax1_3, 'ax.1-4': ax1_4,
-  'gr.1-1': gr1_1, 'gr.1-2': gr1_2, 'gr.1-3': gr1_3, 'gr.1-4': gr1_4 };
+  'gr.1-1': gr1_1, 'gr.1-2': gr1_2, 'gr.1-3': gr1_3, 'gr.1-4': gr1_4,
+  'br.1-1': br1_1, 'br.1-2': br1_2, 'br.1-3': br1_3 };
 export * from './grade';
 export * from './boss';
 export * from './boss-grade';
 export * from './bosses';
 
 /** Chapters with playable content, keyed by curriculum chapter id. Lessons are in curriculum order. */
-export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1, 'gr.1': gr1 };
+export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1, 'gr.1': gr1, 'br.1': br1 };
 
 export const hasContent = (chapterId: string) => !!CONTENT[chapterId]?.length;
 
@@ -74,6 +77,7 @@ export const lessonById = (id: string) => { const { chapterId, n } = parseLesson
 const ROUND_REVIEW: Record<string, { prompt: (p: string) => string; why: (strong: string) => string }> = {
   'question-forge': { prompt: p => p.replace(/^Turn (.+) into a research question\.$/, 'Which is the strongest research question to replace $1?'), why: s => `“${s}” is open and about real behaviour.` },
   'button-forge': { prompt: p => `${p}: which label is best?`, why: s => `“${s}” names the action, so it makes sense without rereading the question.` },
+  'voice-fit': { prompt: () => 'Which positioning statement is strongest?', why: s => `“${s}” names the audience, the need, the benefit and the alternative it beats.` },
   'proto-scope': { prompt: () => 'Which question can a prototype answer best?', why: s => `“${s}” names who, the task and how you’d know it worked.` },
   'job-forge': { prompt: p => `${p}: which job story is strongest?`, why: s => `“${s}” names the situation and the progress wanted, not a feature.` },
 };

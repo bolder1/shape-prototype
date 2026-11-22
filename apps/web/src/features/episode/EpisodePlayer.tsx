@@ -66,6 +66,9 @@ import { FunnelLeak } from './games/FunnelLeak';
 import { AhaPath } from './games/AhaPath';
 import { FoggFix } from './games/FoggFix';
 import { DarkSpot } from './games/DarkSpot';
+import { BrandLayer } from './games/BrandLayer';
+import { VoiceFit } from './games/VoiceFit';
+import { MoodBuild } from './games/MoodBuild';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -141,6 +144,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'aha-path': AhaPath,
   'fogg-fix': FoggFix,
   'dark-spot': DarkSpot,
+  'brand-layer': BrandLayer,
+  'voice-fit': VoiceFit,
+  'mood-build': MoodBuild,
 };
 
 interface Props {

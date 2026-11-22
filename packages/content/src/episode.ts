@@ -17,7 +17,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'atomic', 'tokens', 'inconsistency',
   'fidelity', 'question-proto', 'proto-links',
   'spectrum', 'pour', 'colour-blind', 'targets',
-  'funnel', 'aha', 'fogg', 'dark-patterns']);
+  'funnel', 'aha', 'fogg', 'dark-patterns',
+  'brand-layers', 'positioning', 'moodboard']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -69,6 +70,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `aha-path`: lanes `before`, `later`, `cut`; every card needs a `note`.
  *  - `fogg-fix`: lanes `motivation`, `ability`, `prompt`; every card's `visual` is "motivation,ability,prompt" (1–9, 1–9, 0/1) and its lane is the missing factor (see `foggMissing`).
  *  - `dark-spot`: lanes `dark`, `fair`; every card's `visual` names a mini UI the game draws and has a `note`.
+ *  - `brand-layer`: lanes `logo`, `identity`, `brand` (drawn as rings, inside out).
+ *  - `voice-fit`: needs `rounds` (forge a positioning statement), then lanes `off`, `on`; every card needs a `note`.
+ *  - `mood-build`: lanes `drop`, `keep`; every card's `visual` names a tile the game draws and has a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -83,7 +87,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'atom-stack', 'token-swap', 'debt-hunt',
   'fidelity-pick', 'proto-scope', 'wire-flow',
   'persona-spectrum', 'pour-sort', 'cvd-fix', 'target-spot',
-  'funnel-leak', 'aha-path', 'fogg-fix', 'dark-spot']);
+  'funnel-leak', 'aha-path', 'fogg-fix', 'dark-spot',
+  'brand-layer', 'voice-fit', 'mood-build']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

@@ -16,7 +16,8 @@ import { play } from '@/lib/sound';
 type Game = Episode['game'];
 type Round = NonNullable<Game['rounds']>[number];
 
-function Forge({ round, onDone }: { round: Round; onDone: (correct: boolean) => void }) {
+/** Build a sentence from tiles (a round's answer plus distractors). Shared by the games that forge a statement first. */
+export function Forge({ round, onDone, win, lose, next }: { round: Round; onDone: (correct: boolean) => void; win: string; lose: string; next: string }) {
   const tiles = useMemo(() => [...round.answer, ...round.distractors].map((text, i) => ({ id: `t${i}`, text, k: (i * 5 + 2) % 7 })).sort((a, b) => a.k - b.k), [round]);
   const [placed, setPlaced] = useState<string[]>([]);
   const [verdict, setVerdict] = useState<boolean | null>(null);
@@ -29,7 +30,7 @@ function Forge({ round, onDone }: { round: Round; onDone: (correct: boolean) => 
       <motion.div animate={verdict === false ? { x: [0, -10, 10, -6, 6, 0] } : {}} transition={{ duration: 0.45 }}
         className={cx('relative flex min-h-16 flex-wrap items-center gap-1.5 rounded-2xl bg-secondary px-4 py-3 text-lg font-semibold ring-2 ring-inset', verdict === null ? 'ring-secondary' : verdict ? 'ring-mint-600' : 'ring-error')}>
         {verdict && <Burst count={16} />}
-        {shown.length ? shown.map((w, k) => <span key={k} className="text-primary">{w}</span>) : <span className="text-quaternary">Tap tiles to build the question…</span>}
+        {shown.length ? shown.map((w, k) => <span key={k} className="text-primary">{w}</span>) : <span className="text-quaternary">Tap tiles in order to build it…</span>}
       </motion.div>
       <div className="flex flex-wrap gap-2">
         {tiles.map(t => {
@@ -48,8 +49,8 @@ function Forge({ round, onDone }: { round: Round; onDone: (correct: boolean) => 
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          <NibSays mood={verdict ? 'cheer' : 'think'}>{verdict ? 'Who, the task, and how you’ll know it worked. Testable.' : 'Close. The traps were about liking or seeing everything, which no test can settle.'}</NibSays>
-          <div className="flex justify-end"><Button size="lg" onPress={() => onDone(verdict)}>Plan the screens</Button></div>
+          <NibSays mood={verdict ? 'cheer' : 'think'}>{verdict ? win : lose}</NibSays>
+          <div className="flex justify-end"><Button size="lg" onPress={() => onDone(verdict)}>{next}</Button></div>
         </div>
       )}
     </div>
@@ -65,7 +66,8 @@ export function ProtoScope({ game, onDone }: { game: Game; onDone: (results: Gam
   const right = game.cards.filter(c => call(c.id, c.lane)).length;
 
   if (!forged && round) {
-    return <div className="flex flex-col gap-5"><StageTitle eyebrow="Play · forge" title={game.title}>{game.instructions}</StageTitle><Forge round={round} onDone={ok => setForged({ id: round.id, correct: ok })} /></div>;
+    return <div className="flex flex-col gap-5"><StageTitle eyebrow="Play · forge" title={game.title}>{game.instructions}</StageTitle><Forge round={round} onDone={ok => setForged({ id: round.id, correct: ok })} next="Plan the screens"
+      win="Who, the task, and how you’ll know it worked. Testable." lose="Close. The traps were about liking or seeing everything, which no test can settle." /></div>;
   }
 
   const toggle = (id: string) => { if (done) return; play('tap'); setBuild(b => (b.includes(id) ? b.filter(x => x !== id) : [...b, id])); };

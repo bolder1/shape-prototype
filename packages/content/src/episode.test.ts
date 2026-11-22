@@ -20,6 +20,8 @@ describe('findExercise', () => {
     expect(() => Exercise.parse(job)).not.toThrow();
     expect(job?.type === 'pick' && job.prompt).toContain('job story');
     expect(job?.type === 'pick' && job.explanation).toContain('progress wanted');
+    const voice = findExercise('br.1-2', 'game.r1');
+    expect(voice?.type === 'pick' && voice.explanation).toContain('the alternative it beats');
     const scope = findExercise('pr.1-2', 'game.r1');
     expect(() => Exercise.parse(scope)).not.toThrow();
     expect(scope?.type === 'pick' && scope.options.find(o => o.id === scope.correct)?.label).toBe('Can first-time users change the delivery address after ordering, without help?');
@@ -43,7 +45,7 @@ describe('episodes', () => {
       // Every lane gets at least one card, so the game can fill every part of the diamond.
       for (const l of lanes) expect(ep.game.cards.some(c => c.lane === l)).toBe(true);
       if (['swipe-sort', 'myth-pop', 'squint-test', 'chunk-lab', 'flashlight', 'scale-sort', 'question-forge', 'red-pen', 'jargon-swap', 'line-cut', 'glance-test', 'button-forge', 'chat-probe', 'job-forge', 'ask-watch'].includes(ep.game.id)) expect(lanes).toHaveLength(2);   // two-way games
-      if (['question-forge', 'button-forge', 'job-forge', 'proto-scope'].includes(ep.game.id)) expect(ep.game.rounds?.length).toBeGreaterThan(0);   // the forges need tiles
+      if (['question-forge', 'button-forge', 'job-forge', 'proto-scope', 'voice-fit'].includes(ep.game.id)) expect(ep.game.rounds?.length).toBeGreaterThan(0);   // the forges need tiles
       if (ep.game.id === 'red-pen') for (const c of ep.game.cards) expect(c.note).toBeTruthy();   // every line gets its explanation
       if (ep.game.id === 'jargon-swap') for (const c of ep.game.cards) if (c.lane === lanes[0]) expect(c.note).toBeTruthy();   // every system label gets its rewrite
       if (ep.game.id === 'crowd-sort') for (const c of ep.game.cards) expect(c.agree).toBeGreaterThan(50);   // the answer is the majority's lane
@@ -146,6 +148,9 @@ describe('episodes', () => {
         }
       }
       if (ep.game.id === 'dark-spot') { expect(lanes).toEqual(['dark', 'fair']); for (const c of ep.game.cards) { expect(['confirmshame', 'decline-plain', 'preticked', 'optin', 'fake-timer', 'real-deadline', 'cancel-call', 'cancel-easy', 'hidden-fee', 'total-upfront']).toContain(c.visual); expect(c.note).toBeTruthy(); } }
+      if (ep.game.id === 'brand-layer') expect(lanes).toEqual(['logo', 'identity', 'brand']);   // rings, inside out
+      if (ep.game.id === 'voice-fit') { expect(lanes).toEqual(['off', 'on']); for (const c of ep.game.cards) expect(c.note).toBeTruthy(); }
+      if (ep.game.id === 'mood-build') { expect(lanes).toEqual(['drop', 'keep']); for (const c of ep.game.cards) { expect(['palette-warm', 'palette-neon', 'type-serif', 'type-grunge', 'photo-sunrise', 'photo-crowd', 'texture-paper', 'texture-glitch', 'icon-line', 'icon-3d']).toContain(c.visual); expect(c.note).toBeTruthy(); } }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

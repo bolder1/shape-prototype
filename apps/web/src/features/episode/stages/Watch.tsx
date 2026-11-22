@@ -64,6 +64,9 @@ import { FunnelScene } from '../scenes/Funnel';
 import { AhaScene } from '../scenes/Aha';
 import { FoggScene } from '../scenes/Fogg';
 import { DarkPatternsScene } from '../scenes/DarkPatterns';
+import { BrandLayersScene } from '../scenes/BrandLayers';
+import { PositioningScene } from '../scenes/Positioning';
+import { MoodboardScene } from '../scenes/Moodboard';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -121,6 +124,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   aha: AhaScene,
   fogg: FoggScene,
   'dark-patterns': DarkPatternsScene,
+  'brand-layers': BrandLayersScene,
+  positioning: PositioningScene,
+  moodboard: MoodboardScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
