@@ -33,7 +33,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'prop-sprawl', 'variant-explosion', 'doc-page',
   'ease-curves', 'motion-timing', 'motion-meaning', 'reduced-motion',
   'micro-anatomy', 'delight-check',
-  'voice-tone', 'content-first', 'loc-ready']);
+  'voice-tone', 'content-first', 'loc-ready',
+  'keyboard-flow', 'sr-semantics', 'form-errors', 'cognitive-a11y']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -137,6 +138,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `tone-dial`: lanes are `TONES` in order, lightest first; every card is a moment in Chaabi, its `visual` a key of `CHAABI_MOMENTS` (each used once). You turn a dial through the four tones, the moment's message rewrites itself in each (same voice, different tone), and its lane is what `toneFor` says the moment's mood and stakes call for. Every card needs a `note`.
  *  - `question-flow`: lanes are `FLOW_QUESTIONS` in order, the four screens of Chaabi's move-out flow, each answering one question a tenant asks; every card is a piece of real content and its `visual` the `LOREM_SLOTS` box Dev's lorem-ipsum layout had for it, which the game shows it overflowing (`slotFits`). Every card needs a `note`.
  *  - `loc-spot`: lanes are `LOC_LANES` in order; every card is a string on Chaabi's rent screen, its `visual` "chars|piece|piece…": how many characters its box holds, then the pieces the code joins to build it. `locFlaw` decides the `pieces` and `room` cards (and must say nothing about the others); `idiom` and `ready` are judged by people. The game previews every string with `pseudoLocalize`. Every card needs a `note`.
+ *  - `focus-path`: lanes are `KEY_WAYS` in order; every card is a part of Rahi's seat-booking page, its `visual` a key of `RAHI_PARTS` (each used once), and its lane is that part's `way`: its own Tab stops, one Tab stop with arrow keys inside, or not focusable. The game counts the Tab presses to reach Pay with `tabPresses`. Every card needs a `note`.
+ *  - `sr-listen`: lanes are `SR_GAPS` in order; every card is a control on Rahi's search and seat screens, its `visual` a key of `RAHI_CONTROLS` (each used once). The game shows what a screen reader announces (`announce`), and the lane is what `srGap` finds missing: the role, the name, the state, or nothing. Every card needs a `note`.
+ *  - `form-tab`: lanes are `FORM_FLAWS` in order; every card is a field on Rahi's passenger form after a failed submit, its `visual` a key of `RAHI_FIELDS` (each used once), in Tab order. The game tabs through them, showing each field and what a screen reader says on it (`fieldAnnounce`), and the lane is `fieldFlaw`. Every card needs a `note`.
+ *  - `load-lift`: lanes are `COGA_LANES` in order; every card is a barrier in Rahi's booking flow, its `visual` a key of `RAHI_BARRIERS` (each used once), and its lane is that barrier's `lane`. The game shows the screen before and after, and a right call lifts the barrier's `load` off Sunita's meter (`loadLeft`). Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -167,7 +172,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'api-build', 'prop-type', 'doc-rewrite',
   'ease-tune', 'duration-tune', 'motion-purpose', 'motion-audit',
   'micro-build', 'delight-judge',
-  'tone-dial', 'question-flow', 'loc-spot']);
+  'tone-dial', 'question-flow', 'loc-spot',
+  'focus-path', 'sr-listen', 'form-tab', 'load-lift']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -833,6 +839,176 @@ export const pseudoLocalize = (text: string) => {
   const body = text.split(/(\{[^}]*\})/).map(s => (s.startsWith('{') ? s : [...s].map(ch => ACCENT[ch] ?? ch).join(''))).join('');
   return `[${body}${'·'.repeat(roomFor(text.length) - text.length)}]`;
 };
+
+/** How the keyboard reaches a part of a page (`focus-path` lanes): each of its items is its own Tab stop; the whole
+ *  group is one Tab stop and the arrow keys move inside it (a roving tabindex, as in the ARIA Authoring Practices radio
+ *  group, toolbar and grid patterns); or it isn't focusable at all, because it isn't interactive or isn't on screen. */
+export const KEY_WAYS = ['tab', 'arrows', 'none'] as const;
+export type KeyWay = (typeof KEY_WAYS)[number];
+/** A part of a page: how many interactive-looking items it has and how the keyboard should reach them. */
+export interface PagePart { label: string; n: number; way: KeyWay }
+/** Rahi's seat-booking page for an overnight bus from Pune to Goa, in DOM order (which is also reading order). */
+export const RAHI_PARTS = {
+  skip: { label: 'Skip to seats', n: 1, way: 'tab' },
+  nav: { label: 'Header links', n: 5, way: 'tab' },
+  menu: { label: 'Mobile menu, while closed', n: 6, way: 'none' },
+  dates: { label: 'Date chips', n: 7, way: 'arrows' },
+  art: { label: 'Bus illustration', n: 1, way: 'none' },
+  seats: { label: 'Seat map', n: 36, way: 'arrows' },
+  legend: { label: 'Seat legend', n: 3, way: 'none' },
+  boarding: { label: 'Boarding point', n: 1, way: 'tab' },
+  fare: { label: 'Fare breakdown', n: 1, way: 'none' },
+  pay: { label: 'Pay ₹1,280', n: 1, way: 'tab' },
+} as const satisfies Record<string, PagePart>;
+export type RahiPart = keyof typeof RAHI_PARTS;
+/** Tab stops a part adds: one per item, one for an arrow-key group, none if it isn't focusable. */
+export const stopsOf = (p: Pick<PagePart, 'n' | 'way'>) => (p.way === 'tab' ? p.n : p.way === 'arrows' ? 1 : 0);
+/** Tab presses from the top of the page to land on the part at `target`, with each part reached the way given. */
+export const tabPresses = (parts: readonly Pick<PagePart, 'n' | 'way'>[], target: number) =>
+  parts.slice(0, target).reduce((sum, p) => sum + stopsOf(p), 0) + 1;
+
+/** Roles a control can expose to a screen reader (`none`: hidden from it, as a decorative image should be). */
+export type SrRole = 'button' | 'link' | 'heading' | 'img' | 'switch' | 'combobox' | 'none';
+/** What a control tells assistive technology (WCAG 4.1.2 Name, Role, Value): what it should be, the role it actually
+ *  exposes (null: a plain div or span with no role), its accessible name, and its state or value if it needs one. */
+export interface SrControl { label: string; expect: SrRole; role: SrRole | null; name: string | null; needsState?: boolean; state?: string | null; fix: Partial<SrControl>; code: readonly [before: string, after: string] }
+/** What can be missing from a control (`sr-listen` lanes), checked in this order. */
+export const SR_GAPS = ['role', 'name', 'state', 'ok'] as const;
+export type SrGap = (typeof SR_GAPS)[number];
+/** The first thing a control fails to tell a screen reader: the wrong role (or none), no name, no state; else ok. */
+export const srGap = (c: Pick<SrControl, 'expect' | 'role' | 'name' | 'needsState' | 'state'>): SrGap => {
+  if (c.role !== c.expect) return 'role';
+  if (c.expect !== 'none' && !c.name) return 'name';
+  if (c.needsState && !c.state) return 'state';
+  return 'ok';
+};
+const ROLE_WORD: Record<SrRole, string> = { button: 'button', link: 'link', heading: 'heading, level 2', img: 'graphic', switch: 'switch', combobox: 'combo box', none: '' };
+/** Roughly what NVDA says when it reaches a control: name, role, state. A hidden control, or a div with no text, says
+ *  nothing; a div with text is read as plain text. */
+export const announce = (c: Pick<SrControl, 'role' | 'name' | 'state'>) => {
+  if (c.role === 'none') return '';
+  return [c.name ?? '', c.role ? ROLE_WORD[c.role] : '', c.state ?? ''].filter(Boolean).join(', ');
+};
+/** Controls on Rahi's search and seat screens, as Arjun first built them, each with its fix. */
+export const RAHI_CONTROLS = {
+  swap: { label: 'The ⇄ icon that swaps From and To', expect: 'button', role: null, name: null,
+    fix: { role: 'button', name: 'Swap From and To' }, code: ['<div class="swap" onclick="swap()"><svg …/></div>', '<button type="button" aria-label="Swap From and To"><svg aria-hidden="true" …/></button>'] },
+  heading: { label: '“Choose your seat”, in big bold type', expect: 'heading', role: null, name: 'Choose your seat',
+    fix: { role: 'heading' }, code: ['<div class="title-lg">Choose your seat</div>', '<h2>Choose your seat</h2>'] },
+  rules: { label: '“Fare rules”, which opens a dialog', expect: 'button', role: 'link', name: 'Fare rules',
+    fix: { role: 'button' }, code: ['<a href="#" onclick="openRules()">Fare rules</a>', '<button type="button" onclick="openRules()">Fare rules</button>'] },
+  search: { label: 'The magnifier button that runs the search', expect: 'button', role: 'button', name: null,
+    fix: { name: 'Search buses' }, code: ['<button><svg …/></button>', '<button aria-label="Search buses"><svg aria-hidden="true" …/></button>'] },
+  logo: { label: 'The bus operator’s logo on a result', expect: 'img', role: 'img', name: null,
+    fix: { name: 'Konkan Travels' }, code: ['<img src="op_2231.png">', '<img src="op_2231.png" alt="Konkan Travels">'] },
+  ac: { label: 'The “AC buses only” switch', expect: 'switch', role: 'switch', name: 'AC buses only', needsState: true, state: null,
+    fix: { state: 'off' }, code: ['<div role="switch" class="on">AC buses only</div>', '<button role="switch" aria-checked="false">AC buses only</button>'] },
+  sort: { label: 'The “Sort: Departure” menu button', expect: 'button', role: 'button', name: 'Sort: Departure', needsState: true, state: null,
+    fix: { state: 'collapsed' }, code: ['<button onclick="toggleSort()">Sort: Departure</button>', '<button aria-expanded="false" aria-controls="sort-menu">Sort: Departure</button>'] },
+  booked: { label: 'Seat 14, greyed out because it’s booked', expect: 'button', role: 'button', name: 'Seat 14', needsState: true, state: null,
+    fix: { name: 'Seat 14, window', state: 'unavailable' }, code: ['<button class="seat booked">14</button>', '<button class="seat" aria-disabled="true" aria-label="Seat 14, window">14</button>'] },
+  photo: { label: 'A decorative photo of the bus at sunset', expect: 'none', role: 'none', name: null,
+    fix: {}, code: ['<img src="sunset.jpg" alt="">', '<img src="sunset.jpg" alt="">'] },
+  boarding: { label: 'The boarding point dropdown', expect: 'combobox', role: 'combobox', name: 'Boarding point', needsState: true, state: 'Swargate, 9:40 pm',
+    fix: {}, code: ['<label for="bp">Boarding point</label><select id="bp">…</select>', '<label for="bp">Boarding point</label><select id="bp">…</select>'] },
+  pay: { label: 'The Pay button', expect: 'button', role: 'button', name: 'Pay ₹1,280',
+    fix: {}, code: ['<button type="submit">Pay ₹1,280</button>', '<button type="submit">Pay ₹1,280</button>'] },
+} as const satisfies Record<string, SrControl>;
+export type RahiControl = keyof typeof RAHI_CONTROLS;
+/** A control with its fix applied. */
+export const fixedControl = (c: SrControl): SrControl => ({ ...c, ...c.fix });
+
+/** What's wrong with a field on a form after a failed submit (`form-tab` lanes), checked in this order: no visible,
+ *  programmatically tied label (3.3.2 Labels or Instructions, 1.3.1 Info and Relationships); an error shown only by
+ *  colour or that a screen reader can't hear (1.4.1 Use of Color, 3.3.1 Error Identification); an error that names the
+ *  problem but not the fix (3.3.3 Error Suggestion); or nothing. */
+export const FORM_FLAWS = ['label', 'error', 'help', 'ok'] as const;
+export type FormFlaw = (typeof FORM_FLAWS)[number];
+/** A form field. `label` is a visible label tied to the field with <label for> (null: none, maybe a placeholder).
+ *  `error`, after submit: its visible text (null: a red border only), whether it is linked to the field with
+ *  aria-describedby and aria-invalid, and whether it says how to fix it. */
+export interface FormField {
+  label: string | null; placeholder?: string; kind: 'text' | 'checkbox' | 'radio'; value: string;
+  error?: { text: string | null; linked: boolean; fix: boolean };
+}
+export const fieldFlaw = (f: FormField): FormFlaw => {
+  if (!f.label) return 'label';
+  if (f.error && (!f.error.text || !f.error.linked)) return 'error';
+  if (f.error && !f.error.fix) return 'help';
+  return 'ok';
+};
+const KIND_WORD = { text: 'edit', checkbox: 'check box', radio: 'radio button' } as const;
+/** Roughly what NVDA says on focusing a field: its name (a browser falls back to the placeholder when there's no
+ *  label), role, "invalid entry" when aria-invalid is set, its value or state, then the linked error text. */
+export const fieldAnnounce = (f: FormField) => {
+  const linked = !!f.error?.linked && !!f.error.text;
+  return [f.label ?? f.placeholder ?? '', KIND_WORD[f.kind], linked ? 'invalid entry' : '', f.value, linked ? f.error!.text! : ''].filter(Boolean).join(', ');
+};
+/** Rahi's passenger-and-payment form for Farhan's Pune to Goa ticket, in Tab order, just after he pressed Pay. */
+export const RAHI_FIELDS = {
+  name: { label: 'Full name, as on your ID', kind: 'text', value: 'Farhan Shaikh' },
+  age: { label: null, placeholder: 'Age', kind: 'text', value: '34' },
+  gender: { label: 'Male', kind: 'radio', value: 'checked' },
+  mobile: { label: 'Mobile number', kind: 'text', value: '98200 1234', error: { text: 'Invalid input', linked: true, fix: false } },
+  email: { label: 'Email for your ticket', kind: 'text', value: 'farhan@gmail', error: { text: null, linked: false, fix: false } },
+  idnum: { label: 'PAN, to show when you board', kind: 'text', value: 'ABCD1234F', error: { text: 'Enter the 10-character PAN, like ABCDE1234F', linked: false, fix: true } },
+  pin: { label: 'Pincode', kind: 'text', value: '41100', error: { text: 'Pincode must be 6 digits, like 411001', linked: true, fix: true } },
+  promo: { label: null, placeholder: 'Promo code', kind: 'text', value: 'GOA100' },
+  upi: { label: 'UPI ID', kind: 'text', value: 'farhan@okhdfc', error: { text: 'Something went wrong', linked: true, fix: false } },
+  terms: { label: 'I accept the cancellation policy', kind: 'checkbox', value: 'not checked', error: { text: null, linked: false, fix: false } },
+  whatsapp: { label: 'Send my ticket on WhatsApp', kind: 'checkbox', value: 'checked' },
+} as const satisfies Record<string, FormField>;
+export type RahiField = keyof typeof RAHI_FIELDS;
+
+/** What a cognitive barrier takes away from the person (`load-lift` lanes), after the W3C's Making Content Usable for
+ *  People with Cognitive and Learning Disabilities: enough time, nothing to remember, plain words and clear steps, and
+ *  no surprises. */
+export const COGA_LANES = ['time', 'memory', 'plain', 'predict'] as const;
+export type CogaLane = (typeof COGA_LANES)[number];
+/** A barrier in Rahi's booking flow: the WCAG success criterion it meets (or the guidance it follows), how much it
+ *  weighs on Sunita (1–3), and the screen before and after. */
+export interface CogaBarrier { lane: CogaLane; sc: string; load: 1 | 2 | 3; before: string; after: string }
+/** Sunita Kulkarni, 67, books a ₹640 seat from Pune to Kolhapur. Since a stroke last year she reads slowly and loses
+ *  numbers she saw a moment ago. */
+export const RAHI_BARRIERS = {
+  hold: { lane: 'time', sc: '2.2.1 Timing Adjustable', load: 3,
+    before: 'Seats held for 5:00. At 0:00 they are released, with no warning.',
+    after: 'With a minute left: “Your seats are held for 1 more minute.” [Add 5 minutes]' },
+  idle: { lane: 'time', sc: '2.2.1 Timing Adjustable', load: 2,
+    before: 'Two minutes without typing signs her out, and the form is emptied.',
+    after: 'A warning before sign-out: “Still there?” [Continue]. Her details are kept either way.' },
+  otp: { lane: 'memory', sc: '3.3.8 Accessible Authentication (Minimum)', load: 2,
+    before: 'The OTP box blocks paste, so she copies six digits from Messages by hand.',
+    after: 'The code fills itself in from the SMS, and paste works.' },
+  retype: { lane: 'memory', sc: '3.3.7 Redundant Entry', load: 2,
+    before: 'The payment step asks for her name and mobile number again.',
+    after: 'Name and mobile carried over from the passenger step, with Change beside each.' },
+  captcha: { lane: 'memory', sc: '3.3.8 Accessible Authentication (Minimum)', load: 3,
+    before: 'Sign-in wants a password she must remember, then a puzzle of wobbly letters to copy.',
+    after: 'Sign in with a code sent to her phone, or let the browser fill the password. No puzzle.' },
+  jargon: { lane: 'plain', sc: 'Plain language (COGA)', load: 2,
+    before: 'Choose a fare: Saver, Flexi or Flexi+ (T&C apply).',
+    after: 'Free cancellation until 24 hours before you travel: +₹60. Without it, cancelling refunds half.' },
+  code: { lane: 'plain', sc: '3.3.3 Error Suggestion', load: 1,
+    before: 'Error 4012: session invalid.',
+    after: 'This page was open a long time, so we refreshed it. Your seat and details are still here.' },
+  steps: { lane: 'plain', sc: 'Clear steps (COGA)', load: 1,
+    before: 'Screen after screen, with no sign of how many are left.',
+    after: 'Step 3 of 4: Passenger details.' },
+  help: { lane: 'predict', sc: '3.2.6 Consistent Help', load: 1,
+    before: 'Help is in the footer on one screen, the menu on the next, and missing from payment.',
+    after: '“Call us: 020 4800 1234” in the same corner of every screen.' },
+  jump: { lane: 'predict', sc: '3.2.2 On Input', load: 2,
+    before: 'Picking a boarding point jumps straight to payment.',
+    after: 'She picks Swargate, checks it, and presses Continue when she’s ready.' },
+  final: { lane: 'predict', sc: '3.3.4 Error Prevention (Legal, Financial, Data)', load: 3,
+    before: 'One tap on Book charges ₹640. No review.',
+    after: 'A review screen: Pune to Kolhapur, 14 Dec, 7:15 am, seat 12, ₹640. [Pay ₹640] [Change]' },
+} as const satisfies Record<string, CogaBarrier>;
+export type RahiBarrier = keyof typeof RAHI_BARRIERS;
+/** Load Sunita still carries once the barriers in `lifted` are removed. */
+export const loadLeft = (barriers: readonly RahiBarrier[], lifted: readonly RahiBarrier[]) =>
+  barriers.filter(b => !lifted.includes(b)).reduce((sum, b) => sum + RAHI_BARRIERS[b].load, 0);
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

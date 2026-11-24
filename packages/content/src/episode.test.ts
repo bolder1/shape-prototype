@@ -1,5 +1,51 @@
 import { describe, expect, it } from 'vitest';
-import { CHAABI_MOMENTS, FLOW_QUESTIONS, LOC_LANES, LOREM_SLOTS, TONES, growthFor, locFlaw, locParse, pseudoLocalize, roomFor, slotFits, toneFor, toneGap, wrapLines, wrapText, type LoremSlot, DELIGHT_LANES, GULLAK_MICROS, GULLAK_MOMENTS, MICRO_PARTS, PAY_STAGES, delightCost, delightVerdict, microComplete, microStrips, payStage, DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { COGA_LANES, FORM_FLAWS, KEY_WAYS, RAHI_BARRIERS, RAHI_CONTROLS, RAHI_FIELDS, RAHI_PARTS, SR_GAPS, announce, fieldAnnounce, fieldFlaw, fixedControl, loadLeft, srGap, stopsOf, tabPresses, type RahiBarrier, type RahiPart, CHAABI_MOMENTS, FLOW_QUESTIONS, LOC_LANES, LOREM_SLOTS, TONES, growthFor, locFlaw, locParse, pseudoLocalize, roomFor, slotFits, toneFor, toneGap, wrapLines, wrapText, type LoremSlot, DELIGHT_LANES, GULLAK_MICROS, GULLAK_MOMENTS, MICRO_PARTS, PAY_STAGES, delightCost, delightVerdict, microComplete, microStrips, payStage, DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('ax.2 helpers', () => {
+  it('counts Tab presses to Pay: 61 with every item a stop, 10 with groups and nothing hidden', () => {
+    const parts = Object.values(RAHI_PARTS);
+    const pay = Object.keys(RAHI_PARTS).indexOf('pay');
+    expect(stopsOf({ n: 36, way: 'arrows' })).toBe(1);
+    expect(stopsOf({ n: 6, way: 'none' })).toBe(0);
+    expect(tabPresses(parts, pay)).toBe(10);
+    expect(tabPresses(parts.map((p, i) => ({ ...p, way: i === 0 ? 'none' as const : 'tab' as const })), pay)).toBe(61);
+    expect(tabPresses(parts, 0)).toBe(1);
+  });
+  it('finds what a control fails to tell a screen reader, and says what it hears', () => {
+    expect(srGap({ expect: 'button', role: null, name: null })).toBe('role');
+    expect(srGap({ expect: 'button', role: 'button', name: null })).toBe('name');
+    expect(srGap({ expect: 'switch', role: 'switch', name: 'AC', needsState: true, state: null })).toBe('state');
+    expect(srGap({ expect: 'none', role: 'none', name: null })).toBe('ok');
+    expect(announce(RAHI_CONTROLS.search)).toBe('button');
+    expect(announce(RAHI_CONTROLS.swap)).toBe('');
+    expect(announce(RAHI_CONTROLS.photo)).toBe('');
+    expect(announce(RAHI_CONTROLS.heading)).toBe('Choose your seat');
+    expect(announce(fixedControl(RAHI_CONTROLS.booked))).toBe('Seat 14, window, button, unavailable');
+    expect(announce(fixedControl(RAHI_CONTROLS.ac))).toBe('AC buses only, switch, off');
+    expect(announce(fixedControl(RAHI_CONTROLS.heading))).toBe('Choose your seat, heading, level 2');
+    for (const c of Object.values(RAHI_CONTROLS)) expect(c.code).toHaveLength(2);
+  });
+  it('flags form fields and reads them as NVDA would', () => {
+    expect(fieldFlaw(RAHI_FIELDS.age)).toBe('label');
+    expect(fieldFlaw(RAHI_FIELDS.email)).toBe('error');
+    expect(fieldFlaw(RAHI_FIELDS.idnum)).toBe('error');
+    expect(fieldFlaw(RAHI_FIELDS.mobile)).toBe('help');
+    expect(fieldFlaw(RAHI_FIELDS.pin)).toBe('ok');
+    expect(fieldAnnounce(RAHI_FIELDS.age)).toBe('Age, edit, 34');
+    expect(fieldAnnounce(RAHI_FIELDS.email)).toBe('Email for your ticket, edit, farhan@gmail');
+    expect(fieldAnnounce(RAHI_FIELDS.idnum)).toBe('PAN, to show when you board, edit, ABCD1234F');
+    expect(fieldAnnounce(RAHI_FIELDS.pin)).toBe('Pincode, edit, invalid entry, 41100, Pincode must be 6 digits, like 411001');
+    for (const l of FORM_FLAWS) expect(Object.values(RAHI_FIELDS).filter(f => fieldFlaw(f) === l).length).toBeGreaterThanOrEqual(2);
+  });
+  it('lifts load as barriers are removed', () => {
+    const all = Object.keys(RAHI_BARRIERS) as RahiBarrier[];
+    expect(loadLeft(all, [])).toBe(22);
+    expect(loadLeft(all, ['hold', 'final'])).toBe(16);
+    expect(loadLeft(all, all)).toBe(0);
+    for (const l of COGA_LANES) expect(all.filter(b => RAHI_BARRIERS[b].lane === l).length).toBeGreaterThanOrEqual(2);
+    for (const b of all) expect(RAHI_BARRIERS[b].before).not.toBe(RAHI_BARRIERS[b].after);
+  });
+});
 
 describe('cw.2 helpers', () => {
   it('sets the tone from mood, pushed one step graver by stakes', () => {
@@ -613,6 +659,31 @@ describe('episodes', () => {
         expect(lanes).toEqual([...PROP_TYPES]);
         for (const c of ep.game.cards) { expect(propValues(c.visual ?? '').length).toBeGreaterThanOrEqual(2); expect(c.note).toBeTruthy(); }
         expect(frameCount(ep.game.cards.map(c => ({ visual: c.visual, type: c.lane })))).toBe(60);
+      }
+      if (ep.game.id === 'focus-path') {   // every part of the page once, in page order, reached the way it should be
+        expect(lanes).toEqual([...KEY_WAYS]);
+        expect(ep.game.cards.map(c => c.visual)).toEqual(Object.keys(RAHI_PARTS));
+        for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_PARTS[c.visual as RahiPart].way); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'sr-listen') {   // every control once, sorted by what it fails to tell a screen reader, and its fix says it all
+        expect(lanes).toEqual([...SR_GAPS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_CONTROLS).sort());
+        for (const c of ep.game.cards) {
+          const ctl = RAHI_CONTROLS[c.visual as keyof typeof RAHI_CONTROLS];
+          expect(c.lane).toBe(srGap(ctl));
+          expect(srGap(fixedControl(ctl))).toBe('ok');
+          expect(c.note).toBeTruthy();
+        }
+      }
+      if (ep.game.id === 'form-tab') {   // every field once, in Tab order, flagged as fieldFlaw says
+        expect(lanes).toEqual([...FORM_FLAWS]);
+        expect(ep.game.cards.map(c => c.visual)).toEqual(Object.keys(RAHI_FIELDS));
+        for (const c of ep.game.cards) { expect(c.lane).toBe(fieldFlaw(RAHI_FIELDS[c.visual as keyof typeof RAHI_FIELDS])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'load-lift') {   // every barrier once, under the habit that removes it
+        expect(lanes).toEqual([...COGA_LANES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_BARRIERS).sort());
+        for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_BARRIERS[c.visual as RahiBarrier].lane); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'tone-dial') {   // every moment once, at the tone its mood and stakes call for
         expect(lanes).toEqual([...TONES]);

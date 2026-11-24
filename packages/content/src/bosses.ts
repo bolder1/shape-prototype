@@ -1126,9 +1126,61 @@ const cw2: BossBriefInput = {
   },
 };
 
+const ax2: BossBriefInput = {
+  chapterId: 'ax.2',
+  title: 'A11y annotations for dev handoff',
+  minutes: 90,
+  scenario: [
+    'Annotate three screens of your Studio product so a developer can build them accessibly without asking you a single question. If you don’t have a product yet, use Rahi, the Pune bus-booking app from this chapter: the search screen, the seat page with its boarding point dialog, and the passenger form.',
+    'Annotations sit on top of the design, not in a separate essay. For each screen, number the focus order and mark the arrow-key groups; give every control its element or role, its accessible name and its states; and say what happens to focus and what a screen reader hears when things open, close, fail or change. Then note the time, memory and surprise traps you designed out.',
+  ],
+  fields: [
+    { id: 'screens', label: 'The product and the three screens', kind: 'text', minWords: 15, hint: 'What the product does, and which three screens you annotated and why those.' },
+    { id: 'focus', label: 'Focus order, screen by screen', kind: 'list', items: 3, minWords: 25, hint: 'One line per screen: the numbered Tab stops in order, which groups are one stop with arrow keys inside, the skip link, and where focus goes when a dialog or panel opens and closes.' },
+    { id: 'controls', label: 'Names, roles and states', kind: 'list', items: 6, minWords: 10, hint: 'One control per line: the element or role, its accessible name (and where it comes from), and every state it needs (“Sort: native <button>, name from its text, aria-expanded”).' },
+    { id: 'structure', label: 'Headings, landmarks and images', kind: 'long', minWords: 30, hint: 'The heading outline (h1, h2…), the landmarks (header, nav, main, footer), and the alt text for each image, including which are decorative.' },
+    { id: 'forms', label: 'Forms, errors and announcements', kind: 'long', minWords: 50, hint: 'Labels, hints and required fields; when validation runs; the exact error text and how it’s linked; where focus goes after a failed submit; and which messages are announced in a live region.' },
+    { id: 'cognitive', label: 'Time, memory and surprises', kind: 'long', minWords: 30, hint: 'Any time limits and how people extend them, what you carry forward so nothing is typed twice, how sign-in avoids memory tests, and what never happens without the person choosing it.' },
+    { id: 'check', label: 'How you’ll check the build', kind: 'list', items: 3, minWords: 10, hint: 'One per line: a concrete test (keyboard only, a named screen reader, a zoom or automated check), what passes, and which success criteria it covers.' },
+  ],
+  rubric: [
+    { id: 'focus', label: 'A focus path a developer can build', strong: 'Every interactive element on each screen is in a numbered order that follows reading order; groups of similar choices are one stop with arrow keys named; hidden things take no stop; dialogs say where focus goes on open, that Tab stays inside, that Esc closes, and where focus returns (2.1.1, 2.1.2, 2.4.3).', weight: 3, required: true },
+    { id: 'semantics', label: 'Name, role and state for every control', strong: 'Each control gets a native element where one exists (ARIA only where HTML can’t), an accessible name that includes its visible text, and every state it can be in (checked, expanded, unavailable, selected); icon buttons and meaningful images are named and decorative ones hidden (4.1.2, 1.1.1, 2.5.3).', weight: 3, required: true },
+    { id: 'forms', label: 'Errors people can see and hear', strong: 'Every field has a visible, linked label; errors are in text, specific, say how to fix it, and are linked with aria-describedby and aria-invalid; after a failed submit focus moves to a summary that links to each field, input is kept, and status messages use a live region (3.3.1, 3.3.2, 3.3.3, 4.1.3).', weight: 2, required: true },
+    { id: 'structure', label: 'A page you can skim by ear', strong: 'A sensible heading outline with no skipped levels, landmarks for the main regions, and a skip link, so a screen reader user can jump to any part (1.3.1, 2.4.1, 2.4.6).', weight: 1 },
+    { id: 'cognitive', label: 'No traps for memory or time', strong: 'Time limits are warned and extendable, details carry forward, sign-in allows paste and autofill with no puzzle, choices don’t change context on their own, and money or data changes get a review step (2.2.1, 3.3.7, 3.3.8, 3.2.2, 3.3.4).', weight: 1 },
+    { id: 'check', label: 'A way to prove it', strong: 'Tests a developer and QA can run: a keyboard-only pass with the expected presses, a named screen reader with the expected announcements, and an automated check, each tied to the criteria it covers and honest that automated tools catch only part of it.', weight: 1 },
+  ],
+  tips: ['Annotate the dialog’s open and close as carefully as the screen. That’s where focus gets lost most often.', 'Write the announcement you expect, word for word (“Seat 14, window, button, unavailable”). It’s the fastest way for a developer to check their work.'],
+  example: {
+    screens: 'Rahi books intercity buses from Pune: search for a route, pick a date and seat, choose a boarding point and pay by UPI. I annotated the search screen, the seat page with its boarding point dialog, and the passenger form, because those are where keyboard and screen reader users got stuck in testing.',
+    focus: [
+      'Search: 1 Skip to results (visible on focus), 2–6 header links, 7 From, 8 Swap From and To, 9 To, 10 Date (opens a calendar dialog: focus moves to today’s date, arrow keys move by day, Esc closes and returns focus to the Date field), 11 Search buses. The closed mobile menu takes no stops.',
+      'Seat page: 1 Skip to seats, 2–6 header links, 7 Date chips (one stop, a radio group: Left and Right change the day), 8 Seat map (one stop, a grid: arrows move, Space or Enter picks, booked seats are focusable but say unavailable), 9 Boarding point, 10 Pay ₹1,280. Boarding point opens a dialog: focus goes to its heading, Tab stays inside, Esc or Done closes it and returns focus to the Boarding point button.',
+      'Passenger form: fields in visual order, 1 Full name to 10 Send my ticket on WhatsApp, then 11 Pay. After a failed submit, focus moves to the error summary heading “There are 3 problems”, whose links move focus to each field. No positive tabindex anywhere on any screen.',
+    ],
+    controls: [
+      'Swap From and To: native <button>, name from aria-label="Swap From and To", the icon aria-hidden. NVDA: “Swap From and To, button”.',
+      'Search: native <button>, name from aria-label="Search buses" because it shows only an icon. NVDA: “Search buses, button”.',
+      'AC buses only: <button role="switch">, name from its visible text, aria-checked true or false. NVDA: “AC buses only, switch, off”.',
+      'Sort: native <button> “Sort: Departure”, aria-expanded false or true, aria-controls pointing at the menu. NVDA: “Sort: Departure, button, collapsed”.',
+      'Each seat: native <button> in a grid, name “Seat 14, window” (number plus position), aria-pressed for the seat he picked, aria-disabled="true" when booked. NVDA: “Seat 14, window, button, unavailable”.',
+      'Fare rules: a <button>, not a link, because it opens a dialog on this page; the dialog has role="dialog", aria-modal="true" and aria-labelledby pointing at its heading “Fare rules”.',
+    ],
+    structure: 'Each screen has one h1 (“Buses from Pune to Goa”, “Choose your seat”, “Passenger details”) and h2s for each section (“Sort and filter”, “Results”, “Seat map”, “Fare”). Landmarks: header, nav for the header links, main for the content, footer. Operator logos get alt text with the operator’s name (alt="Konkan Travels"); the sunset photo and bus illustration are decorative, alt="" and no focus; seat icons are inside named buttons, so they are aria-hidden.',
+    forms: 'Every field has a visible label above it tied with <label for>, never a placeholder alone; optional fields say “(optional)”; required ones have the required attribute and the form says at the top that all fields are required unless marked. Name, mobile and email use autocomplete name, tel and email. Validation runs when a field loses focus and on submit, not on every key. Errors appear in text under the field and are linked with aria-describedby, with aria-invalid="true" on the field: “Enter a 10-digit mobile number, like 98200 12345”, “Enter an email like name@example.com”, “Tick this to accept the cancellation policy”. On a failed submit, everything typed is kept and focus moves to an error summary that lists each problem as a link to its field. “Only 2 seats left” and “Seat 12 selected” are announced in a role="status" live region without moving focus.',
+    cognitive: 'The seat hold is 10 minutes; with a minute left, a dialog says “Your seat is held for 1 more minute” with “Add 5 minutes”, and it can be extended at least ten times. Passenger details carry forward into payment with Change beside each. The OTP field uses autocomplete="one-time-code" and accepts paste, and sign-in has no CAPTCHA. Picking a boarding point never moves to another page; the person presses Continue. A review screen shows route, date, time, seat and amount before any payment. Help sits in the same top-right spot on every screen.',
+    check: [
+      'Keyboard only, mouse unplugged: book Pune to Goa from search to payment; Pay is reached in 10 Tab presses on the seat page, every focus is visible, and Esc closes every dialog back to its button (2.1.1, 2.1.2, 2.4.3, 2.4.7).',
+      'NVDA with Chrome, and TalkBack on an Android phone: every control in the table announces exactly the expected name, role and state, and the error summary is read when focus lands on it (4.1.2, 3.3.1, 4.1.3).',
+      'axe DevTools on each screen with zero violations, plus a manual check of what it can’t judge, like whether the error text is helpful and the focus order makes sense (1.1.1, 1.3.1, 3.3.3).',
+    ],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

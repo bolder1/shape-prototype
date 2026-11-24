@@ -118,6 +118,10 @@ import { DelightJudge } from './games/DelightJudge';
 import { ToneDial } from './games/ToneDial';
 import { QuestionFlow } from './games/QuestionFlow';
 import { LocSpot } from './games/LocSpot';
+import { FocusPath } from './games/FocusPath';
+import { SrListen } from './games/SrListen';
+import { FormTab } from './games/FormTab';
+import { LoadLift } from './games/LoadLift';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -245,6 +249,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'tone-dial': ToneDial,
   'question-flow': QuestionFlow,
   'loc-spot': LocSpot,
+  'focus-path': FocusPath,
+  'sr-listen': SrListen,
+  'form-tab': FormTab,
+  'load-lift': LoadLift,
 };
 
 interface Props {

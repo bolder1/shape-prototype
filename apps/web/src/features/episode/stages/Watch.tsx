@@ -116,6 +116,10 @@ import { DelightCheckScene } from '../scenes/DelightCheck';
 import { VoiceToneScene } from '../scenes/VoiceTone';
 import { ContentFirstScene } from '../scenes/ContentFirst';
 import { LocReadyScene } from '../scenes/LocReady';
+import { KeyboardFlowScene } from '../scenes/KeyboardFlow';
+import { SrSemanticsScene } from '../scenes/SrSemantics';
+import { FormErrorsScene } from '../scenes/FormErrors';
+import { CognitiveA11yScene } from '../scenes/CognitiveA11y';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -225,6 +229,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'voice-tone': VoiceToneScene,
   'content-first': ContentFirstScene,
   'loc-ready': LocReadyScene,
+  'keyboard-flow': KeyboardFlowScene,
+  'sr-semantics': SrSemanticsScene,
+  'form-errors': FormErrorsScene,
+  'cognitive-a11y': CognitiveA11yScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
