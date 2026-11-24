@@ -143,6 +143,9 @@ import { SeoReadScene } from '../scenes/SeoRead';
 import { StorySpineScene } from '../scenes/StorySpine';
 import { ObjectionRoomScene } from '../scenes/ObjectionRoom';
 import { BlufEmailScene } from '../scenes/BlufEmail';
+import { DemoTourScene } from '../scenes/DemoTour';
+import { PricingPageScene } from '../scenes/PricingPage';
+import { CsLoopScene } from '../scenes/CsLoop';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -279,6 +282,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'story-spine': StorySpineScene,
   'objection-room': ObjectionRoomScene,
   'bluf-email': BlufEmailScene,
+  'demo-tour': DemoTourScene,
+  'pricing-page': PricingPageScene,
+  'cs-loop': CsLoopScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

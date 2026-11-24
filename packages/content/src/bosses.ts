@@ -1516,9 +1516,59 @@ const bz2: BossBriefInput = {
   },
 };
 
+const bz3: BossBriefInput = {
+  chapterId: 'bz.3',
+  title: 'Build a sales kit',
+  minutes: 120,
+  scenario: [
+    'Your product needs to sell (or use Parcha: clinic software for Indian clinics, with appointments, WhatsApp reminders, e-prescriptions and GST billing). Design the two things a buyer sees on the way to yes: a short sales deck with the demo it leads into, aimed at one real kind of buyer, and the public pricing page.',
+    'Start from what the buyer says hurts: run a discovery call with someone who plays the buyer, or use notes from sales or customer success. Then test the pricing page: describe five buyers’ situations to five people and time how fast each finds their plan and price. Hand in links to both, plus the outline, the plans and what the test showed.',
+  ],
+  fields: [
+    { id: 'link', label: 'Your deck and pricing page', kind: 'text', minWords: 6, hint: 'Links to the deck (PDF, Figma or slides) and the pricing page (live or a prototype), and the buyer you aimed the deck at.' },
+    { id: 'discovery', label: 'What the buyer said hurts', kind: 'long', minWords: 40, hint: 'Who the buyer is, their top three problems ranked, each in their own numbers (minutes, rupees, patients), and where you heard them.' },
+    { id: 'deck', label: 'The deck, slide by slide', kind: 'list', items: 6, minWords: 8, hint: 'One slide per line: a headline that states the point, and the proof on that slide. It should make sense forwarded without you.' },
+    { id: 'demo', label: 'The demo plan', kind: 'list', items: 4, minWords: 10, hint: 'The moments in order, with minutes: the recap, each problem shown solved on realistic data, and the next step you propose, with a date and a measure.' },
+    { id: 'plans', label: 'The plans', kind: 'list', items: 3, minWords: 10, hint: 'One plan per line: its name, who it’s for, the price and what it’s per, and the fence that moves a buyer to the next plan. Say which one is marked as the usual pick.' },
+    { id: 'test', label: 'The pricing test and what you changed', kind: 'long', minWords: 40, hint: 'How long each of the five people took to find their plan and price, who got it wrong and why, what you changed, and anything sales or CS told you to fix.' },
+  ],
+  rubric: [
+    { id: 'buyer', label: 'Built from the buyer’s problems', strong: 'The deck and demo open by saying back the buyer’s top problems in their numbers, then show each one solved, biggest first. Nothing in the demo answers a question nobody asked, and every moment uses realistic data from the buyer’s world.', weight: 3, required: true },
+    { id: 'deck', label: 'A deck that sells without you', strong: 'Every headline states a point a forwarded reader could repeat; proof is specific and comparable (a similar customer, a before-and-after in the same metric); it ends on a small, dated next step, not “Questions?”.', weight: 2, required: true },
+    { id: 'pricing', label: 'A page buyers can place themselves on', strong: 'Three or four plans, each named and described by who it’s for; prices shown with what they’re per; at most one “Talk to us”; fences are things buyers can count; the usual pick is marked; yearly savings and taxes are in rupees, with nothing added at checkout.', weight: 3, required: true },
+    { id: 'test', label: 'Tested, then changed', strong: 'Reports real times and errors from five people finding their plan, names what confused them, and shows the change it led to.', weight: 2 },
+    { id: 'honest', label: 'Honest to the customer after the sale', strong: 'Shows nothing that isn’t built, and says how customer success will hear about what buyers were promised. Sales or CS input is reported and acted on.', weight: 1 },
+  ],
+  tips: ['Write the buyer’s three problems on a sticky note and check every slide and demo moment against it. Anything that doesn’t answer one goes.', 'For the pricing test, give people a one-line clinic description (“two doctors, one clinic, Jaipur”) and a stopwatch. If anyone needs more than ten seconds, the plan descriptions are doing too little.'],
+  example: {
+    link: 'Deck: Figma PDF, 7 slides, for Sunrise Clinics (12 clinics, 38 doctors, Pune), led by their medical director. Pricing page: a clickable Framer prototype.',
+    discovery: 'Sunrise’s medical director and operations head, on a 30-minute discovery call that Karan from sales ran and I joined. Ranked problems: 18% of appointments are no-shows (about 1,900 a month across 12 clinics); the billing queue reaches 25 minutes at 11 a.m. at their two busiest clinics; front-desk staff retype every paper prescription for the pharmacy, about 40 minutes a day per clinic.',
+    deck: [
+      'Sunrise loses about 1,900 appointments a month to no-shows: their own numbers from the call, as a bar per clinic.',
+      'WhatsApp reminders with a one-tap reschedule cut no-shows from 18% to 7% at Lotus Clinics, Thane: a before-and-after chart over six months.',
+      'The bill is ready when the doctor finishes, so the 11 a.m. queue goes: one patient’s visit at the desk, today against with Parcha.',
+      'Prescriptions are written once and reach the pharmacy at once: 40 minutes a day back for each front desk.',
+      'Chains like Sunrise run every site on one calendar: a quote from Lotus’s operations head, with their clinic count.',
+      'Next step: a four-week pilot at Koregaon Park and Aundh from 1 December, judged on no-shows and queue time against today.',
+    ],
+    demo: [
+      'Recap, 2 minutes: the three problems in Sunrise’s numbers, and their ranking, checked with them out loud.',
+      'No-shows, 4 minutes: Asha Jadhav books Dr. Kulkarni at Sunrise Koregaon Park; the two reminders arrive; she reschedules in one tap.',
+      'Queue and prescriptions, 8 minutes: the bill is waiting when Dr. Kulkarni finishes and Asha pays by UPI; then the tablet prescription reaching the pharmacy counter.',
+      'Next step, 3 minutes: the pilot, the two clinics, the start date and how we’ll measure it. 17 minutes in all, leaving time for their questions.',
+    ],
+    plans: [
+      'Solo: one doctor, one clinic. ₹999 a month. Fence: a second doctor or a second clinic moves you to Clinic.',
+      'Clinic (marked “Most clinics pick this”): a front desk and 2–25 doctors, up to 3 clinics. ₹799 per doctor a month, two doctors at least. Fence: a fourth clinic, more than 25 doctors, or SSO and API access.',
+      'Chain: 4 or more clinics, or SSO and API. Talk to us, with an onboarding manager. On every plan GST is shown on the page, and paying yearly gets two months free, shown in rupees.',
+    ],
+    test: 'Five clinic staff and owners, each given one clinic description. Four found their plan and price in under 8 seconds; the median was 6. One took 22 seconds and picked Solo for a one-doctor skin clinic with two branches, because Solo said only “one doctor”. I changed it to “one doctor, one clinic” and the retest took 5 seconds. Lakshmi in CS asked me to cut Marathi reminders from the Chain features until they ship, because Sunrise was told about them before and still raises tickets; they’re gone from the page and the deck.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

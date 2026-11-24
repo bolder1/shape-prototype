@@ -3,6 +3,7 @@ import { HYPO_PARTS, PLAN_VERDICTS, READ_CALLS, TOKRI_AA, TOKRI_HYPOS, TOKRI_PLA
 import { twoProp } from './stats';
 import { GUIDE_SECTIONS, KIT_SLOTS, MARK_VERDICTS, SUKOON_KIT, SUKOON_MARKS, SUKOON_USES, kitFlaw, markVerdict, sectionBroken, type KitOption, type SukoonKitKey, type SukoonMark, type SukoonUse } from './identity';
 import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_ASSETS, SUKOON_DRAFTS, SUKOON_SECTIONS, SUKOON_SEO_BEFORE, copyFlaws, copyLine, seoIssues, type CopyDraft, type SeoIssue, type SukoonAsset, type SukoonDraft, type SukoonSection } from './marketing';
+import { PARCHA_BUYERS, PARCHA_SIGNALS, PLAN_IDS, ROUTES, SUNRISE_MOMENTS, demoFlaws, planFor, type ParchaBuyer, type ParchaSignal, type SunriseMoment } from './sales';
 import { OBJECTION_KINDS, PITCH_PARTS, SAMAN_BEATS, SAMAN_OBJECTIONS, SAMAN_UPDATE, SUMMARY_PARTS, replyFlaw, type Objection, type SamanBeat, type SamanLine, type SamanObjection } from './pitch';
 
 describe('gr.3 helpers', () => {
@@ -917,6 +918,22 @@ describe('episodes', () => {
         expect(lanes).toEqual([...COGA_LANES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_BARRIERS).sort());
         for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_BARRIERS[c.visual as RahiBarrier].lane); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'demo-build') {   // every moment once, written out; the shown ones make the one clean demo
+        expect(lanes).toEqual(['show', 'skip']);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUNRISE_MOMENTS).sort());
+        for (const c of ep.game.cards) { expect(c.label).toBe(SUNRISE_MOMENTS[c.visual as SunriseMoment].text); expect(c.note).toBeTruthy(); }
+        expect(demoFlaws(ep.game.cards.filter(c => c.lane === 'show').map(c => SUNRISE_MOMENTS[c.visual as SunriseMoment]))).toEqual([]);
+      }
+      if (ep.game.id === 'plan-pick') {   // every buyer once, on the plan that covers them for least
+        expect(lanes).toEqual([...PLAN_IDS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(PARCHA_BUYERS).sort());
+        for (const c of ep.game.cards) { const b = PARCHA_BUYERS[c.visual as ParchaBuyer]; expect(c.lane).toBe(planFor(b)); expect(c.label).toContain(b.name); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'signal-route') {   // every theme once, on its route
+        expect(lanes).toEqual([...ROUTES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(PARCHA_SIGNALS).sort());
+        for (const c of ep.game.cards) { const s = PARCHA_SIGNALS[c.visual as ParchaSignal]; expect(c.lane).toBe(s.route); expect(c.label).toContain(s.text); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

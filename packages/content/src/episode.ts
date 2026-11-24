@@ -42,7 +42,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'hypothesis-shape', 'sample-size', 'peek-trap',
   'logo-process', 'brand-palette', 'brand-guide',
   'landing-anatomy', 'conversion-copy', 'campaign-cut', 'seo-read',
-  'story-spine', 'objection-room', 'bluf-email']);
+  'story-spine', 'objection-room', 'bluf-email',
+  'demo-tour', 'pricing-page', 'cs-loop']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -173,6 +174,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `story-strip`: lanes are `PITCH_PARTS` in order; every card is a beat of Neha's rebuilt Saman pitch, its `visual` a key of `SAMAN_BEATS` (each used once), its `label` that beat's `text`, and its lane the beat's `part`. Each right call adds the beat to a timeline in `pitchOrder`, timed by `pitchTimeline` against `PITCH_SECONDS`, with `PROBLEM_BY` marked. Every card needs a `note`.
  *  - `objection-reply`: lanes are `OBJECTION_KINDS` in order; every card is an objection from Saman's leadership team, its `visual` a key of `SAMAN_OBJECTIONS` (each used once) whose `kind` is the lane. You name the worry, then pick one of its three replies; exactly one passes `replyFlaw`, and the room's trust moves by `replyTrust`. A card scores when both are right first time. Every card needs a `note`.
  *  - `summary-build`: lanes are `SUMMARY_PARTS` in order; every card is a sentence of Neha's long update, its `visual` a key of `SAMAN_UPDATE` (each used once), its `label` that line's `text`, and its lane the line's `part`. The summary grows in `buildSummary` order, with its inbox preview (`inboxPreview`), reading time and `summaryFlaws` shown live. Every card needs a `note`.
+ *  - `demo-build`: lanes are `show` then `skip`; every card is a moment of the Sunrise demo, its `visual` a key of `SUNRISE_MOMENTS` (each used once) and its `label` that moment's `text`. Lane `show` exactly when the moment belongs in the clean demo (no `demoFlaws`). Shown moments join an agenda in `demoOrder`, timed against `DEMO_MINUTES`, with `demoGaps` and `demoFlaws` live. Every card needs a `note`.
+ *  - `plan-pick`: lanes are `PLAN_IDS` in order; every card is a buyer reading Parcha's pricing page, its `visual` a key of `PARCHA_BUYERS` (each used once), and its lane `planFor` that buyer. A pick lights the plan's row for `fenceFor` (`FENCE_TEXT`) and shows `monthlyBill`. Every card needs a `note`.
+ *  - `signal-route`: lanes are `ROUTES` in order; every card is a theme from Parcha's ticket queue, its `visual` a key of `PARCHA_SIGNALS` (each used once), and its lane that signal's `route`. The board totals `arrByRoute` and `loopAccounts` as you go, and the end compares `rankSignals` by tickets and by revenue. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -211,7 +215,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'hypo-fix', 'sample-dial', 'result-read',
   'logo-stress', 'kit-pick', 'guide-build',
   'page-stack', 'copy-swap', 'asset-fit', 'serp-spot',
-  'story-strip', 'objection-reply', 'summary-build']);
+  'story-strip', 'objection-reply', 'summary-build',
+  'demo-build', 'plan-pick', 'signal-route']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

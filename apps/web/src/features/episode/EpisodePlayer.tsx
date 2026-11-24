@@ -145,6 +145,9 @@ import { SerpSpot } from './games/SerpSpot';
 import { StoryStrip } from './games/StoryStrip';
 import { ObjectionReply } from './games/ObjectionReply';
 import { SummaryBuild } from './games/SummaryBuild';
+import { DemoBuild } from './games/DemoBuild';
+import { PlanPick } from './games/PlanPick';
+import { SignalRoute } from './games/SignalRoute';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -299,6 +302,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'story-strip': StoryStrip,
   'objection-reply': ObjectionReply,
   'summary-build': SummaryBuild,
+  'demo-build': DemoBuild,
+  'plan-pick': PlanPick,
+  'signal-route': SignalRoute,
 };
 
 interface Props {
