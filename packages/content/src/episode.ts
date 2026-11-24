@@ -24,7 +24,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'case-study', 'portfolio-crit', 'whiteboard',
   'happy-path', 'fewer-steps', 'ui-states',
   'taste-reason', 'feedback-frame', 'receive-critique',
-  'affinity-map', 'observation-insight', 'persona-jtbd', 'journey-map']);
+  'affinity-map', 'observation-insight', 'persona-jtbd', 'journey-map',
+  'task-writing', 'mod-unmod', 'severity', 'heuristic-eval']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -98,6 +99,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `insight-sharpen`: lanes `why`, `who`, `fix`, `good` (what the draft lacks); every card's `visual` is the sharp version as "who|what they do|because why" (see `insightParts`), and a `good` card's label is that sentence.
  *  - `tool-fit`: lanes `persona`, `job`, `arch`; every card's `visual` is the line of that tool that answers it (one of `TOOL_PARTS[lane]`) and it needs a `note`.
  *  - `journey-plot`: lanes are `JOURNEY_STAGES` in order; every card's `visual` is how the person felt, an integer from -2 to 2 (see `journeyFeelings`), and it needs a `note`.
+ *  - `task-fix`: lanes `leak`, `steps`, `vague`, `good`; every card needs a `note` (for a flawed task, the rewrite in quotes). A flawed card's `visual` is the run of words in its label that spoils it (see `flawSpan`); a `good` card has none.
+ *  - `method-pick`: lanes `person`, `remote`, `unmod`; every card's `visual` is how many people take part (costed by `studyCost`), and it needs a `note`.
+ *  - `severity-rate`: lanes are `SEVERITY` in order; every card's `visual` is "people of 5 who hit it|impact 1–3" (see `findingOf`), its lane is what `severityOf` says, and it needs a `note`.
+ *  - `heuristic-sweep`: up to 4 lanes, each a heuristic id from `NIELSEN_10`; every card's `visual` is the part of the Safar booking screen that breaks it (one of `SAFAR_PARTS`, each used once) and its `note` the fix.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -119,7 +124,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'case-order', 'portfolio-crit', 'whiteboard-step',
   'edge-branch', 'step-trim', 'state-pick',
   'taste-filter', 'frame-feedback', 'calm-reply',
-  'affinity-wall', 'insight-sharpen', 'tool-fit', 'journey-plot']);
+  'affinity-wall', 'insight-sharpen', 'tool-fit', 'journey-plot',
+  'task-fix', 'method-pick', 'severity-rate', 'heuristic-sweep']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -209,6 +215,49 @@ export const journeyLow = (cards: readonly { lane: string; visual?: string }[]) 
   f.forEach((v, i) => { if (v !== null && (low < 0 || v < (f[low] as number))) low = i; });
   return low < 0 ? null : JOURNEY_STAGES[low];
 };
+
+/** A `task-fix` task as the words the game lets you tap. */
+export const taskWords = (label: string) => label.split(' ');
+/** Where a `task-fix` flaw sits: the first and last word index of `phrase` inside `label`, or null if it isn't there. */
+export const flawSpan = (label: string, phrase: string): [number, number] | null => {
+  const w = taskWords(label), f = taskWords(phrase);
+  for (let i = 0; i + f.length <= w.length; i++) if (f.every((x, k) => w[i + k] === x)) return [i, i + f.length - 1];
+  return null;
+};
+/** Rough cost of one study by method (`method-pick` lanes): calendar days until you have results, and incentives and travel in rupees. */
+export const METHOD_COST = {
+  person: { setupDays: 3, daysEach: 0.5, rupeesEach: 2000 },
+  remote: { setupDays: 2, daysEach: 0.25, rupeesEach: 1000 },
+  unmod: { setupDays: 2, daysEach: 0, rupeesEach: 400 },
+} as const;
+export type Method = keyof typeof METHOD_COST;
+export const studyCost = (method: Method, people: number) => { const m = METHOD_COST[method]; return { days: m.setupDays + people * m.daysEach, rupees: people * m.rupeesEach }; };
+/** Severity ratings, lowest first (`severity-rate` lanes). */
+export const SEVERITY = ['cosmetic', 'minor', 'major', 'critical'] as const;
+export type Severity = (typeof SEVERITY)[number];
+/** A `severity-rate` visual: "people of 5 who hit it|impact", impact 1 = noticed it, 2 = slowed down or detoured, 3 = blocked or lost money. */
+export const findingOf = (visual: string) => { const [users, impact] = visual.split('|').map(Number); return { users, impact }; };
+/** Frequency × impact as a rule of thumb: blocking or costly problems rate high even when few hit them; small ones rise only when nearly everyone does. */
+export const severityOf = (users: number, impact: number): Severity =>
+  impact >= 3 ? (users >= 2 ? 'critical' : 'major')
+    : impact === 2 ? (users >= 3 ? 'major' : 'minor')
+      : users >= 4 ? 'minor' : 'cosmetic';
+/** Jakob Nielsen's 10 usability heuristics (1994; names as on nngroup.com). */
+export const NIELSEN_10 = [
+  { id: 'status', name: 'Visibility of system status' },
+  { id: 'match', name: 'Match between the system and the real world' },
+  { id: 'control', name: 'User control and freedom' },
+  { id: 'consistency', name: 'Consistency and standards' },
+  { id: 'prevention', name: 'Error prevention' },
+  { id: 'recognition', name: 'Recognition rather than recall' },
+  { id: 'flexibility', name: 'Flexibility and efficiency of use' },
+  { id: 'minimal', name: 'Aesthetic and minimalist design' },
+  { id: 'recovery', name: 'Help users recognise, diagnose and recover from errors' },
+  { id: 'help', name: 'Help and documentation' },
+] as const;
+/** The parts of the Safar train-booking screen a `heuristic-sweep` card can point at (the game and scene draw each). */
+export const SAFAR_PARTS = ['back', 'route', 'date', 'quota', 'search', 'passengers', 'fare', 'book'] as const;
+export type SafarPart = (typeof SAFAR_PARTS)[number];
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

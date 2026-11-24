@@ -735,9 +735,50 @@ const rs3: BossBriefInput = {
   },
 };
 
+const rs4: BossBriefInput = {
+  chapterId: 'rs.4',
+  title: 'Run usability round 1',
+  minutes: 120,
+  scenario: [
+    'This one happens in the real world. Take a clickable prototype, your own from the prototyping chapter or any flow you can build in Figma in an hour, and test it with five people who could really use it. Friends and family count if they fit; colleagues who built it don’t.',
+    'Write three tasks, pilot them on one person, then run the five sessions: moderated, in person or on a video call, 20–30 minutes each, with their consent to take notes. Ask people to think aloud, and don’t help unless they’re fully stuck.',
+    'Hand in your tasks and a findings report ranked by severity: what broke, for how many of the five, how badly, and what you’d fix first.',
+  ],
+  fields: [
+    { id: 'setup', label: 'What you tested, with whom, and how', kind: 'long', minWords: 30, hint: 'The prototype and the question it should answer. A line on each of the five people (no full names), how you found them, and whether you met in person or on a call.' },
+    { id: 'tasks', label: 'Your three tasks', kind: 'list', items: 3, minWords: 12, hint: 'Exactly as you read them out: a reason, a goal and an end you can see. Note anything you changed after the pilot.' },
+    { id: 'findings', label: 'Findings, most severe first', kind: 'list', items: 5, minWords: 25, hint: 'Each one: severity (critical, major, minor or cosmetic), where it happens, what people did, how many of the five, a quote or observation, and a direction for the fix.' },
+    { id: 'plan', label: 'What to fix first, and what to test next', kind: 'text', minWords: 25, hint: 'Which findings go first and why, what can wait, and how you’ll check the fixes worked.' },
+  ],
+  rubric: [
+    { id: 'tasks', label: 'Tasks that test the design', strong: 'Every task gives a realistic reason and one goal with a visible end, and uses none of the interface’s labels or steps. Pilot changes are noted.', weight: 2, required: true },
+    { id: 'evidence', label: 'Findings built on evidence', strong: 'Each finding says where, what people actually did, how many of the five, with a quote or observed behaviour. Opinions (“I like the colours”) are kept apart from behaviour.', weight: 2, required: true },
+    { id: 'severity', label: 'A consistent severity ranking', strong: 'Severity combines how many hit it and how badly (noticed, slowed, blocked or lost money); blocked tasks and money come first even when few hit them; effort to fix is not mixed into the rating.', weight: 2 },
+    { id: 'method', label: 'Sound sessions', strong: 'Five people who match the intended users, a method that fits the question (moderated for a rough prototype), and facilitation that hands questions back instead of helping.', weight: 1 },
+    { id: 'plan', label: 'A plan that follows the ranking', strong: 'Fixes start with the most severe findings, cosmetic issues are parked, and there’s a specific way to check the fixes (e.g. the same task with three new people).', weight: 1 },
+  ],
+  tips: ['Read every task aloud to someone before session one. If they ask a question, rewrite the task so it answers it.', 'Write down what people did and said during the session; rate severity afterwards, alone, then compare with someone else if you can.'],
+  example: {
+    setup: 'A Figma prototype of “Change delivery address” for a grocery app, built to answer: can first-time users change the address after ordering, without help? Five people who order groceries online at least twice a month: A, 27, software tester; B, 45, homemaker; C, 31, nurse on shifts; D, 62, retired bank officer; E, 22, college student. Found through two housing-society WhatsApp groups. Three in person at their homes, two on Google Meet, 25 minutes each.',
+    tasks: [
+      'You’ve just ordered groceries, then remember you’re at your sister’s place tonight. Get the order sent there instead. (After the pilot I added “tonight”, because my pilot asked whether it was for a future order.)',
+      'Your order is on its way and the delivery partner will need the gate code, 4417. Make sure they get it.',
+      'You ordered yesterday and want to know whether you were charged for the address change. Find out.',
+    ],
+    findings: [
+      'Critical. Order details: 4 of 5 looked for the address under the order, not in Account → Addresses, and 3 gave up. D: “I’d just call customer care.” Direction: put “Change address” on the order screen while the order can still be changed.',
+      'Critical. Confirm screen: 2 of 5 tapped “Save” and believed the order was redirected, but Save only adds the address to the address book. Both were surprised when the summary showed the old address. Direction: one action, “Deliver here instead”, that changes this order.',
+      'Major. Delivery note: 3 of 5 couldn’t find where to add the gate code and typed it into the address line. C: “Will the rider even see this?” Direction: a visible “Note for the delivery partner” field on the tracking screen.',
+      'Minor. Address form: 2 of 5 hesitated at “Landmark (optional)” and asked whether it was needed; both went on. Direction: an example, “e.g. opposite Kamat Hotel”.',
+      'Cosmetic. Order history: 1 of 5 (E) said the fee line “looks like an error” because it is in red. Didn’t affect the task. Direction: grey text with a label.',
+    ],
+    plan: 'Fix the two critical findings first: one “Deliver here instead” action on the order screen. Then the delivery note field. Park the landmark example and the fee colour for the next polish pass. Retest the same three tasks with three new people (unmoderated is fine now that the flow should hold up) and count how many finish task 1 without help.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

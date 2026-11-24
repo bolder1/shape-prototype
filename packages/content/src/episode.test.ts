@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, FRAME_LEAD, JOURNEY_STAGES, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, FRAME_LEAD, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -232,6 +232,46 @@ describe('episodes', () => {
         const low = journeyLow(ep.game.cards)!, lowF = f[JOURNEY_STAGES.indexOf(low)];
         for (const v of f) if (v !== lowF) expect(v - lowF).toBeGreaterThan(0.3);
         expect(journeyLow([])).toBeNull();
+      }
+      if (ep.game.id === 'task-fix') {   // a flawed task points at the words that spoil it and gets a quoted rewrite; a fair task has nothing to tap
+        expect(lanes).toEqual(['leak', 'steps', 'vague', 'good']);
+        for (const c of ep.game.cards) {
+          expect(c.note).toBeTruthy();
+          if (c.lane === 'good') { expect(c.visual).toBeUndefined(); continue; }
+          const span = flawSpan(c.label, c.visual ?? '');
+          expect(span).not.toBeNull();
+          expect(span![1] - span![0] + 1).toBeLessThan(taskWords(c.label).length);   // never the whole task
+          expect(c.note?.startsWith('“')).toBe(true);
+        }
+        expect(flawSpan('Tap Search now', 'Search later')).toBeNull();
+      }
+      if (ep.game.id === 'method-pick') {   // headcounts the cost model can price, and the split the lesson teaches: few to moderate, many to measure
+        expect(lanes).toEqual(['person', 'remote', 'unmod']);
+        for (const c of ep.game.cards) {
+          const n = Number(c.visual);
+          expect(Number.isInteger(n) && n > 0).toBe(true);
+          expect(c.note).toBeTruthy();
+          if (c.lane === 'unmod') expect(n).toBeGreaterThanOrEqual(20); else expect(n).toBeLessThanOrEqual(8);
+        }
+        expect(studyCost('person', 5)).toEqual({ days: 5.5, rupees: 10000 });
+        expect(studyCost('unmod', 40).days).toBeLessThan(studyCost('person', 40).days);
+      }
+      if (ep.game.id === 'severity-rate') {   // the marked rating is what frequency × impact says
+        expect(lanes).toEqual([...SEVERITY]);
+        for (const c of ep.game.cards) {
+          const { users, impact } = findingOf(c.visual ?? '');
+          expect(users).toBeGreaterThanOrEqual(1); expect(users).toBeLessThanOrEqual(5);
+          expect([1, 2, 3]).toContain(impact);
+          expect(c.lane).toBe(severityOf(users, impact));
+          expect(c.note).toBeTruthy();
+        }
+      }
+      if (ep.game.id === 'heuristic-sweep') {   // real heuristics, and every screen part used once
+        for (const l of lanes) expect(NIELSEN_10.map(h => h.id)).toContain(l);
+        const parts = ep.game.cards.map(c => c.visual);
+        for (const p of parts) expect(SAFAR_PARTS).toContain(p);
+        expect(new Set(parts).size).toBe(parts.length);
+        for (const c of ep.game.cards) expect(c.note).toBeTruthy();
       }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card

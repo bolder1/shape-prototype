@@ -1,0 +1,113 @@
+// Chapter rs.4 · Usability testing. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const rs4: LessonContent[] = [
+  {
+    id: 'rs.4-1', title: 'Task writing', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'A goal, not a set of steps',
+        body: ['A usability task gives the participant a reason to use the product and a goal, then gets out of the way. “Tap My trips and cancel your ticket” only tests whether people can read: they scan for the words and tap them. “You can’t travel on Friday any more. Get your money back for this ticket” tests whether they can find cancellation at all.',
+          'A good task has a realistic reason, uses none of the words on the screen, asks for one thing, and has an end you can see, such as a booked seat or a refund amount. Pilot your tasks with a colleague before the first session. A confusing task shows up in minutes, and it’s much cheaper to find it then than with your third participant.'] },
+      { type: 'sort', id: 's1', prompt: 'Tasks for testing a train-booking app. Strong or weak?',
+        explanation: 'Strong tasks give a reason and a goal with a clear end. Weak ones name the buttons, list the steps, or ask for an opinion.',
+        buckets: [{ id: 'strong', label: 'Strong task' }, { id: 'weak', label: 'Weak task' }],
+        items: [
+          { id: 'a', label: 'Tap “My trips”, then “Cancel ticket”.', bucket: 'weak' },
+          { id: 'b', label: 'You can’t travel on Friday any more. Get your money back for this ticket.', bucket: 'strong' },
+          { id: 'c', label: 'Explore the app and tell us what you think.', bucket: 'weak' },
+          { id: 'd', label: 'You need to be in Nagpur by Saturday morning and have ₹1,500. Book a seat that works.', bucket: 'strong' },
+          { id: 'e', label: 'Would you use the Tatkal feature?', bucket: 'weak' },
+          { id: 'f', label: 'Your train leaves in two hours. Find out which platform it leaves from.', bucket: 'strong' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Which rewrite of “Use the filter to show only sleeper class” is best?',
+        explanation: 'It gives a reason (sleeping on the overnight train) and an end (a berth on Friday night) without naming the filter.',
+        options: [
+          { id: 'a', label: 'Use the filters to find sleeper class.' },
+          { id: 'b', label: 'You want to sleep on the overnight journey. Find a train with a berth for Friday night.' },
+          { id: 'c', label: 'Do you like the filters?' },
+          { id: 'd', label: 'Tap Filter, then Class, then Sleeper (SL).' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'rs.4-2', title: 'Moderated vs. unmoderated', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Someone in the session, or nobody',
+        body: ['In a moderated test a facilitator is with the participant, in the same room or on a video call. They watch, and when someone stops, they ask: “What did you expect to happen there?” You learn why things go wrong, and you can steer past an unfinished screen. It takes time: five sessions fill a day or two.',
+          'In an unmoderated test a tool such as Maze, Lyssna or UserTesting gives people the tasks and records their screen and voice. You can have forty sessions by the next morning, but nobody can ask a follow-up, and one unclear task wastes every session. Choose by your question: why, early, rough or sensitive → moderated. How many and how fast, on a sturdy prototype → unmoderated.'] },
+      { type: 'sort', id: 's1', prompt: 'Which kind of test fits each study?',
+        explanation: 'Moderated is for understanding, rough prototypes and people who need support. Unmoderated is for simple tasks, many people and numbers.',
+        buckets: [{ id: 'mod', label: 'Moderated' }, { id: 'unmod', label: 'Unmoderated' }],
+        items: [
+          { id: 'a', label: 'First look at a paper prototype of a new refund flow', bucket: 'mod' },
+          { id: 'b', label: 'Can 40 people find PNR status on the live app?', bucket: 'unmod' },
+          { id: 'c', label: 'Why do travellers over 60 give up at UPI payment?', bucket: 'mod' },
+          { id: 'd', label: 'Which of two seat maps lets people pick a lower berth faster?', bucket: 'unmod' },
+          { id: 'e', label: 'Booking a ticket with blind travellers who use screen readers', bucket: 'mod' },
+          { id: 'f', label: 'After a fix, is the “Download ticket” button easy to find for 30 people?', bucket: 'unmod' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Your prototype has three unfinished screens, and you want to know why people hesitate at payment. Which test?',
+        explanation: 'A shaky prototype needs someone to steer around the gaps, and “why” needs someone to ask.',
+        options: [
+          { id: 'a', label: 'Unmoderated, with 50 people' },
+          { id: 'b', label: 'Moderated, with five people on video calls' },
+          { id: 'c', label: 'A survey' },
+          { id: 'd', label: 'Look at the analytics' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'rs.4-3', title: 'Severity rating', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Fix the worst first, not the easiest',
+        body: ['Five sessions can turn up thirty problems, and the team can fix six this sprint. A severity rating decides which six. Jakob Nielsen’s scale runs from 0 (not a problem) through 1 cosmetic, 2 minor and 3 major to 4, a usability catastrophe.',
+          'Judge three things. Frequency: how many people hit it. Impact: did it slow them down, send them the wrong way, or stop them finishing (or cost them money)? Persistence: once they know, does it keep hurting? Rate on your own, then compare with a teammate. Rate the problem, not the fix: how hard it is to fix goes in a separate column.'] },
+      { type: 'sort', id: 's1', prompt: 'Findings from five sessions. When should each be fixed?',
+        explanation: 'Blocked tasks and lost money come first, even when few people hit them. Small problems rise only when nearly everyone hits them.',
+        buckets: [{ id: 'now', label: 'Before launch' }, { id: 'soon', label: 'Soon' }, { id: 'later', label: 'Polish later' }],
+        items: [
+          { id: 'a', label: '4 of 5 couldn’t find how to cancel a ticket and gave up', bucket: 'now' },
+          { id: 'b', label: '2 of 5 paid twice because the Pay button showed no sign of working', bucket: 'now' },
+          { id: 'c', label: '3 of 5 stopped at “Quota: GN”, then guessed right', bucket: 'soon' },
+          { id: 'd', label: '2 of 5 typed the date in the wrong format, saw an error and fixed it', bucket: 'soon' },
+          { id: 'e', label: 'One person said the train icon looks old-fashioned', bucket: 'later' },
+          { id: 'f', label: 'Two people noticed that the two Back buttons look different', bucket: 'later' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Which of these should not change a finding’s severity?',
+        explanation: 'Severity is about the harm to users. Effort to fix is a separate column, so a hard fix can’t make a serious problem look minor.',
+        options: [
+          { id: 'a', label: 'How many people hit it' },
+          { id: 'b', label: 'Whether it stopped them finishing' },
+          { id: 'c', label: 'How hard it is to fix' },
+          { id: 'd', label: 'Whether it keeps happening after they learn' },
+        ], correct: 'c' },
+    ],
+  },
+  {
+    id: 'rs.4-4', title: 'Heuristic evaluation (Nielsen 10)', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Experts with a checklist',
+        body: ['In a heuristic evaluation a few evaluators inspect an interface against a set of principles, usually Jakob Nielsen’s 10 usability heuristics: visibility of system status; match between the system and the real world; user control and freedom; consistency and standards; error prevention; recognition rather than recall; flexibility and efficiency of use; aesthetic and minimalist design; help users recognise, diagnose and recover from errors; and help and documentation.',
+          'Each evaluator works alone first, then the lists are merged. In Nielsen’s studies one evaluator found about a third of the problems, and three to five found most. Write each finding with where it is, which heuristic it breaks and why it hurts. It is fast and cheap, but it is experts predicting problems. It doesn’t replace watching real users.'] },
+      { type: 'sort', id: 's1', prompt: 'Problems on a train-booking screen. Which heuristic does each break?',
+        explanation: 'Status is about showing what’s happening. Match is about the user’s words, not the system’s. Control is about a way back.',
+        buckets: [{ id: 'status', label: 'Visibility of system status' }, { id: 'match', label: 'Match with the real world' }, { id: 'control', label: 'User control and freedom' }],
+        items: [
+          { id: 'a', label: 'After tapping Pay, nothing changes for eight seconds', bucket: 'status' },
+          { id: 'b', label: 'Quota options shown only as GN, TQ, LD and PT', bucket: 'match' },
+          { id: 'c', label: 'No way to undo removing a passenger', bucket: 'control' },
+          { id: 'd', label: 'An expired booking is shown as “PNR flushed”', bucket: 'match' },
+          { id: 'e', label: 'No progress shown while an ID photo uploads', bucket: 'status' },
+          { id: 'f', label: 'The back arrow throws away the whole form', bucket: 'control' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'There’s no budget for users this week. Three designers run a heuristic evaluation and find 14 problems. What’s true?',
+        explanation: 'Heuristic evaluation catches many obvious problems cheaply. Users still find the ones that experts can’t predict.',
+        options: [
+          { id: 'a', label: 'We no longer need to test with users' },
+          { id: 'b', label: 'A good start: fix the clear problems, then test with users to find what experts miss' },
+          { id: 'c', label: 'It’s worthless without users' },
+          { id: 'd', label: 'One designer would have found the same 14' },
+        ], correct: 'b' },
+    ],
+  },
+];

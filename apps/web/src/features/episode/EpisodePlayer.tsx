@@ -88,6 +88,10 @@ import { AffinityWall } from './games/AffinityWall';
 import { InsightSharpen } from './games/InsightSharpen';
 import { ToolFit } from './games/ToolFit';
 import { JourneyPlot } from './games/JourneyPlot';
+import { TaskFix } from './games/TaskFix';
+import { MethodPick } from './games/MethodPick';
+import { SeverityRate } from './games/SeverityRate';
+import { HeuristicSweep } from './games/HeuristicSweep';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -185,6 +189,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'insight-sharpen': InsightSharpen,
   'tool-fit': ToolFit,
   'journey-plot': JourneyPlot,
+  'task-fix': TaskFix,
+  'method-pick': MethodPick,
+  'severity-rate': SeverityRate,
+  'heuristic-sweep': HeuristicSweep,
 };
 
 interface Props {
