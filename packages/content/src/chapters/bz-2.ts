@@ -1,0 +1,107 @@
+// Chapter bz.2 · Presenting & persuading. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const bz2: LessonContent[] = [
+  {
+    id: 'bz.2-1', title: 'Storytelling your design', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Tell their story, not your process',
+        body: ['Designers tend to present in the order the work happened: research, personas, wireframes, and the problem somewhere near the end. Leaders listen in a different order. In the first minute they want to know what’s wrong and why it matters to the business; if they don’t hear it, they start reading email.',
+          'A simple spine works for most pitches: situation (a real person and what they do today), complication (what goes wrong, with a number), resolution (the design, shown through that person, with evidence it works) and the ask (the decision you need, and how you’ll know it worked). Process belongs in the appendix, ready for questions.'] },
+      { type: 'order', id: 'o1', prompt: 'Put Neha’s five-minute pitch for Saman’s new restock flow in order.',
+        explanation: 'Situation, complication, resolution, ask. The problem lands inside the first minute, and the pitch ends on the decision.',
+        items: [
+          { id: 'a', label: 'Ramesh restocks his Indore kirana on Saman every Sunday night' },
+          { id: 'b', label: 'It takes him 19 minutes, and 38% of carts are never sent' },
+          { id: 'c', label: 'The new flow starts from last week’s order: three taps' },
+          { id: 'd', label: 'In tests, restocking fell from 19 minutes to 4' },
+          { id: 'e', label: 'Two engineers for six weeks; the target is unsent carts under 20%' },
+        ] },
+      { type: 'sort', id: 's1', prompt: 'Main deck, or appendix?',
+        explanation: 'The deck carries what the room must believe to say yes. How you got there goes in the appendix, for whoever asks.',
+        buckets: [{ id: 'deck', label: 'In the pitch' }, { id: 'appendix', label: 'Appendix' }],
+        items: [
+          { id: 'a', label: '38% of restock carts are never sent', bucket: 'deck' },
+          { id: 'b', label: 'The affinity map from 12 interviews', bucket: 'appendix' },
+          { id: 'c', label: 'Ramesh sending last week’s order in three taps', bucket: 'deck' },
+          { id: 'd', label: 'Wireframe rounds one to three', bucket: 'appendix' },
+          { id: 'e', label: 'The ask: two engineers for six weeks', bucket: 'deck' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'How should Neha open?',
+        explanation: 'A named person in a real moment makes the number that follows mean something. An agenda slide spends the first minute on nothing.',
+        options: [
+          { id: 'a', label: '“Today I’ll walk you through our research plan”' },
+          { id: 'b', label: '“Ramesh runs a kirana in Indore. Every Sunday night he restocks on Saman, and it takes him 19 minutes.”' },
+          { id: 'c', label: '“Design is about empathy”' },
+          { id: 'd', label: 'An agenda with six bullet points' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'bz.2-2', title: 'Handling objections', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Hear the worry, then answer it',
+        body: ['An objection is a sign the room is taking you seriously. Most are one of four worries: cost (is it worth the money and people), risk (what could break), proof (is the evidence strong enough) or priority (why this, why now). Name the worry before you answer, or you’ll answer a different question.',
+          'A good reply has three moves: acknowledge the concern in their words, answer with something concrete (a number, a fact, a dated plan), and offer a next step if it’s still open. Two reflexes lose rooms: getting defensive, which argues with the person instead of the point, and caving, which drops the plan without a reason. If you don’t know, say so and say when you’ll find out.'] },
+      { type: 'sort', id: 's1', prompt: 'What is each objection really worried about?',
+        explanation: 'Money and people is cost; things breaking is risk; doubting the evidence is proof; “why not something else” is priority.',
+        buckets: [{ id: 'cost', label: 'Cost' }, { id: 'risk', label: 'Risk' }, { id: 'other', label: 'Proof or priority' }],
+        items: [
+          { id: 'a', label: '“Two engineers for six weeks is ₹9 lakh”', bucket: 'cost' },
+          { id: 'b', label: '“Forty thousand shops know the old screen”', bucket: 'risk' },
+          { id: 'c', label: '“Eight shopkeepers is a tiny test”', bucket: 'other' },
+          { id: 'd', label: '“Distributors want credit limits first”', bucket: 'other' },
+          { id: 'e', label: '“Can we ship in the wedding season rush?”', bucket: 'risk' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'The CFO says: “What do we get back for ₹9 lakh?” Which reply lands?',
+        explanation: 'It acknowledges the question and answers in the CFO’s units: rupees and months.',
+        options: [
+          { id: 'a', label: '“Good design always pays for itself.”' },
+          { id: 'b', label: '“Fair question. Unsent carts are about ₹1.6 crore a month; win back a tenth and it pays for itself in the first month.”' },
+          { id: 'c', label: '“Shopkeepers will be much happier.”' },
+          { id: 'd', label: '“Fine, we’ll drop it.”' },
+        ], correct: 'b' },
+      { type: 'pick', id: 'p2', prompt: 'The COO asks something Neha can’t answer: “What did the support team see last time we changed a screen?” What now?',
+        explanation: 'Guessing in front of leaders costs more trust than “I don’t know”. A named follow-up with a date keeps the decision moving.',
+        options: [
+          { id: 'a', label: 'Make up a plausible number' },
+          { id: 'b', label: 'Change the subject to the prototype' },
+          { id: 'c', label: '“I don’t know. I’ll ask Support for the call numbers from the March change and send them by Wednesday.”' },
+          { id: 'd', label: 'Say it isn’t relevant' },
+        ], correct: 'c' },
+    ],
+  },
+  {
+    id: 'bz.2-3', title: 'Exec summaries', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'The decision goes first',
+        body: ['Leaders read updates between meetings, often only the inbox preview: the subject and the first line or so. Put the bottom line up front: the decision you need and by when. Then why it matters, in their units (rupees, customers, weeks), then what happens next and how you’ll know it worked.',
+          'Cut what they don’t need to decide: the workshop you ran, the number of screens, the method names. Swap design words for plain ones (“shopkeepers kept getting stuck” instead of “usability issues”). Aim for something that can be read in half a minute. Link the long version for anyone who wants it.'] },
+      { type: 'pick', id: 'p1', prompt: 'Which first line makes the CFO’s inbox preview useful?',
+        explanation: 'The decision and the deadline fit in the preview. Everything else can wait for the open.',
+        options: [
+          { id: 'a', label: '“Here’s an update on the restock research we’ve been running since September.”' },
+          { id: 'b', label: '“Decision needed by Friday: two engineers for six weeks from 1 December, to rebuild restock.”' },
+          { id: 'c', label: '“Hope you’re all well!”' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Keep this sentence in the summary, or cut it?',
+        explanation: 'Keep what helps them decide: the problem in rupees and minutes, the evidence, the plan. Cut the method and the artefacts.',
+        buckets: [{ id: 'keep', label: 'Keep' }, { id: 'cut', label: 'Cut' }],
+        items: [
+          { id: 'a', label: '38% of restock carts are never sent: about ₹1.6 crore of orders a month', bucket: 'keep' },
+          { id: 'b', label: 'We ran an affinity mapping workshop to synthesise 12 interviews', bucket: 'cut' },
+          { id: 'c', label: 'In tests with eight shopkeepers, restocking fell to 4 minutes', bucket: 'keep' },
+          { id: 'd', label: 'The prototype has 46 screens in Figma', bucket: 'cut' },
+          { id: 'e', label: 'Success is unsent carts under 20% by March', bucket: 'keep' },
+        ] },
+      { type: 'pick', id: 'p2', prompt: 'Rewrite “A heuristic evaluation found 23 usability issues” for the leadership team.',
+        explanation: 'Plain words and the consequence they care about. The method can go in the linked report.',
+        options: [
+          { id: 'a', label: '“Our expert review surfaced 23 heuristic violations”' },
+          { id: 'b', label: '“Shopkeepers get stuck in the app, so they phone the salesman and the order leaves Saman”' },
+          { id: 'c', label: 'Leave it: execs should learn the terms' },
+          { id: 'd', label: '“There are some UX issues”' },
+        ], correct: 'b' },
+    ],
+  },
+];

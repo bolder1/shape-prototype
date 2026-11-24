@@ -1474,9 +1474,51 @@ const br3: BossBriefInput = {
   },
 };
 
+const bz2: BossBriefInput = {
+  chapterId: 'bz.2',
+  title: 'Pitch a design in five minutes',
+  minutes: 120,
+  scenario: [
+    'Pick a design you’ve made (your Studio product, a past project, or Saman’s restock redesign: 40,000 kirana shops, restock takes 19 minutes, 38% of carts never sent) and pitch it to a leadership team that has to decide whether to fund it.',
+    'Record a pitch of five minutes or less (a screen recording with your voice is fine), and share it with two peers who play the room: one as the person who controls the budget, one as the person who carries the risk. Hand in the link, your story, the objections you prepared for, the one-page summary you’d send before the meeting, and what your peers scored.',
+  ],
+  fields: [
+    { id: 'link', label: 'Your recording', kind: 'text', minWords: 6, hint: 'A link to the video, its length, and the decision you’re asking for.' },
+    { id: 'story', label: 'The story spine', kind: 'list', items: 4, minWords: 12, hint: 'One line each, with timings: situation (a real person, today), complication (what goes wrong, with a number), resolution (the design through that person, with evidence), ask (what you need, and how you’ll judge it).' },
+    { id: 'objections', label: 'Objections and replies', kind: 'list', items: 3, minWords: 20, hint: 'Three objections you expect, each from a named role, the worry underneath (cost, risk, proof or priority), and your reply: acknowledge, then something concrete.' },
+    { id: 'summary', label: 'The exec summary', kind: 'long', minWords: 50, hint: 'The email you’d send before the meeting, under about 120 words: the decision and deadline first, why in their units, what happens next and how you’ll know.' },
+    { id: 'scores', label: 'Peer scores and what you’d change', kind: 'long', minWords: 30, hint: 'Each peer’s 1–5 scores for clarity, evidence and the ask, the question that stumped you, and what you’d change for the real meeting.' },
+  ],
+  rubric: [
+    { id: 'story', label: 'A story, not a process tour', strong: 'Opens on a specific person and moment, states the problem with a number inside the first minute, shows the design through that person with evidence, and ends on the ask. Process is in an appendix, not the pitch. The recording is five minutes or less.', weight: 3, required: true },
+    { id: 'ask', label: 'A clear ask', strong: 'Names exactly what is needed (people, money, time, a start date) and how success will be judged, with a target and a date. The room could say yes on the spot.', weight: 2, required: true },
+    { id: 'evidence', label: 'Evidence in their units', strong: 'The problem and the result are in units the deciders care about (rupees, customers, minutes, weeks), with sources, and honest about what the evidence can’t show.', weight: 2 },
+    { id: 'objections', label: 'Objections met well', strong: 'Each objection is matched to its real worry; replies acknowledge it, answer with a number, fact or dated plan, and neither argue with the person nor drop the plan. Unknowns get a named follow-up.', weight: 2, required: true },
+    { id: 'summary', label: 'A summary that gets read', strong: 'The first line carries the decision and deadline; it’s readable in about half a minute, has no design jargon, and links the detail.', weight: 2 },
+    { id: 'feedback', label: 'Learns from the room', strong: 'Reports real peer scores and the hardest question, and names specific changes, not “be more confident”.', weight: 1 },
+  ],
+  tips: ['Write the ask first, then build backwards: what does the room have to believe to say yes? Everything that doesn’t help them believe it goes in the appendix.', 'Before recording, list every person in the room and what they’re measured on. Their objection is usually hiding in that number.'],
+  example: {
+    link: 'Loom recording, 4 min 10 s: asking for two engineers for six weeks to rebuild Saman’s restock flow.',
+    story: [
+      'Situation (0:00–0:55): Ramesh runs a kirana in Indore and restocks about 60 items on Saman every Sunday night. Restock is 70% of what flows through Saman, ₹4.2 crore a month.',
+      'Complication (0:55–2:00): a restock takes him 19 minutes in the app, against 6 with the distributor’s salesman and a notebook, and 38% of restock carts are never sent: the shopkeeper phones the salesman and the order leaves Saman.',
+      'Resolution (2:00–3:10): the new flow opens on last week’s order; Ramesh changes a few quantities and sends it in three taps. With eight shopkeepers in Indore and Nagpur, restocking fell from 19 minutes to 4.',
+      'Ask (3:10–3:50): two engineers for six weeks from 1 December; 10% of shops on 6 January, a decision on 15 January, and a win means unsent carts under 20% by March.',
+    ],
+    objections: [
+      'CFO, cost: “₹9 lakh: what do we get back?” “Fair question. Unsent carts are about ₹1.6 crore of orders a month; winning back a tenth pays for the work in the first month.”',
+      'CTO, risk: “Forty thousand shops know the old screen.” “That’s the risk I worry about too, so it goes to 10% first with the old screen one tap away, and we watch support calls for two weeks.”',
+      'COO, proof: “Eight shopkeepers is tiny.” “Eight finds what’s broken; it can’t prove the size of the win. The 10% rollout measures carts sent against the old flow, and we decide on 15 January.”',
+    ],
+    summary: 'Subject: Decision by Fri: 2 engineers for restock rebuild. Decision needed by Friday: two engineers for six weeks from 1 December, to rebuild restock. A restock takes shopkeepers 19 minutes in the app, against 6 on paper, and 38% of restock carts are never sent: about ₹1.6 crore of orders a month. In tests with eight shopkeepers, the new flow cut restocking to 4 minutes. It goes to 10% of shops on 6 January, and we decide on the rest by 15 January from carts sent. Success is unsent carts under 20% by March. Research and prototype linked below.',
+    scores: 'Priya (as CFO): clarity 5, evidence 4, ask 5. Rohan (as CTO): clarity 4, evidence 3, ask 4. Rohan’s question stumped me: what happens to shops on old Android phones? I’ll check our device data with engineering and add the minimum Android version to the rollout plan. Priya wanted the payback in the first slide of the ask, so I’ll move the ₹1.6 crore line there and cut the stakes beat to 20 seconds.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

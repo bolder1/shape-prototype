@@ -41,7 +41,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'just-in-time', 'empty-activate', 'upgrade-moment',
   'hypothesis-shape', 'sample-size', 'peek-trap',
   'logo-process', 'brand-palette', 'brand-guide',
-  'landing-anatomy', 'conversion-copy', 'campaign-cut', 'seo-read']);
+  'landing-anatomy', 'conversion-copy', 'campaign-cut', 'seo-read',
+  'story-spine', 'objection-room', 'bluf-email']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -169,6 +170,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `copy-swap`: lanes are `HERO_SLOTS` in order; every card is a draft line, its `visual` a key of `SUKOON_DRAFTS` (each used once), its `label` the draft as written (`copyLine` with every first option), and its lane the draft's `slot`. You swap phrases until `copyFlaws` finds nothing, then lock it; exactly one choice of phrases passes. Every card needs a `note`.
  *  - `asset-fit`: lanes are `ASSET_FORMATS` in order; every card is a campaign asset, its `visual` a key of `SUKOON_ASSETS` (each used once), its `label` that asset's `text`, and its lane the asset's `format`. You nudge blocks by `ASSET_STEP`, resize the headline through `ASSET_SIZES` or swap its line, and ship it; it scores when `assetIssues` finds nothing on the first ship. Every card needs a `note`.
  *  - `serp-spot`: lanes are `SEO_AREAS` in order; every card is one of `SEO_ISSUES` on Sukoon's launch page (its `visual`, each used once), and its lane is `SEO_AREA_OF` that issue. A right tap applies `SEO_FIXES`, so the page and its search result redraw from `fixSeo`. Every card needs a `note`.
+ *  - `story-strip`: lanes are `PITCH_PARTS` in order; every card is a beat of Neha's rebuilt Saman pitch, its `visual` a key of `SAMAN_BEATS` (each used once), its `label` that beat's `text`, and its lane the beat's `part`. Each right call adds the beat to a timeline in `pitchOrder`, timed by `pitchTimeline` against `PITCH_SECONDS`, with `PROBLEM_BY` marked. Every card needs a `note`.
+ *  - `objection-reply`: lanes are `OBJECTION_KINDS` in order; every card is an objection from Saman's leadership team, its `visual` a key of `SAMAN_OBJECTIONS` (each used once) whose `kind` is the lane. You name the worry, then pick one of its three replies; exactly one passes `replyFlaw`, and the room's trust moves by `replyTrust`. A card scores when both are right first time. Every card needs a `note`.
+ *  - `summary-build`: lanes are `SUMMARY_PARTS` in order; every card is a sentence of Neha's long update, its `visual` a key of `SAMAN_UPDATE` (each used once), its `label` that line's `text`, and its lane the line's `part`. The summary grows in `buildSummary` order, with its inbox preview (`inboxPreview`), reading time and `summaryFlaws` shown live. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -206,7 +210,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'cue-timeline', 'empty-build', 'paywall-timing',
   'hypo-fix', 'sample-dial', 'result-read',
   'logo-stress', 'kit-pick', 'guide-build',
-  'page-stack', 'copy-swap', 'asset-fit', 'serp-spot']);
+  'page-stack', 'copy-swap', 'asset-fit', 'serp-spot',
+  'story-strip', 'objection-reply', 'summary-build']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

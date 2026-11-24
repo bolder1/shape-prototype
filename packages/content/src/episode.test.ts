@@ -3,6 +3,7 @@ import { HYPO_PARTS, PLAN_VERDICTS, READ_CALLS, TOKRI_AA, TOKRI_HYPOS, TOKRI_PLA
 import { twoProp } from './stats';
 import { GUIDE_SECTIONS, KIT_SLOTS, MARK_VERDICTS, SUKOON_KIT, SUKOON_MARKS, SUKOON_USES, kitFlaw, markVerdict, sectionBroken, type KitOption, type SukoonKitKey, type SukoonMark, type SukoonUse } from './identity';
 import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_ASSETS, SUKOON_DRAFTS, SUKOON_SECTIONS, SUKOON_SEO_BEFORE, copyFlaws, copyLine, seoIssues, type CopyDraft, type SeoIssue, type SukoonAsset, type SukoonDraft, type SukoonSection } from './marketing';
+import { OBJECTION_KINDS, PITCH_PARTS, SAMAN_BEATS, SAMAN_OBJECTIONS, SAMAN_UPDATE, SUMMARY_PARTS, replyFlaw, type Objection, type SamanBeat, type SamanLine, type SamanObjection } from './pitch';
 
 describe('gr.3 helpers', () => {
   it('finds the one weak part of each hypothesis, and the fix mends it while the trap does not', () => {
@@ -916,6 +917,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...COGA_LANES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_BARRIERS).sort());
         for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_BARRIERS[c.visual as RahiBarrier].lane); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
+        expect(lanes).toEqual([...PITCH_PARTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAMAN_BEATS).sort());
+        for (const c of ep.game.cards) { const b = SAMAN_BEATS[c.visual as SamanBeat]; expect(c.label).toBe(b.text); expect(c.lane).toBe(b.part); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'objection-reply') {   // every objection once, under its worry, with one reply that lands
+        expect(lanes).toEqual([...OBJECTION_KINDS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAMAN_OBJECTIONS).sort());
+        for (const c of ep.game.cards) { const o = SAMAN_OBJECTIONS[c.visual as SamanObjection] as Objection; expect(c.lane).toBe(o.kind); expect(c.label).toContain(o.text); expect(o.replies.filter(r => replyFlaw(r) === null)).toHaveLength(1); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'summary-build') {   // every sentence of the update once, in its part of the summary
+        expect(lanes).toEqual([...SUMMARY_PARTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAMAN_UPDATE).sort());
+        for (const c of ep.game.cards) { const l = SAMAN_UPDATE[c.visual as SamanLine]; expect(c.label).toBe(l.text); expect(c.lane).toBe(l.part); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'page-stack') {   // every section once, in the zone whose question it answers
         expect(lanes).toEqual([...PAGE_ZONES]);

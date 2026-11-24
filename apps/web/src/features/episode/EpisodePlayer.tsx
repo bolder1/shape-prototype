@@ -142,6 +142,9 @@ import { PageStack } from './games/PageStack';
 import { CopySwap } from './games/CopySwap';
 import { AssetFit } from './games/AssetFit';
 import { SerpSpot } from './games/SerpSpot';
+import { StoryStrip } from './games/StoryStrip';
+import { ObjectionReply } from './games/ObjectionReply';
+import { SummaryBuild } from './games/SummaryBuild';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -293,6 +296,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'copy-swap': CopySwap,
   'asset-fit': AssetFit,
   'serp-spot': SerpSpot,
+  'story-strip': StoryStrip,
+  'objection-reply': ObjectionReply,
+  'summary-build': SummaryBuild,
 };
 
 interface Props {
