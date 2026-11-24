@@ -1,4 +1,79 @@
 import { describe, expect, it } from 'vitest';
+import { HYPO_PARTS, PLAN_VERDICTS, READ_CALLS, TOKRI_AA, TOKRI_HYPOS, TOKRI_PLANS, TOKRI_RESULTS, WEEKS_MAX, aaPValues, hypoFlaw, hypoRewrite, hypoText, planTest, planVerdict, readCall, weeksFor, weeksGrade, type Hypothesis, type TestRead, type TokriHypo, type TokriPlan, type TokriResult } from './episode';
+import { twoProp } from './stats';
+
+describe('gr.3 helpers', () => {
+  it('finds the one weak part of each hypothesis, and the fix mends it while the trap does not', () => {
+    const good: Hypothesis = { because: { text: 'a', evidence: true }, change: { text: 'b', one: true }, who: { text: 'c', scoped: true }, expect: { text: 'd', metric: true, size: true }, fix: 'x', trap: 'y' };
+    expect(hypoFlaw(good)).toBeNull();
+    expect(hypoFlaw({ ...good, because: { text: 'a', evidence: false }, who: { text: 'c', scoped: false } })).toBe('because');   // first weak part wins
+    expect(hypoFlaw({ ...good, expect: { text: 'd', metric: true, size: false } })).toBe('expect');
+    expect(hypoText(good)).toBe('Because a, we believe b for c will d.');
+    const hs = Object.values(TOKRI_HYPOS) as Hypothesis[];
+    for (const h of hs) {
+      const weak = HYPO_PARTS.filter(p => hypoFlaw({ ...good, [p]: h[p] }) !== null);
+      expect(weak).toHaveLength(1);   // exactly one weak part
+      expect(weak[0]).toBe(hypoFlaw(h));
+      expect(hypoFlaw(hypoRewrite(h, 'fix'))).toBeNull();
+      expect(hypoFlaw(hypoRewrite(h, 'trap'))).toBe(hypoFlaw(h));
+      expect(h.fix).not.toBe(h.trap);
+    }
+    for (const p of HYPO_PARTS) expect(hs.filter(h => hypoFlaw(h) === p)).toHaveLength(2);
+  });
+  it('sizes and times each plan', () => {
+    expect(weeksFor(0.5)).toBe(1); expect(weeksFor(7)).toBe(1); expect(weeksFor(7.1)).toBe(2);
+    expect(planVerdict(4)).toBe('go'); expect(planVerdict(5)).toBe('long'); expect(planVerdict(8)).toBe('long'); expect(planVerdict(9)).toBe('rethink');
+    const fee = planTest(TOKRI_PLANS.feeEarly);
+    expect(fee.n).toBe(18872); expect(fee.total).toBe(37744); expect(fee.weeks).toBe(1);
+    // Half the lift, about four times the people; a tenth of the traffic, ten times the days.
+    expect(planTest(TOKRI_PLANS.smallLift).n / fee.n).toBeGreaterThan(3.8);
+    expect(planTest(TOKRI_PLANS.cautious).days / fee.days).toBeCloseTo(10, 6);
+    // More versions split α between the comparisons, so each version needs more than a plain A/B would.
+    const slots = planTest(TOKRI_PLANS.slots);
+    expect(slots.alpha).toBeCloseTo(0.05 / 3, 9);
+    expect(slots.n).toBeGreaterThan(planTest({ ...TOKRI_PLANS.slots, arms: 2 }).n);
+    const weeks = Object.fromEntries((Object.keys(TOKRI_PLANS) as TokriPlan[]).map(k => [k, planTest(TOKRI_PLANS[k]).weeks]));
+    expect(weeks).toEqual({ feeEarly: 1, greenPay: 22, slots: 5, reorder: 1, cautious: 9, smallLift: 6, coupon: 5, hindi: 3 });
+    for (const v of PLAN_VERDICTS) expect(Object.values(weeks).filter(w => planVerdict(w) === v).length).toBeGreaterThanOrEqual(2);
+    expect(Math.max(...Object.values(weeks))).toBeLessThanOrEqual(WEEKS_MAX);
+    expect(weeksGrade(6, 6)).toBe('spot'); expect(weeksGrade(5, 6)).toBe('close'); expect(weeksGrade(4, 6)).toBe('close'); expect(weeksGrade(3, 6)).toBe('off');
+    expect(weeksGrade(2, 1)).toBe('close'); expect(weeksGrade(3, 1)).toBe('off');
+    expect(weeksGrade(17, 22)).toBe('close'); expect(weeksGrade(15, 22)).toBe('off');
+    expect(weeksGrade(WEEKS_MAX, 40)).toBe('spot');
+  });
+  it('reads a result in the careful order', () => {
+    const base: TestRead = { text: '', metric: '', a: { n: 20000, x: 1600 }, b: { n: 20000, x: 1780 }, planned: 18872 };
+    expect(readCall(base)).toEqual({ call: 'ship', why: 'win' });
+    expect(readCall({ ...base, b: { n: 20000, x: 1610 } })).toEqual({ call: 'flat', why: 'no-effect' });
+    expect(readCall({ ...base, b: { n: 20000, x: 1420 } })).toEqual({ call: 'harm', why: 'worse' });
+    expect(readCall({ ...base, guard: { name: 'g', a: { n: 1600, x: 32 }, b: { n: 1780, x: 70 } } })).toEqual({ call: 'harm', why: 'guardrail' });
+    expect(readCall({ ...base, guard: { name: 'g', a: { n: 1600, x: 70 }, b: { n: 1780, x: 32 } } })).toEqual({ call: 'ship', why: 'win' });   // a guardrail that improved is fine
+    expect(readCall({ ...base, planned: 30000 })).toEqual({ call: 'distrust', why: 'early' });
+    expect(readCall({ ...base, a: { n: 21000, x: 1680 }, planned: 30000 })).toEqual({ call: 'distrust', why: 'srm' });   // a broken split trumps everything
+    // A slice: judged at 0.05 ÷ slices, and never against the whole test's plan.
+    const slice = TOKRI_RESULTS.slice as TestRead, p = twoProp(slice.a, slice.b).p;
+    expect(p).toBeLessThan(0.05); expect(p).toBeGreaterThan(0.05 / 20);
+    expect(readCall(slice)).toEqual({ call: 'distrust', why: 'fishing' });
+    expect(readCall({ ...slice, slices: 1 })).toEqual({ call: 'ship', why: 'win' });
+    const why = Object.fromEntries((Object.keys(TOKRI_RESULTS) as TokriResult[]).map(k => [k, readCall(TOKRI_RESULTS[k] as TestRead).why]));
+    expect(why).toEqual({ feeEarly: 'win', reorder: 'win', hindiDay4: 'early', hindiEnd: 'no-effect', lightCart: 'srm', slice: 'fishing', scarcity: 'guardrail', onePage: 'worse' });
+    // Stopping early would have "won"; at full length the same test is flat.
+    expect(twoProp(TOKRI_RESULTS.hindiDay4.a, TOKRI_RESULTS.hindiDay4.b).p).toBeLessThan(0.05);
+    const end = twoProp(TOKRI_RESULTS.hindiEnd.a, TOKRI_RESULTS.hindiEnd.b);
+    expect(end.ci[0]).toBeLessThan(0); expect(end.ci[1]).toBeLessThan(TOKRI_PLANS.hindi.base * TOKRI_PLANS.hindi.lift);   // rules out the MDE
+    // The broken split would otherwise look like a clean win.
+    expect(readCall({ ...(TOKRI_RESULTS.lightCart as TestRead), a: { n: 19000, x: 1520 } }).call).toBe('ship');
+    for (const c of READ_CALLS) expect(Object.values(TOKRI_RESULTS).some(r => readCall(r as TestRead).call === c)).toBe(true);
+  });
+  it('has an A/A test that peeks significant and ends flat', () => {
+    const ps = aaPValues();
+    expect(ps).toHaveLength(14);
+    expect(ps[3]).toBeLessThan(0.05);
+    expect(ps.filter(p => p < 0.05)).toHaveLength(1);
+    expect(ps[13]).toBeGreaterThan(0.5);
+    for (let i = 1; i < 14; i++) { expect(TOKRI_AA.a[i]).toBeGreaterThan(TOKRI_AA.a[i - 1]); expect(TOKRI_AA.b[i]).toBeGreaterThan(TOKRI_AA.b[i - 1]); }
+  });
+});
 import { EMPTY_PIECES, EMPTY_SLOTS, KAKSHA_MOMENTS, KAKSHA_PRO, KAKSHA_TIPS, PRO_MOMENTS, UPGRADE_MOVES, cueFor, cueVerdict, emptyFlaw, firstValueTaps, moveEffect, upgradeMove, type EmptyPiece, type EmptyPieceId, type KakshaTip, type ProMomentId } from './episode';
 import { AWAAZ_HEART, DATA_VIEWS, GSM_PARTS, HEART, KAHAANI_ASKS, KAHAANI_EVENTS, KAHAANI_FUNNEL, KAHAANI_METRICS, KAHAANI_SEGMENTS, KAHAANI_WEEK, METRIC_ROLES, PII_PROPS, TRACK_QUESTIONS, askValue, cohortShare, estimateGrade, eventNameFlaw, gsmPart, metricRole, propsCheck, storyNights, type AwaazLine, type KahaaniAsk, type KahaaniEvent, type KahaaniMetric, type TrackQuestion } from './episode';
 import { EVIDENCE, GALLA_BETS, GALLA_RIVALS, HORIZONS, RIVAL_RINGS, VISION_PARTS, horizonFor, ringFor, visionFlags, visionFlaw, type GallaBet, type GallaRival } from './episode';
@@ -839,6 +914,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...COGA_LANES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_BARRIERS).sort());
         for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_BARRIERS[c.visual as RahiBarrier].lane); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'hypo-fix') {   // every hypothesis once, written out in full, in the part hypoFlaw finds weak
+        expect(lanes).toEqual([...HYPO_PARTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(TOKRI_HYPOS).sort());
+        for (const c of ep.game.cards) { const h = TOKRI_HYPOS[c.visual as TokriHypo]; expect(c.label).toBe(hypoText(h)); expect(c.lane).toBe(hypoFlaw(h)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'sample-dial') {   // every plan once, in the verdict its worked-out length gives
+        expect(lanes).toEqual([...PLAN_VERDICTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(TOKRI_PLANS).sort());
+        for (const c of ep.game.cards) { const p = TOKRI_PLANS[c.visual as TokriPlan]; expect(c.label).toBe(p.text); expect(c.lane).toBe(planVerdict(planTest(p).weeks)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'result-read') {   // every readout once, in the call readCall makes from its counts
+        expect(lanes).toEqual([...READ_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(TOKRI_RESULTS).sort());
+        for (const c of ep.game.cards) { const r = TOKRI_RESULTS[c.visual as TokriResult] as TestRead; expect(c.label).toBe(r.text); expect(c.lane).toBe(readCall(r).call); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'cue-timeline') {   // every tip once, on the first moment cueFor finds for it
         expect(lanes).toEqual(Object.keys(KAKSHA_MOMENTS));

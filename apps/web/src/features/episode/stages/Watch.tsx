@@ -130,6 +130,9 @@ import { TrackPlanScene } from '../scenes/TrackPlan';
 import { JustInTimeScene } from '../scenes/JustInTime';
 import { EmptyActivateScene } from '../scenes/EmptyActivate';
 import { UpgradeMomentScene } from '../scenes/UpgradeMoment';
+import { HypothesisShapeScene } from '../scenes/HypothesisShape';
+import { SampleSizeScene } from '../scenes/SampleSize';
+import { PeekTrapScene } from '../scenes/PeekTrap';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -253,6 +256,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'just-in-time': JustInTimeScene,
   'empty-activate': EmptyActivateScene,
   'upgrade-moment': UpgradeMomentScene,
+  'hypothesis-shape': HypothesisShapeScene,
+  'sample-size': SampleSizeScene,
+  'peek-trap': PeekTrapScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

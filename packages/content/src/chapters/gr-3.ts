@@ -1,0 +1,106 @@
+// Chapter gr.3 · Experimentation. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const gr3: LessonContent[] = [
+  {
+    id: 'gr.3-1', title: 'Hypothesis writing', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'A hypothesis is a bet a result can lose',
+        body: ['“Let’s try a green Pay button” is an idea, not a hypothesis. When the test ends flat, nobody knows what they learned, because nobody said what they expected or why.',
+          'A testable hypothesis has four parts: because (something you saw: data, recordings, tickets, interviews), we believe (one change a designer can build) for (the people who will actually meet it) will (move a named metric, in a direction, by at least an amount). Write the amount before the test starts. It sets the sample size, and it decides whether a result counts as a win.'] },
+      { type: 'order', id: 'o1', prompt: 'Tokri is an Indore grocery app. Put the parts of its hypothesis in the order the sentence reads.',
+        explanation: 'Evidence first, then the change, then who sees it, then the measurable result. Written this way, a flat result still teaches you something: the reason you gave was wrong.',
+        items: [
+          { id: 'a', label: 'Because 31% of dropped carts were dropped on the payment page, where the ₹25 fee first appears,' },
+          { id: 'b', label: 'we believe showing the fee on the cart' },
+          { id: 'c', label: 'for people who reach the cart' },
+          { id: 'd', label: 'will lift checkout conversion from 8% to at least 8.8%.' },
+        ] },
+      { type: 'sort', id: 's1', prompt: 'Could a test result prove this expectation wrong?',
+        explanation: 'An expectation is testable when it names a metric, a direction and a size. “Love it” and “engagement” can’t lose, so they can’t teach you anything either.',
+        buckets: [{ id: 'yes', label: 'Testable' }, { id: 'no', label: 'Can’t lose' }],
+        items: [
+          { id: 'a', label: 'Orders per customer over four weeks rise from 2.1 to at least 2.3', bucket: 'yes' },
+          { id: 'b', label: 'Customers will love it', bucket: 'no' },
+          { id: 'c', label: 'Failed late-night deliveries fall from 6% to 4%', bucket: 'yes' },
+          { id: 'd', label: 'It will improve engagement', bucket: 'no' },
+          { id: 'e', label: 'Checkout conversion will change', bucket: 'no' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'A one-tap retry for failed UPI payments only appears after a failure. Who should the hypothesis, and the test, be about?',
+        explanation: 'People who never see the change still count in the results, and their unchanged behaviour waters down the effect. Test on the people the change can reach.',
+        options: [
+          { id: 'a', label: 'Every Tokri customer, so nobody misses out' },
+          { id: 'b', label: 'People whose UPI payment has just failed' },
+          { id: 'c', label: 'Only the team, to start with' },
+          { id: 'd', label: 'Whoever opens the app first each morning' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'gr.3-2', title: 'A/B test design & sample size', minutes: 6,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Decide how many people before you start',
+        body: ['Conversion bounces around from day to day even when nothing changes. A test needs enough people that a real effect stands out from that noise. Four numbers set the size: the baseline rate, the smallest lift worth finding (the minimum detectable effect, or MDE), the significance level (usually 5%) and the power (usually 80%).',
+          'The MDE matters most. The sample grows with one over the lift squared, so halving the lift you want to see needs four times the people. For a rough figure per version, use Lehr’s rule: 16 × p × (1 − p) ÷ (the change, in points)². Then divide by your daily traffic and round up to whole weeks, so every weekday and weekend counts the same.'] },
+      { type: 'pick', id: 'p1', prompt: 'Tokri’s checkout converts at 8%. Roughly how many people does each version need to detect a lift to 8.8%?',
+        explanation: '16 × 0.08 × 0.92 ÷ 0.008² ≈ 18,400. The exact formula says 18,872 a version, so about 38,000 people in all.',
+        options: [
+          { id: 'a', label: 'About 1,800' },
+          { id: 'b', label: 'About 18,000' },
+          { id: 'c', label: 'About 1,80,000' },
+          { id: 'd', label: 'About 1,000, if the change is good' },
+        ], correct: 'b' },
+      { type: 'pick', id: 'p2', prompt: 'The team now wants to detect a +5% lift instead of +10%. What happens to the sample?',
+        explanation: 'Half the lift, four times the people: about 74,000 a version. Small effects are expensive to see.',
+        options: [
+          { id: 'a', label: 'It halves' },
+          { id: 'b', label: 'It doubles' },
+          { id: 'c', label: 'It roughly quadruples' },
+          { id: 'd', label: 'It stays the same' },
+        ], correct: 'c' },
+      { type: 'sort', id: 's1', prompt: 'Does this make a test need more people, or fewer?',
+        explanation: 'Smaller lifts, more versions and stricter significance all need more people. A bolder change, or a metric right next to the change, needs fewer.',
+        buckets: [{ id: 'more', label: 'More people' }, { id: 'fewer', label: 'Fewer people' }],
+        items: [
+          { id: 'a', label: 'Looking for a smaller lift', bucket: 'more' },
+          { id: 'b', label: 'Testing three variants instead of one', bucket: 'more' },
+          { id: 'c', label: 'A bolder change that should move the metric more', bucket: 'fewer' },
+          { id: 'd', label: 'Measuring add-to-cart on the page you changed, not orders a week later', bucket: 'fewer' },
+          { id: 'e', label: 'Asking for 99% confidence instead of 95%', bucket: 'more' },
+        ] },
+    ],
+  },
+  {
+    id: 'gr.3-3', title: 'Reading results without fooling yourself', minutes: 6,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Check the test before you trust the result',
+        body: ['Before reading the winner, check the test itself. Did the split come out as planned? A 50/50 test with 19,900 people in one version and 19,000 in the other has a bug (a sample ratio mismatch), and its result means nothing. Did it run to its planned sample? Checking five times and stopping at the first p under 0.05 turns a 5% false-alarm rate into about 14%; checking every day of a three-week test, nearer 25%.',
+          'Then read the effect as a range, not a verdict: the confidence interval says how big the lift could plausibly be. Look at the guardrails too, the things that mustn’t get worse. And don’t go hunting through slices: look at 20 segments and one will usually “win” by chance.'] },
+      { type: 'pick', id: 'p1', prompt: 'Day 4 of a 21-day test: Hindi checkout is up 17%, p = 0.03. What should the team do?',
+        explanation: 'An early p-value bounces around. Checking every day and stopping at the first dip is how teams ship noise. This test, run to the end, came out flat.',
+        options: [
+          { id: 'a', label: 'Stop and ship: p is under 0.05' },
+          { id: 'b', label: 'Keep it running to the planned sample, then decide' },
+          { id: 'c', label: 'Double the traffic to B' },
+          { id: 'd', label: 'Stop and run it again from zero' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Can you trust this result as it stands?',
+        explanation: 'A broken split, a stop at a lucky peek or a slice found afterwards all make p-values lie. A full-length test with a clean split and a range that excludes zero can be trusted.',
+        buckets: [{ id: 'trust', label: 'Trust it' }, { id: 'check', label: 'Fix the test first' }],
+        items: [
+          { id: 'a', label: '50/50 split came out 19,900 vs 19,000', bucket: 'check' },
+          { id: 'b', label: 'Ran its planned week; +0.8 points, 95% range +0.25 to +1.36', bucket: 'trust' },
+          { id: 'c', label: 'No overall effect, but up 43% for iPhone users in one area at weekends', bucket: 'check' },
+          { id: 'd', label: 'Stopped on day 4 when p first fell below 0.05', bucket: 'check' },
+        ] },
+      { type: 'pick', id: 'p2', prompt: 'A test ran its full length and came out flat (p = 0.68, range −0.35 to +0.54 points). What can Tokri say?',
+        explanation: 'Flat isn’t proof of zero. It says any effect is probably smaller than the one the test was built to find (+0.65 points), so it isn’t worth what the team hoped.',
+        options: [
+          { id: 'a', label: 'Hindi checkout has no effect at all' },
+          { id: 'b', label: 'Any effect is probably smaller than the +0.65 points the test was sized for' },
+          { id: 'c', label: 'The test was broken' },
+          { id: 'd', label: 'B won, just not significantly' },
+        ], correct: 'b' },
+    ],
+  },
+];

@@ -3,6 +3,7 @@
 // The stage order is fixed so learners know the rhythm; the scene, the mini-game and every question are
 // custom per lesson. Scenes and games are code (apps/web/src/features/episode), chosen here by id.
 import { z } from 'zod';
+import { SRM_ALPHA, sampleSize, srmP, twoProp, type Arm } from './stats';
 
 /** Animated scenes (one per lesson). Each is a pure function of time, so it can be scrubbed like a video. */
 export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thinking', 'product-team', 'gestalt', 'hierarchy', 'ux-laws', 'cognitive-load',
@@ -37,7 +38,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'keyboard-flow', 'sr-semantics', 'form-errors', 'cognitive-a11y',
   'vision-narrative', 'roadmap-horizons', 'rival-rings',
   'metric-tree', 'heart-goals', 'cohort-triangle', 'track-plan',
-  'just-in-time', 'empty-activate', 'upgrade-moment']);
+  'just-in-time', 'empty-activate', 'upgrade-moment',
+  'hypothesis-shape', 'sample-size', 'peek-trap']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -155,6 +157,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `cue-timeline`: lanes are `KAKSHA_MOMENTS` in order; every card is a piece of onboarding, its `visual` a key of `KAKSHA_TIPS` (each used once), its `label` that tip's `text`, and its lane is what `cueFor` says: the first moment in Meenakshi's first month when she can use it. A wrong pick is called too early or too late by `cueVerdict`. Every card needs a `note`.
  *  - `empty-build`: lanes are `EMPTY_SLOTS` in order; every card is a candidate piece of Kaksha's empty Batches screen, its `visual` a key of `EMPTY_PIECES` (each used once), its `label` that piece's `text`, and its lane is the piece's `slot`. The game offers a slot's pieces together; the one to pick is the one `emptyFlaw` passes (exactly one per slot), and the finished screen reports `firstValueTaps`. Every card needs a `note`.
  *  - `paywall-timing`: lanes are `UPGRADE_MOVES` in order; every card is a moment in Meenakshi's months with Kaksha, its `visual` a key of `PRO_MOMENTS` (each used once), and its lane is what `upgradeMove` says. Each pick lands as `moveEffect` describes (a sale, a lost draft, an annoyed tutor…). Every card needs a `note`.
+ *  - `hypo-fix`: lanes are `HYPO_PARTS` in order; every card is a hypothesis from Tokri's backlog, its `visual` a key of `TOKRI_HYPOS` (each used once), its `label` the whole sentence (`hypoText`), and its lane is the one weak part `hypoFlaw` finds. You tap the weak part, then choose its rewrite: the hypothesis's `fix`, or a `trap` that is still weak in the same way. Every card needs a `note`.
+ *  - `sample-dial`: lanes are `PLAN_VERDICTS` in order; every card is a test Tokri wants to run, its `visual` a key of `TOKRI_PLANS` (each used once), and its lane is `planVerdict` of the weeks `planTest` works out. You estimate the weeks on a dial before the sum is shown, judged by `weeksGrade`; an estimate that isn't off scores. Every card needs a `note`.
+ *  - `result-read`: lanes are `READ_CALLS` in order; every card is a test readout, its `visual` a key of `TOKRI_RESULTS` (each used once), and its lane is the call `readCall` makes from the raw counts (the split, the planned sample, significance with any slicing corrected, the guardrail). The game draws the readout with its confidence interval. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -189,7 +194,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'focus-path', 'sr-listen', 'form-tab', 'load-lift',
   'vision-postcard', 'horizon-board', 'rival-map',
   'metric-flow', 'heart-grid', 'cohort-read', 'event-wire',
-  'cue-timeline', 'empty-build', 'paywall-timing']);
+  'cue-timeline', 'empty-build', 'paywall-timing',
+  'hypo-fix', 'sample-dial', 'result-read']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -1409,6 +1415,199 @@ export const PRO_MOMENTS = {
   colleague: { text: 'She tries to add her colleague Selvi as a second teacher on a batch', value: true, limit: true },
 } as const satisfies Record<string, ProMoment & { text: string }>;
 export type ProMomentId = keyof typeof PRO_MOMENTS;
+
+// gr.3 · Experimentation. Tokri is an Indore grocery-delivery app: vegetables, fruit and staples in under an hour.
+// Its key number is checkout conversion: the share of carts that become a paid order, 8% today. The maths lives in
+// ./stats; this is the chapter's data and the rules the games score against.
+
+/** The four parts of a testable hypothesis (`hypo-fix` lanes), in the order the sentence reads:
+ *  “Because [evidence], we believe [one change] for [the people who'll see it] will [move a metric, by how much].” */
+export const HYPO_PARTS = ['because', 'change', 'who', 'expect'] as const;
+export type HypoPart = (typeof HYPO_PARTS)[number];
+/** A hypothesis, part by part. Because: does it cite something seen (data, recordings, tickets, interviews), or only
+ *  an opinion? Change: is it one change a designer could build, or vague or a bundle? Who: is it the people who'll
+ *  actually meet the change, or everyone (which dilutes the effect)? Expect: does it name a metric, and a direction
+ *  and size, so a result could prove it wrong? `fix` rewrites the weak part; `trap` is a rewrite still weak the same
+ *  way. */
+export interface Hypothesis {
+  because: { text: string; evidence: boolean };
+  change: { text: string; one: boolean };
+  who: { text: string; scoped: boolean };
+  expect: { text: string; metric: boolean; size: boolean };
+  fix: string;
+  trap: string;
+}
+/** The first part that stops a hypothesis being testable, or null if it's sound. */
+export const hypoFlaw = (h: Hypothesis): HypoPart | null =>
+  !h.because.evidence ? 'because' : !h.change.one ? 'change' : !h.who.scoped ? 'who' : !(h.expect.metric && h.expect.size) ? 'expect' : null;
+/** The hypothesis as one sentence. */
+export const hypoText = (h: Pick<Hypothesis, HypoPart>) => `Because ${h.because.text}, we believe ${h.change.text} for ${h.who.text} will ${h.expect.text}.`;
+/** The hypothesis with its weak part rewritten by `fix` (or by `trap`, which leaves it weak). */
+export const hypoRewrite = (h: Hypothesis, use: 'fix' | 'trap' = 'fix'): Hypothesis => {
+  const part = hypoFlaw(h), text = h[use], ok = use === 'fix';
+  if (!part) return h;
+  const next = { ...h };
+  if (part === 'because') next.because = { text, evidence: ok };
+  if (part === 'change') next.change = { text, one: ok };
+  if (part === 'who') next.who = { text, scoped: ok };
+  if (part === 'expect') next.expect = { text, metric: ok || h.expect.metric, size: ok };
+  return next;
+};
+/** Tokri's experiment backlog, as first written (`hypo-fix` cards). Each has exactly one weak part. */
+export const TOKRI_HYPOS = {
+  feeEarly: {
+    because: { text: 'Blinkit and Zepto do it this way', evidence: false },
+    change: { text: 'showing the ₹25 delivery fee on the cart', one: true },
+    who: { text: 'people who reach the cart', scoped: true },
+    expect: { text: 'lift checkout conversion from 8% to at least 8.8%', metric: true, size: true },
+    fix: '31% of the carts dropped in last month’s session recordings were dropped on the payment page, where the ₹25 fee first appears',
+    trap: 'every big grocery app shows the fee early, and they’re all growing',
+  },
+  doorstep: {
+    because: { text: 'our founder is sure customers want it', evidence: false },
+    change: { text: 'a “Leave at the door” option at checkout', one: true },
+    who: { text: 'people ordering after 9 pm', scoped: true },
+    expect: { text: 'cut failed late-night deliveries from 6% of orders to 4%', metric: true, size: true },
+    fix: 'riders logged 340 failed deliveries after 9 pm last month because nobody came to the door',
+    trap: 'the whole team agrees it’s a great idea',
+  },
+  address: {
+    because: { text: 'support gets about 40 tickets a week from repeat customers who had to type their address again', evidence: true },
+    change: { text: 'a better checkout', one: false },
+    who: { text: 'customers with at least one past order', scoped: true },
+    expect: { text: 'lift their checkout conversion from 11% to at least 12%', metric: true, size: true },
+    fix: 'filling in their last delivery address, with a one-tap Change link',
+    trap: 'a cleaner, simpler, more modern checkout',
+  },
+  fruit: {
+    because: { text: 'fruit pages lose 58% of visitors, more than any other page in the app', evidence: true },
+    change: { text: 'new photos, new prices and a new layout', one: false },
+    who: { text: 'people who open a fruit or vegetable page', scoped: true },
+    expect: { text: 'lift add-to-cart on those pages from 12% to at least 13.5%', metric: true, size: true },
+    fix: 'a photo of the actual batch, taken that morning at the store',
+    trap: 'a fresh look for the whole page: photos, prices, badges and layout',
+  },
+  coupon: {
+    because: { text: 'new customers who order in their first three days are three times as likely to still be ordering in month two', evidence: true },
+    change: { text: '₹75 off the first order, shown on the cart', one: true },
+    who: { text: 'all Tokri customers', scoped: false },
+    expect: { text: 'lift the share of new installs who order within 7 days from 20% to at least 22%', metric: true, size: true },
+    fix: 'people who installed in the last 7 days and haven’t ordered yet',
+    trap: 'everyone who opens the app, so the result covers all our customers',
+  },
+  retry: {
+    because: { text: 'UPI payments fail three times as often on our Android Go app as anywhere else', evidence: true },
+    change: { text: 'retrying a failed UPI payment in one tap, with the cart kept', one: true },
+    who: { text: 'every customer', scoped: false },
+    expect: { text: 'lift payment success from 91% to at least 93%', metric: true, size: true },
+    fix: 'people on the Android Go app whose UPI payment has just failed',
+    trap: 'every Tokri customer, on every phone, so nobody misses out',
+  },
+  usual: {
+    because: { text: 'in 12 interviews, 9 shoppers said they forget staples like atta and oil until they run out', evidence: true },
+    change: { text: 'a “Your usual” row of last month’s staples on the home screen', one: true },
+    who: { text: 'customers with three or more orders', scoped: true },
+    expect: { text: 'make them love the app', metric: false, size: false },
+    fix: 'lift their orders per customer over four weeks from 2.1 to at least 2.3',
+    trap: 'make them engage with the app a lot more',
+  },
+  hindi: {
+    because: { text: 'half our Indore customers have their phones set to Hindi, and checkout is in English only', evidence: true },
+    change: { text: 'showing the cart and checkout in Hindi when the phone is set to Hindi', one: true },
+    who: { text: 'customers whose phone is set to Hindi', scoped: true },
+    expect: { text: 'change their checkout conversion', metric: true, size: false },
+    fix: 'lift their checkout conversion from 6.5% to at least 7.2%, closer to English users’ 8%',
+    trap: 'move their checkout conversion a lot',
+  },
+} as const satisfies Record<string, Hypothesis>;
+export type TokriHypo = keyof typeof TOKRI_HYPOS;
+
+/** What to do with a test plan once you know how long it needs (`sample-dial` lanes). */
+export const PLAN_VERDICTS = ['go', 'long', 'rethink'] as const;
+export type PlanVerdict = (typeof PLAN_VERDICTS)[number];
+/** A test Tokri wants to run: the metric's baseline rate today, the smallest relative lift worth detecting (the MDE,
+ *  0.1 = +10%), people a day who'd meet the change, how many versions including the control, and the share of those
+ *  people put into the test. */
+export interface TestPlan { text: string; metric: string; base: number; lift: number; daily: number; arms: number; share?: number }
+/** Whole weeks a test runs: at least one, and always full weeks, so every weekday and weekend counts the same. */
+export const weeksFor = (days: number) => Math.max(1, Math.ceil(days / 7));
+/** The sample a plan needs (α = 0.05 two-sided, 80% power; with more than one variant, α is split between the
+ *  comparisons with the control, Bonferroni-style), and how long the traffic takes to supply it. */
+export const planTest = (p: TestPlan) => {
+  const alpha = 0.05 / (p.arms - 1), target = p.base * (1 + p.lift);
+  const n = sampleSize(p.base, target, alpha), total = n * p.arms, perDay = p.daily * (p.share ?? 1);
+  const days = total / perDay;
+  return { n, total, alpha, target, days, weeks: weeksFor(days) };
+};
+/** Up to four weeks: run it. Five to eight: run it only if it matters that much. More: rethink it (a bolder change,
+ *  a busier screen or a metric closer to the change), or learn it another way. */
+export const planVerdict = (weeks: number): PlanVerdict => (weeks <= 4 ? 'go' : weeks <= 8 ? 'long' : 'rethink');
+/** The most weeks the `sample-dial` dial shows. */
+export const WEEKS_MAX = 24;
+/** How close an estimate of weeks is: exact is spot on, within a quarter (at least one week) is close. Anything past
+ *  the dial counts as the dial's end. */
+export const weeksGrade = (guess: number, truth: number): 'spot' | 'close' | 'off' => {
+  const t = Math.min(truth, WEEKS_MAX), d = Math.abs(Math.min(guess, WEEKS_MAX) - t);
+  return d === 0 ? 'spot' : d <= Math.max(1, Math.round(t / 4)) ? 'close' : 'off';
+};
+/** Tests Tokri wants to run (`sample-dial` cards). */
+export const TOKRI_PLANS = {
+  feeEarly: { text: 'Show the ₹25 delivery fee on the cart', metric: 'Checkout conversion', base: 0.08, lift: 0.1, daily: 6000, arms: 2 },
+  greenPay: { text: 'Make the Pay button green', metric: 'Checkout conversion', base: 0.08, lift: 0.02, daily: 6000, arms: 2 },
+  slots: { text: 'Three new delivery-slot pickers against today’s', metric: 'Slot picked → paid', base: 0.6, lift: 0.05, daily: 700, arms: 4 },
+  reorder: { text: 'A “Reorder last basket” button on the home screen', metric: 'Home visit → order', base: 0.03, lift: 0.1, daily: 20000, arms: 2 },
+  cautious: { text: 'Show the fee on the cart, but to only 10% of carts, to be safe', metric: 'Checkout conversion', base: 0.08, lift: 0.1, daily: 6000, arms: 2, share: 0.1 },
+  smallLift: { text: 'Show the fee on the cart, looking for a +5% lift, on the 4,000 carts a day outside Indore city', metric: 'Checkout conversion', base: 0.08, lift: 0.05, daily: 4000, arms: 2 },
+  coupon: { text: '₹75 off the first order, for new installs', metric: 'First order within 7 days', base: 0.2, lift: 0.1, daily: 400, arms: 2 },
+  hindi: { text: 'Cart and checkout in Hindi for Hindi phones', metric: 'Checkout conversion', base: 0.065, lift: 0.1, daily: 2500, arms: 2 },
+} as const satisfies Record<string, TestPlan>;
+export type TokriPlan = keyof typeof TOKRI_PLANS;
+
+/** The call on a finished test (`result-read` lanes). */
+export const READ_CALLS = ['ship', 'flat', 'harm', 'distrust'] as const;
+export type ReadCall = (typeof READ_CALLS)[number];
+export type ReadWhy = 'win' | 'no-effect' | 'worse' | 'guardrail' | 'srm' | 'early' | 'fishing';
+/** A test readout: control A and variant B on the primary metric, the per-version sample the plan asked for, and
+ *  optionally a guardrail (a rate where higher is worse) and, for a claim about one slice found after the fact, how
+ *  many slices were looked at. */
+export interface TestRead { text: string; metric: string; a: Arm; b: Arm; planned: number; slices?: number; guard?: { name: string; a: Arm; b: Arm } }
+export const READ_ALPHA = 0.05;
+/** The call, in the order a careful analyst checks: is the split what it should be (sample ratio mismatch)? Did it
+ *  run to its planned sample, or stop at a lucky peek? Is the difference significant, with α divided by the number of
+ *  slices when one was picked out afterwards? Which way did it move, and did a guardrail get significantly worse? */
+export const readCall = (r: TestRead): { call: ReadCall; why: ReadWhy } => {
+  if (srmP(r.a.n, r.b.n) < SRM_ALPHA) return { call: 'distrust', why: 'srm' };
+  if (!r.slices && (r.a.n < r.planned || r.b.n < r.planned)) return { call: 'distrust', why: 'early' };
+  const t = twoProp(r.a, r.b);
+  if (t.p >= READ_ALPHA / (r.slices ?? 1)) return t.p < READ_ALPHA ? { call: 'distrust', why: 'fishing' } : { call: 'flat', why: 'no-effect' };
+  if (t.diff < 0) return { call: 'harm', why: 'worse' };
+  if (r.guard) { const g = twoProp(r.guard.a, r.guard.b); if (g.p < READ_ALPHA && g.diff > 0) return { call: 'harm', why: 'guardrail' }; }
+  return { call: 'ship', why: 'win' };
+};
+const feePlan = planTest(TOKRI_PLANS.feeEarly).n, hindiPlan = planTest(TOKRI_PLANS.hindi).n;
+/** Finished (or not quite finished) tests (`result-read` cards). Counts are people, and orders where a guardrail
+ *  is counted per order. */
+export const TOKRI_RESULTS = {
+  feeEarly: { text: 'Fee on the cart, after its planned week', metric: 'Checkout conversion', a: { n: 18950, x: 1516 }, b: { n: 18910, x: 1665 }, planned: feePlan,
+    guard: { name: 'Orders cancelled', a: { n: 1516, x: 61 }, b: { n: 1665, x: 65 } } },
+  reorder: { text: '“Reorder last basket”, after its planned week', metric: 'Home visit → order', a: { n: 53400, x: 1602 }, b: { n: 53300, x: 1790 }, planned: planTest(TOKRI_PLANS.reorder).n,
+    guard: { name: 'Orders cancelled', a: { n: 1602, x: 80 }, b: { n: 1790, x: 93 } } },
+  hindiDay4: { text: 'Hindi checkout on day 4 of its planned 21. The team wants to stop and ship', metric: 'Checkout conversion', a: { n: 5000, x: 325 }, b: { n: 5010, x: 380 }, planned: hindiPlan },
+  hindiEnd: { text: 'Hindi checkout, run to its planned sample', metric: 'Checkout conversion', a: { n: 23700, x: 1541 }, b: { n: 23650, x: 1560 }, planned: hindiPlan },
+  lightCart: { text: 'A lighter cart page, after a week. B looks 10% better', metric: 'Checkout conversion', a: { n: 19900, x: 1592 }, b: { n: 19000, x: 1672 }, planned: feePlan },
+  slice: { text: 'The fee test’s twentieth slice: iPhone users in Vijay Nagar at weekends, up 43%', metric: 'Checkout conversion', a: { n: 600, x: 48 }, b: { n: 610, x: 70 }, planned: feePlan, slices: 20 },
+  scarcity: { text: '“Only 2 left!” on fresh produce, after its planned week', metric: 'Checkout conversion', a: { n: 19000, x: 1520 }, b: { n: 19050, x: 1695 }, planned: feePlan,
+    guard: { name: 'Orders with a complaint', a: { n: 1520, x: 30 }, b: { n: 1695, x: 58 } } },
+  onePage: { text: 'Address, slot and payment on one long page, after its planned week', metric: 'Checkout conversion', a: { n: 19200, x: 1536 }, b: { n: 19150, x: 1398 }, planned: feePlan },
+} as const satisfies Record<string, TestRead>;
+export type TokriResult = keyof typeof TOKRI_RESULTS;
+
+/** An A/A test (both versions the same English cart, 6.5% conversion) checked every day for two weeks, 1,250
+ *  people a version a day: cumulative orders in A and B at the end of each day. Simulated with `prng(315)`; the
+ *  p-value dips under 0.05 on day 4 and ends at 0.63. Drawn by the `peek-trap` scene. */
+export const TOKRI_AA = { perDay: 1250, a: [80, 157, 231, 294, 377, 465, 539, 633, 707, 795, 878, 964, 1044, 1117], b: [83, 164, 267, 352, 424, 502, 579, 655, 740, 820, 923, 986, 1057, 1139] } as const;
+/** The p-value of the A/A test at the end of each day. */
+export const aaPValues = () => TOKRI_AA.a.map((x, i) => twoProp({ n: TOKRI_AA.perDay * (i + 1), x }, { n: TOKRI_AA.perDay * (i + 1), x: TOKRI_AA.b[i] }).p);
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

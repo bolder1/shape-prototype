@@ -1333,9 +1333,55 @@ const gr2: BossBriefInput = {
   },
 };
 
+const gr3: BossBriefInput = {
+  chapterId: 'gr.3',
+  title: 'Design an experiment backlog',
+  minutes: 90,
+  scenario: [
+    'Take your Studio product and plan its next quarter of experiments: five tests, each with a hypothesis and a sample size worked out from your real traffic. If you don’t have one yet, use Tokri, the Indore grocery app from this chapter: checkout converts 8% of 6,000 carts a day, payments fail more often on its Android Go app, and half its customers have their phones in Hindi.',
+    'Hand in a backlog a team could run without arguing later: five hypotheses with evidence, the numbers behind each test’s size and length, the order you’d run them in, the guardrails you’ll watch, and the rules for reading results that you agree before the first test starts.',
+  ],
+  fields: [
+    { id: 'metric', label: 'The metric and the traffic', kind: 'text', minWords: 20, hint: 'The primary metric most tests will move, its baseline today, and how many people a day reach the screens you’ll change.' },
+    { id: 'backlog', label: 'Five hypotheses', kind: 'list', items: 5, minWords: 25, hint: 'One per line, in four parts: because (what you saw), we believe (one change) for (the people who’ll meet it) will (move a metric from X to at least Y).' },
+    { id: 'sizes', label: 'Sample size and length', kind: 'list', items: 5, minWords: 12, hint: 'One per line, same order: baseline, the minimum detectable effect, versions, people needed a version (at 5% significance and 80% power), people a day, and whole weeks.' },
+    { id: 'order', label: 'What runs first, and what you changed', kind: 'long', minWords: 40, hint: 'The order and why (evidence, size of effect, length). Say what you did with any test that needed more than eight weeks: a bolder change, a closer metric, fewer versions, or research instead.' },
+    { id: 'guardrails', label: 'Guardrails', kind: 'text', minWords: 20, hint: 'Two or three things that mustn’t get worse, how you’ll measure each, and what result would stop a ship.' },
+    { id: 'rules', label: 'Rules for reading results', kind: 'long', minWords: 50, hint: 'Agreed before any test starts: when a test ends and who may look before then, the split check, one primary metric, how you treat slices, and what you do with a flat result.' },
+  ],
+  rubric: [
+    { id: 'hypotheses', label: 'Testable hypotheses', strong: 'Every hypothesis has evidence about the product’s own users (not opinion or what competitors do), one buildable change, the people who will meet it rather than everyone, and a named metric with a direction and a size written before the test.', weight: 3, required: true },
+    { id: 'sizes', label: 'Correct sample sizes', strong: 'Each test states baseline, MDE, significance and power, and the per-version sample matches the standard two-proportion formula or Lehr’s rule (16·p(1−p)/δ²) to within about 10%; more than two versions split the significance level; length is people needed ÷ daily traffic, rounded up to whole weeks.', weight: 3, required: true },
+    { id: 'feasible', label: 'A backlog that can finish', strong: 'Tests are ordered by evidence, likely effect and length; any test that couldn’t finish in about eight weeks has been redesigned (bolder change, metric closer to the change, fewer variants) or swapped for research, and two tests don’t compete for the same people on the same screen at once.', weight: 2 },
+    { id: 'guardrails', label: 'Guardrails that can stop a ship', strong: 'Names two or three guardrails tied to real harms (cancellations, complaints, refunds, retention), how each is measured, and that a significant worsening blocks a ship whatever the primary metric did.', weight: 1 },
+    { id: 'rules', label: 'Rules that stop you fooling yourself', strong: 'Fixed end dates with no stopping on an early peek (or a sequential method planned in advance); a sample-ratio check that voids a broken test; one primary metric; slices treated as new hypotheses or corrected for the number looked at; a flat result read through its confidence interval, not as proof of zero.', weight: 2, required: true },
+  ],
+  tips: ['Work out one sample size with Lehr’s rule before you open a calculator. If the two disagree by a lot, one of them has a typo, usually the lift in per cent where it should be in points.', 'For each test, finish the sentence “if this comes out flat, we’ll stop believing…”. If you can’t, the hypothesis isn’t testable yet.'],
+  example: {
+    metric: 'Checkout conversion: the share of carts that become a paid order, 8% today. About 6,000 carts a day reach checkout; 2,500 of them are on phones set to Hindi, 3,500 belong to repeat customers, and about 300 a day hit a failed UPI payment on the Android Go app.',
+    backlog: [
+      'Because 31% of dropped carts in last month’s recordings were dropped on the payment page, where the ₹25 fee first appears, we believe showing the fee on the cart for people who reach the cart will lift checkout conversion from 8% to at least 8.8%.',
+      'Because UPI payments fail three times as often on the Android Go app, we believe a one-tap retry that keeps the cart, for Android Go customers whose payment has just failed, will lift the share of failed payments that end in an order from 35% to at least 40%.',
+      'Because half our customers have their phones in Hindi and checkout is English only, we believe a Hindi cart and checkout for customers whose phone is set to Hindi will lift their checkout conversion from 6.5% to at least 7.15%.',
+      'Because support gets about 40 tickets a week from repeat customers who had to retype their address, we believe filling in the last delivery address with a one-tap Change link, for customers with a past order, will lift their checkout conversion from 11% to at least 12.1%.',
+      'Because fruit pages lose 58% of visitors and shoppers in interviews said they don’t trust stock photos of fruit, we believe a photo of the actual batch taken that morning, for people who open a fruit or vegetable page, will lift add-to-cart from 12% to at least 13.5%.',
+    ],
+    sizes: [
+      'Fee on the cart: baseline 8%, MDE +10% (0.8 points), 2 versions, 18,872 a version, 6,000 a day: just over 6 days, so 1 week.',
+      'UPI retry: baseline 35%, MDE +15% (5.25 points), 2 versions, 1,336 a version, 300 a day: 9 days, so 2 weeks.',
+      'Hindi checkout: baseline 6.5%, MDE +10% (0.65 points), 2 versions, 23,627 a version, 2,500 a day: 19 days, so 3 weeks.',
+      'Address filled in: baseline 11%, MDE +10% (1.1 points), 2 versions, 13,253 a version, 3,500 a day: 8 days, so 2 weeks.',
+      'Batch photo: baseline 12%, MDE +12.5% (1.5 points), 2 versions, 7,761 a version, 5,000 page visits a day: 3 days, so 1 week.',
+    ],
+    order: 'First the fee test and the batch photo together: they touch different screens, each has strong evidence, and each needs only a week. Then the UPI retry and the address fill, which don’t overlap either (failed payments on Android Go against repeat customers’ address step), two weeks each. The Hindi checkout last, because it needs three weeks and changes the same checkout screens as the fee test. A green Pay button was on the original list; at +2% it needed 4,55,427 a version, about 22 weeks, so it was cut. A slot picker with three new variants needed 5 weeks; with two variants it needs 4, so it moves to next quarter in that form.',
+    guardrails: 'Orders cancelled within an hour and orders with a complaint, both as a share of orders, and the share of customers who order again within 14 days. Any of them significantly worse at p < 0.05 blocks the ship, whatever checkout conversion did.',
+    rules: 'Each test runs whole weeks to the sample in its plan, and nobody makes a call before the end date; until then the dashboard shows only guardrails, and a guardrail breaking badly can stop a test early for safety but never ship one. On day one and at the end we check the split: a 50/50 test with a chi-square p under 0.001 is void, and we find the bug before rerunning. Each test has one primary metric, named here. Slices are for ideas: any we look at afterwards are corrected for how many we looked at (0.05 ÷ the number), and a slice that looks good becomes a new hypothesis. A flat result is read through its 95% range: if the range rules out the MDE, we stop believing the reason in the “because”; if it doesn’t, we say the test couldn’t tell.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
