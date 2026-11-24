@@ -1,0 +1,102 @@
+// Chapter dc.2 · Handoff & collaboration. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const dc2: LessonContent[] = [
+  {
+    id: 'dc.2-1', title: 'Specs devs actually use', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Write down what the file can’t say',
+        body: ['Inspect tools like Figma’s Dev Mode already give engineers every size, colour, font and token name, exactly and always up to date. Redlining those by hand adds nothing, and the copy goes stale the first time the design changes.',
+          'A spec earns its place by answering what only the designer knows: every state (loading, empty, error, disabled), the edge cases (sold out, too late, offline), content rules (how long a name can get, what truncates), how it adapts to a small phone or large text, what a screen reader says and where focus goes, and where the data comes from. Put the states side by side, number your notes on the frame, link the flow, then walk the engineer through it before the build starts, not after.'] },
+      { type: 'sort', id: 's1', prompt: 'Does Sana write it in the spec, or does Dev Mode already show it?',
+        explanation: 'Measurements, colours and fonts come from the file with their token names. Behaviour, states and rules only exist in the designer’s head until they’re written down.',
+        buckets: [{ id: 'spec', label: 'Write it in the spec' }, { id: 'tool', label: 'Dev Mode shows it' }],
+        items: [
+          { id: 'a', label: 'What the sheet shows if the fare check fails', bucket: 'spec' },
+          { id: 'b', label: '24 px of padding inside the sheet', bucket: 'tool' },
+          { id: 'c', label: 'Where focus goes when the sheet closes', bucket: 'spec' },
+          { id: 'd', label: 'The Confirm button’s fill colour', bucket: 'tool' },
+          { id: 'e', label: 'What happens to a 40-character operator name', bucket: 'spec' },
+          { id: 'f', label: 'The font size of the bus times', bucket: 'tool' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Ritesh asks: “What if the bus they pick sells out while they’re paying?” Where should the answer have been?',
+        explanation: 'Edge cases belong in the spec, drawn as their own state, so nobody has to guess or wait for a reply.',
+        options: [
+          { id: 'a', label: 'In a Slack thread, once he asks' },
+          { id: 'b', label: 'In the spec, as a drawn state with its message and what the user can do next' },
+          { id: 'c', label: 'Nowhere: it’s an engineering decision' },
+          { id: 'd', label: 'In the research deck' },
+        ], correct: 'b' },
+      { type: 'order', id: 'o1', prompt: 'Put Sana’s handoff in order.',
+        explanation: 'Finish the states and notes, walk through them together, then answer questions in the file so the answer lives with the design.',
+        items: [
+          { id: 'a', label: 'Draw every state of the sheet side by side' },
+          { id: 'b', label: 'Number notes on the frame for behaviour, content and accessibility' },
+          { id: 'c', label: 'Walk Ritesh through it for 20 minutes before the sprint' },
+          { id: 'd', label: 'Answer his questions as comments in the file, not in DMs' },
+        ] },
+    ],
+  },
+  {
+    id: 'dc.2-2', title: 'Design QA', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Check the build before your users do',
+        body: ['Design QA is the designer’s pass over a working build before it ships. Test it on a real, ordinary phone, not only your own: an affordable Android, with large text on, a screen reader once through, and a slow connection. Overlay your design on a screenshot to see drift you’d otherwise miss.',
+          'Then sort what you find. If it breaks a task, gets the money wrong or shuts someone out, it blocks the release. If it works but drifts from the spec or the system, like a hard-coded colour or the wrong spacing token, it’s fixed this sprint. A pixel of difference or the way Android renders a font is noise: let it go, or the real findings get lost. Write each ticket so it stands alone: where, what you expected, what you saw, and the device.'] },
+      { type: 'sort', id: 's1', prompt: 'Sana’s QA pass on the “Change your trip” sheet. What happens to each finding?',
+        explanation: 'Broken tasks, wrong money and accessibility failures block. Drift from the spec is fixed soon. Rendering noise is let go.',
+        buckets: [{ id: 'blocker', label: 'Blocks release' }, { id: 'fix', label: 'Fix this sprint' }, { id: 'pass', label: 'Let it go' }],
+        items: [
+          { id: 'a', label: 'A double tap on Confirm charges the change fee twice', bucket: 'blocker' },
+          { id: 'b', label: 'Bus rows are 12 px apart instead of 16', bucket: 'fix' },
+          { id: 'c', label: 'The drag handle sits 1 px lower than in Figma', bucket: 'pass' },
+          { id: 'd', label: 'With TalkBack on, focus can’t reach the bus list', bucket: 'blocker' },
+          { id: 'e', label: 'Confirm uses a hard-coded hex instead of the token', bucket: 'fix' },
+          { id: 'f', label: 'Android draws the semibold font a touch heavier', bucket: 'pass' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Which ticket can Ritesh fix without asking a question?',
+        explanation: 'Where, expected, actual and device. Anyone can reproduce it and check the fix.',
+        options: [
+          { id: 'a', label: '“Spacing feels off on the sheet”' },
+          { id: 'b', label: '“Bus rows. Expected: 16 px apart (space-4). Actual: 12 px. On Redmi 12, Android 14, text 130%.”' },
+          { id: 'c', label: '“Please match Figma”' },
+          { id: 'd', label: 'A screenshot with no words' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'dc.2-3', title: 'Tokens in code', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'One source, built for every platform',
+        body: ['Tokens live in one file, usually JSON exported from Figma variables. A build tool such as Style Dictionary turns that file into what each codebase reads: CSS variables for the web, Kotlin for Android, Swift for iOS, each named the way that platform expects. color.action.primary becomes var(--color-action-primary) on the web and actionPrimary in the apps.',
+          'This only pays off if code uses the tokens. When Gaadi’s Confirm button failed contrast with white text on green-600 (3.3:1), Sana repointed one semantic token to green-700 (5.0:1). Every button that used the token was fixed on all three platforms at the next release. Buttons with a hex code copied in stayed broken, and so did ones that used the green-600 primitive directly. A token lint in code review finds both kinds.'] },
+      { type: 'order', id: 'o1', prompt: 'Follow Sana’s contrast fix from Figma to the phone in someone’s hand.',
+        explanation: 'Change it once at the source; the build and the release carry it everywhere the token is used.',
+        items: [
+          { id: 'a', label: 'Repoint color.action.primary to green-700 in Figma variables' },
+          { id: 'b', label: 'Export tokens.json and open a pull request' },
+          { id: 'c', label: 'Style Dictionary builds CSS, Kotlin and Swift' },
+          { id: 'd', label: 'Buttons using the token pick up green-700' },
+          { id: 'e', label: 'The release reaches web, Android and iOS users' },
+        ] },
+      { type: 'sort', id: 's1', prompt: 'Will this line of code get the fix?',
+        explanation: 'Only lines that reference a semantic or component token follow the change. Copied values and direct primitives don’t.',
+        buckets: [{ id: 'yes', label: 'Gets the fix' }, { id: 'no', label: 'Stays green-600' }],
+        items: [
+          { id: 'a', label: 'background: var(--color-action-primary);', bucket: 'yes' },
+          { id: 'b', label: 'background: #16A34A;', bucket: 'no' },
+          { id: 'c', label: 'containerColor = GaadiTheme.colors.actionPrimary', bucket: 'yes' },
+          { id: 'd', label: 'background: var(--green-600);', bucket: 'no' },
+          { id: 'e', label: '.background(Color.actionPrimary)', bucket: 'yes' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'A developer asks: “Why not just use #15803D? It’s the same colour.”',
+        explanation: 'Today it is. The token carries the role, so the next change, a dark theme or a rebrand, reaches it too.',
+        options: [
+          { id: 'a', label: 'Fair point, hex is fine' },
+          { id: 'b', label: 'It’s the same colour today, but the token is what the next change and dark mode reach' },
+          { id: 'c', label: 'Hex codes are slower to render' },
+          { id: 'd', label: 'Tokens are required by law' },
+        ], correct: 'b' },
+    ],
+  },
+];

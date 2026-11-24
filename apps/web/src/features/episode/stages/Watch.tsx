@@ -146,6 +146,9 @@ import { BlufEmailScene } from '../scenes/BlufEmail';
 import { DemoTourScene } from '../scenes/DemoTour';
 import { PricingPageScene } from '../scenes/PricingPage';
 import { CsLoopScene } from '../scenes/CsLoop';
+import { SpecHandoffScene } from '../scenes/SpecHandoff';
+import { DesignQaScene } from '../scenes/DesignQa';
+import { TokenPipelineScene } from '../scenes/TokenPipeline';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -285,6 +288,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'demo-tour': DemoTourScene,
   'pricing-page': PricingPageScene,
   'cs-loop': CsLoopScene,
+  'spec-handoff': SpecHandoffScene,
+  'design-qa': DesignQaScene,
+  'token-pipeline': TokenPipelineScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

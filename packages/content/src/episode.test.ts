@@ -3,6 +3,7 @@ import { HYPO_PARTS, PLAN_VERDICTS, READ_CALLS, TOKRI_AA, TOKRI_HYPOS, TOKRI_PLA
 import { twoProp } from './stats';
 import { GUIDE_SECTIONS, KIT_SLOTS, MARK_VERDICTS, SUKOON_KIT, SUKOON_MARKS, SUKOON_USES, kitFlaw, markVerdict, sectionBroken, type KitOption, type SukoonKitKey, type SukoonMark, type SukoonUse } from './identity';
 import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_ASSETS, SUKOON_DRAFTS, SUKOON_SECTIONS, SUKOON_SEO_BEFORE, copyFlaws, copyLine, seoIssues, type CopyDraft, type SeoIssue, type SukoonAsset, type SukoonDraft, type SukoonSection } from './marketing';
+import { GAADI_CODE, GAADI_QA, GAADI_SPEC, QA_LANES, REF_KINDS, SPEC_SOURCES, qaLane, refKind, type GaadiCode, type GaadiQa, type GaadiSpecItem } from './handoff';
 import { PARCHA_BUYERS, PARCHA_SIGNALS, PLAN_IDS, ROUTES, SUNRISE_MOMENTS, demoFlaws, planFor, type ParchaBuyer, type ParchaSignal, type SunriseMoment } from './sales';
 import { OBJECTION_KINDS, PITCH_PARTS, SAMAN_BEATS, SAMAN_OBJECTIONS, SAMAN_UPDATE, SUMMARY_PARTS, replyFlaw, type Objection, type SamanBeat, type SamanLine, type SamanObjection } from './pitch';
 
@@ -934,6 +935,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...ROUTES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(PARCHA_SIGNALS).sort());
         for (const c of ep.game.cards) { const s = PARCHA_SIGNALS[c.visual as ParchaSignal]; expect(c.lane).toBe(s.route); expect(c.label).toContain(s.text); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'spec-write') {   // every handoff line once, written out, where it belongs
+        expect(lanes).toEqual([...SPEC_SOURCES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(GAADI_SPEC).sort());
+        for (const c of ep.game.cards) { const i = GAADI_SPEC[c.visual as GaadiSpecItem]; expect(c.label).toBe(i.text); expect(c.lane).toBe(i.source); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'qa-pass') {   // every finding once, in the lane the rule gives
+        expect(lanes).toEqual([...QA_LANES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(GAADI_QA).sort());
+        for (const c of ep.game.cards) { const q = GAADI_QA[c.visual as GaadiQa]; expect(c.lane).toBe(qaLane(q)); expect(c.label).toContain(q.actual); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'token-trace') {   // every line of code once, in the lane the lint reads
+        expect(lanes).toEqual([...REF_KINDS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(GAADI_CODE).sort());
+        for (const c of ep.game.cards) { const l = GAADI_CODE[c.visual as GaadiCode]; expect(c.lane).toBe(refKind(l.code)); expect(c.label).toContain(l.code); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

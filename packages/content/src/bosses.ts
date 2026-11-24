@@ -1566,9 +1566,59 @@ const bz3: BossBriefInput = {
   },
 };
 
+const dc2: BossBriefInput = {
+  chapterId: 'dc.2',
+  title: 'Hand off a feature, then QA the build',
+  minutes: 120,
+  scenario: [
+    'Pick one feature from your Studio product with real states (or use Gaadi’s “Change your trip” sheet, which moves a booked bus trip to another bus or date). Write the handoff an engineer would build from: every state drawn, edge cases, content rules, small screens and large text, screen reader behaviour, and where the data comes from. Leave measurements, colours and fonts to Dev Mode or your inspect tool.',
+    'Then QA a built version. Build it yourself in HTML and CSS, pair with a developer friend, or use a coded prototype. Test it on an ordinary Android phone with large text and a screen reader on, sort what you find into what blocks release, what gets fixed soon and what you let go, and write the tickets. Hand in the links, the spec notes, the findings and the tickets.',
+  ],
+  fields: [
+    { id: 'link', label: 'Your spec and the build', kind: 'text', minWords: 8, hint: 'Links to the design file with the spec and to the build you tested, and what the feature does.' },
+    { id: 'states', label: 'The states you drew', kind: 'list', items: 4, minWords: 8, hint: 'One state per line: what triggers it, what the screen shows, and what the person can do next. Include at least one error and one edge case.' },
+    { id: 'notes', label: 'Spec notes', kind: 'list', items: 4, minWords: 10, hint: 'One note per line for what no frame shows: content limits and truncation, small screens and large text, screen reader labels and focus, and the data source.' },
+    { id: 'qa', label: 'QA findings', kind: 'list', items: 5, minWords: 8, hint: 'One finding per line, marked blocker, fix or let go, with why. Say which device and settings you tested on.' },
+    { id: 'tickets', label: 'Two tickets as you filed them', kind: 'long', minWords: 30, hint: 'Each with where, expected, actual and device, and the token or spec line it should match.' },
+    { id: 'learned', label: 'What the build taught you', kind: 'long', minWords: 30, hint: 'A question the engineer asked that the spec should have answered, or a finding where the design, not the build, needed to change.' },
+  ],
+  rubric: [
+    { id: 'spec', label: 'A spec that answers what the file can’t', strong: 'Every state is drawn with its trigger and way forward, including errors and edge cases; notes cover content limits, small screens and large text, screen reader labels and focus order, and data sources. No measurements, hex codes or fonts are retyped by hand.', weight: 3, required: true },
+    { id: 'qa', label: 'A real QA pass', strong: 'Tested on an ordinary phone with large text and a screen reader, running the actual task end to end, not only comparing screenshots. Findings are sorted: broken tasks, money and accessibility block; drift from the spec or tokens is fixed soon; rendering noise is let go.', weight: 3, required: true },
+    { id: 'tickets', label: 'Tickets that stand alone', strong: 'Each ticket names where, expected, actual and device, and points at the token or spec line to match. An engineer could fix it without asking.', weight: 2 },
+    { id: 'tokens', label: 'Tokens, not values', strong: 'The spec refers to tokens by name, and QA flags any hard-coded value or primitive in the build as drift to fix.', weight: 1 },
+    { id: 'collab', label: 'Worked with the engineer', strong: 'Describes a walkthrough before the build and at least one change made because of what the engineer or the build showed, recorded in the file.', weight: 1 },
+  ],
+  tips: ['Before you write a single note, list every question you’d ask if you had to build this from the frames alone. Each one needs a drawn state or a note.', 'Do the QA pass with the phone’s text at its largest setting and TalkBack on for one full run of the task. Most blockers show up in the first two minutes.'],
+  example: {
+    link: 'Figma: Gaadi “Change your trip”, spec page and frames (figma.com/…). Build: a coded prototype on Vercel (gaadi-change-trip.vercel.app). The sheet moves a booked Bengaluru → Chennai trip to another bus or date.',
+    states: [
+      'Default: today’s booking at the top, a date picker, and buses for that date with times, seats left and the fare difference. Confirm is disabled until a bus is picked.',
+      'Loading: after picking a bus, the fare row shows a skeleton and Confirm stays disabled until the fare-quote API answers.',
+      'Fare check failed: an inline error under the fare row, “Couldn’t check the new fare. Your booking hasn’t changed,” with Retry.',
+      'Sold out: the bus row shows “Sold out” in place of the fare and can’t be picked. Too late: within 6 hours of departure the sheet says “Changes close 6 hours before you leave” and offers Cancel.',
+    ],
+    notes: [
+      'Content: operator names wrap to two lines, then end in “…”. Boarding points never truncate, because “Majestic Bus Stand, Platform 4” is what people look for.',
+      'Small screens and large text: at 320 px wide or 200% text the fare breakdown stacks below the bus list and the sheet scrolls; Confirm stays pinned at the bottom.',
+      'Screen readers: the sheet is a dialog titled “Change your trip”. Focus starts on the date and returns to “Change trip” on close. A bus row reads “Volvo AC sleeper, 9:30 p.m., 3 seats left, ₹180 more”.',
+      'Data: the difference comes from the fare-quote API with GST included, shown as “₹180 more” or “₹120 back to your UPI”; the ₹50 change fee is its own line.',
+    ],
+    qa: [
+      'Tested on a Redmi 12, Android 14, text at 130%, TalkBack on for one run, and a throttled 4G connection.',
+      'Blocker: a double tap on Confirm books two changes and charges ₹100. The button must disable on the first tap.',
+      'Blocker: with TalkBack on, focus stays on the page behind the sheet, so the bus list can’t be reached.',
+      'Fix: bus rows are 12 px apart instead of space-4 (16 px), and Confirm uses a hard-coded #16A34A instead of color-action-primary.',
+      'Let go: Android draws the semibold bus times a touch heavier than Figma, and the drag handle is 1 px lower. Both are rendering, not mistakes.',
+    ],
+    tickets: 'Ticket 1, blocker. Confirm button. Expected: one change and one ₹50 fee per confirmation; the button disables on the first tap until the change comes back. Actual: a double tap books two changes and charges ₹100. On Redmi 12, Android 14, text 130%. Ticket 2, fix. Bus rows. Expected: 16 px apart, gap var(--space-4), as in Dev Mode. Actual: 12 px apart. Same device.',
+    learned: 'In the walkthrough Ritesh asked whether the ₹50 change fee is refunded when the new fare is lower. The spec didn’t say, so I asked product and added a fare-breakdown state for refunds. In QA he pushed back on the 16 px gap because Confirm fell off a 320 px screen. He was right, so I pinned Confirm to the bottom, kept the gap, and updated the spec note.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

@@ -43,7 +43,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'logo-process', 'brand-palette', 'brand-guide',
   'landing-anatomy', 'conversion-copy', 'campaign-cut', 'seo-read',
   'story-spine', 'objection-room', 'bluf-email',
-  'demo-tour', 'pricing-page', 'cs-loop']);
+  'demo-tour', 'pricing-page', 'cs-loop',
+  'spec-handoff', 'design-qa', 'token-pipeline']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -177,6 +178,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `demo-build`: lanes are `show` then `skip`; every card is a moment of the Sunrise demo, its `visual` a key of `SUNRISE_MOMENTS` (each used once) and its `label` that moment's `text`. Lane `show` exactly when the moment belongs in the clean demo (no `demoFlaws`). Shown moments join an agenda in `demoOrder`, timed against `DEMO_MINUTES`, with `demoGaps` and `demoFlaws` live. Every card needs a `note`.
  *  - `plan-pick`: lanes are `PLAN_IDS` in order; every card is a buyer reading Parcha's pricing page, its `visual` a key of `PARCHA_BUYERS` (each used once), and its lane `planFor` that buyer. A pick lights the plan's row for `fenceFor` (`FENCE_TEXT`) and shows `monthlyBill`. Every card needs a `note`.
  *  - `signal-route`: lanes are `ROUTES` in order; every card is a theme from Parcha's ticket queue, its `visual` a key of `PARCHA_SIGNALS` (each used once), and its lane that signal's `route`. The board totals `arrByRoute` and `loopAccounts` as you go, and the end compares `rankSignals` by tickets and by revenue. Every card needs a `note`.
+ *  - `spec-write`: lanes are `SPEC_SOURCES` in order; every card is a line Sana could put in the Gaadi handoff, its `visual` a key of `GAADI_SPEC` (each used once), its `label` that line's `text`, and its lane the line's `source`. Spec lines join a spec page that ticks off `DEV_QUESTIONS` (`specAnswered`); Dev Mode lines show their `inspect`. Every card needs a `note`.
+ *  - `qa-pass`: lanes are `QA_LANES` in order; every card is a difference between design and build, its `visual` a key of `GAADI_QA` (each used once), and its lane `qaLane` of that finding. Right calls file a ticket (`qaTicket`) and the release gate shows `qaVerdict` of the blockers filed so far. Every card needs a `note`.
+ *  - `token-trace`: lanes are `REF_KINDS` in order; every card is a line of Gaadi code, its `visual` a key of `GAADI_CODE` (each used once), its `label` containing that line's `code`, and its lane `refKind` of it. Each call shows the button before and after `TOKEN_CHANGE` (`renderedGreen`, `onGreen`); the lint (`lintFlags`) counts as you go. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -216,7 +220,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'logo-stress', 'kit-pick', 'guide-build',
   'page-stack', 'copy-swap', 'asset-fit', 'serp-spot',
   'story-strip', 'objection-reply', 'summary-build',
-  'demo-build', 'plan-pick', 'signal-route']);
+  'demo-build', 'plan-pick', 'signal-route',
+  'spec-write', 'qa-pass', 'token-trace']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

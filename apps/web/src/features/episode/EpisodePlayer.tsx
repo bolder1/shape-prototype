@@ -148,6 +148,9 @@ import { SummaryBuild } from './games/SummaryBuild';
 import { DemoBuild } from './games/DemoBuild';
 import { PlanPick } from './games/PlanPick';
 import { SignalRoute } from './games/SignalRoute';
+import { SpecWrite } from './games/SpecWrite';
+import { QaPass } from './games/QaPass';
+import { TokenTrace } from './games/TokenTrace';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -305,6 +308,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'demo-build': DemoBuild,
   'plan-pick': PlanPick,
   'signal-route': SignalRoute,
+  'spec-write': SpecWrite,
+  'qa-pass': QaPass,
+  'token-trace': TokenTrace,
 };
 
 interface Props {
