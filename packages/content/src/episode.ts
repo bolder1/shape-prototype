@@ -29,7 +29,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'stay-ugly', 'wire-grid', 'pattern-library',
   'form-pain', 'press-feedback', 'two-devices', 'direct-touch',
   'component-kit', 'icon-audit', 'image-choice', 'table-tidy',
-  'token-tiers', 'mode-swap', 'token-names']);
+  'token-tiers', 'mode-swap', 'token-names',
+  'prop-sprawl', 'variant-explosion', 'doc-page']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -121,6 +122,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `tier-edit`: lanes are `TOKEN_TIERS` in order; every card is a change request, its `visual` is the one Rasta token to edit (its tier is the lane, see `tierOf`) and, after a colon, what it becomes: a raw value for a primitive, another primitive for a semantic or component token ("color-action-primary:amber-700"). Editing the token's parent instead must reach further (`blastRadius`). Every card needs a `note`.
  *  - `mode-tune`: lanes `surface`, `text`, `accent`, `border` (the kind of colour, which sets the rule); every card's `visual` is a semantic colour from `MODE_SPECS`, tuned along its ramp for dark mode and checked by `darkCheck`. Its light-mode step must fail in dark mode. Every card needs a `note`.
  *  - `token-rename`: lanes are `NAME_FLAWS` in order; every card's `label` is "badName · where it's used", the lane is what `nameFlaw` says about the bad name, and the `visual` is the good name (no flaw), built from tiles. Every card needs a `note`.
+ *  - `api-build`: lanes are `API_KINDS` in order; every card's `label` is "oldProp · what it's used for" (a prop of the old Button, see `oldPropKind`), and its `visual` is what it becomes in the new API: an enum option for `enum` ("variant=danger"), the prop's name for `boolean`, the slot's name for `slot`, and for `fixed` the prop or token that now decides it ("size", "button-radius"). The game builds the API with `apiFrom` and counts its looks with `comboCount`. Every card needs a `note`.
+ *  - `prop-type`: lanes are `PROP_TYPES` in order (Figma's variant, boolean, text and instance-swap properties); every card is one thing that varies on Rasta's Button, and its `visual` is the values it takes, comma-separated. Only `variant` cards multiply the frames you draw (`frameCount`). Every card needs a `note`.
+ *  - `doc-rewrite`: lanes are `DOC_BLOCKS` in order; every card's `label` is a paragraph from the old Button docs, and its `visual` is the rewrite that goes in that block of the new page (shorter: see `readSeconds`). A `cut` card has no visual. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -147,7 +151,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'fidelity-tidy', 'grid-place', 'pattern-stamp',
   'form-triage', 'wait-feedback', 'port-phone', 'gesture-map',
   'state-sheet', 'icon-odd', 'image-budget', 'table-build',
-  'tier-edit', 'mode-tune', 'token-rename']);
+  'tier-edit', 'mode-tune', 'token-rename',
+  'api-build', 'prop-type', 'doc-rewrite']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -456,6 +461,67 @@ export const nameFlaw = (name: string): NameFlaw | null => {
 export const badName = (label: string) => label.split(' · ')[0];
 /** The words of a token name in any style: "cardTitle_color" → ["card", "title", "color"]. */
 export const nameWords = (name: string) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase().split(/[-_\s]+/).filter(Boolean);
+
+/** What an old-Button prop could be set to before ds.3-1's clean-up: `is…` / `has…` props are on/off, the rest took any value. */
+export const oldPropKind = (name: string): 'boolean' | 'free' => (/^(is|has)[A-Z]/.test(name) ? 'boolean' : 'free');
+/** What a prop becomes in a component's API (`api-build` lanes). `fixed` means it isn't a prop: the system decides it. */
+export const API_KINDS = ['enum', 'boolean', 'slot', 'fixed'] as const;
+export type ApiKind = (typeof API_KINDS)[number];
+/** One prop in an API. `free` takes any value (a hex code, a padding), which no one can design or test. */
+export interface ApiProp { name: string; kind: 'enum' | 'boolean' | 'slot' | 'free'; options?: string[] }
+/** The value an enum takes when nobody sets it: the old Button's look with no flags on. */
+export const ENUM_DEFAULTS: Record<string, string> = { variant: 'secondary', size: 'md' };
+/** Rasta's Button after the clean-up. */
+export const BUTTON_API: readonly ApiProp[] = [
+  { name: 'variant', kind: 'enum', options: ['secondary', 'primary', 'tertiary', 'danger'] },
+  { name: 'size', kind: 'enum', options: ['md', 'sm', 'lg'] },
+  { name: 'isLoading', kind: 'boolean' }, { name: 'isDisabled', kind: 'boolean' },
+  { name: 'iconLeading', kind: 'slot' }, { name: 'iconTrailing', kind: 'slot' },
+];
+/** One `api-build` decision: the old prop, the card's `visual` (what it should become), and the kind picked (none yet = still the old prop). */
+export interface ApiDecision { old: string; visual: string; kind?: ApiKind }
+/** Builds an API from decisions, in order. An `enum` pick adds an option to the enum its visual names (or, for a card that
+ *  isn't an enum option, turns the old prop into another variant: variant=loading). `boolean` and `slot` keep a name,
+ *  `fixed` drops the prop, and undecided props stay as they were in the old Button. */
+export const apiFrom = (ds: readonly ApiDecision[]): ApiProp[] => {
+  const out: ApiProp[] = [];
+  const add = (p: ApiProp) => { if (!out.some(o => o.name === p.name)) out.push(p); };
+  const option = (name: string, value: string) => {
+    let e = out.find(o => o.name === name && o.kind === 'enum');
+    if (!e) { e = { name, kind: 'enum', options: ENUM_DEFAULTS[name] ? [ENUM_DEFAULTS[name]] : [] }; out.push(e); }
+    if (!e.options!.includes(value)) e.options!.push(value);
+  };
+  const stem = (old: string) => old.replace(/^(is|has)/, '').replace(/^./, c => c.toLowerCase());
+  for (const d of ds) {
+    const [name, value] = d.visual.split('=');
+    if (!d.kind) add({ name: d.old, kind: oldPropKind(d.old) });
+    else if (d.kind === 'enum') { if (value) option(name, value); else option('variant', stem(d.old)); }
+    else if (d.kind === 'boolean') add({ name: !value && /^(is|has)[A-Z]/.test(d.visual) ? d.visual : d.old, kind: 'boolean' });
+    else if (d.kind === 'slot') add({ name: !value && d.visual.startsWith('icon') ? d.visual : d.old, kind: 'slot' });
+  }
+  return out;
+};
+/** How many different looks an API can be set to: each enum multiplies by its options and each boolean by 2. Slots hold
+ *  content, so they add none. One free-value prop makes it endless. */
+export const comboCount = (api: readonly ApiProp[]) =>
+  api.reduce((n, p) => (p.kind === 'free' ? Infinity : p.kind === 'enum' ? n * Math.max(1, p.options?.length ?? 1) : p.kind === 'boolean' ? n * 2 : n), 1);
+
+/** Figma's component property types (`prop-type` lanes). Only variant properties multiply the frames in a component set. */
+export const PROP_TYPES = ['variant', 'boolean', 'text', 'swap'] as const;
+export type PropType = (typeof PROP_TYPES)[number];
+/** A `prop-type` card's values: "primary,secondary,tertiary" → three. */
+export const propValues = (visual: string) => visual.split(',').map(v => v.trim()).filter(Boolean);
+/** Frames you draw in a component set: the product of the values of every property made a variant. */
+export const frameCount = (props: readonly { visual?: string; type?: string }[]) =>
+  props.reduce((n, p) => (p.type === 'variant' ? n * Math.max(1, propValues(p.visual ?? '').length) : n), 1);
+
+/** The blocks of a component's doc page, top to bottom (`doc-rewrite` lanes). `cut` is what goes. */
+export const DOC_BLOCKS = ['when', 'dodont', 'a11y', 'cut'] as const;
+export type DocBlock = (typeof DOC_BLOCKS)[number];
+/** Words in a piece of text (anything with a letter or digit in it). */
+export const wordCount = (text: string) => text.split(/\s+/).filter(w => /[\p{L}\p{N}]/u.test(w)).length;
+/** Seconds to read text at `wpm` words a minute (238 is a common average for adults reading English silently). */
+export const readSeconds = (text: string, wpm = 238) => Math.ceil((wordCount(text) / wpm) * 60);
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

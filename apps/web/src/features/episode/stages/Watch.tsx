@@ -104,6 +104,9 @@ import { TableTidyScene } from '../scenes/TableTidy';
 import { TokenTiersScene } from '../scenes/TokenTiers';
 import { ModeSwapScene } from '../scenes/ModeSwap';
 import { TokenNamesScene } from '../scenes/TokenNames';
+import { PropSprawlScene } from '../scenes/PropSprawl';
+import { VariantExplosionScene } from '../scenes/VariantExplosion';
+import { DocPageScene } from '../scenes/DocPage';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -201,6 +204,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'token-tiers': TokenTiersScene,
   'mode-swap': ModeSwapScene,
   'token-names': TokenNamesScene,
+  'prop-sprawl': PropSprawlScene,
+  'variant-explosion': VariantExplosionScene,
+  'doc-page': DocPageScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

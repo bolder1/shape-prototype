@@ -1,5 +1,38 @@
 import { describe, expect, it } from 'vitest';
-import { COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('ds.3 helpers', () => {
+  const old = ['isPrimary', 'isTertiary', 'isDanger', 'isSmall', 'isBig', 'isLoading', 'isDisabled', 'hasIcon', 'hasIconRight', 'isRounded', 'color', 'padding'];
+  const ep = EPISODES['ds.3-1'];
+  const right: ApiDecision[] = ep.game.cards.map(c => ({ old: c.label.split(' · ')[0], visual: c.visual!, kind: c.lane as ApiDecision['kind'] }));
+  it('counts the old Button as endless, and its switches alone as 1,024', () => {
+    expect(comboCount(apiFrom(right.map(d => ({ ...d, kind: undefined }))))).toBe(Infinity);
+    expect(comboCount(apiFrom(right.filter(d => oldPropKind(d.old) === 'boolean').map(d => ({ ...d, kind: undefined }))))).toBe(1024);
+    expect(right.map(d => d.old).sort()).toEqual([...old].sort());
+  });
+  it('builds the clean API from the right calls: 48 looks', () => {
+    const api = apiFrom(right);
+    expect(comboCount(api)).toBe(48);
+    const norm = (a: readonly { name: string; kind: string; options?: string[] }[]) => [...a].map(x => ({ ...x, options: x.options && [...x.options].sort() })).sort((x, y) => x.name.localeCompare(y.name));
+    expect(norm(api)).toEqual(norm(BUTTON_API));
+  });
+  it('punishes the classic mistakes', () => {
+    const swap = (old: string, kind: ApiDecision['kind']) => apiFrom(right.map(d => (d.old === old ? { ...d, kind } : d)));
+    expect(comboCount(swap('isDanger', 'boolean'))).toBe(72);   // danger as a switch: primary danger is possible again
+    expect(swap('isLoading', 'enum').find(p => p.name === 'variant')?.options).toContain('loading');
+    expect(comboCount(swap('color', undefined))).toBe(Infinity);
+  });
+  it('multiplies frames only for variant properties', () => {
+    expect(propValues('sm, md,lg')).toEqual(['sm', 'md', 'lg']);
+    expect(frameCount([{ visual: 'a,b,c,d', type: 'variant' }, { visual: 'sm,md,lg', type: 'variant' }, { visual: 'on,off', type: 'boolean' }])).toBe(12);
+    expect(frameCount([])).toBe(1);
+  });
+  it('reads at 238 words a minute', () => {
+    expect(wordCount('Do: “Renew pass”. Don’t: “OK” — or “Submit”.')).toBe(7);
+    expect(readSeconds(Array(238).fill('word').join(' '))).toBe(60);
+    expect(readSeconds('')).toBe(0);
+  });
+});
 
 describe('ds.2 helpers', () => {
   it('chains every component token through a semantic token to a primitive', () => {
@@ -449,6 +482,30 @@ describe('episodes', () => {
           expect(nameFlaw(badName(c.label))).toBe(c.lane);
           expect(nameFlaw(c.visual ?? 'X')).toBeNull();
           expect(c.note).toBeTruthy();
+        }
+      }
+      if (ep.game.id === 'api-build') {   // every old prop becomes what its lane says, and the right calls give the clean API
+        expect(lanes).toEqual([...API_KINDS]);
+        for (const c of ep.game.cards) {
+          const [old] = c.label.split(' · '), v = c.visual ?? '';
+          expect(c.note).toBeTruthy();
+          if (c.lane === 'enum') expect(v).toMatch(/^(variant|size)=[a-z]+$/);
+          if (c.lane === 'boolean') { expect(v).toBe(old); expect(oldPropKind(old)).toBe('boolean'); }
+          if (c.lane === 'slot') expect(BUTTON_API.find(p => p.name === v)?.kind).toBe('slot');
+          if (c.lane === 'fixed') expect(['variant', 'size', ...Object.keys(COMPONENT)]).toContain(v);
+        }
+      }
+      if (ep.game.id === 'prop-type') {   // only variant properties multiply, and anything else made a variant would multiply too
+        expect(lanes).toEqual([...PROP_TYPES]);
+        for (const c of ep.game.cards) { expect(propValues(c.visual ?? '').length).toBeGreaterThanOrEqual(2); expect(c.note).toBeTruthy(); }
+        expect(frameCount(ep.game.cards.map(c => ({ visual: c.visual, type: c.lane })))).toBe(60);
+      }
+      if (ep.game.id === 'doc-rewrite') {   // every kept paragraph is rewritten shorter; cut ones have no rewrite
+        expect(lanes).toEqual([...DOC_BLOCKS]);
+        for (const c of ep.game.cards) {
+          expect(c.note).toBeTruthy();
+          if (c.lane === 'cut') expect(c.visual).toBeUndefined();
+          else { expect(wordCount(c.visual ?? '')).toBeLessThan(wordCount(c.label) * 0.75); expect(wordCount(c.visual!)).toBeLessThanOrEqual(20); }
         }
       }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines

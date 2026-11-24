@@ -106,6 +106,9 @@ import { TableBuild } from './games/TableBuild';
 import { TierEdit } from './games/TierEdit';
 import { ModeTune } from './games/ModeTune';
 import { TokenRename } from './games/TokenRename';
+import { ApiBuild } from './games/ApiBuild';
+import { PropType } from './games/PropType';
+import { DocRewrite } from './games/DocRewrite';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -221,6 +224,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'tier-edit': TierEdit,
   'mode-tune': ModeTune,
   'token-rename': TokenRename,
+  'api-build': ApiBuild,
+  'prop-type': PropType,
+  'doc-rewrite': DocRewrite,
 };
 
 interface Props {

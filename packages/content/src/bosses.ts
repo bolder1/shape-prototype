@@ -936,9 +936,55 @@ const ds2: BossBriefInput = {
   },
 };
 
+const ds3: BossBriefInput = {
+  chapterId: 'ds.3',
+  title: 'Eight documented components',
+  minutes: 120,
+  scenario: [
+    'Build eight components for your Studio product in Figma, on top of the tokens from the last boss. If you don’t have a product yet, use Rasta, the Chennai bus-pass app from this chapter. Cover actions, inputs, feedback and containers, and draw every interactive state.',
+    'Then describe the library here so a reviewer who can’t open your file could rebuild it: what each component is for and its properties, the full API of your most complex component, the states you drew, how many frames each set needed, and one component’s doc page as you’d publish it.',
+  ],
+  fields: [
+    { id: 'inventory', label: 'The eight components', kind: 'list', items: 8, minWords: 12, hint: 'One per line: the name, what it’s for, its variant properties with their values, and its other properties (boolean, text, instance swap).' },
+    { id: 'api', label: 'One component’s API', kind: 'long', minWords: 60, hint: 'Your most complex component. Every property: its type, its values and default, and why it’s a variant or a component property. Name the code prop it maps to, and anything you deliberately left out.' },
+    { id: 'states', label: 'States', kind: 'list', items: 4, minWords: 12, hint: 'Four interactive components, one per line: which states you drew (default, hover, pressed, focus, disabled, plus error or loading where they exist) and what changes in each.' },
+    { id: 'frames', label: 'Frame count', kind: 'text', minWords: 25, hint: 'The frames in each component set, and one place where a boolean, text or instance-swap property replaced a variant. How many frames did it save?' },
+    { id: 'docs', label: 'One doc page', kind: 'long', minWords: 80, hint: 'As published: one line on what it’s for, use it for and don’t use it for, two do and don’t pairs (describe each picture), accessibility, and where the docs live.' },
+  ],
+  rubric: [
+    { id: 'api', label: 'An API that can’t describe a wrong component', strong: 'Choices that exclude each other are one variant property, never a stack of booleans; booleans are real on/off states; content goes in text or instance-swap properties; nothing the tokens should decide (colour, padding, radius) is exposed; every property has a sensible default and the same name as its code prop.', weight: 3, required: true },
+    { id: 'variants', label: 'Variants only where the drawing changes', strong: 'Frame counts are given and add up; icons, labels and optional layers are not variants; every interactive component has default, hover, pressed, focus and disabled drawn, with error, loading or selected where they apply, and a visible focus ring.', weight: 3, required: true },
+    { id: 'docs', label: 'Docs that answer the question', strong: 'The page leads with what it’s for and when not to use it (naming the alternative); do and don’t pairs show real mistakes in real screens; accessibility notes are specific and testable; history is left out; the props table is generated, and the docs live in Figma and next to the code.', weight: 2 },
+    { id: 'tokens', label: 'Built on tokens', strong: 'Components use semantic or component tokens from the last boss, never raw hex values, so modes and themes reach them.', weight: 1 },
+    { id: 'coverage', label: 'A useful set of eight', strong: 'The eight cover actions, inputs, feedback and containers, and each is distinct: no two components that should be one with a variant.', weight: 1 },
+  ],
+  tips: ['Count the frames before you draw them: multiply the values of every variant property. If the number surprises you, one of them should be a component property.', 'Write the doc page’s first two lines before you build the component. If you can’t say when not to use it, it may not need to exist.'],
+  example: {
+    inventory: [
+      'Button: any action, from Renew to Cancel pass. Variant property hierarchy (primary, secondary, tertiary, danger), size (sm, md, lg), state (default, hover, pressed, focus, disabled, loading). Booleans: leading icon, trailing icon. Instance swaps: which icon each. Text: label.',
+      'Icon button: an action with only an icon, in the header and on the QR card. Variants: hierarchy (secondary, tertiary), size (sm, md), state (five). Instance swap: icon. Text: accessible label, written in the description.',
+      'Text input: one line of typed input, such as a UPI ID or a phone number. Variants: state (default, hover, focus, disabled, error). Text: label, value, help text, error text. Booleans: help text, leading icon. Instance swap: leading icon.',
+      'Toggle: an on/off setting that applies at once, like auto-renew. Variants: on (true, false), state (default, hover, focus, disabled). Boolean: label shown. Text: label.',
+      'Chip: one choice from a short set, such as a fare zone. Variants: selected (true, false), state (default, hover, focus, disabled). Text: label. Boolean: count shown.',
+      'Banner: a message about the whole screen, like “Your pass ends in 2 days”. Variant: tone (info, warning, error, success). Text: message. Booleans: action, close button. Instance swap: icon.',
+      'Pass card: the rider’s current pass. Variant: status (active, ending, expired). Text: pass name, zones, valid-till date, price. Boolean: QR code shown.',
+      'Tab bar: the app’s top-level navigation. Variant: items (3, 4). Each item is a nested Tab with variants selected (true, false) and state (default, pressed, focus), an instance-swap icon and a text label.',
+    ],
+    api: 'Button. hierarchy (variant property; code prop variant): primary, secondary, tertiary, danger; default secondary, so the loud look has to be asked for. Danger is only for actions that can’t be undone. size (variant; code prop size): sm 32 px, md 40 px, lg 48 px; default md. Height, padding and text size follow from it. state (variant in Figma only): default, hover, pressed, focus, disabled, loading. In code hover, pressed and focus come from the browser; disabled and loading are the props isDisabled and isLoading, because any variant can be either. Leading icon and trailing icon (booleans) with Icon and Trailing icon (instance swaps, restricted to the 24 px icon set): code props iconLeading and iconTrailing, which are slots. Label (text property): the children. Left out on purpose: colour (the hierarchy picks it through color-action-primary and friends), padding (the size sets it), corner radius (the button-radius token), and width (the layout stretches it).',
+    states: [
+      'Button: default; hover darkens the fill one step; pressed two steps; focus adds a 2 px ring in color-border-focus with a 2 px gap; disabled drops to color-bg-disabled with grey text; loading swaps the label for a spinner and keeps the width.',
+      'Text input: default with a 1 px color-border-control border; hover darkens the border; focus uses a 2 px color-border-focus border; disabled greys the field and text; error turns the border color-feedback-error and shows the error text under the field.',
+      'Toggle: off and on, each with default, hover (the track darkens), focus (the ring) and disabled (50% track, no shadow on the knob). On uses color-action-primary.',
+      'Chip: unselected has an outline, selected fills with color-action-primary-subtle and a check icon; hover darkens the outline; focus adds the ring; disabled greys it.',
+    ],
+    frames: 'Button 4 × 3 × 6 = 72 frames. Icon button 2 × 2 × 5 = 20. Text input 5. Toggle 2 × 4 = 8. Chip 2 × 4 = 8. Banner 4. Pass card 3. Tab bar 2, plus 6 for the nested Tab. 128 in all. Making the button’s icon a boolean plus an instance swap, instead of a variant for each of 6 icons in 3 positions, kept the Button at 72 frames instead of 1,296.',
+    docs: 'Button. Starts an action: Renew, Pay, Save. Use it for: anything that does something on this screen. Don’t use it for: going to another page (use a Link: “See the fare chart”), or choosing between options (use Chips). One primary button per screen or dialog; everything else is secondary or tertiary. Do / don’t 1: the filter dialog with “Apply” as primary and “Clear all” as tertiary (do) next to the same dialog with both primary (don’t). Do / don’t 2: danger on “Cancel pass”, which can’t be undone (do), next to danger on “Remove filter” (don’t). Labels: a verb first, three words at most plus an amount, like “Renew · ₹1,000”; never “OK” or “Submit”. Accessibility: tap area at least 48 × 48 px, even for sm, using padding outside the visible edge; never remove the focus ring; icon-only buttons need an aria-label; while loading, keep the width and announce “Renewing…”. Props: generated from the code by Storybook. Where it lives: a two-line description on the Figma component that links here, and this page beside the live examples. It changes in the same pull request as the component.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
