@@ -26,7 +26,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'taste-reason', 'feedback-frame', 'receive-critique',
   'affinity-map', 'observation-insight', 'persona-jtbd', 'journey-map',
   'task-writing', 'mod-unmod', 'severity', 'heuristic-eval',
-  'stay-ugly', 'wire-grid', 'pattern-library']);
+  'stay-ugly', 'wire-grid', 'pattern-library',
+  'form-pain', 'press-feedback', 'two-devices', 'direct-touch']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -107,6 +108,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `fidelity-tidy`: lanes `plain`, `real`, `fine`; every card's `visual` is the part of the Khelo turf-list wireframe it's about (one of `KHELO_PARTS`, each used once), and it needs a `note`.
  *  - `grid-place`: lanes `bleed`, `full`, `main`, `side` (areas of a 12-column page, see `GRID_AREA`); every card's `visual` is its row on the page (1, 2, …). A row holds one `bleed` or `full` block, or a `main` block with at most one `side` block beside it (see `phoneStack`). Every card needs a `note`.
  *  - `pattern-stamp`: lanes `cards`, `chips`, `form`, `sheet` (patterns from the wireframe library, drawn by the game); every card's `visual` is the screen of the Khelo booking flow it goes on (one of `KHELO_SCREENS`, every screen used), and it needs a `note`.
+ *  - `form-triage`: lanes `label`, `keyboard`, `error`, `cut` (see `FORM_LANES`); every card's `visual` is a field of Mandi's sign-up form (a key of `MANDI_FIELDS`, every field used once), its lane is the fix that field needs, and it needs a `note`.
+ *  - `wait-feedback`: lanes are `FEEDBACK` in order; every card's `visual` is how long the action takes in ms, its lane is what `feedbackFor` says, and it needs a `note`.
+ *  - `port-phone`: lanes `show`, `menu`, `sheet`, `thumb`; every card's `visual` is the part of the desktop packing dashboard it's about (one of `PACKING_PARTS`, each used once), and its `note` the phone version.
+ *  - `gesture-map`: lanes are `GESTURES` in order; every card needs a `note`, and every card that isn't a tap has a `visual`: the visible button that does the same job, because a gesture is never the only way.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -130,7 +135,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'taste-filter', 'frame-feedback', 'calm-reply',
   'affinity-wall', 'insight-sharpen', 'tool-fit', 'journey-plot',
   'task-fix', 'method-pick', 'severity-rate', 'heuristic-sweep',
-  'fidelity-tidy', 'grid-place', 'pattern-stamp']);
+  'fidelity-tidy', 'grid-place', 'pattern-stamp',
+  'form-triage', 'wait-feedback', 'port-phone', 'gesture-map']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -276,6 +282,32 @@ export const phoneStack = <C extends { lane: string; visual?: string }>(cards: r
 /** The five screens of the Khelo turf-booking flow, in order (a `pattern-stamp` card's `visual`). */
 export const KHELO_SCREENS = ['find', 'turf', 'slot', 'players', 'pay'] as const;
 export type KheloScreen = (typeof KHELO_SCREENS)[number];
+
+/** The fields of Mandi's first sign-up form a `form-triage` card can point at, with seconds to fill each [as drafted, as fixed]; a cut field costs 0 once fixed. */
+export const MANDI_FIELDS = {
+  name: [14, 8], phone: [16, 6], email2: [12, 0], gender: [5, 0], diet: [10, 5], pincode: [12, 5], flat: [30, 12], password: [40, 14],
+} as const satisfies Record<string, readonly [number, number]>;
+export type MandiField = keyof typeof MANDI_FIELDS;
+/** The four fixes a `form-triage` card can call, in lane order. */
+export const FORM_LANES = ['label', 'keyboard', 'error', 'cut'] as const;
+/** Seconds to fill Mandi's sign-up form, given which fields are fixed so far. */
+export const formSeconds = (fixed: Partial<Record<MandiField, boolean>>) =>
+  (Object.keys(MANDI_FIELDS) as MandiField[]).reduce((s, k) => s + MANDI_FIELDS[k][fixed[k] ? 1 : 0], 0);
+
+/** Response-time limits in ms (Nielsen): up to 0.1 s feels instant, up to 1 s keeps the flow, up to 10 s keeps attention. */
+export const WAIT_LIMITS = [100, 1000, 10000] as const;
+/** The feedback a wait needs, shortest first (`wait-feedback` lanes). */
+export const FEEDBACK = ['instant', 'pressed', 'spinner', 'progress'] as const;
+export type Feedback = (typeof FEEDBACK)[number];
+export const feedbackFor = (ms: number): Feedback => (ms <= WAIT_LIMITS[0] ? 'instant' : ms <= WAIT_LIMITS[1] ? 'pressed' : ms <= WAIT_LIMITS[2] ? 'spinner' : 'progress');
+
+/** Parts of Mandi's desktop packing dashboard a `port-phone` card can point at (the game draws each on a laptop, then on a phone). */
+export const PACKING_PARTS = ['tooltip', 'rowhover', 'rightclick', 'panel', 'popover', 'toolbar', 'checkbox', 'chart'] as const;
+export type PackingPart = (typeof PACKING_PARTS)[number];
+
+/** Gestures a `gesture-map` card can be given, in lane order. */
+export const GESTURES = ['tap', 'swipe', 'drag', 'pinch'] as const;
+export type Gesture = (typeof GESTURES)[number];
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

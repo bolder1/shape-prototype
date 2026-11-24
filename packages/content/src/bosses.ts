@@ -816,9 +816,45 @@ const ia3: BossBriefInput = {
   },
 };
 
+const ia4: BossBriefInput = {
+  chapterId: 'ia.4',
+  title: 'Redesign a 12-field sign-up form',
+  minutes: 75,
+  scenario: [
+    'Pedal rents bicycles by the hour from 60 stands across Bengaluru: scan the QR on a stand, ride, park at any other stand, pay by UPI. Its sign-up form loses more than half the people who start it, mostly on phones at the stand, with the bike right there.',
+    'Today the form is one long page with these 12 fields, all required: 1 Title (Mr / Mrs / Ms dropdown), 2 First name, 3 Last name, 4 Email, 5 Confirm email, 6 Mobile number (opens the letter keyboard, no +91 shown), 7 Password (rules appear only after an error), 8 Confirm password, 9 Date of birth (three dropdowns: day, month, year), 10 Gender, 11 Home address, 12 How did you hear about us? Errors appear in a red box at the top after Submit, and the password fields are cleared. Pedal needs the mobile number to send ride receipts and reach riders, proof that the rider is 18 or over before the first ride, and a way to pay.',
+    'Redesign it. Decide what happens to every one of the 12 fields, describe the new form screen by screen, and explain how its feedback and errors work on a phone.',
+  ],
+  fields: [
+    { id: 'decisions', label: 'Every field, and what you did with it', kind: 'long', minWords: 120, hint: 'Go through all 12 in order. For each: keep, change, merge, ask later, or cut, and the reason in one line. A change without a reason doesn’t count.' },
+    { id: 'form', label: 'The new form, screen by screen', kind: 'list', items: 2, minWords: 30, hint: 'For each screen: every field top to bottom with its label, keyboard and any hint text, and the one main button and what it says.' },
+    { id: 'feedback', label: 'Feedback and errors', kind: 'long', minWords: 50, hint: 'When each field is checked, where errors appear and what one says, what the button does while it works, and what is kept when something fails.' },
+    { id: 'phone', label: 'Built for a phone at the stand', kind: 'text', minWords: 25, hint: 'One-handed use, thumb reach, target sizes, autofill, and anything that saves typing.' },
+    { id: 'measure', label: 'How you’d know it worked', kind: 'text', minWords: 15, hint: 'The number you’d watch, and what you’d compare it with.' },
+  ],
+  rubric: [
+    { id: 'decisions', label: 'Every field decided, with a reason', strong: 'All 12 fields are covered. Duplicates (confirm email, confirm password) and fields Pedal can’t justify (title, gender, how did you hear) are cut; the age check moves to before the first ride or becomes one simple check; address is cut or deferred; each decision has a reason tied to what Pedal actually needs.', weight: 3, required: true },
+    { id: 'form', label: 'A short, clear form', strong: 'The new form asks only for what the first ride needs, in a sensible order, in one column, with labels above the boxes (not placeholders), one full-name field, and a specific main button such as “Send code” or “Start riding”.', weight: 2, required: true },
+    { id: 'feedback', label: 'Feedback that helps', strong: 'Rules are shown before typing, fields are checked when the rider leaves them, errors sit beside the field in plain words that say how to fix it, the button shows a pressed or busy state and ignores repeat taps, and nothing typed is ever cleared.', weight: 2 },
+    { id: 'phone', label: 'Designed for touch', strong: 'Number pad for the mobile number with +91 shown, OTP autofill instead of a password where it fits, the main button in thumb reach and at least 44–48 px tall, and nothing that depends on hover.', weight: 1 },
+    { id: 'measure', label: 'A way to tell', strong: 'Names a measure like the share of people who start sign-up and finish their first ride, or time to complete, and compares it with the old form or tests both.', weight: 1 },
+  ],
+  tips: ['Before you change anything, write next to each field who uses the answer and when. If nobody can say, cut it.', 'Fill your new form on your own phone with one hand, standing up. Every place you hesitate is a fix.'],
+  example: {
+    decisions: '1 Title: cut. Pedal never addresses riders by title, and it makes people state their marital status. 2–3 First and last name: merged into one “Full name” field, because many names don’t split into first and last, and receipts need only one line. 4 Email: made optional and asked after the first ride (“Get receipts by email?”); the mobile number is enough to create an account. 5 Confirm email: cut. It doubles the typing, and an optional email can be checked with a link. 6 Mobile number: kept and fixed. It is the account, so it gets the number pad, +91 shown in front, and an OTP to verify it. 7 Password: cut. The OTP signs people in, so there is nothing to forget at a stand. 8 Confirm password: cut with the password. 9 Date of birth: replaced by an “I’m 18 or older” check now and an ID check before the first ride, because Pedal needs proof of age, not the birthday itself. 10 Gender: cut. Nothing about renting a bike depends on it. 11 Home address: cut. Bikes are picked up and dropped at stands; nothing is delivered. 12 How did you hear about us: cut from sign-up, asked as one optional question on the first ride receipt.',
+    form: [
+      'Screen 1 · Your number. Heading “Start riding in a minute”. Field: label “Mobile number”, +91 shown in front, number pad, hint “We’ll text you a 6-digit code.” Field: label “Full name”, hint “As on your ID.” A checkbox, unticked: “I’m 18 or older”. Main button, full width at the bottom: “Send code”.',
+      'Screen 2 · The code. Heading “Enter the code sent to +91 98450 12345” with “Change” next to the number. Six boxes that fill from the SMS by autofill, with the number pad. “Resend code in 0:25” below, which turns into a link. The code submits by itself when the sixth digit arrives; a “Verify and continue” button is there for anyone who types it. Then straight to the bike they scanned, with UPI set up at the first payment.',
+    ],
+    feedback: 'Each field is checked when the rider leaves it, never mid-typing. A short number shows “Enter all 10 digits” in red beside the field, with the digits kept. The name field accepts any letters, spaces and dots. If “I’m 18 or older” is left unticked, “You need to be 18 to ride” appears under it when they press Send code. Send code turns pressed, shows “Sending…” with a small spinner and ignores more taps; after 10 seconds it says “Still sending. Check your signal.” A wrong code shakes the boxes, says “That code didn’t match. Try again or resend,” and keeps the number. Nothing the rider typed is ever cleared.',
+    phone: 'Everything sits in one column with the main button pinned at the bottom in thumb reach, 52 px tall. The number pad opens for the mobile number and the code, the OTP fills itself from the SMS, and the name field allows autofill from the phone. No dropdowns, no hover, and every tap target is at least 48 px.',
+    measure: 'The share of people who open sign-up and start their first ride within 10 minutes, compared over two weeks between the old and new forms, plus the median time from opening the form to unlocking a bike.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

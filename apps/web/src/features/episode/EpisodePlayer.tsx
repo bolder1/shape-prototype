@@ -95,6 +95,10 @@ import { HeuristicSweep } from './games/HeuristicSweep';
 import { FidelityTidy } from './games/FidelityTidy';
 import { GridPlace } from './games/GridPlace';
 import { PatternStamp } from './games/PatternStamp';
+import { FormTriage } from './games/FormTriage';
+import { WaitFeedback } from './games/WaitFeedback';
+import { PortPhone } from './games/PortPhone';
+import { GestureMap } from './games/GestureMap';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -199,6 +203,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'fidelity-tidy': FidelityTidy,
   'grid-place': GridPlace,
   'pattern-stamp': PatternStamp,
+  'form-triage': FormTriage,
+  'wait-feedback': WaitFeedback,
+  'port-phone': PortPhone,
+  'gesture-map': GestureMap,
 };
 
 interface Props {

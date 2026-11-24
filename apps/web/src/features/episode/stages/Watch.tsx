@@ -93,6 +93,10 @@ import { HeuristicEvalScene } from '../scenes/HeuristicEval';
 import { StayUglyScene } from '../scenes/StayUgly';
 import { WireGridScene } from '../scenes/WireGrid';
 import { PatternLibraryScene } from '../scenes/PatternLibrary';
+import { FormPainScene } from '../scenes/FormPain';
+import { PressFeedbackScene } from '../scenes/PressFeedback';
+import { TwoDevicesScene } from '../scenes/TwoDevices';
+import { DirectTouchScene } from '../scenes/DirectTouch';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -179,6 +183,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'stay-ugly': StayUglyScene,
   'wire-grid': WireGridScene,
   'pattern-library': PatternLibraryScene,
+  'form-pain': FormPainScene,
+  'press-feedback': PressFeedbackScene,
+  'two-devices': TwoDevicesScene,
+  'direct-touch': DirectTouchScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

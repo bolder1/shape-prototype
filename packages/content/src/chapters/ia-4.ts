@@ -1,0 +1,113 @@
+// Chapter ia.4 · Interaction patterns. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const ia4: LessonContent[] = [
+  {
+    id: 'ia.4-1', title: 'Forms that don\'t hurt', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Every field is a cost',
+        body: ['Each field you add is something a person has to read, think about and type, often with one thumb on a moving bus. Before you style a form, question every field: do we need this now, can we get it later, or can we work it out ourselves? A pincode can fill in the city. A “confirm email” field doubles the typing and catches almost nothing that showing the address back wouldn’t.',
+          'Then make the fields that stay easy. Put a short label above each box, not a placeholder that vanishes once you start typing. Open the right keyboard: numbers for a phone or pincode. Say the rules before people break them (“At least 8 characters”), check each field when they leave it, and write errors next to the field in plain words. Never clear what they typed because one field was wrong.'] },
+      { type: 'sort', id: 's1', prompt: 'A sign-up form for a vegetable-box app. What does each field need?',
+        explanation: 'Fields you don’t need yet should go. The rest need a label that stays, the right keyboard, or rules and errors that help before and during typing, not after.',
+        buckets: [{ id: 'cut', label: 'Cut it' }, { id: 'keyboard', label: 'Right keyboard' }, { id: 'error', label: 'Better rules and errors' }],
+        items: [
+          { id: 'a', label: '“Confirm your email”, typed a second time', bucket: 'cut' },
+          { id: 'b', label: 'The 10-digit mobile number opens the letter keyboard', bucket: 'keyboard' },
+          { id: 'c', label: 'The password says “Invalid” only after you press Sign up', bucket: 'error' },
+          { id: 'd', label: 'Gender, required, for a vegetable delivery', bucket: 'cut' },
+          { id: 'e', label: 'The pincode field opens the letter keyboard', bucket: 'keyboard' },
+          { id: 'f', label: 'Flat number “B/702” rejected as “Invalid input”', bucket: 'error' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Why is a placeholder a poor label?',
+        explanation: 'The placeholder disappears as soon as you type, so you can’t check what the field was for, and its grey text is often too faint to read.',
+        options: [
+          { id: 'a', label: 'Placeholders can’t be translated' },
+          { id: 'b', label: 'It disappears once you type, so people forget what the field asked for' },
+          { id: 'c', label: 'It makes the form look longer' },
+          { id: 'd', label: 'Screen readers can’t see any text in a field' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'ia.4-2', title: 'Feedback & affordance', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Show what it does, then show that it did',
+        body: ['An affordance is what you can do with something; a signifier is the clue that tells you. A raised, filled shape with a verb on it says “press me”. Grey text in a paragraph says “read me”, so nobody taps it, even if it’s secretly a link. If an action matters, make it look like a button. If something isn’t tappable, don’t make it look like one.',
+          'Then every action needs feedback, matched to how long it takes. Under about 0.1 s, the change itself is enough: the checkbox ticks. Under 1 s, show the press so people don’t tap twice. From 1 to 10 s, show a spinner that says what’s happening. Longer than that, show progress and let people do something else. For an action that’s easy to regret, do it at once and offer Undo.'] },
+      { type: 'sort', id: 's1', prompt: 'How long each action takes. What feedback does it need?',
+        explanation: 'Match the feedback to the wait: nothing extra when it’s instant, a pressed state under a second, a spinner up to ten, and real progress beyond that.',
+        buckets: [{ id: 'instant', label: 'The change is enough' }, { id: 'spinner', label: 'A spinner with a message' }, { id: 'progress', label: 'Progress you can leave' }],
+        items: [
+          { id: 'a', label: 'Ticking “Leave at the door” (40 ms)', bucket: 'instant' },
+          { id: 'b', label: 'Paying ₹640 by UPI (about 4 s)', bucket: 'spinner' },
+          { id: 'c', label: 'Uploading 30 farm photos (about 2 minutes)', bucket: 'progress' },
+          { id: 'd', label: 'Switching the basket from Small to Large (60 ms)', bucket: 'instant' },
+          { id: 'e', label: 'Checking the pincode delivers (about 2 s)', bucket: 'spinner' },
+          { id: 'f', label: 'Exporting a year of orders as a spreadsheet (about 40 s)', bucket: 'progress' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: '“Skip this week” is plain grey text under the basket, and almost nobody uses it. What’s the most likely problem?',
+        explanation: 'Nothing about it signals “tap me”. Give it the look of a button or a link, with a clear verb, and people will find it.',
+        options: [
+          { id: 'a', label: 'Nobody wants to skip' },
+          { id: 'b', label: 'It doesn’t look tappable, so people don’t know they can' },
+          { id: 'c', label: 'The words are too long' },
+          { id: 'd', label: 'It needs a confirmation dialog' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'ia.4-3', title: 'Mobile vs. desktop interaction', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Same jobs, different hands',
+        body: ['A mouse is precise, can hover and right-click, and sits next to a keyboard full of shortcuts. A thumb is a blunt, 10 mm pointer that can’t hover, covers what it touches and reaches the bottom of the screen far more easily than the top. Shrinking a desktop screen onto a phone keeps the layout and breaks the interactions.',
+          'Port the interaction, not the pixels. Anything you only see on hover has to be visible, or one tap away. Right-click menus and hover actions become a “⋯” menu. Side panels and popovers become bottom sheets or full screens. Main actions and navigation move down into thumb reach, at least 44 px tall. Desktop can be denser and use shortcuts, because the pointer allows it.'] },
+      { type: 'sort', id: 's1', prompt: 'A desktop dashboard is coming to the phone. What does each interaction become?',
+        explanation: 'Hover-only information goes visible, hidden actions go into a ⋯ menu, panels become sheets, and main actions move into thumb reach.',
+        buckets: [{ id: 'show', label: 'Show it on the screen' }, { id: 'menu', label: 'Put it in a ⋯ menu' }, { id: 'sheet', label: 'Open a bottom sheet' }],
+        items: [
+          { id: 'a', label: 'A tooltip on hover explains what the leaf icon means', bucket: 'show' },
+          { id: 'b', label: 'Right-click an order to reassign it to another rider', bucket: 'menu' },
+          { id: 'c', label: 'Order details slide in from a panel on the right', bucket: 'sheet' },
+          { id: 'd', label: 'Hover a row to reveal Edit and Delete', bucket: 'menu' },
+          { id: 'e', label: 'Hover a bar in the chart to read the day’s total', bucket: 'show' },
+          { id: 'f', label: 'A date picker pops up beside the field', bucket: 'sheet' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Where should the main navigation of a phone app go, and why?',
+        explanation: 'Most people hold a phone in one hand and tap with their thumb, which reaches the bottom of the screen easily and the top corners badly.',
+        options: [
+          { id: 'a', label: 'At the top, where desktop puts it, so it feels familiar' },
+          { id: 'b', label: 'At the bottom, where the thumb reaches it holding the phone in one hand' },
+          { id: 'c', label: 'Hidden behind a menu icon, to save space' },
+          { id: 'd', label: 'It doesn’t matter on a phone' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'ia.4-4', title: 'Gestures & direct manipulation', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Move the thing itself',
+        body: ['Direct manipulation means acting on the object, not on a control somewhere else: you drag the item to where it should go, swipe the row away, pinch the photo to zoom. It works when the object follows your finger the whole time, so you can see the result before you let go, and when the change can be undone.',
+          'Gestures are invisible. Nothing on a row says “swipe me”, so many people will never find it. Treat every gesture as a shortcut and give it a visible twin: a Remove button or a “⋯ Move to next week”. Pick the gesture people already expect for the job: tap to open or choose, swipe to dismiss or reveal actions, drag to move or reorder, pinch to zoom. Don’t invent new ones.'] },
+      { type: 'sort', id: 's1', prompt: 'A weekly vegetable basket on a phone. Which gesture fits each job?',
+        explanation: 'Tap chooses, opens and steps a number, swipe dismisses or reveals actions on a row, and drag moves an object to a new place.',
+        buckets: [{ id: 'tap', label: 'Tap' }, { id: 'swipe', label: 'Swipe' }, { id: 'drag', label: 'Drag' }],
+        items: [
+          { id: 'a', label: 'Add 1 kg more tomatoes with the + button', bucket: 'tap' },
+          { id: 'b', label: 'Remove the okra from this week', bucket: 'swipe' },
+          { id: 'c', label: 'Move the mangoes to next Saturday’s box', bucket: 'drag' },
+          { id: 'd', label: 'Open Saturday’s box to see what’s inside', bucket: 'tap' },
+          { id: 'e', label: 'Dismiss the “Monsoon prices” banner', bucket: 'swipe' },
+          { id: 'f', label: 'Put your favourite items in order', bucket: 'drag' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Swipe left removes an item from the basket. What else should the screen have?',
+        explanation: 'A gesture can’t be seen, so people need a visible way to do the same thing, and swipes happen by accident, so they need Undo.',
+        options: [
+          { id: 'a', label: 'Nothing: swiping is standard' },
+          { id: 'b', label: 'A tutorial video on first launch' },
+          { id: 'c', label: 'A visible Remove button, and an Undo after it happens' },
+          { id: 'd', label: 'A confirmation dialog on every swipe' },
+        ], correct: 'c' },
+    ],
+  },
+];

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -301,6 +301,42 @@ describe('episodes', () => {
         expect(lanes).toEqual(['cards', 'chips', 'form', 'sheet']);
         for (const c of ep.game.cards) { expect(KHELO_SCREENS).toContain(c.visual); expect(c.note).toBeTruthy(); }
         expect(new Set(ep.game.cards.map(c => c.visual))).toEqual(new Set(KHELO_SCREENS));
+      }
+      if (ep.game.id === 'form-triage') {   // every field of the drawn form is triaged once; cut fields cost nothing once fixed, kept ones still take time
+        expect(lanes).toEqual([...FORM_LANES]);
+        const fields = ep.game.cards.map(c => c.visual);
+        expect(new Set(fields)).toEqual(new Set(Object.keys(MANDI_FIELDS)));
+        expect(fields).toHaveLength(Object.keys(MANDI_FIELDS).length);
+        for (const c of ep.game.cards) {
+          expect(c.note).toBeTruthy();
+          const [before, after] = MANDI_FIELDS[c.visual as keyof typeof MANDI_FIELDS];
+          expect(after).toBeLessThan(before);
+          expect(after === 0).toBe(c.lane === 'cut');
+        }
+        const all = Object.fromEntries(fields.map(f => [f, true]));
+        expect(formSeconds(all)).toBeLessThan(formSeconds({}) / 2);
+      }
+      if (ep.game.id === 'wait-feedback') {   // the marked feedback is what the clock says, and no wait sits near a limit
+        expect(lanes).toEqual([...FEEDBACK]);
+        for (const c of ep.game.cards) {
+          const ms = Number(c.visual);
+          expect(ms).toBeGreaterThan(0);
+          expect(c.lane).toBe(feedbackFor(ms));
+          expect(c.note).toBeTruthy();
+          for (const limit of WAIT_LIMITS) expect(Math.abs(Math.log10(ms / limit))).toBeGreaterThan(0.1);
+        }
+        expect([50, 500, 5000, 50000].map(feedbackFor)).toEqual([...FEEDBACK]);
+      }
+      if (ep.game.id === 'port-phone') {   // dashboard parts the game draws, each ported once
+        expect(lanes).toEqual(['show', 'menu', 'sheet', 'thumb']);
+        const parts = ep.game.cards.map(c => c.visual);
+        for (const v of parts) expect(PACKING_PARTS).toContain(v);
+        expect(new Set(parts).size).toBe(parts.length);
+        for (const c of ep.game.cards) expect(c.note).toBeTruthy();
+      }
+      if (ep.game.id === 'gesture-map') {   // gestures the phone can play, and every gesture beyond a tap has a visible twin
+        expect(lanes).toEqual([...GESTURES]);
+        for (const c of ep.game.cards) { expect(c.note).toBeTruthy(); if (c.lane !== 'tap') expect(c.visual).toBeTruthy(); }
       }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
