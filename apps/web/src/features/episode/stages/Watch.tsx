@@ -133,6 +133,9 @@ import { UpgradeMomentScene } from '../scenes/UpgradeMoment';
 import { HypothesisShapeScene } from '../scenes/HypothesisShape';
 import { SampleSizeScene } from '../scenes/SampleSize';
 import { PeekTrapScene } from '../scenes/PeekTrap';
+import { LogoProcessScene } from '../scenes/LogoProcess';
+import { BrandPaletteScene } from '../scenes/BrandPalette';
+import { BrandGuideScene } from '../scenes/BrandGuide';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -259,6 +262,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'hypothesis-shape': HypothesisShapeScene,
   'sample-size': SampleSizeScene,
   'peek-trap': PeekTrapScene,
+  'logo-process': LogoProcessScene,
+  'brand-palette': BrandPaletteScene,
+  'brand-guide': BrandGuideScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

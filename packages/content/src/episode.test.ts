@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { HYPO_PARTS, PLAN_VERDICTS, READ_CALLS, TOKRI_AA, TOKRI_HYPOS, TOKRI_PLANS, TOKRI_RESULTS, WEEKS_MAX, aaPValues, hypoFlaw, hypoRewrite, hypoText, planTest, planVerdict, readCall, weeksFor, weeksGrade, type Hypothesis, type TestRead, type TokriHypo, type TokriPlan, type TokriResult } from './episode';
 import { twoProp } from './stats';
+import { GUIDE_SECTIONS, KIT_SLOTS, MARK_VERDICTS, SUKOON_KIT, SUKOON_MARKS, SUKOON_USES, kitFlaw, markVerdict, sectionBroken, type KitOption, type SukoonKitKey, type SukoonMark, type SukoonUse } from './identity';
 
 describe('gr.3 helpers', () => {
   it('finds the one weak part of each hypothesis, and the fix mends it while the trap does not', () => {
@@ -914,6 +915,22 @@ describe('episodes', () => {
         expect(lanes).toEqual([...COGA_LANES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_BARRIERS).sort());
         for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_BARRIERS[c.visual as RahiBarrier].lane); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'logo-stress') {   // every mark once, in the first test markVerdict finds it fails
+        expect(lanes).toEqual([...MARK_VERDICTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUKOON_MARKS).sort());
+        for (const c of ep.game.cards) { const m = SUKOON_MARKS[c.visual as SukoonMark]; expect(c.label).toBe(m.text); expect(c.lane).toBe(markVerdict(m)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'kit-pick') {   // every option once, in its slot, one that fits per slot
+        expect(lanes).toEqual([...KIT_SLOTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUKOON_KIT).sort());
+        for (const c of ep.game.cards) { const o = SUKOON_KIT[c.visual as SukoonKitKey]; expect(c.lane).toBe(o.slot); expect(c.label).toContain(o.name); expect(c.note).toBeTruthy(); }
+        for (const l of KIT_SLOTS) expect(ep.game.cards.filter(c => c.lane === l && kitFlaw(SUKOON_KIT[c.visual as SukoonKitKey] as KitOption) === null)).toHaveLength(1);
+      }
+      if (ep.game.id === 'guide-build') {   // every piece once, in the section whose rule it breaks
+        expect(lanes).toEqual([...GUIDE_SECTIONS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUKOON_USES).sort());
+        for (const c of ep.game.cards) { const u = SUKOON_USES[c.visual as SukoonUse]; expect(c.label).toBe(u.text); expect(c.lane).toBe(sectionBroken(u)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'hypo-fix') {   // every hypothesis once, written out in full, in the part hypoFlaw finds weak
         expect(lanes).toEqual([...HYPO_PARTS]);

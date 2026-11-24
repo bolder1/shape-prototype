@@ -39,7 +39,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'vision-narrative', 'roadmap-horizons', 'rival-rings',
   'metric-tree', 'heart-goals', 'cohort-triangle', 'track-plan',
   'just-in-time', 'empty-activate', 'upgrade-moment',
-  'hypothesis-shape', 'sample-size', 'peek-trap']);
+  'hypothesis-shape', 'sample-size', 'peek-trap',
+  'logo-process', 'brand-palette', 'brand-guide']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -160,6 +161,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `hypo-fix`: lanes are `HYPO_PARTS` in order; every card is a hypothesis from Tokri's backlog, its `visual` a key of `TOKRI_HYPOS` (each used once), its `label` the whole sentence (`hypoText`), and its lane is the one weak part `hypoFlaw` finds. You tap the weak part, then choose its rewrite: the hypothesis's `fix`, or a `trap` that is still weak in the same way. Every card needs a `note`.
  *  - `sample-dial`: lanes are `PLAN_VERDICTS` in order; every card is a test Tokri wants to run, its `visual` a key of `TOKRI_PLANS` (each used once), and its lane is `planVerdict` of the weeks `planTest` works out. You estimate the weeks on a dial before the sum is shown, judged by `weeksGrade`; an estimate that isn't off scores. Every card needs a `note`.
  *  - `result-read`: lanes are `READ_CALLS` in order; every card is a test readout, its `visual` a key of `TOKRI_RESULTS` (each used once), and its lane is the call `readCall` makes from the raw counts (the split, the planned sample, significance with any slicing corrected, the guardrail). The game draws the readout with its confidence interval. Every card needs a `note`.
+ *  - `logo-stress`: lanes are `MARK_VERDICTS` in order; every card is a candidate mark for Sukoon, its `visual` a key of `SUKOON_MARKS` (each used once), its `label` that mark's `text`, and its lane is what `markVerdict` says: the first test it fails (16 px, one colour, beside the rivals) or `ready`. The game draws each mark from its numbers under four lenses. Every card needs a `note`.
+ *  - `kit-pick`: lanes are `KIT_SLOTS` in order; every card is an option for one job in Sukoon's kit, its `visual` a key of `SUKOON_KIT` (each used once) whose `slot` is the lane. Each slot has three options and exactly one that `kitFlaw` passes; the game tries each on a Sukoon screen (Hindi, contrast, the rivals' shelf) before you pick. Every card needs a `note`.
+ *  - `guide-build`: lanes are `GUIDE_SECTIONS` in order; every card is a piece of Sukoon's identity made in the wild, its `visual` a key of `SUKOON_USES` (each used once), its `label` that use's `text`, and its lane is what `sectionBroken` says: the section whose rule (`GUIDE_RULES`) it breaks. A right drop writes that rule into the guide. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -195,7 +199,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'vision-postcard', 'horizon-board', 'rival-map',
   'metric-flow', 'heart-grid', 'cohort-read', 'event-wire',
   'cue-timeline', 'empty-build', 'paywall-timing',
-  'hypo-fix', 'sample-dial', 'result-read']);
+  'hypo-fix', 'sample-dial', 'result-read',
+  'logo-stress', 'kit-pick', 'guide-build']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

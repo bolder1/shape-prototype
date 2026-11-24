@@ -135,6 +135,9 @@ import { PaywallTiming } from './games/PaywallTiming';
 import { HypoFix } from './games/HypoFix';
 import { SampleDial } from './games/SampleDial';
 import { ResultRead } from './games/ResultRead';
+import { LogoStress } from './games/LogoStress';
+import { KitPick } from './games/KitPick';
+import { GuideBuild } from './games/GuideBuild';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -279,6 +282,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'hypo-fix': HypoFix,
   'sample-dial': SampleDial,
   'result-read': ResultRead,
+  'logo-stress': LogoStress,
+  'kit-pick': KitPick,
+  'guide-build': GuideBuild,
 };
 
 interface Props {

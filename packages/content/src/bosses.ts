@@ -1379,9 +1379,53 @@ const gr3: BossBriefInput = {
   },
 };
 
+const br2: BossBriefInput = {
+  chapterId: 'br.2',
+  title: 'Design a logo and a mini brand guide',
+  minutes: 120,
+  scenario: [
+    'Take the brand platform you wrote for br.1 (or Sukoon’s: a meditation app for busy professionals who can’t switch off, calm in five minutes, calm, warm and expert) and design its visual identity: a logo, a palette, a type pair, and the few rules other people need to use them.',
+    'Hand in a link to your files (Figma, PDF or images) and the written reasoning below. Show your process as well as the result: the thumbnails, the shortlist and how each one did on the tests.',
+  ],
+  fields: [
+    { id: 'link', label: 'Your files', kind: 'text', minWords: 6, hint: 'A link to the logo, its tests and the guide pages, and the tool you used.' },
+    { id: 'process', label: 'From words to a shortlist', kind: 'long', minWords: 40, hint: 'The words and images you drew from each trait, how many thumbnails you sketched, and the three you shortlisted.' },
+    { id: 'tests', label: 'The tests', kind: 'list', items: 3, minWords: 15, hint: 'One per shortlisted mark: how it did at 16 px, in one colour and reversed, and beside three rivals, and why it stayed or went.' },
+    { id: 'palette', label: 'Palette and text pairs', kind: 'long', minWords: 30, hint: 'Each colour with its HEX and its job, the rough 60-30-10 split, which text/background pairs reach 4.5:1 (with the ratios), and how you checked rivals’ colours.' },
+    { id: 'type', label: 'Type', kind: 'text', minWords: 25, hint: 'The heading and text faces, why each fits the traits, every script your product ships in, the sizes each is used at, and the licence.' },
+    { id: 'rules', label: 'The mini guide', kind: 'list', items: 5, minWords: 12, hint: 'Five rules, one per line, each with its do and don’t: clear space, minimum size, colour pairs, type use, imagery or voice.' },
+  ],
+  rubric: [
+    { id: 'process', label: 'A real process', strong: 'Starts from the platform’s traits and positioning, shows many quick thumbnails before any polish, and a shortlist of distinct ideas rather than three versions of one.', weight: 2 },
+    { id: 'tests', label: 'A mark that survives', strong: 'The chosen mark is shown at 16 px, in one flat colour and reversed, and beside named rivals; it reads in all of them and isn’t the category’s stock symbol. Rejected marks are rejected for a test they failed.', weight: 3, required: true },
+    { id: 'colour', label: 'Colour that works', strong: 'Every colour has a job and a HEX value; every text pair used reaches 4.5:1 with its ratio stated; mood colours too pale for text are kept for backgrounds; the main colour isn’t a rival’s.', weight: 2, required: true },
+    { id: 'type', label: 'Type that fits and covers', strong: 'Two faces with clear jobs and sizes, chosen for the traits, covering every script the product ships in, with a licence that allows app and web use.', weight: 2 },
+    { id: 'guide', label: 'Rules others can follow', strong: 'Clear space measured with a part of the mark, a minimum size with a fallback, text pairs, type rules and imagery or voice, each with a concrete do and don’t that someone else could apply without asking.', weight: 2, required: true },
+  ],
+  tips: ['Print your shortlist at the size of a fingernail and stick it on the wall across the room. What you can still recognise is what survives at 16 px.', 'Write each guide rule as if a partner’s intern will read it at 6 pm on a Friday with a poster due. If they’d have to guess, add a picture.'],
+  example: {
+    link: 'Figma file “Sukoon identity v3”: pages for thumbnails, tests, the lockup and the five-page guide.',
+    process: 'From calm, warm, expert and “calm in five minutes” I listed still water, dusk, a slow breath out, sunlight, a cup of chai, a steady hand and a pause. I sketched 40 thumbnails in 20 minutes; the first ten were lotuses, circles and suns, which is why I kept going. The shortlist: a fine-line mandala, a gradient sunset the founder liked, and a half-sun rising over a line, like one breath out.',
+    tests: [
+      'Mandala: its petals are 2.5 units on a 96-unit drawing, under half a pixel at 16 px, so in a browser tab it’s a grey smudge. Dropped.',
+      'Gradient sunset: at 16 px it reads, but in one colour it’s a plain circle, and reversed it’s a hole. The idea was the gradient. Dropped.',
+      'Half-sun: a 12-unit stroke is 2 px at 16 px, it works in sage, ink and reversed in white, and beside three rivals (a lotus, an ensō, a glowing head) it looks like none of them. Kept and refined: the arc thickened where it meets the line, the line shortened for balance.',
+    ],
+    palette: 'Sand #F3E9DC for backgrounds, about 60%. Deep sage #2F5D50 for buttons and the mark, about 30%: white on sage is 7.5:1. Peach #F2A98A for accents, about 10%: white on it is only 1.9:1, so it never carries white text, but ink on peach is 7.6:1. Ink #1F2A2E for text: on sand it’s 12.2:1. White. The two biggest meditation apps own blue and orange; a strong green is free.',
+    type: 'Headlines in Tiro Devanagari Hindi, a calm book serif drawn with matching Latin and Devanagari, at 24 px and up. Everything else in Mukta, a plain humanist sans with both scripts, at 14 px or more. Sukoon ships in English and Hindi, so both needed Devanagari. Both are under the SIL Open Font Licence, which covers the app, the web and print.',
+    rules: [
+      'Clear space: one sun (the height of the half-sun) on every side. Don’t: a headline touching the logo.',
+      'Size: the full logo is never under 24 px tall; under that, the half-sun alone. Don’t: the full logo 12 px tall in a partner list.',
+      'Colour pairs: white on sage, ink on sand, ink on peach only. Don’t: white text on peach, or any colour outside the five, gold for Diwali included.',
+      'Type: Tiro for headlines from 24 px, Mukta for everything else. Don’t: a comic or festive font for a campaign, or Tiro for captions.',
+      'Imagery: real people in real Indian homes and commutes, natural light. Don’t: posed stock models on beaches, or neon filters.',
+    ],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
