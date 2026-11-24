@@ -34,7 +34,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'ease-curves', 'motion-timing', 'motion-meaning', 'reduced-motion',
   'micro-anatomy', 'delight-check',
   'voice-tone', 'content-first', 'loc-ready',
-  'keyboard-flow', 'sr-semantics', 'form-errors', 'cognitive-a11y']);
+  'keyboard-flow', 'sr-semantics', 'form-errors', 'cognitive-a11y',
+  'vision-narrative', 'roadmap-horizons', 'rival-rings']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -142,6 +143,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `sr-listen`: lanes are `SR_GAPS` in order; every card is a control on Rahi's search and seat screens, its `visual` a key of `RAHI_CONTROLS` (each used once). The game shows what a screen reader announces (`announce`), and the lane is what `srGap` finds missing: the role, the name, the state, or nothing. Every card needs a `note`.
  *  - `form-tab`: lanes are `FORM_FLAWS` in order; every card is a field on Rahi's passenger form after a failed submit, its `visual` a key of `RAHI_FIELDS` (each used once), in Tab order. The game tabs through them, showing each field and what a screen reader says on it (`fieldAnnounce`), and the lane is `fieldFlaw`. Every card needs a `note`.
  *  - `load-lift`: lanes are `COGA_LANES` in order; every card is a barrier in Rahi's booking flow, its `visual` a key of `RAHI_BARRIERS` (each used once), and its lane is that barrier's `lane`. The game shows the screen before and after, and a right call lifts the barrier's `load` off Sunita's meter (`loadLeft`). Every card needs a `note`.
+ *  - `vision-postcard`: lanes are `VISION_PARTS` in order; every card is a line from a draft of Galla's vision. The game builds a postcard from 2030 out of the `today`, `future` and `whyus` lines, and highlights the words `visionFlags` finds in the `cut` ones. A card is in `cut` exactly when `visionFlaw` faults it. Every card needs a `note` (for cut lines, the rewrite).
+ *  - `horizon-board`: lanes are `HORIZONS` in order; every card is a bet, its `visual` a key of `GALLA_BETS` (each used once), its `label` the problem it takes on, and its lane is what `horizonFor` says. The game shows the evidence, the fit and the bet it builds on, and the board fades from solid to faint left to right. Every card needs a `note`.
+ *  - `rival-map`: lanes are `RIVAL_RINGS` in order; every card is something Shabnam could use instead of Galla, its `visual` a key of `GALLA_RIVALS` (each used once), and its lane is what `ringFor` says. The game drops each one on a ring around her job and shows what it does better than Galla. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -173,7 +177,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'ease-tune', 'duration-tune', 'motion-purpose', 'motion-audit',
   'micro-build', 'delight-judge',
   'tone-dial', 'question-flow', 'loc-spot',
-  'focus-path', 'sr-listen', 'form-tab', 'load-lift']);
+  'focus-path', 'sr-listen', 'form-tab', 'load-lift',
+  'vision-postcard', 'horizon-board', 'rival-map']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -1009,6 +1014,88 @@ export type RahiBarrier = keyof typeof RAHI_BARRIERS;
 /** Load Sunita still carries once the barriers in `lifted` are removed. */
 export const loadLeft = (barriers: readonly RahiBarrier[], lifted: readonly RahiBarrier[]) =>
   barriers.filter(b => !lifted.includes(b)).reduce((sum, b) => sum + RAHI_BARRIERS[b].load, 0);
+
+/** The parts of a product vision narrative (`vision-postcard` lanes): the struggle today, the world once the product
+ *  has done its job, why this team can get there, and lines that don't belong in a vision at all. */
+export const VISION_PARTS = ['today', 'future', 'whyus', 'cut'] as const;
+export type VisionPart = (typeof VISION_PARTS)[number];
+/** What a machine can catch in a vision line: words that sound big and say nothing, a feature someone wants to build,
+ *  or a target number dressed up as a destination. */
+export type VisionFlaw = 'buzz' | 'feature' | 'target';
+const VISION_RULES: [VisionFlaw, RegExp][] = [
+  ['buzz', /\b(leading|world-class|best-in-class|ai-powered|seamless|one-stop|revolution\w*|disrupt\w*|synerg\w*|next-gen\w*|cutting-edge|empower\w*|ecosystem|leverag\w*|holistic)\b/gi],
+  ['feature', /\b(launch|build|ship|add|integrate|release)\b/gi],
+  ['target', /\d[\d,.]*\s*(lakh|crore|million|%)|\bby 20\d\d\b/gi],
+];
+/** Every flagged word in a vision line, in reading order, with where it starts. */
+export const visionFlags = (line: string) => VISION_RULES
+  .flatMap(([kind, re]) => [...line.matchAll(re)].map(m => ({ kind, word: m[0], at: m.index ?? 0 })))
+  .sort((a, b) => a.at - b.at);
+/** The first thing wrong with a vision line, or null when a machine can't fault it (whether it's a good line is still
+ *  for people to judge). */
+export const visionFlaw = (line: string): VisionFlaw | null => visionFlags(line)[0]?.kind ?? null;
+
+/** Roadmap columns (`horizon-board` lanes), plus the bin for bets that don't serve the vision. Certainty falls from
+ *  left to right: Now is committed and detailed, Next is shaped, Later is a problem worth watching. */
+export const HORIZONS = ['now', 'next', 'later', 'off'] as const;
+export type Horizon = (typeof HORIZONS)[number];
+/** How much the team knows: the problem is proven and a fix has been tested, the problem is proven, or it's a signal. */
+export const EVIDENCE = ['tested', 'proven', 'signal'] as const;
+export type Evidence = (typeof EVIDENCE)[number];
+/** One bet on Galla's roadmap: the shopkeeper's problem it takes on (`short` for small cards), the feature first
+ *  proposed for it, what the team knows, whether it serves the vision, and the bet it builds on, if any. */
+export interface RoadmapBet { short?: string; problem: string; idea: string; evidence: Evidence; fits: boolean; after?: string }
+/** Where a bet goes: off the roadmap if it doesn't serve the vision; otherwise its evidence sets the column (tested →
+ *  Now, proven → Next, a signal → Later), and it lands at least one column after the bet it builds on. */
+export const horizonFor = (bet: RoadmapBet, all: Readonly<Record<string, RoadmapBet>>): Horizon => {
+  if (!bet.fits) return 'off';
+  const base = EVIDENCE.indexOf(bet.evidence);
+  const parent = bet.after ? all[bet.after] : undefined;
+  if (!parent) return HORIZONS[base];
+  const dep = HORIZONS.indexOf(horizonFor(parent, all));
+  return HORIZONS[Math.min(2, Math.max(base, dep + 1))];
+};
+/** The bets in the `horizon-board` game and the `roadmap-horizons` scene. Galla is a Lucknow app that kirana shops use
+ *  to keep their udhaar (credit) ledger. */
+export const GALLA_BETS = {
+  reminders: { short: 'Customers forget what they owe', problem: 'Customers forget what they owe until Shabnam asks, and she hates asking', idea: 'Automatic WhatsApp reminders', evidence: 'tested', fits: true },
+  backup: { short: 'A lost phone wipes the ledger', problem: 'A lost or broken phone wipes out the whole ledger', idea: 'Cloud backup', evidence: 'tested', fits: true },
+  collect: { short: 'Paying back means a trip to the shop', problem: 'Customers who get a reminder still have to come to the shop to pay', idea: 'A UPI link inside the reminder', evidence: 'tested', fits: true, after: 'reminders' },
+  disputes: { short: 'Arguments over what was bought', problem: 'Customers argue about what they bought on credit', idea: 'A shared statement each customer can open', evidence: 'proven', fits: true, after: 'reminders' },
+  voice: { short: 'Entries skipped in the rush', problem: 'Writing an entry in the evening rush takes too long, so it gets written later or not at all', idea: 'Voice entry in Hindi', evidence: 'proven', fits: true },
+  stock: { short: 'Fast sellers run out', problem: 'Fast sellers like Parle-G run out before the distributor’s next visit', idea: 'Low-stock alerts', evidence: 'proven', fits: true },
+  reorder: { short: 'Three calls to reorder stock', problem: 'Ordering from three distributors means three phone calls', idea: 'One-tap reorder to distributors', evidence: 'signal', fits: true, after: 'stock' },
+  loans: { short: 'Short of cash for Diwali stock', problem: 'A good month of udhaar leaves her short of cash for Diwali stock', idea: 'Small working-capital loans', evidence: 'signal', fits: true },
+  gst: { short: 'Supermarkets need GST invoices', problem: 'Supermarkets registered for GST need tax invoices', idea: 'GST billing suite', evidence: 'proven', fits: false },
+  dark: { short: 'Requests for a dark theme', problem: 'Three users asked for a dark theme', idea: 'Dark mode', evidence: 'signal', fits: false },
+} as const satisfies Record<string, RoadmapBet>;
+export type GallaBet = keyof typeof GALLA_BETS;
+
+/** How close a rival is to the job (`rival-map` lanes), inner ring first. */
+export const RIVAL_RINGS = ['direct', 'indirect', 'substitute', 'not'] as const;
+export type RivalRing = (typeof RIVAL_RINGS)[number];
+/** Something a shopkeeper could use instead of Galla: whether it's for the same people and the same job (keeping track
+ *  of who owes what, and getting it back), and what it is: an app like Galla, a different kind of product, or a
+ *  makeshift habit. `edge` is what it does better than Galla today. */
+export interface Rival { name: string; who: 'same' | 'other'; job: 'same' | 'other'; kind: 'like' | 'product' | 'makeshift'; edge: string }
+/** The ring a rival sits on: not a competitor unless it serves the same people doing the same job; then direct if it's
+ *  the same kind of product, indirect if it's a different product, a substitute if it's a habit or a workaround. */
+export const ringFor = (r: Pick<Rival, 'who' | 'job' | 'kind'>): RivalRing =>
+  r.who !== 'same' || r.job !== 'same' ? 'not' : r.kind === 'like' ? 'direct' : r.kind === 'product' ? 'indirect' : 'substitute';
+/** The rivals in the `rival-map` game and the `rival-rings` scene. */
+export const GALLA_RIVALS = {
+  bahi: { name: 'Bahi, a ledger app for small shops', who: 'same', job: 'same', kind: 'like', edge: 'Prints a bill on a ₹2,000 Bluetooth printer' },
+  udhaarpe: { name: 'UdhaarPe, another credit-ledger app', who: 'same', job: 'same', kind: 'like', edge: 'Free SMS reminders, no WhatsApp needed' },
+  notebook: { name: 'The paper khata on the counter', who: 'same', job: 'same', kind: 'makeshift', edge: 'Free, never needs charging, and customers trust ink' },
+  whatsapp: { name: 'Voice notes to customers on WhatsApp', who: 'same', job: 'same', kind: 'makeshift', edge: 'She already uses it all day' },
+  memory: { name: 'Her son Faiz remembering who owes what', who: 'same', job: 'same', kind: 'makeshift', edge: 'Knows every customer by face' },
+  upi: { name: 'The “request money” button in a UPI app', who: 'same', job: 'same', kind: 'product', edge: 'Customers can pay in one tap' },
+  billing: { name: 'A billing app with a credit-sale tab', who: 'same', job: 'same', kind: 'product', edge: 'Totals the bill and the credit in one step' },
+  quick: { name: 'Blinkit and Instamart delivering in ten minutes', who: 'other', job: 'other', kind: 'product', edge: 'Takes her customers’ late-night orders' },
+  distributor: { name: 'The distributor’s ordering app', who: 'same', job: 'other', kind: 'product', edge: 'Shows the scheme prices first' },
+  pos: { name: 'A billing suite for supermarket chains', who: 'other', job: 'same', kind: 'product', edge: 'Barcodes, GST and ten tills at once' },
+} as const satisfies Record<string, Rival>;
+export type GallaRival = keyof typeof GALLA_RIVALS;
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

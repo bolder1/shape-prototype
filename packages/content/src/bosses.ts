@@ -1178,9 +1178,59 @@ const ax2: BossBriefInput = {
   },
 };
 
+const st2: BossBriefInput = {
+  chapterId: 'st.2',
+  title: 'One page: vision and roadmap',
+  minutes: 90,
+  scenario: [
+    'Write a one-page vision and roadmap for your Studio product, the kind a new team member could read on day one and use to decide something on day two. If you don’t have a product yet, use Galla, the Lucknow udhaar-ledger app for kirana shops from this chapter.',
+    'The page has three parts. A vision narrative: who it’s for, their struggle today, the world three to five years out once the product has done its job, and why your team can get there. A Now / Next / Later roadmap of problems, not features or dates, with what you’re leaving off. And the competition, starting from the job: direct, indirect and substitutes, and what each does better than you.',
+  ],
+  fields: [
+    { id: 'product', label: 'The product, and who it’s for', kind: 'text', minWords: 15, hint: 'One or two sentences: what it does and the specific people it serves (not “everyone”).' },
+    { id: 'vision', label: 'The vision narrative', kind: 'long', minWords: 80, hint: 'Today (their struggle, in their terms), the future (a scene three to five years out, from their side), and why us (an advantage or insight). No feature names, targets or buzzwords.' },
+    { id: 'now', label: 'Now: what you’re committed to', kind: 'list', items: 2, minWords: 15, hint: 'One problem per line, the evidence that it’s ready (a tested fix), and the outcome you expect.' },
+    { id: 'next', label: 'Next: shaped but open', kind: 'list', items: 2, minWords: 15, hint: 'One problem per line, what you know, and what would move it to Now (a test, or something in Now it builds on).' },
+    { id: 'later', label: 'Later: problems worth watching', kind: 'list', items: 2, minWords: 10, hint: 'One per line: the problem and the signal behind it. Keep it fuzzy.' },
+    { id: 'off', label: 'Off the roadmap, and why', kind: 'list', items: 2, minWords: 10, hint: 'Requests you’re saying no to, each with the one-line reason tied to the vision.' },
+    { id: 'rivals', label: 'The competition, from the job', kind: 'long', minWords: 60, hint: 'Name the job. Then at least one direct, one indirect and one substitute rival, what each does better than you, and the position that leaves you.' },
+    { id: 'review', label: 'How the page stays true', kind: 'text', minWords: 15, hint: 'When you’ll revisit the roadmap, what evidence moves things between columns, and who you’ll share it with.' },
+  ],
+  rubric: [
+    { id: 'vision', label: 'A vision that can say no', strong: 'Names a specific person and their struggle today in concrete terms, paints a future scene from their side three to five years out without naming features, gives a believable “why us”, and is free of buzzwords and targets; at least one item on the page is visibly ruled out by it.', weight: 3, required: true },
+    { id: 'roadmap', label: 'A roadmap of problems, sorted by certainty', strong: 'Every item names a user problem or outcome, not a feature or a date; Now holds only tested fixes the team can commit to, Next names what would move each item forward, Later is honest signals; dependencies are respected; and every item traces back to the vision.', weight: 3, required: true },
+    { id: 'off', label: 'Clear no’s', strong: 'Real, tempting requests are left off with a short reason tied to the vision or the evidence, written so a stakeholder could hear it without offence.', weight: 1 },
+    { id: 'rivals', label: 'Competition from the job', strong: 'States the job first; covers direct, indirect and substitute rivals, including habits or doing nothing; for each says what it does better and why people use it; separates threats to the user from rivals for the job; and ends in a position, not a feature list to copy.', weight: 2, required: true },
+    { id: 'coherent', label: 'One page that holds together', strong: 'The vision, roadmap and competition point the same way: the position from the competition shows up in Now and Next, and the review plan says how evidence changes the page.', weight: 1 },
+  ],
+  tips: ['Write the vision last-but-one: draft the roadmap, then check every item against the story. If one doesn’t fit, either the item or the story is wrong.', 'Read your vision aloud with the product’s name swapped for a rival’s. If it still works, it isn’t yours yet.'],
+  example: {
+    product: 'Galla is a phone app that kirana shopkeepers in Lucknow and Kanpur use to keep their udhaar ledger: who has taken goods on credit, how much they owe, and getting it back.',
+    vision: 'Today, Shabnam runs a kirana shop in Aminabad with her son Faiz. Sixty-one customers owe her ₹38,000, written in a paper khata; every Sunday she adds it up, and every evening she has to choose between asking a regular for money and keeping him as a customer. In 2030, she closes the shop at 9 knowing to the rupee who owes her, without opening a notebook. Customers pay back before she has to ask, the reminder sounds like her rather than a collector, and nobody argues about what they bought. Galla can get there because it already holds the ledgers of 40,000 shops, so it sees who pays late before anyone else does, and because our team grew up behind counters like hers: we know udhaar is trust, not just money.',
+    now: [
+      'Customers forget what they owe until Shabnam asks. Polite WhatsApp reminders in her name, tested in a 40-shop pilot where udhaar came back faster; we expect fewer entries older than 30 days.',
+      'A lost or broken phone wipes out the whole ledger. Automatic backup with sign-in by mobile number, tested with 15 shops; the outcome is zero ledgers lost after a phone change.',
+    ],
+    next: [
+      'Customers who get a reminder still have to come to the shop to pay. A UPI link inside the reminder tested well with 20 shops, but it needs reminders shipped first.',
+      'Writing an entry in the evening rush takes too long, so it gets written later or not at all. We saw it in 30 shop visits; Hindi voice entry moves to Now once it works in a noisy shop.',
+    ],
+    later: [
+      'A good month of udhaar leaves shopkeepers short of cash for Diwali stock. Three shopkeepers asked about loans; lending brings RBI rules, so we research first.',
+      'Ordering from three distributors means three phone calls. A signal from visits, and it builds on stock alerts.',
+    ],
+    off: [
+      'GST billing suite: it serves supermarkets with tax invoices, not kirana udhaar, so it doesn’t move Shabnam’s 2030.',
+      'Dark mode: three requests, and it doesn’t change the job; we’ll revisit if it shows up in research.',
+    ],
+    rivals: 'The job: know who owes what, and get it back without losing the customer. Direct: Bahi and UdhaarPe, ledger apps like ours. Bahi prints bills on a cheap Bluetooth printer; UdhaarPe sends free SMS reminders to customers without WhatsApp, which we need to check. Indirect: the “request money” button in UPI apps gets people paid in one tap, and billing apps with a credit tab already record udhaar for shops that bill on a phone. Substitutes: the paper khata, used by 26 of the 30 shops Ishita visited, which is free, never needs charging and is trusted; voice notes on WhatsApp; and family memory. Blinkit hurts the shop but isn’t a rival for this job. Our position: as quick as writing in the khata, and it chases payments politely so the shopkeeper never has to.',
+    review: 'We revisit the board every month with the team and share it with sales and support. A tested fix moves an item to Now; research or numbers that contradict the vision bring it back for discussion.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

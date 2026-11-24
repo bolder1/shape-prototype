@@ -120,6 +120,9 @@ import { KeyboardFlowScene } from '../scenes/KeyboardFlow';
 import { SrSemanticsScene } from '../scenes/SrSemantics';
 import { FormErrorsScene } from '../scenes/FormErrors';
 import { CognitiveA11yScene } from '../scenes/CognitiveA11y';
+import { VisionNarrativeScene } from '../scenes/VisionNarrative';
+import { RoadmapHorizonsScene } from '../scenes/RoadmapHorizons';
+import { RivalRingsScene } from '../scenes/RivalRings';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -233,6 +236,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'sr-semantics': SrSemanticsScene,
   'form-errors': FormErrorsScene,
   'cognitive-a11y': CognitiveA11yScene,
+  'vision-narrative': VisionNarrativeScene,
+  'roadmap-horizons': RoadmapHorizonsScene,
+  'rival-rings': RivalRingsScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

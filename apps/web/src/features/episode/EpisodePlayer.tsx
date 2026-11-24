@@ -122,6 +122,9 @@ import { FocusPath } from './games/FocusPath';
 import { SrListen } from './games/SrListen';
 import { FormTab } from './games/FormTab';
 import { LoadLift } from './games/LoadLift';
+import { VisionPostcard } from './games/VisionPostcard';
+import { HorizonBoard } from './games/HorizonBoard';
+import { RivalMap } from './games/RivalMap';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -253,6 +256,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'sr-listen': SrListen,
   'form-tab': FormTab,
   'load-lift': LoadLift,
+  'vision-postcard': VisionPostcard,
+  'horizon-board': HorizonBoard,
+  'rival-map': RivalMap,
 };
 
 interface Props {

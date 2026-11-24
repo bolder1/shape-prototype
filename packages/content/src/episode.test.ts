@@ -1,5 +1,42 @@
 import { describe, expect, it } from 'vitest';
+import { EVIDENCE, GALLA_BETS, GALLA_RIVALS, HORIZONS, RIVAL_RINGS, VISION_PARTS, horizonFor, ringFor, visionFlags, visionFlaw, type GallaBet, type GallaRival } from './episode';
 import { COGA_LANES, FORM_FLAWS, KEY_WAYS, RAHI_BARRIERS, RAHI_CONTROLS, RAHI_FIELDS, RAHI_PARTS, SR_GAPS, announce, fieldAnnounce, fieldFlaw, fixedControl, loadLeft, srGap, stopsOf, tabPresses, type RahiBarrier, type RahiPart, CHAABI_MOMENTS, FLOW_QUESTIONS, LOC_LANES, LOREM_SLOTS, TONES, growthFor, locFlaw, locParse, pseudoLocalize, roomFor, slotFits, toneFor, toneGap, wrapLines, wrapText, type LoremSlot, DELIGHT_LANES, GULLAK_MICROS, GULLAK_MOMENTS, MICRO_PARTS, PAY_STAGES, delightCost, delightVerdict, microComplete, microStrips, payStage, DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('st.2 helpers', () => {
+  it('catches buzzwords, features and targets in a vision line', () => {
+    expect(visionFlaw('Galla will be India’s leading AI-powered retail ecosystem.')).toBe('buzz');
+    expect(visionFlags('Galla will be India’s leading AI-powered retail ecosystem.').map(f => f.word)).toEqual(['leading', 'AI-powered', 'ecosystem']);
+    expect(visionFlaw('Launch voice entry next quarter')).toBe('feature');
+    expect(visionFlaw('Reach 10 lakh shops by 2028')).toBe('target');
+    expect(visionFlaw('Grow udhaar collected by 40%')).toBe('target');
+    expect(visionFlaw('In 2030 she closes at 9 knowing who owes her')).toBeNull();
+    expect(visionFlaw('She adds it up every Sunday')).toBeNull();   // "adds" isn't "add"
+    expect(visionFlaw('₹38,000 owed by 61 customers')).toBeNull();
+  });
+  it('puts a bet in a column by evidence, fit and what it builds on', () => {
+    const all = { a: { problem: 'p', idea: 'i', evidence: 'tested', fits: true }, b: { problem: 'p', idea: 'i', evidence: 'tested', fits: true, after: 'a' },
+      c: { problem: 'p', idea: 'i', evidence: 'tested', fits: true, after: 'b' }, d: { problem: 'p', idea: 'i', evidence: 'tested', fits: true, after: 'c' },
+      e: { problem: 'p', idea: 'i', evidence: 'proven', fits: false } } as const;
+    expect(horizonFor(all.a, all)).toBe('now');
+    expect(horizonFor(all.b, all)).toBe('next');
+    expect(horizonFor(all.c, all)).toBe('later');
+    expect(horizonFor(all.d, all)).toBe('later');   // Later is as far as the board goes
+    expect(horizonFor(all.e, all)).toBe('off');
+    expect(EVIDENCE.map(evidence => horizonFor({ problem: 'p', idea: 'i', evidence, fits: true }, {}))).toEqual(['now', 'next', 'later']);
+    const lanes = Object.values(GALLA_BETS).map(b => horizonFor(b, GALLA_BETS));
+    for (const h of HORIZONS) expect(lanes.filter(x => x === h).length).toBeGreaterThanOrEqual(2);
+    for (const b of Object.values(GALLA_BETS)) if ('after' in b) expect(Object.keys(GALLA_BETS)).toContain(b.after);
+  });
+  it('rings a rival by who, job and kind', () => {
+    expect(ringFor({ who: 'same', job: 'same', kind: 'like' })).toBe('direct');
+    expect(ringFor({ who: 'same', job: 'same', kind: 'product' })).toBe('indirect');
+    expect(ringFor({ who: 'same', job: 'same', kind: 'makeshift' })).toBe('substitute');
+    expect(ringFor({ who: 'other', job: 'same', kind: 'like' })).toBe('not');
+    expect(ringFor({ who: 'same', job: 'other', kind: 'makeshift' })).toBe('not');
+    const rings = Object.values(GALLA_RIVALS).map(ringFor);
+    for (const r of RIVAL_RINGS) expect(rings.filter(x => x === r).length).toBeGreaterThanOrEqual(2);
+  });
+});
 
 describe('ax.2 helpers', () => {
   it('counts Tab presses to Pay: 61 with every item a stop, 10 with groups and nothing hidden', () => {
@@ -684,6 +721,32 @@ describe('episodes', () => {
         expect(lanes).toEqual([...COGA_LANES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_BARRIERS).sort());
         for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_BARRIERS[c.visual as RahiBarrier].lane); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'vision-postcard') {   // a line is cut exactly when the machine can fault it, and every part of the story gets lines
+        expect(lanes).toEqual([...VISION_PARTS]);
+        for (const c of ep.game.cards) { expect(visionFlaw(c.label) !== null).toBe(c.lane === 'cut'); expect(c.note).toBeTruthy(); }
+        for (const l of VISION_PARTS) expect(ep.game.cards.filter(c => c.lane === l).length).toBeGreaterThanOrEqual(2);
+        expect(new Set(ep.game.cards.filter(c => c.lane === 'cut').map(c => visionFlaw(c.label))).size).toBe(3);
+      }
+      if (ep.game.id === 'horizon-board') {   // every bet once, named by its problem, in the column horizonFor gives it
+        expect(lanes).toEqual([...HORIZONS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(GALLA_BETS).sort());
+        for (const c of ep.game.cards) {
+          const bet = GALLA_BETS[c.visual as GallaBet];
+          expect(c.label).toBe(bet.problem);
+          expect(c.lane).toBe(horizonFor(bet, GALLA_BETS));
+          expect(c.note).toBeTruthy();
+        }
+      }
+      if (ep.game.id === 'rival-map') {   // every rival once, on the ring ringFor gives it
+        expect(lanes).toEqual([...RIVAL_RINGS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(GALLA_RIVALS).sort());
+        for (const c of ep.game.cards) {
+          const r = GALLA_RIVALS[c.visual as GallaRival];
+          expect(c.label).toBe(r.name);
+          expect(c.lane).toBe(ringFor(r));
+          expect(c.note).toBeTruthy();
+        }
       }
       if (ep.game.id === 'tone-dial') {   // every moment once, at the tone its mood and stakes call for
         expect(lanes).toEqual([...TONES]);
