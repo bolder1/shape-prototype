@@ -28,7 +28,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'task-writing', 'mod-unmod', 'severity', 'heuristic-eval',
   'stay-ugly', 'wire-grid', 'pattern-library',
   'form-pain', 'press-feedback', 'two-devices', 'direct-touch',
-  'component-kit', 'icon-audit', 'image-choice', 'table-tidy']);
+  'component-kit', 'icon-audit', 'image-choice', 'table-tidy',
+  'token-tiers', 'mode-swap', 'token-names']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -117,6 +118,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `icon-odd`: lanes `style`, `size`, `meaning`, `label` (how one icon breaks its row); every card's `visual` is a row of five icons and the odd one's place, "home,search,…|2", plus for `style` and `size` cards how it's drawn wrong, "…|2|fill" (see `iconRow`, `ICON_FLAWS`). A `meaning` card's odd icon is one of `WRONG_METAPHORS`, and no other icon is. Every card needs a `note`.
  *  - `image-budget`: lanes are `IMAGE_KINDS` in order; every card's `visual` is the short name of the screen the image goes on, and it needs a `note`. The game adds up each pick's weight with `pageWeight`.
  *  - `table-build`: lanes `align`, `format`, `stress`, `cut`; every card's `visual` is the part of Hisaab's udhaar table it fixes (one of `LEDGER_PARTS`, each used once), and it needs a `note`.
+ *  - `tier-edit`: lanes are `TOKEN_TIERS` in order; every card is a change request, its `visual` is the one Rasta token to edit (its tier is the lane, see `tierOf`) and, after a colon, what it becomes: a raw value for a primitive, another primitive for a semantic or component token ("color-action-primary:amber-700"). Editing the token's parent instead must reach further (`blastRadius`). Every card needs a `note`.
+ *  - `mode-tune`: lanes `surface`, `text`, `accent`, `border` (the kind of colour, which sets the rule); every card's `visual` is a semantic colour from `MODE_SPECS`, tuned along its ramp for dark mode and checked by `darkCheck`. Its light-mode step must fail in dark mode. Every card needs a `note`.
+ *  - `token-rename`: lanes are `NAME_FLAWS` in order; every card's `label` is "badName · where it's used", the lane is what `nameFlaw` says about the bad name, and the `visual` is the good name (no flaw), built from tiles. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -142,7 +146,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'task-fix', 'method-pick', 'severity-rate', 'heuristic-sweep',
   'fidelity-tidy', 'grid-place', 'pattern-stamp',
   'form-triage', 'wait-feedback', 'port-phone', 'gesture-map',
-  'state-sheet', 'icon-odd', 'image-budget', 'table-build']);
+  'state-sheet', 'icon-odd', 'image-budget', 'table-build',
+  'tier-edit', 'mode-tune', 'token-rename']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -354,6 +359,103 @@ export const inr = (n: number) => {
   const s = String(Math.round(Math.abs(n))), head = s.slice(0, -3), tail = s.slice(-3);
   return `${n < 0 ? '−' : ''}₹${head ? `${head.replace(/\B(?=(\d{2})+(?!\d))/g, ',')},` : ''}${tail}`;
 };
+
+/** Rasta's tokens in three tiers (ds.2): primitives hold raw values, semantic tokens give a primitive a job, and
+ *  component tokens point at a semantic token for one part of one component. Each entry names the token it references. */
+export const PRIMITIVES = {
+  'teal-700': '#0F766E', 'amber-700': '#B45309', 'red-600': '#DC2626', 'grey-800': '#1D2939', 'grey-900': '#101828', white: '#FFFFFF',
+  'radius-8': '8', 'radius-16': '16', 'radius-20': '20',
+} as const;
+export type PrimitiveToken = keyof typeof PRIMITIVES;
+export const SEMANTIC = {
+  'color-action-primary': 'teal-700', 'color-text-link': 'teal-700', 'color-feedback-error': 'red-600',
+  'color-text-primary': 'grey-900', 'color-surface-inverse': 'grey-900', 'color-surface-raised': 'white', 'color-text-on-action': 'white',
+  'radius-control': 'radius-8', 'radius-container': 'radius-16',
+} as const satisfies Record<string, PrimitiveToken>;
+export type SemanticToken = keyof typeof SEMANTIC;
+export const COMPONENT = {
+  'button-primary-bg': 'color-action-primary', 'button-primary-label': 'color-text-on-action', 'tab-indicator-color': 'color-action-primary',
+  'toggle-on-bg': 'color-action-primary', 'link-color': 'color-text-link', 'input-error-border': 'color-feedback-error',
+  'input-error-text': 'color-feedback-error', 'card-title-color': 'color-text-primary', 'header-bg': 'color-surface-inverse',
+  'card-bg': 'color-surface-raised', 'button-radius': 'radius-control', 'input-radius': 'radius-control',
+  'card-radius': 'radius-container', 'banner-radius': 'radius-container',
+} as const satisfies Record<string, SemanticToken>;
+export type ComponentToken = keyof typeof COMPONENT;
+export const TOKEN_TIERS = ['primitive', 'semantic', 'component'] as const;
+export type TokenTier = (typeof TOKEN_TIERS)[number];
+/** Which tier a token lives in, or null if Rasta has no such token. */
+export const tierOf = (token: string): TokenTier | null =>
+  token in PRIMITIVES ? 'primitive' : token in SEMANTIC ? 'semantic' : token in COMPONENT ? 'component' : null;
+/** The token one tier up: what this one references (null for a primitive). */
+export const parentOf = (token: string): string | null =>
+  (SEMANTIC as Record<string, string>)[token] ?? (COMPONENT as Record<string, string>)[token] ?? null;
+/** Every component token that changes when `token` is edited: the edit's blast radius. */
+export const blastRadius = (token: string): ComponentToken[] =>
+  (Object.keys(COMPONENT) as ComponentToken[]).filter(c => c === token || COMPONENT[c] === token || SEMANTIC[COMPONENT[c]] === token);
+/** Every component token resolved to its raw value. `edits` maps a primitive to a new raw value, or a semantic or
+ *  component token to the primitive it should point at instead. */
+export const resolveTokens = (edits: Partial<Record<string, string>> = {}): Record<ComponentToken, string> => {
+  const raw = (prim: string) => (tierOf(prim) === 'primitive' && edits[prim]) || ((PRIMITIVES as Record<string, string>)[prim] ?? prim);
+  const sem = (s: SemanticToken) => raw(edits[s] ?? SEMANTIC[s]);
+  return Object.fromEntries((Object.keys(COMPONENT) as ComponentToken[]).map(c => [c, edits[c] ? raw(edits[c]!) : sem(COMPONENT[c])])) as Record<ComponentToken, string>;
+};
+
+/** Colour ramps for Rasta's light and dark modes (ds.2-2), keyed by step. */
+export const RAMPS = {
+  grey: { 25: '#FCFCFD', 50: '#F9FAFB', 100: '#F2F4F7', 200: '#EAECF0', 300: '#D0D5DD', 400: '#98A2B3', 500: '#667085', 600: '#475467', 700: '#344054', 800: '#1D2939', 900: '#101828', 950: '#0C111D' },
+  teal: { 100: '#CCFBF1', 200: '#99F6E4', 300: '#5EEAD4', 400: '#2DD4BF', 500: '#14B8A6', 600: '#0D9488', 700: '#0F766E', 800: '#115E59', 900: '#134E4A' },
+  red: { 100: '#FEE2E2', 200: '#FECACA', 300: '#FCA5A5', 400: '#F87171', 500: '#EF4444', 600: '#DC2626', 700: '#B91C1C', 800: '#991B1B', 900: '#7F1D1D' },
+  amber: { 100: '#FEF3C7', 200: '#FDE68A', 300: '#FCD34D', 400: '#FBBF24', 500: '#F59E0B', 600: '#D97706', 700: '#B45309', 800: '#92400E', 900: '#78350F' },
+} as const;
+export type RampName = keyof typeof RAMPS;
+/** A ramp's steps, lightest first. */
+export const rampSteps = (ramp: RampName) => Object.keys(RAMPS[ramp]).map(Number).sort((a, b) => a - b);
+export const rampHex = (ramp: RampName, step: number): string | undefined => (RAMPS[ramp] as Record<number, string>)[step];
+/** What each semantic colour must do in dark mode: its ramp, its light and dark steps, what it's measured against
+ *  ('page' is the dark page, grey-900; 'text' is dark-mode body text, grey-100) and the contrast band it must land in. */
+export const MODE_SPECS = {
+  'color-surface-page': { ramp: 'grey', light: 50, dark: 900, against: 'text', min: 15, max: 21 },
+  'color-surface-raised': { ramp: 'grey', light: 25, dark: 800, against: 'text', min: 10, max: 15 },
+  'color-text-primary': { ramp: 'grey', light: 900, dark: 100, against: 'page', min: 12, max: 16.5 },
+  'color-text-secondary': { ramp: 'grey', light: 600, dark: 400, against: 'page', min: 4.5, max: 9 },
+  'color-border-default': { ramp: 'grey', light: 300, dark: 700, against: 'page', min: 1.5, max: 3 },
+  'color-action-primary': { ramp: 'teal', light: 700, dark: 500, against: 'page', min: 4.5, max: 10 },
+  'color-feedback-error': { ramp: 'red', light: 600, dark: 400, against: 'page', min: 4.5, max: 10 },
+  'color-feedback-warning': { ramp: 'amber', light: 700, dark: 500, against: 'page', min: 4.5, max: 11 },
+} as const satisfies Record<string, { ramp: RampName; light: number; dark: number; against: 'page' | 'text'; min: number; max: number }>;
+export type ModeToken = keyof typeof MODE_SPECS;
+/** Rasta's value for a semantic colour in a mode. */
+export const modeHex = (token: ModeToken, mode: 'light' | 'dark') => rampHex(MODE_SPECS[token].ramp, MODE_SPECS[token][mode])!;
+/** Checks a dark-mode pick for a semantic colour: its contrast against what it sits on or carries, and whether it lands in the band. */
+export const darkCheck = (token: ModeToken, step: number) => {
+  const s = MODE_SPECS[token], hex = rampHex(s.ramp, step);
+  const ratio = hex ? contrastRatio(hex, s.against === 'page' ? RAMPS.grey[900] : RAMPS.grey[100]) : 1;
+  return { hex, ratio, ok: !!hex && ratio >= s.min && ratio <= s.max, low: ratio < s.min };
+};
+
+/** Rasta's naming grammar (ds.2-3): a category or component first, then concept, variant and property, and a state last. */
+export const NAME_HEADS = ['color', 'space', 'radius', 'font', 'shadow', 'button', 'card', 'input', 'tab', 'toggle', 'link', 'header', 'banner'] as const;
+export const NAME_STATES = ['hover', 'pressed', 'focus', 'disabled'] as const;
+export const NAME_HUES = ['red', 'teal', 'blue', 'green', 'grey', 'gray', 'amber', 'orange', 'pink', 'light', 'dark'] as const;
+export const NAME_VAGUE = ['new', 'old', 'final', 'misc', 'temp', 'copy', 'other'] as const;
+/** What a bad name gets wrong (`token-rename` lanes). */
+export const NAME_FLAWS = ['look', 'order', 'vague', 'style'] as const;
+export type NameFlaw = (typeof NAME_FLAWS)[number];
+/** The first thing wrong with a semantic or component token name, checked in this order: not kebab-case, versioned
+ *  or vague, named after its look, parts out of order. Null for a name that follows the grammar. */
+export const nameFlaw = (name: string): NameFlaw | null => {
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) return 'style';
+  const parts = name.split('-');
+  if (parts.some(w => (NAME_VAGUE as readonly string[]).includes(w) || /^v?\d+$/.test(w) || /[a-z]\d+$/.test(w))) return 'vague';
+  if (parts.some(w => (NAME_HUES as readonly string[]).includes(w))) return 'look';
+  if (!(NAME_HEADS as readonly string[]).includes(parts[0])) return 'order';
+  if (parts.slice(0, -1).some(w => (NAME_STATES as readonly string[]).includes(w))) return 'order';
+  return null;
+};
+/** A `token-rename` card's bad name: its label up to " · ". */
+export const badName = (label: string) => label.split(' · ')[0];
+/** The words of a token name in any style: "cardTitle_color" → ["card", "title", "color"]. */
+export const nameWords = (name: string) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase().split(/[-_\s]+/).filter(Boolean);
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

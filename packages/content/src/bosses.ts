@@ -891,9 +891,54 @@ const ui4: BossBriefInput = {
   },
 };
 
+const ds2: BossBriefInput = {
+  chapterId: 'ds.2',
+  title: 'A three-tier token set with light and dark',
+  minutes: 120,
+  scenario: [
+    'Define the design tokens for your Studio product, or for Rasta, the Chennai bus-pass app from this chapter, if you don’t have one yet. Build them in three tiers: primitives (the palette and the scales), semantic tokens (jobs, each with a light and a dark value) and component tokens where a component needs its own handle.',
+    'Set it up in Figma variables, a JSON file or a spreadsheet, then describe it here so a reviewer who can’t open your file could rebuild it: the primitives, the semantic colours in both modes with their contrast, the component tokens and why each exists, your naming rules, and one change you’d make to prove the tiers work.',
+  ],
+  fields: [
+    { id: 'primitives', label: 'Primitives', kind: 'long', minWords: 30, hint: 'Your colour ramps (hue and steps, a few hex codes), spacing scale, radius scale and type sizes. Named for what they are.' },
+    { id: 'semantic', label: 'Semantic colours, light and dark', kind: 'list', items: 8, minWords: 8, hint: 'One per line: the name, the primitive it uses in light and in dark, and the contrast against what it sits on in each mode. Cover the page, raised surfaces, two text levels, a border, the primary action and its label, and an error colour.' },
+    { id: 'components', label: 'Component tokens', kind: 'list', items: 3, minWords: 12, hint: 'Three component tokens, what each points at, and why that component needs its own handle instead of using the semantic token directly.' },
+    { id: 'naming', label: 'Your naming rules', kind: 'long', minWords: 25, hint: 'The order of the parts, the case, which tier may mention hues, how states are written, and what happens to a renamed token.' },
+    { id: 'change', label: 'Prove the tiers work', kind: 'text', minWords: 25, hint: 'One realistic change (a festival colour, a softer card, a second brand) and exactly which token you’d edit, what changes and what doesn’t.' },
+  ],
+  rubric: [
+    { id: 'tiers', label: 'Three clean tiers', strong: 'Primitives hold only values and are named for what they are; every semantic token points at a primitive and names a job; component tokens point at semantic tokens, and no component points at a primitive directly.', weight: 3, required: true },
+    { id: 'modes', label: 'Dark mode tuned, not inverted', strong: 'Every semantic colour has a light and a dark value from the same palette, with contrast given for both: dark-grey page, lighter raised surfaces, off-white text, accents a step or two lighter, text at 4.5:1 or more, and the primary action’s label flipped where needed.', weight: 3, required: true },
+    { id: 'naming', label: 'Names you could guess', strong: 'One documented order (category, concept, variant, state) and one case, used by every name; hues and shade numbers appear only in primitives; no new, final or numbered versions; a deprecation rule for renames.', weight: 2 },
+    { id: 'components', label: 'Component tokens with a reason', strong: 'A small number of component tokens, each justified by a real exception (a tab line on a dark header, button-only corners) rather than one per property.', weight: 1 },
+    { id: 'change', label: 'A change that lands in one place', strong: 'The worked change edits one token in the right tier, and lists what changes and what stays the same.', weight: 1 },
+  ],
+  tips: ['Do dark mode in the semantic tier and check each pair as you go. It’s much slower to fix twenty contrast failures at the end.', 'If two semantic tokens point at the same primitive, keep both. That shared value is exactly what lets them part later.'],
+  example: {
+    primitives: 'Colour ramps from 100 to 900: teal (teal-500 #14B8A6, teal-700 #0F766E), red (red-400 #F87171, red-600 #DC2626), amber (amber-500 #F59E0B, amber-700 #B45309), and grey from 25 to 950 (grey-25 #FCFCFD, grey-100 #F2F4F7, grey-400 #98A2B3, grey-600 #475467, grey-800 #1D2939, grey-900 #101828), plus white. Spacing on a 4-pt scale: space-1 (4) to space-8 (32), named by step. Radius: radius-8, radius-16, radius-20, radius-full. Type sizes: font-size-13, 16, 20, 25, 32.',
+    semantic: [
+      'color-surface-page: grey-50 light, grey-900 dark. Body text on it: 17.0:1 light, 16.1:1 dark.',
+      'color-surface-raised: grey-25 light, grey-800 dark. One step lighter than the page at night; body text on it 13.3:1.',
+      'color-text-primary: grey-900 light (17.7:1 on white), grey-100 dark (16.1:1 on grey-900).',
+      'color-text-secondary: grey-600 light (7.7:1 on white), grey-400 dark (6.9:1 on grey-900).',
+      'color-border-default: grey-300 light, grey-700 dark (1.7:1 on the page). Only separates; inputs use color-border-control at 3:1.',
+      'color-action-primary: teal-700 light (5.5:1 with a white label), teal-500 dark (7.1:1 with a grey-900 label).',
+      'color-text-on-action: white light, grey-900 dark, so the Renew label passes in both modes.',
+      'color-feedback-error: red-600 light (4.8:1 on white), red-400 dark (6.4:1 on grey-900).',
+    ],
+    components: [
+      'tab-indicator-color → color-text-on-inverse (white in both modes). The tab bar sits on the dark teal header, where the primary colour would vanish, so the tab line needs its own handle.',
+      'button-radius → radius-control. Buttons may get rounder corners without rounding the inputs, which share radius-control today.',
+      'button-primary-bg → color-action-primary. Festival campaigns restyle the main button only; this handle lets a campaign theme reach it without touching toggles.',
+    ],
+    naming: 'Order: category or component, concept, variant, state, so color-action-primary-hover and button-primary-bg. Kebab-case everywhere, which becomes --color-action-primary in CSS and is converted to camelCase for the Android and iOS builds. Hues and shade numbers appear only in primitives. States are hover, pressed, focus and disabled, always last. Modes are never in names. A renamed token stays for one release as a deprecated alias pointing at the new name, then is removed.',
+    change: 'For Pongal week the primary action turns gold. I repoint color-action-primary at amber-700 in light mode (5.0:1 with a white label) and amber-500 in dark mode with a dark label. The Renew button, the active tab and the auto-renew toggle change; links, errors and every surface stay as they were. After the week, I point it back.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

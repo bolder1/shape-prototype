@@ -1,5 +1,48 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('ds.2 helpers', () => {
+  it('chains every component token through a semantic token to a primitive', () => {
+    for (const c of Object.keys(COMPONENT)) {
+      expect(tierOf(parentOf(c)!)).toBe('semantic');
+      expect(tierOf(parentOf(parentOf(c)!)!)).toBe('primitive');
+    }
+  });
+  it('reaches further from a higher tier', () => {
+    expect(blastRadius('teal-700')).toEqual(['button-primary-bg', 'tab-indicator-color', 'toggle-on-bg', 'link-color']);
+    expect(blastRadius('color-action-primary')).toEqual(['button-primary-bg', 'tab-indicator-color', 'toggle-on-bg']);
+    expect(blastRadius('button-radius')).toEqual(['button-radius']);
+  });
+  it('resolves edits at each tier', () => {
+    expect(resolveTokens()['button-primary-bg']).toBe('#0F766E');
+    const pongal = resolveTokens({ 'color-action-primary': 'amber-700' });
+    expect(pongal['button-primary-bg']).toBe('#B45309');
+    expect(pongal['link-color']).toBe('#0F766E');
+    expect(resolveTokens({ 'teal-700': '#000000' })['link-color']).toBe('#000000');
+  });
+  it('tunes every semantic colour: its light value fails at night, its dark value passes, and white or black never would', () => {
+    for (const t of Object.keys(MODE_SPECS) as ModeToken[]) {
+      expect(darkCheck(t, MODE_SPECS[t].light).ok).toBe(false);
+      expect(darkCheck(t, MODE_SPECS[t].dark).ok).toBe(true);
+      expect(rampSteps(MODE_SPECS[t].ramp)).toContain(MODE_SPECS[t].dark);
+      expect(modeHex(t, 'dark')).toMatch(/^#[0-9A-F]{6}$/);
+    }
+    expect(darkCheck('color-surface-raised', 800).ok).toBe(true);
+    expect(darkCheck('color-surface-raised', 900).ok).toBe(false);
+    expect(darkCheck('color-action-primary', 700).ratio).toBeCloseTo(3.24, 1);
+  });
+  it('finds the first flaw in a token name', () => {
+    expect(nameFlaw('color-action-primary-hover')).toBeNull();
+    expect(nameFlaw('button-primary-bg')).toBeNull();
+    expect(nameFlaw('primaryBtn')).toBe('style');
+    expect(nameFlaw('color-teal-new')).toBe('vague');
+    expect(nameFlaw('blue2')).toBe('vague');
+    expect(nameFlaw('color-grey-light')).toBe('look');
+    expect(nameFlaw('hover-color-action-primary')).toBe('order');
+    expect(nameFlaw('color-disabled-text')).toBe('order');
+    expect(nameWords('cardTitle_color')).toEqual(['card', 'title', 'color']);
+  });
+});
 
 describe('ui.4 helpers', () => {
   it('writes rupees in Indian grouping, rounded', () => {
@@ -379,6 +422,34 @@ describe('episodes', () => {
         expect(new Set(parts)).toEqual(new Set(LEDGER_PARTS));
         expect(parts).toHaveLength(LEDGER_PARTS.length);
         for (const c of ep.game.cards) expect(c.note).toBeTruthy();
+      }
+      if (ep.game.id === 'tier-edit') {   // each request edits one real token in its lane's tier; going a tier up reaches further
+        expect(lanes).toEqual([...TOKEN_TIERS]);
+        for (const c of ep.game.cards) {
+          const [token, to] = (c.visual ?? '').split(':');
+          expect(tierOf(token)).toBe(c.lane);
+          expect(to).toBeTruthy();
+          expect(c.note).toBeTruthy();
+          const before = resolveTokens(), after = resolveTokens({ [token]: to });
+          expect(blastRadius(token).every(k => before[k] !== after[k])).toBe(true);
+          if (c.lane === 'component') expect(blastRadius(parentOf(token)!).length).toBeGreaterThan(blastRadius(token).length);
+          if (c.lane === 'semantic') expect(blastRadius(parentOf(token)!).length).toBeGreaterThanOrEqual(blastRadius(token).length);
+        }
+        for (const tier of TOKEN_TIERS) expect(ep.game.cards.filter(c => c.lane === tier).length).toBeGreaterThanOrEqual(2);
+      }
+      if (ep.game.id === 'mode-tune') {   // every card is a tunable semantic colour, each used once
+        expect(lanes).toEqual(['surface', 'text', 'accent', 'border']);
+        const tokens = ep.game.cards.map(c => c.visual);
+        expect(new Set(tokens).size).toBe(tokens.length);
+        for (const c of ep.game.cards) { expect(Object.keys(MODE_SPECS)).toContain(c.visual); expect(c.label.startsWith(c.visual!)).toBe(true); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'token-rename') {   // the bad name has exactly the flaw of its lane, the good name has none
+        expect(lanes).toEqual([...NAME_FLAWS]);
+        for (const c of ep.game.cards) {
+          expect(nameFlaw(badName(c.label))).toBe(c.lane);
+          expect(nameFlaw(c.visual ?? 'X')).toBeNull();
+          expect(c.note).toBeTruthy();
+        }
       }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card

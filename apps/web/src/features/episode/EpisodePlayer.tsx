@@ -103,6 +103,9 @@ import { StateSheet } from './games/StateSheet';
 import { IconOdd } from './games/IconOdd';
 import { ImageBudget } from './games/ImageBudget';
 import { TableBuild } from './games/TableBuild';
+import { TierEdit } from './games/TierEdit';
+import { ModeTune } from './games/ModeTune';
+import { TokenRename } from './games/TokenRename';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -215,6 +218,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'icon-odd': IconOdd,
   'image-budget': ImageBudget,
   'table-build': TableBuild,
+  'tier-edit': TierEdit,
+  'mode-tune': ModeTune,
+  'token-rename': TokenRename,
 };
 
 interface Props {

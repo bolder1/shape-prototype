@@ -101,6 +101,9 @@ import { ComponentKitScene } from '../scenes/ComponentKit';
 import { IconAuditScene } from '../scenes/IconAudit';
 import { ImageChoiceScene } from '../scenes/ImageChoice';
 import { TableTidyScene } from '../scenes/TableTidy';
+import { TokenTiersScene } from '../scenes/TokenTiers';
+import { ModeSwapScene } from '../scenes/ModeSwap';
+import { TokenNamesScene } from '../scenes/TokenNames';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -195,6 +198,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'icon-audit': IconAuditScene,
   'image-choice': ImageChoiceScene,
   'table-tidy': TableTidyScene,
+  'token-tiers': TokenTiersScene,
+  'mode-swap': ModeSwapScene,
+  'token-names': TokenNamesScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
