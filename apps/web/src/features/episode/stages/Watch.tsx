@@ -136,6 +136,10 @@ import { PeekTrapScene } from '../scenes/PeekTrap';
 import { LogoProcessScene } from '../scenes/LogoProcess';
 import { BrandPaletteScene } from '../scenes/BrandPalette';
 import { BrandGuideScene } from '../scenes/BrandGuide';
+import { LandingAnatomyScene } from '../scenes/LandingAnatomy';
+import { ConversionCopyScene } from '../scenes/ConversionCopy';
+import { CampaignCutScene } from '../scenes/CampaignCut';
+import { SeoReadScene } from '../scenes/SeoRead';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -265,6 +269,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'logo-process': LogoProcessScene,
   'brand-palette': BrandPaletteScene,
   'brand-guide': BrandGuideScene,
+  'landing-anatomy': LandingAnatomyScene,
+  'conversion-copy': ConversionCopyScene,
+  'campaign-cut': CampaignCutScene,
+  'seo-read': SeoReadScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

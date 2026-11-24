@@ -138,6 +138,10 @@ import { ResultRead } from './games/ResultRead';
 import { LogoStress } from './games/LogoStress';
 import { KitPick } from './games/KitPick';
 import { GuideBuild } from './games/GuideBuild';
+import { PageStack } from './games/PageStack';
+import { CopySwap } from './games/CopySwap';
+import { AssetFit } from './games/AssetFit';
+import { SerpSpot } from './games/SerpSpot';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -285,6 +289,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'logo-stress': LogoStress,
   'kit-pick': KitPick,
   'guide-build': GuideBuild,
+  'page-stack': PageStack,
+  'copy-swap': CopySwap,
+  'asset-fit': AssetFit,
+  'serp-spot': SerpSpot,
 };
 
 interface Props {

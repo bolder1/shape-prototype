@@ -1423,9 +1423,60 @@ const br2: BossBriefInput = {
   },
 };
 
+const br3: BossBriefInput = {
+  chapterId: 'br.3',
+  title: 'Ship a launch landing page',
+  minutes: 120,
+  scenario: [
+    'Your product (or Sukoon: a meditation app for busy professionals who can’t switch off, calm in five minutes, free for 7 days then ₹149 a month) is launching. Design and ship its landing page: a real, public URL, built in any tool you like. Framer, Webflow, Carrd, Notion or hand-written HTML all count.',
+    'Use the identity from br.2 and the voice from cw.1. Then make the launch post for it in two formats, check what a search engine reads, and test the hero on five people before you call it done.',
+  ],
+  fields: [
+    { id: 'link', label: 'Your live page', kind: 'text', minWords: 4, hint: 'The public URL, the tool you built it in, and a link to the two campaign assets.' },
+    { id: 'audience', label: 'Who it’s for and the one action', kind: 'long', minWords: 30, hint: 'The one kind of visitor, where they arrive from (an ad, a post, a search), the words they use for their problem and where you found them, and the single action the page asks for.' },
+    { id: 'outline', label: 'The page, top to bottom', kind: 'list', items: 5, minWords: 8, hint: 'One section per line, with the visitor question it answers. Say which ones sit above the fold on a phone.' },
+    { id: 'hero', label: 'The hero copy', kind: 'list', items: 4, minWords: 3, hint: 'Headline, the line under it, the button label, and the line under the button, one per line.' },
+    { id: 'test', label: 'The five-second test', kind: 'long', minWords: 30, hint: 'What five people said the page was and who it was for after five seconds, what you changed because of it, and what they said after.' },
+    { id: 'assets', label: 'Two campaign formats', kind: 'long', minWords: 30, hint: 'The two formats and their sizes, the safe zones you kept clear, the headline size on the canvas and on the phone where it’s shown, and what stayed the same between them.' },
+    { id: 'seo', label: 'What a search engine reads', kind: 'list', items: 5, minWords: 2, hint: 'Your title tag (and its length), meta description, address, the H1 and heading outline, and the alt text and file weight of your heaviest image.' },
+    { id: 'measure', label: 'How you’ll know it works', kind: 'text', minWords: 20, hint: 'The number you’ll watch (for example trial starts ÷ visitors), how you’ll track where visitors came from, and what you’d test first.' },
+  ],
+  rubric: [
+    { id: 'shipped', label: 'It’s live', strong: 'A public URL that loads on a phone, using the identity: the mark, palette, type pair and text pairs from br.2. The button works and leads somewhere real.', weight: 2, required: true },
+    { id: 'anatomy', label: 'Answers questions in order', strong: 'One audience and one action. The first screen on a phone says what it is, who it’s for and offers the button; proof comes before the price; objections are answered; the button appears again at the end; few links lead off the page.', weight: 3, required: true },
+    { id: 'copy', label: 'Copy that converts', strong: 'The headline names the outcome in the visitor’s own words, with a concrete detail, in about eight words; the line under it says how and for whom; the button is a verb plus the value; the line under it answers the fear before the click. A five-second test was run and changed something.', weight: 3, required: true },
+    { id: 'assets', label: 'Assets that fit their formats', strong: 'Two formats, each laid out for its own canvas rather than cropped, with text and buttons out of the platform’s UI, headlines readable at the size they’re shown, few words, and the same message and look in both.', weight: 2 },
+    { id: 'seo', label: 'Readable by search', strong: 'A title under about 60 characters that starts with what people search, a description under about 160 that sells the click, a readable address, one H1 as live text, headings in steps, alt text on informative images (empty on decoration), images exported small, and descriptive links.', weight: 2 },
+    { id: 'measure', label: 'Measured', strong: 'Names the conversion it will watch and how it’s calculated, tags links by source, and says which part of the page it would test first and why.', weight: 1 },
+  ],
+  tips: ['Open your page on the cheapest phone you can borrow, on mobile data. If the first screen doesn’t say what it is and offer the button, nothing below it matters.', 'Read your headline aloud to someone outside design. If they ask “so what does it do?”, rewrite it in the words they used to ask.'],
+  example: {
+    link: 'sukoon-launch.framer.website, built in Framer. Campaign: a 1080 × 1920 Story and a 1280 × 720 YouTube thumbnail, linked in the same Figma file.',
+    audience: 'Working professionals in Bengaluru and Pune who say “I can’t switch off” and “I’ve only got five minutes”: both phrases came up in 7 of 12 interviews and in Play Store reviews of rival apps. They arrive from an Instagram ad that says “Calm before your 9 am stand-up”. The one action is starting the free week; HR heads get their own Sukoon for Teams page.',
+    outline: [
+      'First screen (above the fold on a 390 px phone): headline, one line under it, “Start your free week” with “No card needed”, and a phone mid-session. What is it, is it for me?',
+      'Proof: 4.8 stars from 12,000 Play Store ratings, three named reviews with jobs and cities, logos of four companies whose teams use it. Why believe you?',
+      'How it works: pick a moment, press play, breathe for five minutes. Then what you get: 200 sessions, sleep stories, offline mode, English and Hindi. How does it work?',
+      'Price: free for 7 days, then ₹149 a month or ₹999 a year, cancel in two taps. What does it cost?',
+      'Questions (cancelling, offline, who sees my data), then the button again. What now?',
+    ],
+    hero: ['Calm in five minutes, between meetings', 'Five-minute guided sessions you can do at your desk, in a cab or before a call.', 'Start your free week', 'Free for 7 days. No card needed.'],
+    test: 'First version, headline “Find your calm with Sukoon”: two of five said “meditation app”, one said “a spa?”, nobody mentioned time. I added “five minutes” and “between meetings” from the interviews and moved the phone mock above the fold. After: five of five said “a quick meditation app for work”, and four said it was for “people with back-to-back meetings”.',
+    assets: 'Story at 1080 × 1920: headline at 120 px from 360 px down, button from 1,380 px, so both clear the top 250 px and bottom 340 px; on a phone the headline is 40 px tall. Thumbnail at 1280 × 720: just “Calm in 5 minutes” at 110 px, about 14 px in the Up next list, nothing in the bottom-right corner where the video length sits. Both use sand, the half-sun, Tiro for the headline and the same promise.',
+    seo: [
+      'Title: “5-minute meditation app | Sukoon”, 32 characters.',
+      'Description: “Short guided meditations for busy days, in English and Hindi. Calm in five minutes, between meetings. Free for 7 days.” (118 characters)',
+      'Address: /meditation-app',
+      'One H1, the headline as live text over the photo; H2s for How it works, Pricing and Questions.',
+      'Hero photo exported as WebP at 1200 px wide, 140 kB, alt “A woman breathing with eyes closed in the back of a cab”; the background wave has alt="".',
+    ],
+    measure: 'Trial starts ÷ unique visitors, by source, with UTM tags on the Instagram ad, the Story and the YouTube link. First test: the headline against “Switch off in five minutes”, sized for a 20% lift.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

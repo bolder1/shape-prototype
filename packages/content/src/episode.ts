@@ -40,7 +40,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'metric-tree', 'heart-goals', 'cohort-triangle', 'track-plan',
   'just-in-time', 'empty-activate', 'upgrade-moment',
   'hypothesis-shape', 'sample-size', 'peek-trap',
-  'logo-process', 'brand-palette', 'brand-guide']);
+  'logo-process', 'brand-palette', 'brand-guide',
+  'landing-anatomy', 'conversion-copy', 'campaign-cut', 'seo-read']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -164,6 +165,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `logo-stress`: lanes are `MARK_VERDICTS` in order; every card is a candidate mark for Sukoon, its `visual` a key of `SUKOON_MARKS` (each used once), its `label` that mark's `text`, and its lane is what `markVerdict` says: the first test it fails (16 px, one colour, beside the rivals) or `ready`. The game draws each mark from its numbers under four lenses. Every card needs a `note`.
  *  - `kit-pick`: lanes are `KIT_SLOTS` in order; every card is an option for one job in Sukoon's kit, its `visual` a key of `SUKOON_KIT` (each used once) whose `slot` is the lane. Each slot has three options and exactly one that `kitFlaw` passes; the game tries each on a Sukoon screen (Hindi, contrast, the rivals' shelf) before you pick. Every card needs a `note`.
  *  - `guide-build`: lanes are `GUIDE_SECTIONS` in order; every card is a piece of Sukoon's identity made in the wild, its `visual` a key of `SUKOON_USES` (each used once), its `label` that use's `text`, and its lane is what `sectionBroken` says: the section whose rule (`GUIDE_RULES`) it breaks. A right drop writes that rule into the guide. Every card needs a `note`.
+ *  - `page-stack`: lanes are `PAGE_ZONES` in order; every card is a piece of Sukoon's launch page, its `visual` a key of `SUKOON_SECTIONS` (each used once), its `label` that section's `text`, and its lane is the section's `zone`: the visitor question it answers. Each right drop stacks the piece on a phone in `pageOrder`, with the share of visitors who reach it from `pageLayout`. Every card needs a `note`.
+ *  - `copy-swap`: lanes are `HERO_SLOTS` in order; every card is a draft line, its `visual` a key of `SUKOON_DRAFTS` (each used once), its `label` the draft as written (`copyLine` with every first option), and its lane the draft's `slot`. You swap phrases until `copyFlaws` finds nothing, then lock it; exactly one choice of phrases passes. Every card needs a `note`.
+ *  - `asset-fit`: lanes are `ASSET_FORMATS` in order; every card is a campaign asset, its `visual` a key of `SUKOON_ASSETS` (each used once), its `label` that asset's `text`, and its lane the asset's `format`. You nudge blocks by `ASSET_STEP`, resize the headline through `ASSET_SIZES` or swap its line, and ship it; it scores when `assetIssues` finds nothing on the first ship. Every card needs a `note`.
+ *  - `serp-spot`: lanes are `SEO_AREAS` in order; every card is one of `SEO_ISSUES` on Sukoon's launch page (its `visual`, each used once), and its lane is `SEO_AREA_OF` that issue. A right tap applies `SEO_FIXES`, so the page and its search result redraw from `fixSeo`. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -200,7 +205,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'metric-flow', 'heart-grid', 'cohort-read', 'event-wire',
   'cue-timeline', 'empty-build', 'paywall-timing',
   'hypo-fix', 'sample-dial', 'result-read',
-  'logo-stress', 'kit-pick', 'guide-build']);
+  'logo-stress', 'kit-pick', 'guide-build',
+  'page-stack', 'copy-swap', 'asset-fit', 'serp-spot']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

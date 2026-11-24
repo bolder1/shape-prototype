@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { HYPO_PARTS, PLAN_VERDICTS, READ_CALLS, TOKRI_AA, TOKRI_HYPOS, TOKRI_PLANS, TOKRI_RESULTS, WEEKS_MAX, aaPValues, hypoFlaw, hypoRewrite, hypoText, planTest, planVerdict, readCall, weeksFor, weeksGrade, type Hypothesis, type TestRead, type TokriHypo, type TokriPlan, type TokriResult } from './episode';
 import { twoProp } from './stats';
 import { GUIDE_SECTIONS, KIT_SLOTS, MARK_VERDICTS, SUKOON_KIT, SUKOON_MARKS, SUKOON_USES, kitFlaw, markVerdict, sectionBroken, type KitOption, type SukoonKitKey, type SukoonMark, type SukoonUse } from './identity';
+import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_ASSETS, SUKOON_DRAFTS, SUKOON_SECTIONS, SUKOON_SEO_BEFORE, copyFlaws, copyLine, seoIssues, type CopyDraft, type SeoIssue, type SukoonAsset, type SukoonDraft, type SukoonSection } from './marketing';
 
 describe('gr.3 helpers', () => {
   it('finds the one weak part of each hypothesis, and the fix mends it while the trap does not', () => {
@@ -915,6 +916,26 @@ describe('episodes', () => {
         expect(lanes).toEqual([...COGA_LANES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_BARRIERS).sort());
         for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_BARRIERS[c.visual as RahiBarrier].lane); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'page-stack') {   // every section once, in the zone whose question it answers
+        expect(lanes).toEqual([...PAGE_ZONES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUKOON_SECTIONS).sort());
+        for (const c of ep.game.cards) { const s = SUKOON_SECTIONS[c.visual as SukoonSection]; expect(c.label).toBe(s.text); expect(c.lane).toBe(s.zone); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'copy-swap') {   // every draft once, written as drafted, in its slot, with something to fix
+        expect(lanes).toEqual([...HERO_SLOTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUKOON_DRAFTS).sort());
+        for (const c of ep.game.cards) { const d = SUKOON_DRAFTS[c.visual as SukoonDraft] as CopyDraft; expect(c.label).toBe(copyLine(d, d.segments.map(() => 0))); expect(c.lane).toBe(d.slot); expect(copyFlaws(c.label, d.slot).length).toBeGreaterThan(0); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'asset-fit') {   // every asset once, in its format
+        expect(lanes).toEqual([...ASSET_FORMATS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUKOON_ASSETS).sort());
+        for (const c of ep.game.cards) { const a = SUKOON_ASSETS[c.visual as SukoonAsset]; expect(c.label).toBe(a.text); expect(c.lane).toBe(a.format); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'serp-spot') {   // every issue on the page once, in the area it lives in
+        expect(lanes).toEqual([...SEO_AREAS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual([...seoIssues(SUKOON_SEO_BEFORE)].sort());
+        for (const c of ep.game.cards) { expect(c.lane).toBe(SEO_AREA_OF[c.visual as SeoIssue]); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'logo-stress') {   // every mark once, in the first test markVerdict finds it fails
         expect(lanes).toEqual([...MARK_VERDICTS]);
