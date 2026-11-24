@@ -23,7 +23,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'dom-tree', 'box-model', 'frontend-build',
   'case-study', 'portfolio-crit', 'whiteboard',
   'happy-path', 'fewer-steps', 'ui-states',
-  'taste-reason', 'feedback-frame', 'receive-critique']);
+  'taste-reason', 'feedback-frame', 'receive-critique',
+  'affinity-map', 'observation-insight', 'persona-jtbd', 'journey-map']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -93,6 +94,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `taste-filter`: lanes `taste`, `reason`; every card's `visual` is the part of the Kosh home screen it's about (one of `KOSH_PARTS`) and it needs a `note`.
  *  - `frame-feedback`: lanes `like`, `wish`, `whatif`, `bin`; every card needs a `note`, and every card outside `bin` a `visual`: the thought rewritten as a sentence that starts with its lane's lead (`FRAME_LEAD`).
  *  - `calm-reply`: lanes `ask`, `note`, `context`; every card's `visual` is the defensive reflex reply (struck out once decided) and its `note` the better reply.
+ *  - `affinity-wall`: up to 4 lanes (groups, each labelled as a sentence a participant could say); every card's `visual` is who it came from (`P1`…`P12`, see `participantOf`), distinct within a group, and it needs a `note`.
+ *  - `insight-sharpen`: lanes `why`, `who`, `fix`, `good` (what the draft lacks); every card's `visual` is the sharp version as "who|what they do|because why" (see `insightParts`), and a `good` card's label is that sentence.
+ *  - `tool-fit`: lanes `persona`, `job`, `arch`; every card's `visual` is the line of that tool that answers it (one of `TOOL_PARTS[lane]`) and it needs a `note`.
+ *  - `journey-plot`: lanes are `JOURNEY_STAGES` in order; every card's `visual` is how the person felt, an integer from -2 to 2 (see `journeyFeelings`), and it needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -113,7 +118,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'tag-match', 'flex-tune', 'fe-flow',
   'case-order', 'portfolio-crit', 'whiteboard-step',
   'edge-branch', 'step-trim', 'state-pick',
-  'taste-filter', 'frame-feedback', 'calm-reply']);
+  'taste-filter', 'frame-feedback', 'calm-reply',
+  'affinity-wall', 'insight-sharpen', 'tool-fit', 'journey-plot']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -179,6 +185,30 @@ export const KOSH_PARTS = ['balance', 'banner', 'actions', 'fee', 'history'] as 
 export type KoshPart = (typeof KOSH_PARTS)[number];
 /** How each part of the I like / I wish / What if frame starts (`frame-feedback` lanes). */
 export const FRAME_LEAD = { like: 'I like', wish: 'I wish', whatif: 'What if' } as const;
+
+/** Who an `affinity-wall` note came from: "P7" → 7. */
+export const participantOf = (visual: string) => Number(visual.replace(/^P/, ''));
+/** A theme's reach: how many different participants its notes came from. */
+export const themeReach = (visuals: readonly string[]) => new Set(visuals.map(participantOf)).size;
+/** The three parts of an `insight-sharpen` visual: "who|what they do|because why". */
+export const insightParts = (visual: string) => { const [who, what, why] = visual.split('|'); return { who, what, why }; };
+/** The lines each `tool-fit` artefact draws (lane → parts). */
+export const TOOL_PARTS = { persona: ['context', 'goal', 'frustration'], job: ['situation', 'motivation', 'outcome'], arch: ['remote', 'self', 'helper'] } as const;
+export type ToolLane = keyof typeof TOOL_PARTS;
+/** Stages of a remote medicine refill (`journey-plot` lanes), in order. */
+export const JOURNEY_STAGES = ['notice', 'rx', 'order', 'arrive'] as const;
+/** Average feeling (−2…2) at each stage from the evidence placed there (a card's `visual`); null where there is none yet. */
+export const journeyFeelings = (cards: readonly { lane: string; visual?: string }[]) => JOURNEY_STAGES.map(s => {
+  const f = cards.filter(c => c.lane === s).map(c => Number(c.visual));
+  return f.length ? f.reduce((a, b) => a + b, 0) / f.length : null;
+});
+/** The stage where people feel worst: the journey's low point (null before any evidence). */
+export const journeyLow = (cards: readonly { lane: string; visual?: string }[]) => {
+  const f = journeyFeelings(cards);
+  let low = -1;
+  f.forEach((v, i) => { if (v !== null && (low < 0 || v < (f[low] as number))) low = i; });
+  return low < 0 ? null : JOURNEY_STAGES[low];
+};
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

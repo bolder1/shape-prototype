@@ -18,6 +18,7 @@ import { dc1 } from './chapters/dc-1';
 import { ld2 } from './chapters/ld-2';
 import { ia2 } from './chapters/ia-2';
 import { fd3 } from './chapters/fd-3';
+import { rs3 } from './chapters/rs-3';
 import { fd1_1 } from './episodes/fd-1-1';
 import { fd1_2 } from './episodes/fd-1-2';
 import { fd1_3 } from './episodes/fd-1-3';
@@ -41,6 +42,7 @@ import { dc1_1, dc1_2, dc1_3 } from './episodes/dc-1';
 import { ld2_1, ld2_2, ld2_3 } from './episodes/ld-2';
 import { ia2_1, ia2_2, ia2_3 } from './episodes/ia-2';
 import { fd3_1, fd3_2, fd3_3 } from './episodes/fd-3';
+import { rs3_1, rs3_2, rs3_3, rs3_4 } from './episodes/rs-3';
 import type { Exercise, LessonContent } from './schema';
 import type { Episode } from './episode';
 
@@ -67,14 +69,15 @@ export const EPISODES: Record<string, Episode> = { 'fd.1-1': fd1_1, 'fd.1-2': fd
   'dc.1-1': dc1_1, 'dc.1-2': dc1_2, 'dc.1-3': dc1_3,
   'ld.2-1': ld2_1, 'ld.2-2': ld2_2, 'ld.2-3': ld2_3,
   'ia.2-1': ia2_1, 'ia.2-2': ia2_2, 'ia.2-3': ia2_3,
-  'fd.3-1': fd3_1, 'fd.3-2': fd3_2, 'fd.3-3': fd3_3 };
+  'fd.3-1': fd3_1, 'fd.3-2': fd3_2, 'fd.3-3': fd3_3,
+  'rs.3-1': rs3_1, 'rs.3-2': rs3_2, 'rs.3-3': rs3_3, 'rs.3-4': rs3_4 };
 export * from './grade';
 export * from './boss';
 export * from './boss-grade';
 export * from './bosses';
 
 /** Chapters with playable content, keyed by curriculum chapter id. Lessons are in curriculum order. */
-export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1, 'gr.1': gr1, 'br.1': br1, 'bz.1': bz1, 'dc.1': dc1, 'ld.2': ld2, 'ia.2': ia2, 'fd.3': fd3 };
+export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1, 'gr.1': gr1, 'br.1': br1, 'bz.1': bz1, 'dc.1': dc1, 'ld.2': ld2, 'ia.2': ia2, 'fd.3': fd3, 'rs.3': rs3 };
 
 export const hasContent = (chapterId: string) => !!CONTENT[chapterId]?.length;
 

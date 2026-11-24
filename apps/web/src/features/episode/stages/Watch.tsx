@@ -82,6 +82,10 @@ import { UiStatesScene } from '../scenes/UiStates';
 import { TasteReasonScene } from '../scenes/TasteReason';
 import { FeedbackFrameScene } from '../scenes/FeedbackFrame';
 import { ReceiveCritiqueScene } from '../scenes/ReceiveCritique';
+import { AffinityMapScene } from '../scenes/AffinityMap';
+import { ObservationInsightScene } from '../scenes/ObservationInsight';
+import { PersonaJtbdScene } from '../scenes/PersonaJtbd';
+import { JourneyMapScene } from '../scenes/JourneyMap';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -157,6 +161,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'taste-reason': TasteReasonScene,
   'feedback-frame': FeedbackFrameScene,
   'receive-critique': ReceiveCritiqueScene,
+  'affinity-map': AffinityMapScene,
+  'observation-insight': ObservationInsightScene,
+  'persona-jtbd': PersonaJtbdScene,
+  'journey-map': JourneyMapScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

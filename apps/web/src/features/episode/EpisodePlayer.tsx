@@ -84,6 +84,10 @@ import { StatePick } from './games/StatePick';
 import { TasteFilter } from './games/TasteFilter';
 import { FrameFeedback } from './games/FrameFeedback';
 import { CalmReply } from './games/CalmReply';
+import { AffinityWall } from './games/AffinityWall';
+import { InsightSharpen } from './games/InsightSharpen';
+import { ToolFit } from './games/ToolFit';
+import { JourneyPlot } from './games/JourneyPlot';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -177,6 +181,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'taste-filter': TasteFilter,
   'frame-feedback': FrameFeedback,
   'calm-reply': CalmReply,
+  'affinity-wall': AffinityWall,
+  'insight-sharpen': InsightSharpen,
+  'tool-fit': ToolFit,
+  'journey-plot': JourneyPlot,
 };
 
 interface Props {

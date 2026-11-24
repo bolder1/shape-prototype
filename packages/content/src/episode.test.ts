@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, FRAME_LEAD, KOSH_PARTS, findExercise, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, FRAME_LEAD, JOURNEY_STAGES, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -200,6 +200,39 @@ describe('episodes', () => {
         }
       }
       if (ep.game.id === 'calm-reply') { expect(lanes).toEqual(['ask', 'note', 'context']); for (const c of ep.game.cards) { expect(c.visual).toBeTruthy(); expect(c.note).toBeTruthy(); expect(c.note?.startsWith('“')).toBe(true); } }   // a reflex to strike and the words to say instead
+      if (ep.game.id === 'affinity-wall') {   // every note is tagged with a real participant, no one twice in a group, and every group holds more than one person
+        for (const c of ep.game.cards) { expect(c.visual).toMatch(/^P([1-9]|1[0-2])$/); expect(c.note).toBeTruthy(); }
+        for (const l of lanes) {
+          const who = ep.game.cards.filter(c => c.lane === l).map(c => c.visual ?? '');
+          expect(themeReach(who)).toBe(who.length);
+          expect(themeReach(who)).toBeGreaterThan(1);
+        }
+        expect(participantOf('P12')).toBe(12);
+      }
+      if (ep.game.id === 'insight-sharpen') {   // every draft is rebuilt as who · what · because; a sharp draft already is that sentence
+        expect(lanes).toEqual(['why', 'who', 'fix', 'good']);
+        for (const c of ep.game.cards) {
+          expect(c.note).toBeTruthy();
+          const { who, what, why } = insightParts(c.visual ?? '');
+          for (const x of [who, what, why]) expect(x?.trim()).toBeTruthy();
+          expect(why.startsWith('because ')).toBe(true);
+          if (c.lane === 'good') expect(c.label).toBe(`${who} ${what} ${why}.`);
+          else expect(c.label).not.toContain(why);
+        }
+      }
+      if (ep.game.id === 'tool-fit') {   // each card lights a line its tool draws, and every line gets used
+        expect(lanes).toEqual(['persona', 'job', 'arch']);
+        for (const c of ep.game.cards) { expect(TOOL_PARTS[c.lane as keyof typeof TOOL_PARTS]).toContain(c.visual); expect(c.note).toBeTruthy(); }
+        for (const l of lanes) expect(new Set(ep.game.cards.filter(c => c.lane === l).map(c => c.visual))).toEqual(new Set(TOOL_PARTS[l as keyof typeof TOOL_PARTS]));
+      }
+      if (ep.game.id === 'journey-plot') {   // feelings the curve can plot, and one clear low point
+        expect(lanes).toEqual([...JOURNEY_STAGES]);
+        for (const c of ep.game.cards) { expect(Number.isInteger(Number(c.visual))).toBe(true); expect(Math.abs(Number(c.visual))).toBeLessThanOrEqual(2); expect(c.note).toBeTruthy(); }
+        const f = journeyFeelings(ep.game.cards) as number[];
+        const low = journeyLow(ep.game.cards)!, lowF = f[JOURNEY_STAGES.indexOf(low)];
+        for (const v of f) if (v !== lowF) expect(v - lowF).toBeGreaterThan(0.3);
+        expect(journeyLow([])).toBeNull();
+      }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });

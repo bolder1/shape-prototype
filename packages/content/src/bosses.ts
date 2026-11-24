@@ -687,9 +687,57 @@ const fd3: BossBriefInput = {
   },
 };
 
+const rs3: BossBriefInput = {
+  chapterId: 'rs.3',
+  title: 'Synthesise 12 lunch interviews',
+  minutes: 90,
+  scenario: [
+    'Dabba, the office-lunch app, ran 12 interviews with people who work in Bengaluru offices, about how weekday lunch really happens. Below is one summary per interview, with quotes and what the researcher saw. Synthesise them: build affinity groups, write four insights, and map one journey that tells Dabba what to work on first.',
+    'P1, 29, product analyst, Whitefield. “By the time my 12:30 call ends, everything good says 45 minutes.” Ordered at 1:20 on both days we looked at, and ate at her desk during a 2 pm call. “I want dal-chawal, not a burger, but dal-chawal is always the long wait.”',
+    'P2, 34, accounts manager, Koramangala. Keeps a ₹180 daily limit in a notes app and checks it before ordering. Showed an order where a ₹149 thali became ₹212 at checkout after delivery, platform and packing fees. “I only see the real price at the last step, so I go back and remove the raita.”',
+    'P3, 26, developer, Electronic City. Orders with three teammates to split the delivery fee. The order starts in a Slack thread at 12:50 and is placed around 1:15, once everyone has chosen. He pays the whole bill and collects on UPI. “Two of them pay the same day. One I chase till Thursday.”',
+    'P4, 31, HR executive, Manyata Tech Park. In a five-person lunch group: fees split five ways make delivery “almost free”. Keeps a spreadsheet of who owes whom; ₹640 was outstanding the day we spoke. Limit about ₹200 a day. “If I’m alone I just eat at the canteen. Delivery isn’t worth it for one.”',
+    'P5, 38, team lead, Indiranagar. Brings a dabba cooked by his mother Monday to Wednesday and orders on Thursday and Friday. “Outside food, I feel it by 4 pm.” Looks for words like “home-style” and “less oil” on menus, and says they mean nothing.',
+    'P6, 27, sales associate, MG Road. Out on client visits most days. Orders to the office only on desk days, often at 1:30 after calls. Twice the food arrived while he was in a meeting and went cold at reception.',
+    'P7, 30, designer, HSR Layout. Orders with two colleagues and always ends up as the one who pays and collects. Stopped group orders for two weeks “because I got tired of being the bank”. “Below ₹200 including everything, or I’m not ordering.”',
+    'P8, 33, consultant, Bellandur. Says health is her top priority and logs protein in an app. Orders salad bowls Monday to Thursday. Friday is biryani with her team: “That’s the treat day, it doesn’t count.” Annoyed that a bowl costs ₹320 and a biryani ₹220.',
+    'P9, 25, support executive, Marathahalli. His lunch break is 30 minutes, fixed at 1:00, so he orders at 12:15 to be safe. Showed a delivery that came at 1:34, after his break had ended; he skipped lunch that day. “Now I just order whatever says 20 minutes.”',
+    'P10, 41, finance controller, Jayanagar. Limit ₹150: “Lunch is fuel, not an outing.” Uses a local tiffin service at ₹2,800 a month for a fixed home-style meal. Left it last year because the menu repeated, and came back after three weeks of app orders “came to more than double”.',
+    'P11, 28, marketing executive, Koramangala. Lunch is decided in a WhatsApp group called “Lunch gang”: first message at 12:40, a poll, and the order goes in at 1:10. “The poll takes longer than the delivery.” Often eats at 2:15, between meetings.',
+    'P12, 36, engineering manager, Whitefield. Wants “light, homely food” because heavy lunches make his 3 pm reviews hard. Spends about ₹200. Uses filters, but says ratings tell him nothing about oil or portion size. Eats roti-sabzi from the same cloud kitchen most days: “Boring, but I know what I’m getting.”',
+  ],
+  fields: [
+    { id: 'groups', label: 'Your affinity groups', kind: 'long', minWords: 40, hint: 'Name each group as a sentence a participant could say, and list who is in it (e.g. P3, P7). Include notes that fit nowhere.' },
+    { id: 'insights', label: 'Four insights', kind: 'list', items: 4, minWords: 25, hint: 'Each one: who, what they do, because why. Then the participants behind it and one “How might we…?”.' },
+    { id: 'journey', label: 'The journey map', kind: 'long', minWords: 60, hint: 'One kind of person doing one job. 4–6 stages in order; for each, what they do, how they feel (−2 to +2) and the evidence (participant codes). Mark the low point.' },
+    { id: 'decision', label: 'What Dabba should do first', kind: 'text', minWords: 25, hint: 'The one thing the map says to work on first, and one thing it says not to start yet.' },
+    { id: 'doubts', label: 'Contradictions and thin evidence', kind: 'text', minWords: 20, hint: 'Who doesn’t fit, where people say one thing and do another, and which conclusions rest on few people.' },
+  ],
+  rubric: [
+    { id: 'evidence', label: 'Grounded in the interviews', strong: 'Every insight and every journey stage names the participants behind it; each insight rests on at least three people; nothing is claimed that the summaries don’t support.', weight: 2, required: true },
+    { id: 'insight', label: 'Insights, not observations or features', strong: 'Each insight names a specific group, what they do and why, with a tension a design could work on. None is a restated fact or a feature (“users want…”).', weight: 2, required: true },
+    { id: 'groups', label: 'Groups built from the data', strong: 'Groups are labelled as sentences in the participants’ voice, show how many people each holds, and keep the outliers visible instead of forcing them in.', weight: 1 },
+    { id: 'journey', label: 'A journey that drives a decision', strong: 'One kind of person and one job; stages in order; feelings that follow from the evidence; a clear low point; and a first move that follows from it.', weight: 2 },
+    { id: 'honesty', label: 'Honest about limits', strong: 'Names at least one contradiction (e.g. P8’s health goal and Friday biryani) and one outlier (e.g. P9’s fixed break or P10’s tiffin service), and says which conclusions rest on few people.', weight: 1 },
+  ],
+  tips: ['Write one note per quote or observation, tagged with the participant, before you group anything.', 'For every insight, ask: who exactly, what do they do, and because what? Then point at the participants.'],
+  example: {
+    groups: '“My calendar decides when I eat” (P1, P3, P6, P9, P11). “The real price shows up at the last step” (P2, P4, P7, P10, P12). “I want food that won’t knock me out at 4 pm” (P1, P5, P8, P10, P12). “Someone has to be the bank” (P3, P4, P7, P11). Fit nowhere yet: P10’s monthly tiffin service; P8’s Friday “treat day”.',
+    insights: [
+      'People in meeting-heavy jobs decide lunch late because their calendar, not hunger, sets lunchtime, so they choose by delivery time and give up the food they wanted. (P1, P3, P6, P9, P11.) How might we help people settle lunch before the 12:30 call starts?',
+      'People with a daily lunch limit trim or abandon orders at the last step, because fees appear only at checkout and turn a ₹149 thali into ₹212. (P2, P4, P7, P10, P12.) How might we show the full price at the moment people choose?',
+      'People who want light, home-style food settle for the same safe dish, because menus say nothing reliable about oil or portion and ratings measure taste, not how they’ll feel at 4 pm. (P1, P5, P8, P10, P12.) How might we let people judge how heavy a meal is before ordering?',
+      'In group orders one colleague pays for everyone and chases repayments for days, because the app takes a single payment, so the person who saves the group its fee pays for it in effort. (P3, P4, P7, P11; P7 stopped for two weeks.) How might we let everyone in a group order pay their own share?',
+    ],
+    journey: 'A desk worker in a meeting-heavy job ordering a weekday lunch. 1 Decide: −2. Lunch waits for calls and polls (P1 after a 12:30 call, P3’s Slack thread from 12:50, P11’s poll from 12:40). The low point. 2 Choose and order: −1. Fees appear at the last step (P2, P7); menus don’t say what’s light (P5, P12). 3 Wait: −1. Delivery lands after the break or during a meeting (P9, P6). 4 Eat: −1. At the desk, during a call, sometimes cold (P1, P6, P11). 5 Settle up (group orders only): −1 for whoever paid (P3, P4, P7). Every later stage gets worse because the first one starts late.',
+    decision: 'Work first on the decision moment: help people choose lunch for a fixed slot before their late-morning meetings begin, alone or as a group. Don’t start a menu or checkout redesign yet; showing the full price earlier is a small fix that can ship alongside.',
+    doubts: 'P8 says health comes first but has a weekly biryani “treat day”, so intention and habit differ. P9 orders early, not late: his problem is delivery times he can trust, not deciding. P10 left apps for a ₹2,800 tiffin plan, a rival for the same job worth a closer look. Settling up rests on four people, all in group orders.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
