@@ -22,7 +22,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'business-models', 'unit-economics', 'buying-journey',
   'dom-tree', 'box-model', 'frontend-build',
   'case-study', 'portfolio-crit', 'whiteboard',
-  'happy-path', 'fewer-steps', 'ui-states']);
+  'happy-path', 'fewer-steps', 'ui-states',
+  'taste-reason', 'feedback-frame', 'receive-critique']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -89,6 +90,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `edge-branch`: lanes `email`, `code`, `password`, `done` (steps of a password reset, in order); every card needs a `note` (its recovery).
  *  - `step-trim`: lanes `cut`, `merge`, `defer`, `keep`; every card needs a short `visual` (its screen's name in the flow strip) and a `note`.
  *  - `state-pick`: lanes `empty`, `loading`, `error`, `success` (the phone draws each); every card needs a `note`.
+ *  - `taste-filter`: lanes `taste`, `reason`; every card's `visual` is the part of the Kosh home screen it's about (one of `KOSH_PARTS`) and it needs a `note`.
+ *  - `frame-feedback`: lanes `like`, `wish`, `whatif`, `bin`; every card needs a `note`, and every card outside `bin` a `visual`: the thought rewritten as a sentence that starts with its lane's lead (`FRAME_LEAD`).
+ *  - `calm-reply`: lanes `ask`, `note`, `context`; every card's `visual` is the defensive reflex reply (struck out once decided) and its `note` the better reply.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -108,7 +112,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'model-match', 'unit-calc', 'buyer-role',
   'tag-match', 'flex-tune', 'fe-flow',
   'case-order', 'portfolio-crit', 'whiteboard-step',
-  'edge-branch', 'step-trim', 'state-pick']);
+  'edge-branch', 'step-trim', 'state-pick',
+  'taste-filter', 'frame-feedback', 'calm-reply']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -168,6 +173,12 @@ export const Episode = z.object({
   ladder: z.array(Question.extend({ hint: z.string().min(1) })).min(4).max(6),
 });
 export type Episode = z.infer<typeof Episode>;
+
+/** The parts of the Kosh home screen a `taste-filter` card can point at (the game and scene draw each). */
+export const KOSH_PARTS = ['balance', 'banner', 'actions', 'fee', 'history'] as const;
+export type KoshPart = (typeof KOSH_PARTS)[number];
+/** How each part of the I like / I wish / What if frame starts (`frame-feedback` lanes). */
+export const FRAME_LEAD = { like: 'I like', wish: 'I wish', whatif: 'What if' } as const;
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

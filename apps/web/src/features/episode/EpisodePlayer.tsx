@@ -81,6 +81,9 @@ import { WhiteboardStep } from './games/WhiteboardStep';
 import { EdgeBranch } from './games/EdgeBranch';
 import { StepTrim } from './games/StepTrim';
 import { StatePick } from './games/StatePick';
+import { TasteFilter } from './games/TasteFilter';
+import { FrameFeedback } from './games/FrameFeedback';
+import { CalmReply } from './games/CalmReply';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -171,6 +174,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'edge-branch': EdgeBranch,
   'step-trim': StepTrim,
   'state-pick': StatePick,
+  'taste-filter': TasteFilter,
+  'frame-feedback': FrameFeedback,
+  'calm-reply': CalmReply,
 };
 
 interface Props {

@@ -79,6 +79,9 @@ import { WhiteboardScene } from '../scenes/Whiteboard';
 import { HappyPathScene } from '../scenes/HappyPath';
 import { FewerStepsScene } from '../scenes/FewerSteps';
 import { UiStatesScene } from '../scenes/UiStates';
+import { TasteReasonScene } from '../scenes/TasteReason';
+import { FeedbackFrameScene } from '../scenes/FeedbackFrame';
+import { ReceiveCritiqueScene } from '../scenes/ReceiveCritique';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -151,6 +154,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'happy-path': HappyPathScene,
   'fewer-steps': FewerStepsScene,
   'ui-states': UiStatesScene,
+  'taste-reason': TasteReasonScene,
+  'feedback-frame': FeedbackFrameScene,
+  'receive-critique': ReceiveCritiqueScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

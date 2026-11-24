@@ -647,9 +647,49 @@ const ia2: BossBriefInput = {
   },
 };
 
+const fd3: BossBriefInput = {
+  chapterId: 'fd.3',
+  title: 'Run a 15-minute critique',
+  minutes: 60,
+  scenario: [
+    'This one happens with a real person. Find a peer who has finished a boss project (any chapter) or a piece of design work they care about, and run a 15-minute critique of it with them, on a call or in person. Ask before you record it, and record it.',
+    'Open by agreeing the goal of the work and what kind of feedback they want. Give your feedback with I like / I wish / What if, catch at least one comment of your own that was only taste, and watch how they receive it. Hand in your notes and what you learned.',
+  ],
+  fields: [
+    { id: 'work', label: 'What you critiqued, and its goal', kind: 'text', minWords: 15, hint: 'Whose work (no full names), what it is, and the goal or brief it was meant to meet.' },
+    { id: 'setup', label: 'How you ran the 15 minutes', kind: 'long', minWords: 30, hint: 'How you opened, what feedback the designer asked for, how you split the time, and how you recorded it with their consent.' },
+    { id: 'likes', label: 'I like', kind: 'list', items: 2, minWords: 10, hint: 'Specific things that work, and why, so they survive the next version.' },
+    { id: 'wishes', label: 'I wish', kind: 'list', items: 3, minWords: 12, hint: 'Problems a user would hit: what you saw, what it does to them, and the goal it hurts. Mark the most important one.' },
+    { id: 'whatifs', label: 'What if', kind: 'list', items: 2, minWords: 8, hint: 'Ideas, offered as questions. The designer decides.' },
+    { id: 'taste', label: 'A taste comment you caught', kind: 'text', minWords: 20, hint: 'Something you nearly said (or did say) that was only preference, and what it became when you asked yourself why.' },
+    { id: 'receiving', label: 'How it was received, and what you’d change', kind: 'long', minWords: 40, hint: 'Where the designer asked questions or defended, what you did then, and one thing you’d run differently next time.' },
+  ],
+  rubric: [
+    { id: 'reasoned', label: 'Reasoned, not taste', strong: 'Every wish names what was seen, its effect on a user, and the goal it hurts. No unlabelled preferences.', weight: 2, required: true },
+    { id: 'frame', label: 'The frame used well', strong: 'Likes are specific enough to keep; wishes describe problems without dictating fixes and the main one is marked; what-ifs are offered as options, not orders.', weight: 2, required: true },
+    { id: 'taste', label: 'Taste caught and converted', strong: 'Names a real taste comment and shows how asking “why” turned it into reasoning, or honestly labels it as preference.', weight: 1 },
+    { id: 'session', label: 'A session with shape', strong: 'Agrees the goal and the kind of feedback up front, keeps to the 15 minutes, leaves time for the designer’s questions, and is recorded with consent.', weight: 1 },
+    { id: 'receiving', label: 'Honest reflection on receiving', strong: 'Describes a specific moment where the designer asked or defended, how the critic responded, and one concrete change for next time.', weight: 2 },
+  ],
+  tips: ['Ask the designer first: “What do you want feedback on today?” An early sketch and a final screen need different feedback.', 'Before each wish, check: what did I see, what does it do to the user, which goal does it hurt?'],
+  example: {
+    work: 'A classmate’s boss for ia.2, “Map the reset-password flow” for Dabba, the lunch app. The goal: a reset flow with no dead ends, every edge case returning people to the path.',
+    setup: 'I opened by reading the brief aloud and asking what she wanted from me. She said “Are my edge cases complete?”, so I left visual polish out. Two minutes on context, eight on my feedback, five for her questions. We recorded the video call after she agreed, and I kept notes in a shared doc.',
+    likes: ['I like that a wrong code keeps the six boxes filled, so people can fix one digit instead of retyping all of them.', 'I like the “If an account exists, we’ve sent a code” message, because it never reveals who has an account.'],
+    wishes: [
+      'Main one: I wish the code screen said where the code went. If someone has two numbers, they will wait on the wrong phone and think the app is broken.',
+      'I wish the expired-code state had a button on the same screen. Right now it links back to step one, which throws away the email they typed.',
+      'I wish the “connection lost” case on the password screen kept the new password. Losing it means typing a long password twice on a shaky connection.',
+    ],
+    whatifs: ['What if the code screen showed “Sent to ••••4417” under the boxes?', 'What if “Send by SMS instead” appeared after 30 seconds of waiting?'],
+    taste: 'I nearly said “the success screen feels flat”. Asking myself why, the real point was that it doesn’t say where people will land next, so it reads like a dead end. I said that instead.',
+    receiving: 'When I raised the expired code, she started with “But the brief said four steps.” I asked what she thought a person would do when the link sent them back, and she said they would probably give up. After that she asked questions instead of explaining. Next time I would say up front that wishes are about users, not her, and I would leave more than five minutes for her questions because we ran over.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

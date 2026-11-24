@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, findExercise, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, FRAME_LEAD, KOSH_PARTS, findExercise, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -185,6 +185,21 @@ describe('episodes', () => {
           parts.forEach((x, k) => expect(x.length).toBeLessThanOrEqual([26, 32, 24][k]));   // title (16px bold), line (12px), button: each fits the 240-wide phone
         }
       }
+      if (ep.game.id === 'taste-filter') {   // every comment points at a part of the screen the game draws, and both kinds touch more than one part
+        expect(lanes).toEqual(['taste', 'reason']);
+        for (const c of ep.game.cards) { expect(KOSH_PARTS).toContain(c.visual); expect(c.note).toBeTruthy(); }
+        for (const l of lanes) expect(new Set(ep.game.cards.filter(c => c.lane === l).map(c => c.visual)).size).toBeGreaterThan(1);
+      }
+      if (ep.game.id === 'frame-feedback') {   // every kept thought is rewritten in its frame; binned ones only explain why
+        expect(lanes).toEqual(['like', 'wish', 'whatif', 'bin']);
+        for (const c of ep.game.cards) {
+          expect(c.note).toBeTruthy();
+          if (c.lane === 'bin') expect(c.visual).toBeUndefined();
+          else expect((c.visual ?? '').startsWith(`${FRAME_LEAD[c.lane as keyof typeof FRAME_LEAD]} `)).toBe(true);
+          if (c.lane === 'whatif') expect(c.visual?.endsWith('?')).toBe(true);
+        }
+      }
+      if (ep.game.id === 'calm-reply') { expect(lanes).toEqual(['ask', 'note', 'context']); for (const c of ep.game.cards) { expect(c.visual).toBeTruthy(); expect(c.note).toBeTruthy(); expect(c.note?.startsWith('“')).toBe(true); } }   // a reflex to strike and the words to say instead
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card
     });
