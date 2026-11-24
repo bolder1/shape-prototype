@@ -1,5 +1,45 @@
 import { describe, expect, it } from 'vitest';
-import { API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('pr.2 helpers', () => {
+  it('solves cubic-bezier curves like a browser', () => {
+    for (const e of EASES) { expect(bezierAt(EASE_CURVES[e], 0)).toBeCloseTo(0, 5); expect(bezierAt(EASE_CURVES[e], 1)).toBeCloseTo(1, 5); }
+    expect(bezierAt(EASE_CURVES.linear, 0.37)).toBeCloseTo(0.37, 6);
+    expect(bezierAt([0.25, 0.1, 0.25, 1], 0.5)).toBeCloseTo(0.8024, 3);   // CSS `ease` at half time
+    expect(bezierAt(EASE_CURVES.out, 0.25)).toBeGreaterThan(0.6);   // arriving: most of the way there early
+    expect(bezierAt(EASE_CURVES.in, 0.25)).toBeLessThan(0.1);   // leaving: barely started
+    expect(bezierAt(EASE_CURVES.inout, 0.5)).toBeCloseTo(0.5, 3);   // symmetric
+    for (const e of EASES) for (let k = 0; k < 20; k++) expect(bezierAt(EASE_CURVES[e], (k + 1) / 20)).toBeGreaterThanOrEqual(bezierAt(EASE_CURVES[e], k / 20) - 1e-9);
+    expect(bezierCss('out')).toBe('cubic-bezier(0.16, 1, 0.3, 1)');
+  });
+  it('picks the curve from where a motion starts and ends', () => {
+    expect([curveFor('off>on'), curveFor('on>off'), curveFor('on>on'), curveFor('loop'), curveFor('finger')]).toEqual(['out', 'in', 'inout', 'linear', 'linear']);
+  });
+  it('bands durations and judges a tuned one', () => {
+    expect([bandOf(80), bandOf(100), bandOf(150), bandOf(300), bandOf(450), bandOf(900)]).toEqual(['instant', 'instant', 'quick', 'standard', 'long', 'slow']);
+    expect(durationVerdict(300, 'standard')).toBe('right');
+    expect(durationVerdict(40, 'quick')).toBe('fast');
+    expect(durationVerdict(700, 'standard')).toBe('slow');
+    expect(timingOf('600|sheet')).toEqual({ ms: 600, kind: 'sheet' });
+  });
+  it('staggers within a budget', () => {
+    expect(staggerEnd(20, 40)).toBe(760);
+    expect(staggerEnd(1, 40)).toBe(0);
+    expect(staggerStep(5)).toBe(40);
+    expect(staggerStep(21)).toBe(10);
+    expect(staggerEnd(21, staggerStep(21))).toBeLessThanOrEqual(200);
+  });
+  it('reduces motion without removing meaning', () => {
+    expect(reduceFor({ travel: 0, spin: true, auto: true, status: true, meaning: true })).toBe('keep');   // a spinner
+    expect(reduceFor({ travel: 300, auto: true, meaning: true })).toBe('stop');   // an autoplaying carousel
+    expect(reduceFor({ travel: 390, meaning: true })).toBe('fade');   // a page slide
+    expect(reduceFor({ travel: 0, zoom: true, meaning: true })).toBe('fade');   // a zoom
+    expect(reduceFor({ travel: 120, parallax: true, meaning: false })).toBe('stop');   // parallax
+    expect(reduceFor({ travel: 8, meaning: true })).toBe('keep');   // a small fade-up
+    const lanes = Object.values(DABBA_MOTIONS).map(m => reduceFor(m));
+    for (const l of REDUCE_LANES) expect(lanes).toContain(l);
+  });
+});
 
 describe('ds.3 helpers', () => {
   const old = ['isPrimary', 'isTertiary', 'isDanger', 'isSmall', 'isBig', 'isLoading', 'isDisabled', 'hasIcon', 'hasIconRight', 'isRounded', 'color', 'padding'];
@@ -499,6 +539,31 @@ describe('episodes', () => {
         expect(lanes).toEqual([...PROP_TYPES]);
         for (const c of ep.game.cards) { expect(propValues(c.visual ?? '').length).toBeGreaterThanOrEqual(2); expect(c.note).toBeTruthy(); }
         expect(frameCount(ep.game.cards.map(c => ({ visual: c.visual, type: c.lane })))).toBe(60);
+      }
+      if (ep.game.id === 'ease-tune') {   // every moment's curve follows from where it starts and ends
+        expect(lanes).toEqual([...EASES]);
+        for (const c of ep.game.cards) { expect(c.lane).toBe(curveFor(c.visual ?? '')); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'duration-tune') {   // the first build's duration is always outside the band the transition needs
+        expect(lanes).toEqual(DURATION_BANDS.map(b => b.id));
+        for (const c of ep.game.cards) {
+          const { ms, kind } = timingOf(c.visual ?? '');
+          expect(DURATION_KINDS).toContain(kind);
+          expect(ms).toBeGreaterThan(0);
+          expect(durationVerdict(ms, c.lane as DurationBand)).not.toBe('right');
+          expect(c.note).toBeTruthy();
+        }
+      }
+      if (ep.game.id === 'motion-purpose') {   // a drawable motion each, none twice
+        expect(lanes).toEqual([...MOTION_JOBS]);
+        const vs = ep.game.cards.map(c => c.visual);
+        expect(new Set(vs).size).toBe(vs.length);
+        for (const c of ep.game.cards) { expect(MEANING_MOTIONS).toContain(c.visual); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'motion-audit') {   // every moving part of the home screen once, decided by the rule
+        expect(lanes).toEqual([...REDUCE_LANES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(DABBA_MOTIONS).sort());
+        for (const c of ep.game.cards) { expect(c.lane).toBe(reduceFor(DABBA_MOTIONS[c.visual as keyof typeof DABBA_MOTIONS])); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'doc-rewrite') {   // every kept paragraph is rewritten shorter; cut ones have no rewrite
         expect(lanes).toEqual([...DOC_BLOCKS]);

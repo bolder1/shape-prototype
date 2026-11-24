@@ -30,7 +30,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'form-pain', 'press-feedback', 'two-devices', 'direct-touch',
   'component-kit', 'icon-audit', 'image-choice', 'table-tidy',
   'token-tiers', 'mode-swap', 'token-names',
-  'prop-sprawl', 'variant-explosion', 'doc-page']);
+  'prop-sprawl', 'variant-explosion', 'doc-page',
+  'ease-curves', 'motion-timing', 'motion-meaning', 'reduced-motion']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -125,6 +126,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `api-build`: lanes are `API_KINDS` in order; every card's `label` is "oldProp · what it's used for" (a prop of the old Button, see `oldPropKind`), and its `visual` is what it becomes in the new API: an enum option for `enum` ("variant=danger"), the prop's name for `boolean`, the slot's name for `slot`, and for `fixed` the prop or token that now decides it ("size", "button-radius"). The game builds the API with `apiFrom` and counts its looks with `comboCount`. Every card needs a `note`.
  *  - `prop-type`: lanes are `PROP_TYPES` in order (Figma's variant, boolean, text and instance-swap properties); every card is one thing that varies on Rasta's Button, and its `visual` is the values it takes, comma-separated. Only `variant` cards multiply the frames you draw (`frameCount`). Every card needs a `note`.
  *  - `doc-rewrite`: lanes are `DOC_BLOCKS` in order; every card's `label` is a paragraph from the old Button docs, and its `visual` is the rewrite that goes in that block of the new page (shorter: see `readSeconds`). A `cut` card has no visual. Every card needs a `note`.
+ *  - `ease-tune`: lanes are `EASES` in order; every card is a moment in Dabba, its `visual` is where the thing starts and ends ("off>on", "on>off", "on>on", "loop" or "finger"), and its lane is `curveFor(visual)`. The game plays the motion on the curve you pick (`bezierAt`) beside the right one. Every card needs a `note`.
+ *  - `duration-tune`: lanes are the `DURATION_BANDS` ids in order; every card is a transition in Dabba, its `visual` is "ms|kind" (how long Dabba's first build ran it, outside the card's band, and one of `DURATION_KINDS` to draw). You tune the duration on a slider and it is judged by `durationVerdict`. Every card needs a `note`.
+ *  - `motion-purpose`: lanes are `MOTION_JOBS` in order; every card is a motion in Dabba, its `visual` one of `MEANING_MOTIONS` (each used once), drawn and played by the game. Every card needs a `note`.
+ *  - `motion-audit`: lanes are `REDUCE_LANES` in order; every card's `visual` is a part of Dabba's home screen (a key of `DABBA_MOTIONS`, each used once), and its lane is what `reduceFor` says it becomes when Reduce motion is on. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -152,7 +157,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'form-triage', 'wait-feedback', 'port-phone', 'gesture-map',
   'state-sheet', 'icon-odd', 'image-budget', 'table-build',
   'tier-edit', 'mode-tune', 'token-rename',
-  'api-build', 'prop-type', 'doc-rewrite']);
+  'api-build', 'prop-type', 'doc-rewrite',
+  'ease-tune', 'duration-tune', 'motion-purpose', 'motion-audit']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -522,6 +528,110 @@ export type DocBlock = (typeof DOC_BLOCKS)[number];
 export const wordCount = (text: string) => text.split(/\s+/).filter(w => /[\p{L}\p{N}]/u.test(w)).length;
 /** Seconds to read text at `wpm` words a minute (238 is a common average for adults reading English silently). */
 export const readSeconds = (text: string, wpm = 238) => Math.ceil((wordCount(text) / wpm) * 60);
+
+/** Easing curves as CSS cubic-bezier control points (x1, y1, x2, y2), in `ease-tune` lane order. `out` decelerates
+ *  (things arriving), `in` accelerates (things leaving), `inout` speeds up then slows (moving across the screen), and
+ *  `linear` keeps one speed (loops, and anything that follows a finger). */
+export const EASE_CURVES = {
+  out: [0.16, 1, 0.3, 1],
+  in: [0.7, 0, 0.84, 0],
+  inout: [0.65, 0, 0.35, 1],
+  linear: [0, 0, 1, 1],
+} as const satisfies Record<string, readonly [number, number, number, number]>;
+export const EASES = ['out', 'in', 'inout', 'linear'] as const;
+export type Ease = (typeof EASES)[number];
+/** The CSS for a curve: "cubic-bezier(0.16, 1, 0.3, 1)". */
+export const bezierCss = (e: Ease) => `cubic-bezier(${EASE_CURVES[e].join(', ')})`;
+/** How far along a cubic-bezier(x1, y1, x2, y2) is at time `x` (0–1), solved the way browsers do: find the curve
+ *  parameter whose x is `x` (Newton's method, then bisection if that stalls), and return its y. */
+export const bezierAt = (curve: readonly number[], x: number) => {
+  const [x1, y1, x2, y2] = curve;
+  const c = Math.min(1, Math.max(0, x));
+  if (x1 === y1 && x2 === y2) return c;
+  const bx = (s: number) => 3 * x1 * s * (1 - s) ** 2 + 3 * x2 * s * s * (1 - s) + s ** 3;
+  const by = (s: number) => 3 * y1 * s * (1 - s) ** 2 + 3 * y2 * s * s * (1 - s) + s ** 3;
+  const dx = (s: number) => 3 * x1 * (1 - s) ** 2 + 6 * (x2 - x1) * s * (1 - s) + 3 * (1 - x2) * s * s;
+  let s = c;
+  for (let k = 0; k < 8; k++) {
+    const err = bx(s) - c, d = dx(s);
+    if (Math.abs(err) < 1e-6) return by(s);
+    if (Math.abs(d) < 1e-6) break;
+    s -= err / d;
+  }
+  let lo = 0, hi = 1;
+  s = c;
+  for (let k = 0; k < 40; k++) { if (bx(s) < c) lo = s; else hi = s; s = (lo + hi) / 2; }
+  return by(s);
+};
+/** The curve a motion needs, from an `ease-tune` card's visual: "off>on" arrives (ease out), "on>off" leaves (ease in),
+ *  "on>on" moves across the screen (ease in-out), and "loop" or "finger" keeps one speed (linear). */
+export const curveFor = (path: string): Ease =>
+  path === 'off>on' ? 'out' : path === 'on>off' ? 'in' : path === 'on>on' ? 'inout' : 'linear';
+
+/** Duration bands for UI motion (`duration-tune` lanes), each up to `max` ms. Past the last band, motion makes people wait. */
+export const DURATION_BANDS = [
+  { id: 'instant', min: 0, max: 100 },
+  { id: 'quick', min: 101, max: 200 },
+  { id: 'standard', min: 201, max: 400 },
+  { id: 'long', min: 401, max: 600 },
+] as const;
+export type DurationBand = (typeof DURATION_BANDS)[number]['id'];
+/** The band a duration falls in, or `slow` past 600 ms. */
+export const bandOf = (ms: number): DurationBand | 'slow' => DURATION_BANDS.find(b => ms <= b.max)?.id ?? 'slow';
+/** Whether a tuned duration fits the band a transition needs. */
+export const durationVerdict = (ms: number, band: DurationBand): 'right' | 'fast' | 'slow' => {
+  const b = DURATION_BANDS.find(x => x.id === band)!;
+  return ms < b.min ? 'fast' : ms > b.max ? 'slow' : 'right';
+};
+/** What a `duration-tune` card animates, and for how long Dabba's first build ran it: "600|sheet". */
+export const DURATION_KINDS = ['press', 'check', 'toast', 'tooltip', 'sheet', 'sheet-out', 'page', 'menu'] as const;
+export type DurationKind = (typeof DURATION_KINDS)[number];
+export const timingOf = (visual: string) => { const [ms, kind] = visual.split('|'); return { ms: Number(ms), kind: kind as DurationKind }; };
+/** When the last of `n` staggered items starts, `step` ms apart: the first waits nothing. */
+export const staggerEnd = (n: number, step: number) => Math.max(0, n - 1) * step;
+/** The stagger step that brings `n` items in within `budget` ms (40 ms at most, so a short list doesn't crawl). */
+export const staggerStep = (n: number, budget = 200, most = 40) => (n <= 1 ? 0 : Math.min(most, Math.floor(budget / (n - 1))));
+
+/** What a motion is for (`motion-purpose` lanes). `none` is decoration: cut it, or keep it rare. */
+export const MOTION_JOBS = ['where', 'state', 'focus', 'none'] as const;
+export type MotionJob = (typeof MOTION_JOBS)[number];
+/** Motions the `motion-purpose` game and the Motion with meaning scene can draw (a card's `visual`). */
+export const MEANING_MOTIONS = ['fly-to-cart', 'push-deeper', 'expand-card', 'sheet-from-button', 'shake', 'check-draw', 'skeleton', 'count-up',
+  'pulse-once', 'logo-spin', 'bounce-all', 'float-icons'] as const;
+export type MeaningMotion = (typeof MEANING_MOTIONS)[number];
+
+/** How a motion moves, for deciding what it becomes when someone has turned on Reduce motion. `travel` is how far it moves, in px. */
+export interface MotionSpec { travel: number; zoom?: boolean; spin?: boolean; parallax?: boolean; auto?: boolean; status?: boolean; meaning: boolean }
+/** What a motion becomes under prefers-reduced-motion (`motion-audit` lanes). */
+export const REDUCE_LANES = ['stop', 'fade', 'keep'] as const;
+export type ReduceLane = (typeof REDUCE_LANES)[number];
+/** Movement past this many px, or any zoom, spin or parallax, is the kind that can trigger vestibular symptoms. */
+export const VESTIBULAR_PX = 40;
+/** The rule: a status indicator (a spinner, a progress bar) stays, because it is the only sign something is happening.
+ *  Other motion that plays by itself stops, and so does big motion that means nothing; big motion that means something
+ *  is swapped for a fade (or an instant change) that keeps the meaning; small, meaningful changes stay. Reduce motion,
+ *  don't remove meaning. */
+export const reduceFor = (m: MotionSpec): ReduceLane => {
+  const big = m.travel > VESTIBULAR_PX || !!m.zoom || !!m.spin || !!m.parallax;
+  if (m.status) return 'keep';
+  if (m.auto) return 'stop';
+  if (big) return m.meaning ? 'fade' : 'stop';
+  return 'keep';
+};
+/** The animated parts of Dabba's home screen (the `motion-audit` game's cards point at these by `visual`). */
+export const DABBA_MOTIONS = {
+  hero: { travel: 120, parallax: true, meaning: false },
+  offers: { travel: 300, auto: true, meaning: true },
+  page: { travel: 390, meaning: true },
+  sheet: { travel: 0, zoom: true, meaning: true },
+  fly: { travel: 300, meaning: true },
+  confetti: { travel: 220, spin: true, meaning: false },
+  press: { travel: 0, meaning: true },
+  spinner: { travel: 0, spin: true, auto: true, status: true, meaning: true },
+  toast: { travel: 8, meaning: true },
+  badge: { travel: 4, meaning: true },
+} as const satisfies Record<string, MotionSpec>;
+export type DabbaPart = keyof typeof DABBA_MOTIONS;
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

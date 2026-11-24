@@ -109,6 +109,10 @@ import { TokenRename } from './games/TokenRename';
 import { ApiBuild } from './games/ApiBuild';
 import { PropType } from './games/PropType';
 import { DocRewrite } from './games/DocRewrite';
+import { EaseTune } from './games/EaseTune';
+import { DurationTune } from './games/DurationTune';
+import { MotionPurpose } from './games/MotionPurpose';
+import { MotionAudit } from './games/MotionAudit';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -227,6 +231,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'api-build': ApiBuild,
   'prop-type': PropType,
   'doc-rewrite': DocRewrite,
+  'ease-tune': EaseTune,
+  'duration-tune': DurationTune,
+  'motion-purpose': MotionPurpose,
+  'motion-audit': MotionAudit,
 };
 
 interface Props {

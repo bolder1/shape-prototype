@@ -982,9 +982,53 @@ const ds3: BossBriefInput = {
   },
 };
 
+const pr2: BossBriefInput = {
+  chapterId: 'pr.2',
+  title: 'Three transitions, justified',
+  minutes: 90,
+  scenario: [
+    'Pick three transitions in your Studio product that would explain something if they moved: something arriving, something leaving or changing place, and something giving feedback. If you don’t have a product yet, use Dabba, the Bengaluru lunch-subscription app from this chapter: opening a meal, adding it to the week, and paying.',
+    'Animate all three in Figma (Smart Animate), Principle, Framer or code, and share a link or a screen recording. Then write the spec here as you would hand it to a developer, so someone who can’t see the recording could build each one, including what it becomes when Reduce motion is on.',
+  ],
+  fields: [
+    { id: 'link', label: 'Prototype or recording', kind: 'text', minWords: 6, hint: 'The link, and the tool you used.' },
+    { id: 'transitions', label: 'The three transitions', kind: 'list', items: 3, minWords: 40, hint: 'One per line: what triggers it, what moves and from where to where, the curve (named, with its cubic-bezier or spring values), the duration in ms, and any stagger or order.' },
+    { id: 'why', label: 'Why each one moves', kind: 'list', items: 3, minWords: 20, hint: 'One per line: the job the motion does (where it went, what changed, or where to look), and what someone would miss if it were cut.' },
+    { id: 'reduced', label: 'With Reduce motion on', kind: 'list', items: 3, minWords: 12, hint: 'One per line: does it stop, become a fade (with its duration), or stay as it is, and why.' },
+    { id: 'cut', label: 'What you didn’t animate', kind: 'text', minWords: 20, hint: 'One motion you considered and left out, or one you cut from the product, and why it had no job.' },
+  ],
+  rubric: [
+    { id: 'meaning', label: 'Every motion has a job', strong: 'Each transition explains something specific (spatial continuity, a change of state, or a single pointer to what matters), the justification says what would be lost without it, motion is paired with words where it carries a message, and decoration is cut on purpose.', weight: 3, required: true },
+    { id: 'curves', label: 'The right curve and time', strong: 'Arrivals ease out, exits ease in, moves across the screen ease in-out, and only loops or finger-driven motion are linear; durations fit the size of the change (under 100 ms for presses, roughly 150–400 ms for most UI, at most about 500 ms for a full screen); exits are shorter than entrances; values are exact enough to build.', weight: 3, required: true },
+    { id: 'reduced', label: 'Reduced motion decided per motion', strong: 'Every transition has a reduced version: large travel, zoom and parallax become a fade or an instant change, anything that plays by itself stops, and small meaningful changes and status indicators stay. No blanket “animation: none”.', weight: 2 },
+    { id: 'choreo', label: 'Choreography', strong: 'Where several things move, one leads in reading order, staggers are 30–50 ms and capped, and the whole transition settles in about half a second. Direction is consistent: deeper one way, back the reverse.', weight: 1 },
+    { id: 'system', label: 'Built as a system', strong: 'Curves and durations are named tokens (ease-enter, duration-standard) reused across the three, not one-off values.', weight: 1 },
+  ],
+  tips: ['Before you animate, write one sentence for each transition: “This motion shows that…”. If you can’t finish the sentence, don’t animate it.', 'Watch your recording at half speed. Anything that jolts at the start or end has the wrong curve; anything you wait for is too long.'],
+  example: {
+    link: 'Figma prototype with Smart Animate, plus a 40-second screen recording: figma.com/proto/… (Dabba motion).',
+    transitions: [
+      'Opening a meal. Trigger: tap a meal card on the week screen. The card’s photo grows from its place in the list to the full-width header of the meal page, while the rest of the menu fades out and the page’s text fades up 8 px behind it, 40 ms after the photo starts. Curve: ease-enter, cubic-bezier(0.16, 1, 0.3, 1). Duration: 350 ms for the photo, 250 ms for the text. Back reverses it with ease-exit, cubic-bezier(0.7, 0, 0.84, 0), in 250 ms.',
+      'Adding a meal to the week. Trigger: tap Add on the meal page. The Add button darkens on press in 80 ms. A 48 px copy of the photo shrinks to 16 px and travels along a short arc to the cart tab, ease-move, cubic-bezier(0.65, 0, 0.35, 1), in 400 ms. As it lands the badge counts from 2 to 3 with a 1.2× scale that settles in 150 ms, and the toast “Added to Tuesday · Undo” rises 8 px and fades in over 200 ms with ease-enter.',
+      'Paying. Trigger: tap Pay ₹495. The button keeps its width, swaps its label for a linear spinner (one turn per 800 ms) and the words “Waiting for your UPI app…”. On success the spinner becomes a tick that draws in over 300 ms with ease-enter, and “Order placed for the week” fades in 100 ms after. On a wrong PIN the field shakes once, 3 cycles of 6 px in 300 ms, and the error text appears below it at the same moment.',
+    ],
+    why: [
+      'Continuity: the photo that grows is the card Kiran tapped, so she knows this page is that meal and doesn’t have to find her place. Cut it and the page swaps with no link to what she touched. Direction stays consistent: deeper grows out, Back shrinks in.',
+      'Where it went: the flight shows the meal going into the cart, and the badge confirms it. In testing, without it two of five people tapped Add twice. The toast says it in words, and its Undo covers a mis-tap.',
+      'What changed: the spinner with words says the payment is still going, so nobody taps Pay again; the tick and the shake say yes and no. The words carry the same message for anyone who can’t see the motion or has it turned off.',
+    ],
+    reduced: [
+      'Opening a meal becomes a 150 ms cross-fade. The growing photo is movement in depth, a vestibular trigger; the photo at the top of the page still says which meal it is.',
+      'The flight stops. The badge changes from 2 to 3 with a brief colour highlight, and the toast fades in without rising. The meaning, “it went into the cart”, stays.',
+      'Stays as it is. The spinner turns in place and is the only sign the payment is still going, and the tick is small. The shake becomes a red border and the error text, with no movement.',
+    ],
+    cut: 'The Dabba logo spinning on every launch. It told people nothing, delayed the menu by 600 ms on every open, and played twenty times a month for a daily user. It now plays once, on the very first launch, and never with Reduce motion on. The roti and chilli icons floating behind the menu went too: constant background motion pulled the eye away from the meals.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

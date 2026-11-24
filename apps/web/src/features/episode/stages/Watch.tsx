@@ -107,6 +107,10 @@ import { TokenNamesScene } from '../scenes/TokenNames';
 import { PropSprawlScene } from '../scenes/PropSprawl';
 import { VariantExplosionScene } from '../scenes/VariantExplosion';
 import { DocPageScene } from '../scenes/DocPage';
+import { EaseCurvesScene } from '../scenes/EaseCurves';
+import { MotionTimingScene } from '../scenes/MotionTiming';
+import { MotionMeaningScene } from '../scenes/MotionMeaning';
+import { ReducedMotionScene } from '../scenes/ReducedMotion';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -207,6 +211,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'prop-sprawl': PropSprawlScene,
   'variant-explosion': VariantExplosionScene,
   'doc-page': DocPageScene,
+  'ease-curves': EaseCurvesScene,
+  'motion-timing': MotionTimingScene,
+  'motion-meaning': MotionMeaningScene,
+  'reduced-motion': ReducedMotionScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
