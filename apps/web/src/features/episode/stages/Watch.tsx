@@ -123,6 +123,10 @@ import { CognitiveA11yScene } from '../scenes/CognitiveA11y';
 import { VisionNarrativeScene } from '../scenes/VisionNarrative';
 import { RoadmapHorizonsScene } from '../scenes/RoadmapHorizons';
 import { RivalRingsScene } from '../scenes/RivalRings';
+import { MetricTreeScene } from '../scenes/MetricTree';
+import { HeartGoalsScene } from '../scenes/HeartGoals';
+import { CohortTriangleScene } from '../scenes/CohortTriangle';
+import { TrackPlanScene } from '../scenes/TrackPlan';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -239,6 +243,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'vision-narrative': VisionNarrativeScene,
   'roadmap-horizons': RoadmapHorizonsScene,
   'rival-rings': RivalRingsScene,
+  'metric-tree': MetricTreeScene,
+  'heart-goals': HeartGoalsScene,
+  'cohort-triangle': CohortTriangleScene,
+  'track-plan': TrackPlanScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

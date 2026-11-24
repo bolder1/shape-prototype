@@ -35,7 +35,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'micro-anatomy', 'delight-check',
   'voice-tone', 'content-first', 'loc-ready',
   'keyboard-flow', 'sr-semantics', 'form-errors', 'cognitive-a11y',
-  'vision-narrative', 'roadmap-horizons', 'rival-rings']);
+  'vision-narrative', 'roadmap-horizons', 'rival-rings',
+  'metric-tree', 'heart-goals', 'cohort-triangle', 'track-plan']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -146,6 +147,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `vision-postcard`: lanes are `VISION_PARTS` in order; every card is a line from a draft of Galla's vision. The game builds a postcard from 2030 out of the `today`, `future` and `whyus` lines, and highlights the words `visionFlags` finds in the `cut` ones. A card is in `cut` exactly when `visionFlaw` faults it. Every card needs a `note` (for cut lines, the rewrite).
  *  - `horizon-board`: lanes are `HORIZONS` in order; every card is a bet, its `visual` a key of `GALLA_BETS` (each used once), its `label` the problem it takes on, and its lane is what `horizonFor` says. The game shows the evidence, the fit and the bet it builds on, and the board fades from solid to faint left to right. Every card needs a `note`.
  *  - `rival-map`: lanes are `RIVAL_RINGS` in order; every card is something Shabnam could use instead of Galla, its `visual` a key of `GALLA_RIVALS` (each used once), and its lane is what `ringFor` says. The game drops each one on a ring around her job and shows what it does better than Galla. Every card needs a `note`.
+ *  - `metric-flow`: lanes are `METRIC_ROLES` in order; every card is a metric Kahaani's team proposed, its `visual` a key of `KAHAANI_METRICS` (each used once), its `label` that metric's `name`, and its lane is what `metricRole` says. The game wires inputs under the north star, guardrails beside it and vanity metrics into the bin. Every card needs a `note`.
+ *  - `heart-grid`: lanes are `GSM_PARTS` in order; every card is a line from the Apni Awaaz HEART plan, its `visual` a key of `AWAAZ_HEART` (each used once), its `label` that line's `text`, and its lane is what `gsmPart` reads in the text. A signal or metric then goes in its HEART row too (the line's `dim`); each row gets one signal and one metric. Every card needs a `note`.
+ *  - `cohort-read`: lanes are `DATA_VIEWS` in order; every card is a question about Kahaani's new families, its `visual` a key of `KAHAANI_ASKS` (each used once), and its lane is that ask's `view`. Once the right view is open you estimate the answer on a slider, read by `askValue` and judged by `estimateGrade`. Every card needs a `note`.
+ *  - `event-wire`: lanes are the keys of `KAHAANI_EVENTS` in order; every card is a question the team wants answered, its `visual` a key of `TRACK_QUESTIONS` (each used once), and its lane is that question's `event`. You fire the event from its place on the story player, then pick the properties that answer the question, checked by `propsCheck`. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -178,7 +183,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'micro-build', 'delight-judge',
   'tone-dial', 'question-flow', 'loc-spot',
   'focus-path', 'sr-listen', 'form-tab', 'load-lift',
-  'vision-postcard', 'horizon-board', 'rival-map']);
+  'vision-postcard', 'horizon-board', 'rival-map',
+  'metric-flow', 'heart-grid', 'cohort-read', 'event-wire']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -1096,6 +1102,191 @@ export const GALLA_RIVALS = {
   pos: { name: 'A billing suite for supermarket chains', who: 'other', job: 'same', kind: 'product', edge: 'Barcodes, GST and ten tills at once' },
 } as const satisfies Record<string, Rival>;
 export type GallaRival = keyof typeof GALLA_RIVALS;
+
+// st.3 · Metrics that matter. Kahaani is a Hyderabad app of bedtime audio stories for children, in Hindi, Telugu and
+// English; families listen at night, so its numbers are about nights, not taps.
+
+/** What a metric is for in a metric tree (`metric-flow` lanes): the one number for the value users get, the levers
+ *  teams can pull to move it, the harms it must not cause, and numbers that only look good. */
+export const METRIC_ROLES = ['north', 'input', 'guardrail', 'vanity'] as const;
+export type MetricRole = (typeof METRIC_ROLES)[number];
+/** A proposed metric: whether it counts value the user gets, whether one team can move it in weeks, whether moving it
+ *  moves the north star, whether it measures a harm, and whether it only ever goes up. `short` is for small cards. */
+export interface Metric { short: string; name: string; value?: boolean; team?: boolean; leads?: boolean; harm?: boolean; cumulative?: boolean }
+/** A metric's role: a running total is vanity whatever it counts; a harm is a guardrail; value that no single team
+ *  owns is the north star; a lever a team can pull that moves the north star is an input; anything else is vanity. */
+export const metricRole = (m: Omit<Metric, 'short' | 'name'>): MetricRole =>
+  m.cumulative ? 'vanity' : m.harm ? 'guardrail' : m.value && !m.team ? 'north' : m.team && m.leads ? 'input' : 'vanity';
+/** The metrics in the `metric-flow` game and the `metric-tree` scene. */
+export const KAHAANI_METRICS = {
+  nights: { short: 'Story-nights a week', name: 'Story-nights a week: nights on which a child finishes at least one story', value: true },
+  firstweek: { short: 'A first story in week one', name: 'New families who finish a story in their first week', team: true, leads: true },
+  finish: { short: 'Stories finished', name: 'Share of started stories that are finished', team: true, leads: true },
+  opens: { short: 'Nights opened', name: 'Nights a week each family opens Kahaani', team: true, leads: true },
+  shelf: { short: 'New Telugu stories', name: 'New Telugu stories published each week', team: true, leads: true },
+  late: { short: 'Listening after 10 pm', name: 'Children still listening after 10 pm', team: true, harm: true },
+  mute: { short: 'Notifications turned off', name: 'Parents who turn off Kahaani’s notifications', team: true, harm: true },
+  downloads: { short: 'Total downloads', name: 'Total app downloads since launch', cumulative: true },
+  played: { short: 'Stories ever played', name: 'Total stories ever played', value: true, cumulative: true },
+  screens: { short: 'Screens per visit', name: 'Screens viewed per visit', team: true },
+} as const satisfies Record<string, Metric>;
+export type KahaaniMetric = keyof typeof KAHAANI_METRICS;
+/** The north star broken into its inputs: families listening × nights each opens the app × the share of those nights
+ *  that end with a finished story. */
+export const storyNights = ({ families, opens, finish }: { families: number; opens: number; finish: number }) => Math.round(families * opens * finish);
+/** Kahaani's week of 16 November, for the scene and the end of the game. */
+export const KAHAANI_WEEK = { families: 40_000, opens: 3.5, finish: 0.6 } as const;
+
+/** Google's HEART dimensions (Rodden, Hutchinson and Fu, 2010), in order. */
+export const HEART = ['happiness', 'engagement', 'adoption', 'retention', 'task'] as const;
+export type HeartDim = (typeof HEART)[number];
+/** Goals → signals → metrics, plus the bin for numbers that can't fail (`heart-grid` lanes; goals are given). */
+export const GSM_PARTS = ['signal', 'metric', 'cut'] as const;
+export type GsmPart = (typeof GSM_PARTS)[number];
+const RUNNING_TOTAL = /\b(total|ever|since launch|all-time)\b/i;
+const MEASURE_WORD = /\b(share|rate|median|average|per)\b|%/i;
+const TIME_WINDOW = /\b(\d+\s*(days?|weeks?|months?)|each (day|week|month)|a (day|week|month)|daily|weekly|monthly)\b/i;
+/** What a line of a HEART plan is, read from its words: a running total is cut (it only goes up); a rate, share,
+ *  median, average or "per" over a time window is a metric; anything else is a signal (something you could notice
+ *  people doing or feeling). */
+export const gsmPart = (text: string): GsmPart =>
+  RUNNING_TOTAL.test(text) ? 'cut' : MEASURE_WORD.test(text) && TIME_WINDOW.test(text) ? 'metric' : 'signal';
+/** The goal for each HEART row of Apni Awaaz, Kahaani's feature for recording a story in your own voice. */
+export const AWAAZ_GOALS: Record<HeartDim, string> = {
+  happiness: 'Families love hearing their own people tell the story',
+  engagement: 'Children ask for the recorded stories again',
+  adoption: 'Families try recording soon after it launches',
+  retention: 'Recorders keep recording, not just once',
+  task: 'A 70-year-old can record a story without help',
+};
+/** Lines from the Apni Awaaz HEART plan (`heart-grid` cards). Cut lines have no row. */
+export const AWAAZ_HEART = {
+  hsig: { text: 'Parents say the recording sounds “just like Dadi in the room”', dim: 'happiness' },
+  hmet: { text: 'Average rating of a recorded story, 1 to 5, asked after it plays, each week', dim: 'happiness' },
+  esig: { text: 'Children press play on Dadi’s story again the next night', dim: 'engagement' },
+  emet: { text: 'Plays per recorded story in its first 7 days', dim: 'engagement' },
+  asig: { text: 'Families tap Record for the first time', dim: 'adoption' },
+  amet: { text: 'Share of weekly listening families who save a first recording within 30 days of launch', dim: 'adoption' },
+  rsig: { text: 'Families who recorded once come back to record another', dim: 'retention' },
+  rmet: { text: 'Share of first-time recorders who save another recording within 4 weeks', dim: 'retention' },
+  tsig: { text: 'Grandparents give up halfway through a recording', dim: 'task' },
+  tmet: { text: 'Share of recordings started that are saved, and median minutes to save one, each week', dim: 'task' },
+  total: { text: 'Total recordings since launch' },
+  taps: { text: 'Total taps on the Record button, ever' },
+} as const satisfies Record<string, { text: string; dim?: HeartDim }>;
+export type AwaazLine = keyof typeof AWAAZ_HEART;
+
+/** The three ways to look at Kahaani's new families (`cohort-read` lanes): one journey step by step, groups by the
+ *  week they joined, and groups by something about them. */
+export const DATA_VIEWS = ['funnel', 'cohort', 'segment'] as const;
+export type DataView = (typeof DATA_VIEWS)[number];
+/** New families from 12 October to 22 November, from install to a second night. */
+export const KAHAANI_FUNNEL = [
+  { id: 'install', label: 'Installed Kahaani', n: 10_000 },
+  { id: 'child', label: 'Added a child', n: 8_200 },
+  { id: 'started', label: 'Started a first story', n: 6_100 },
+  { id: 'finished', label: 'Finished it', n: 3_400 },
+  { id: 'second', label: 'Came back a second night', n: 2_100 },
+] as const;
+export type FunnelStep = (typeof KAHAANI_FUNNEL)[number]['id'];
+/** Weekly cohorts: families who joined in the week starting `label`, and how many listened in week 0, 1, 2…
+ *  `note` marks what was different about the week. The new first night shipped on 9 November. */
+export const KAHAANI_COHORTS = [
+  { id: '12oct', label: '12 Oct', kept: [2000, 800, 660, 600, 560] },
+  { id: '19oct', label: '19 Oct', kept: [2100, 861, 714, 651, 609] },
+  { id: '26oct', label: '26 Oct', kept: [2000, 840, 700, 620, 600] },
+  { id: '2nov', label: '2 Nov', kept: [6000, 1320, 960, 780], note: 'Diwali ads' },
+  { id: '9nov', label: '9 Nov', kept: [2200, 1144, 990], note: 'New first night' },
+  { id: '16nov', label: '16 Nov', kept: [2300, 1242] },
+] as const;
+export type CohortId = (typeof KAHAANI_COHORTS)[number]['id'];
+/** First stories started and finished, by the language the family picked. Adds up to the funnel's two steps. */
+export const KAHAANI_SEGMENTS = {
+  hindi: { label: 'Hindi', started: 3000, finished: 1800 },
+  telugu: { label: 'Telugu', started: 1500, finished: 600 },
+  english: { label: 'English', started: 1600, finished: 1000 },
+} as const;
+export type KahaaniLang = keyof typeof KAHAANI_SEGMENTS;
+/** The share of a funnel step that reaches a later one. */
+export const funnelShare = (from: FunnelStep, to: FunnelStep) =>
+  KAHAANI_FUNNEL.find(s => s.id === to)!.n / KAHAANI_FUNNEL.find(s => s.id === from)!.n;
+/** The share of one or more cohorts still listening in a week, weighted by size: blending cohorts gives the bigger
+ *  one more say, which is how one unusual week can hide a real change. Null if a cohort hasn't reached that week. */
+export const cohortShare = (ids: readonly CohortId[], week: number) => {
+  const rows = KAHAANI_COHORTS.filter(c => ids.includes(c.id));
+  if (rows.some(c => c.kept.length <= week)) return null;
+  return rows.reduce((s, c) => s + (c.kept[week] ?? 0), 0) / rows.reduce((s, c) => s + c.kept[0], 0);
+};
+export type DataAsk =
+  | { view: 'funnel'; from: FunnelStep; to: FunnelStep }
+  | { view: 'cohort'; cohorts: readonly CohortId[]; week: number }
+  | { view: 'segment'; lang: KahaaniLang };
+/** The questions in the `cohort-read` game. */
+export const KAHAANI_ASKS = {
+  finishFirst: { view: 'funnel', from: 'started', to: 'finished' },
+  startAfterChild: { view: 'funnel', from: 'child', to: 'started' },
+  secondNight: { view: 'funnel', from: 'install', to: 'second' },
+  octWeek4: { view: 'cohort', cohorts: ['26oct'], week: 4 },
+  newFirstNight: { view: 'cohort', cohorts: ['9nov'], week: 1 },
+  diwali: { view: 'cohort', cohorts: ['2nov'], week: 1 },
+  novBlend: { view: 'cohort', cohorts: ['2nov', '9nov', '16nov'], week: 1 },
+  telugu: { view: 'segment', lang: 'telugu' },
+  hindi: { view: 'segment', lang: 'hindi' },
+} as const satisfies Record<string, DataAsk>;
+export type KahaaniAsk = keyof typeof KAHAANI_ASKS;
+/** The answer to an ask, as a percentage to one decimal place. */
+export const askValue = (a: DataAsk) => {
+  const share = a.view === 'funnel' ? funnelShare(a.from, a.to)
+    : a.view === 'cohort' ? cohortShare(a.cohorts, a.week) ?? 0
+      : KAHAANI_SEGMENTS[a.lang].finished / KAHAANI_SEGMENTS[a.lang].started;
+  return Math.round(share * 1000) / 10;
+};
+/** How close an estimate is, in percentage points: within 3 is spot on, within 8 is close. */
+export const estimateGrade = (guess: number, truth: number): 'spot' | 'close' | 'off' => {
+  const d = Math.abs(guess - truth);
+  return d <= 3 ? 'spot' : d <= 8 ? 'close' : 'off';
+};
+
+/** Kahaani's tracking plan: each event, the moment it fires on the story player (`where`, which the game and scene
+ *  draw), and the properties it carries. Names are object_action in the past tense. */
+export const KAHAANI_EVENTS = {
+  story_started: { where: 'play', trigger: 'The story’s audio starts playing', props: ['story_id', 'language', 'source', 'length_min'] },
+  story_finished: { where: 'end', trigger: 'The last second of the story plays', props: ['story_id', 'language', 'listened_min', 'timer_on'] },
+  story_stopped: { where: 'stop', trigger: 'Playback stops before the end', props: ['story_id', 'language', 'at_percent', 'reason'] },
+  timer_set: { where: 'timer', trigger: 'A parent picks a sleep-timer length', props: ['story_id', 'minutes'] },
+} as const satisfies Record<string, { where: string; trigger: string; props: readonly string[] }>;
+export type KahaaniEvent = keyof typeof KAHAANI_EVENTS;
+/** Properties that identify a person. They never go in an analytics event, whatever the question. */
+export const PII_PROPS = ['child_name', 'phone', 'email', 'address'] as const;
+/** The first thing wrong with an event name, or null: names are lower snake_case, say what happened to which object
+ *  (not which button or screen), and end in a past-tense action. */
+export const eventNameFlaw = (name: string): 'case' | 'ui' | 'vague' | 'tense' | null => {
+  if (!/^[a-z]+(_[a-z]+)*$/.test(name)) return 'case';
+  const words = name.split('_');
+  if (words.some(w => ['button', 'btn', 'screen', 'page', 'tap', 'tapped', 'click', 'clicked', 'pressed'].includes(w))) return 'ui';
+  if (words.length < 2 || ['event', 'action', 'thing', 'misc', 'data'].includes(words[0])) return 'vague';
+  const verb = words[words.length - 1];
+  return verb.endsWith('ed') || ['set', 'sent', 'shown', 'begun'].includes(verb) ? null : 'tense';
+};
+/** Questions the team wants the tracking plan to answer (`event-wire` cards): the event that answers each, and the
+ *  properties it needs. */
+export const TRACK_QUESTIONS = {
+  source: { event: 'story_started', props: ['source'] },
+  language: { event: 'story_started', props: ['language'] },
+  timerOn: { event: 'story_finished', props: ['timer_on'] },
+  favourite: { event: 'story_finished', props: ['story_id'] },
+  teluguDrop: { event: 'story_stopped', props: ['language', 'at_percent'] },
+  why: { event: 'story_stopped', props: ['reason'] },
+  minutes: { event: 'timer_set', props: ['minutes'] },
+  timerStory: { event: 'timer_set', props: ['story_id'] },
+} as const satisfies Record<string, { event: KahaaniEvent; props: readonly string[] }>;
+export type TrackQuestion = keyof typeof TRACK_QUESTIONS;
+/** Checks a pick of properties for a question: what it still needs, and any personal data that must come out. */
+export const propsCheck = (need: readonly string[], chosen: readonly string[]) => {
+  const missing = need.filter(p => !chosen.includes(p));
+  const pii = chosen.filter(p => (PII_PROPS as readonly string[]).includes(p));
+  return { missing, pii, ok: missing.length === 0 && pii.length === 0 };
+};
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

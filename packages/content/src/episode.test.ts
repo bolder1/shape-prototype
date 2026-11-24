@@ -1,6 +1,66 @@
 import { describe, expect, it } from 'vitest';
+import { AWAAZ_HEART, DATA_VIEWS, GSM_PARTS, HEART, KAHAANI_ASKS, KAHAANI_EVENTS, KAHAANI_FUNNEL, KAHAANI_METRICS, KAHAANI_SEGMENTS, KAHAANI_WEEK, METRIC_ROLES, PII_PROPS, TRACK_QUESTIONS, askValue, cohortShare, estimateGrade, eventNameFlaw, gsmPart, metricRole, propsCheck, storyNights, type AwaazLine, type KahaaniAsk, type KahaaniEvent, type KahaaniMetric, type TrackQuestion } from './episode';
 import { EVIDENCE, GALLA_BETS, GALLA_RIVALS, HORIZONS, RIVAL_RINGS, VISION_PARTS, horizonFor, ringFor, visionFlags, visionFlaw, type GallaBet, type GallaRival } from './episode';
 import { COGA_LANES, FORM_FLAWS, KEY_WAYS, RAHI_BARRIERS, RAHI_CONTROLS, RAHI_FIELDS, RAHI_PARTS, SR_GAPS, announce, fieldAnnounce, fieldFlaw, fixedControl, loadLeft, srGap, stopsOf, tabPresses, type RahiBarrier, type RahiPart, CHAABI_MOMENTS, FLOW_QUESTIONS, LOC_LANES, LOREM_SLOTS, TONES, growthFor, locFlaw, locParse, pseudoLocalize, roomFor, slotFits, toneFor, toneGap, wrapLines, wrapText, type LoremSlot, DELIGHT_LANES, GULLAK_MICROS, GULLAK_MOMENTS, MICRO_PARTS, PAY_STAGES, delightCost, delightVerdict, microComplete, microStrips, payStage, DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('st.3 helpers', () => {
+  it('gives each metric its role in the tree', () => {
+    expect(metricRole({ value: true })).toBe('north');
+    expect(metricRole({ value: true, cumulative: true })).toBe('vanity');   // a running total, whatever it counts
+    expect(metricRole({ team: true, leads: true })).toBe('input');
+    expect(metricRole({ team: true })).toBe('vanity');   // a team can move it, but it doesn't move the north star
+    expect(metricRole({ team: true, harm: true })).toBe('guardrail');
+    const roles = Object.values(KAHAANI_METRICS).map(metricRole);
+    expect(roles.filter(r => r === 'north')).toHaveLength(1);
+    for (const r of METRIC_ROLES) expect(roles).toContain(r);
+    expect(storyNights(KAHAANI_WEEK)).toBe(84_000);
+  });
+  it('reads a HEART line as a signal, a metric or a total to cut', () => {
+    expect(gsmPart('Grandparents give up halfway through a recording')).toBe('signal');
+    expect(gsmPart('Share of recordings saved, each week')).toBe('metric');
+    expect(gsmPart('Share of recordings saved')).toBe('signal');   // no time window, not yet a metric
+    expect(gsmPart('Total recordings since launch')).toBe('cut');
+    for (const d of HEART) {
+      const rows = Object.values(AWAAZ_HEART).filter(l => 'dim' in l && l.dim === d).map(l => gsmPart(l.text)).sort();
+      expect(rows).toEqual(['metric', 'signal']);
+    }
+    for (const l of Object.values(AWAAZ_HEART)) expect(gsmPart(l.text) === 'cut').toBe(!('dim' in l));
+  });
+  it('reads the funnel, the cohorts and the language split', () => {
+    expect(askValue(KAHAANI_ASKS.finishFirst)).toBe(55.7);
+    expect(askValue(KAHAANI_ASKS.startAfterChild)).toBe(74.4);
+    expect(askValue(KAHAANI_ASKS.secondNight)).toBe(21);
+    expect(askValue(KAHAANI_ASKS.newFirstNight)).toBe(52);
+    expect(askValue(KAHAANI_ASKS.diwali)).toBe(22);
+    expect(askValue(KAHAANI_ASKS.novBlend)).toBe(35.3);
+    expect(askValue(KAHAANI_ASKS.telugu)).toBe(40);
+    expect(cohortShare(['16nov'], 2)).toBeNull();   // that week hasn't happened yet
+    // The blend falls while every cohort after the change beats every cohort before it.
+    const oct = ['12oct', '19oct', '26oct'] as const;
+    expect(cohortShare([...oct], 1)!).toBeGreaterThan(cohortShare(['2nov', '9nov', '16nov'], 1)!);
+    for (const after of ['9nov', '16nov'] as const) for (const before of oct) expect(cohortShare([after], 1)!).toBeGreaterThan(cohortShare([before], 1)!);
+    // The funnel only loses people, and the language split adds up to its two steps.
+    for (let i = 1; i < KAHAANI_FUNNEL.length; i++) expect(KAHAANI_FUNNEL[i].n).toBeLessThan(KAHAANI_FUNNEL[i - 1].n);
+    const segs = Object.values(KAHAANI_SEGMENTS);
+    expect(segs.reduce((s, x) => s + x.started, 0)).toBe(KAHAANI_FUNNEL[2].n);
+    expect(segs.reduce((s, x) => s + x.finished, 0)).toBe(KAHAANI_FUNNEL[3].n);
+    expect(estimateGrade(50, 52)).toBe('spot');
+    expect(estimateGrade(45, 52)).toBe('close');
+    expect(estimateGrade(30, 52)).toBe('off');
+  });
+  it('checks event names and properties', () => {
+    for (const name of Object.keys(KAHAANI_EVENTS)) expect(eventNameFlaw(name)).toBeNull();
+    expect(eventNameFlaw('PlayBtnTap')).toBe('case');
+    expect(eventNameFlaw('sleep-timer')).toBe('case');
+    expect(eventNameFlaw('play_button_tapped')).toBe('ui');
+    expect(eventNameFlaw('event')).toBe('vague');
+    expect(eventNameFlaw('story_play')).toBe('tense');
+    for (const e of Object.values(KAHAANI_EVENTS)) for (const p of e.props) expect(PII_PROPS as readonly string[]).not.toContain(p);
+    for (const q of Object.values(TRACK_QUESTIONS)) for (const p of q.props) expect(KAHAANI_EVENTS[q.event].props as readonly string[]).toContain(p);
+    expect(propsCheck(['timer_on'], ['timer_on', 'story_id'])).toEqual({ missing: [], pii: [], ok: true });
+    expect(propsCheck(['timer_on'], ['story_id', 'child_name'])).toEqual({ missing: ['timer_on'], pii: ['child_name'], ok: false });
+  });
+});
 
 describe('st.2 helpers', () => {
   it('catches buzzwords, features and targets in a vision line', () => {
@@ -721,6 +781,42 @@ describe('episodes', () => {
         expect(lanes).toEqual([...COGA_LANES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_BARRIERS).sort());
         for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_BARRIERS[c.visual as RahiBarrier].lane); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'metric-flow') {   // every metric once, named in full, in the role metricRole gives it
+        expect(lanes).toEqual([...METRIC_ROLES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(KAHAANI_METRICS).sort());
+        for (const c of ep.game.cards) {
+          const m = KAHAANI_METRICS[c.visual as KahaaniMetric];
+          expect(c.label).toBe(m.name);
+          expect(c.lane).toBe(metricRole(m));
+          expect(c.note).toBeTruthy();
+        }
+      }
+      if (ep.game.id === 'heart-grid') {   // every plan line once, in the part gsmPart reads from its words
+        expect(lanes).toEqual([...GSM_PARTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(AWAAZ_HEART).sort());
+        for (const c of ep.game.cards) {
+          const l = AWAAZ_HEART[c.visual as AwaazLine];
+          expect(c.label).toBe(l.text);
+          expect(c.lane).toBe(gsmPart(l.text));
+          expect(c.note).toBeTruthy();
+        }
+      }
+      if (ep.game.id === 'cohort-read') {   // every ask once, in the view that answers it, with an answer to estimate
+        expect(lanes).toEqual([...DATA_VIEWS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(KAHAANI_ASKS).sort());
+        for (const c of ep.game.cards) {
+          const a = KAHAANI_ASKS[c.visual as KahaaniAsk];
+          expect(c.lane).toBe(a.view);
+          expect(askValue(a)).toBeGreaterThan(0);
+          expect(c.note).toBeTruthy();
+        }
+      }
+      if (ep.game.id === 'event-wire') {   // every question once, on the event that answers it
+        expect(lanes).toEqual(Object.keys(KAHAANI_EVENTS));
+        for (const l of ep.game.lanes) expect(l.hint).toBe(KAHAANI_EVENTS[l.id as KahaaniEvent].trigger);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(TRACK_QUESTIONS).sort());
+        for (const c of ep.game.cards) { expect(c.lane).toBe(TRACK_QUESTIONS[c.visual as TrackQuestion].event); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'vision-postcard') {   // a line is cut exactly when the machine can fault it, and every part of the story gets lines
         expect(lanes).toEqual([...VISION_PARTS]);

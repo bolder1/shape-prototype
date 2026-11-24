@@ -1,0 +1,110 @@
+// Chapter st.3 · Metrics that matter. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const st3: LessonContent[] = [
+  {
+    id: 'st.3-1', title: 'North star & input metrics', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'One number for the value, a few levers under it',
+        body: ['A north star metric counts the value users get from the product, in a way that predicts the business doing well. For a bedtime-story app it isn’t downloads or minutes played: it’s nights on which a child finishes a story. It moves slowly, and no single team owns it.',
+          'Under it sit input metrics: levers a team can pull in weeks that move the north star, like how many new families finish a first story, or how many started stories get finished. Beside it sit guardrails, harms you must not cause while you push. Totals that only ever go up are vanity: they can’t tell you anything went wrong.'] },
+      { type: 'pick', id: 'p1', prompt: 'Which is the best north star for Kahaani, a bedtime-story app for children?',
+        explanation: 'It counts the value families come for, a child finishing a story at bedtime, and it falls if they stop getting it. Downloads only go up, minutes reward long stories that keep children awake, and revenue lags behind value.',
+        options: [
+          { id: 'a', label: 'Total app downloads' },
+          { id: 'b', label: 'Story-nights a week: nights on which a child finishes at least one story' },
+          { id: 'c', label: 'Minutes played a day' },
+          { id: 'd', label: 'Monthly revenue' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Input metric or vanity metric?',
+        explanation: 'An input is a lever a team can pull that moves the north star. A running total, or a number that can rise while families get less, is vanity.',
+        buckets: [{ id: 'i', label: 'Input' }, { id: 'v', label: 'Vanity' }],
+        items: [
+          { id: 'a', label: 'New families who finish a story in their first week', bucket: 'i' },
+          { id: 'b', label: 'Total stories ever played', bucket: 'v' },
+          { id: 'c', label: 'Share of started stories that are finished', bucket: 'i' },
+          { id: 'd', label: 'Screens viewed per visit', bucket: 'v' },
+          { id: 'e', label: 'Nights a week each family opens the app', bucket: 'i' },
+          { id: 'f', label: 'Followers on Instagram', bucket: 'v' },
+        ] },
+    ],
+  },
+  {
+    id: 'st.3-2', title: 'HEART framework', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Goals, then signals, then metrics',
+        body: ['HEART comes from a 2010 Google paper by Kerry Rodden, Hilary Hutchinson and Xin Fu. It names five kinds of user experience you can measure: Happiness (how people feel), Engagement (how much they use it), Adoption (new people starting), Retention (people coming back) and Task success (whether they can do it, quickly and without errors).',
+          'Say Kahaani, a bedtime-story app, adds a way for grandparents to record a story in their own voice. Don’t start with the numbers. For each dimension you care about, write the goal in words, then a signal you could notice if it were true, then a metric: a rate, share or average over a time window. You rarely need all five; pick the ones that fit the feature.'] },
+      { type: 'sort', id: 's1', prompt: 'Engagement, adoption or retention?',
+        explanation: 'How much people use it is engagement, people using it for the first time is adoption, and people coming back after a while is retention. The three get mixed up more than any other part of HEART.',
+        buckets: [{ id: 'e', label: 'Engagement' }, { id: 'a', label: 'Adoption' }, { id: 'r', label: 'Retention' }],
+        items: [
+          { id: 'a', label: 'Plays per recorded story in its first 7 days', bucket: 'e' },
+          { id: 'b', label: 'Share of families who save a first recording within 30 days', bucket: 'a' },
+          { id: 'c', label: 'Share of recorders who record again within 4 weeks', bucket: 'r' },
+          { id: 'd', label: 'Nights a week a family plays a recorded story', bucket: 'e' },
+          { id: 'e', label: 'Families who try recording a story in its launch week', bucket: 'a' },
+          { id: 'f', label: 'Share of October’s recorders still recording in December', bucket: 'r' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Which is a metric, not just a signal?',
+        explanation: 'A metric is a number you can track over time: a share, rate or average, for a set window. “Grandparents give up halfway” is the signal it counts.',
+        options: [
+          { id: 'a', label: 'Grandparents give up halfway through a recording' },
+          { id: 'b', label: 'Share of recordings started that are saved, each week' },
+          { id: 'c', label: 'Recording should be easy' },
+          { id: 'd', label: 'Total recordings since launch' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'st.3-3', title: 'Funnels & cohorts', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Steps, weeks and groups',
+        body: ['A funnel follows the same people through the steps of one journey, so you can see the share that makes each step: installed, added a child, started a story, finished it, came back a second night. It tells you where people drop.',
+          'A cohort table groups people by the week they joined and shows how many are still there in week 1, 2, 3. It tells you whether newer users stick better than older ones, which is how you see if a change worked. An average across everyone mixes the weeks together, so one big, unusual week can hide a real improvement.'] },
+      { type: 'pick', id: 'p1', prompt: 'Kahaani changed its first night on 9 November. Which view shows whether it helped?',
+        explanation: 'Compare the cohorts that joined after the change with the ones before, at the same week. A single average mixes old and new families and the Diwali-ads week too.',
+        options: [
+          { id: 'a', label: 'This month’s average retention' },
+          { id: 'b', label: 'Week-1 retention of the 9 and 16 November cohorts against the October ones' },
+          { id: 'c', label: 'Total downloads in November' },
+          { id: 'd', label: 'The funnel for everyone since launch' },
+        ], correct: 'b' },
+      { type: 'order', id: 'o1', prompt: 'Put Kahaani’s first-night funnel in order.',
+        explanation: 'A funnel is the order the same people move through. Each step can only lose people, never gain them.',
+        items: [
+          { id: 'a', label: 'Installed Kahaani' },
+          { id: 'b', label: 'Added a child' },
+          { id: 'c', label: 'Started a first story' },
+          { id: 'd', label: 'Finished it' },
+          { id: 'e', label: 'Came back a second night' },
+        ] },
+    ],
+  },
+  {
+    id: 'st.3-4', title: 'Instrumenting a design', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Questions first, then events',
+        body: ['Instrumenting means deciding what the product records when people use it, so you can answer questions later. Start from the questions the team will ask, then name the events that answer them, the moment each one fires and the properties it carries. That list is the tracking plan, and it ships with the design.',
+          'Name events for what happened, not for the button: story_finished, not play_btn_tap. Use one pattern everywhere (object_action, past tense, snake_case). Send only what a question needs, and never a child’s name, a phone number or anything else that identifies a person.'] },
+      { type: 'pick', id: 'p1', prompt: 'Which event name fits a tracking plan best?',
+        explanation: 'It says what happened to which object, in the past tense, in one consistent pattern. The others name a button, mix cases or don’t say what happened.',
+        options: [
+          { id: 'a', label: 'PlayBtnTap' },
+          { id: 'b', label: 'story_finished' },
+          { id: 'c', label: 'event_3' },
+          { id: 'd', label: 'home-screen-blue-button' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Send it with story_finished, or leave it out?',
+        explanation: 'Send what answers the team’s questions about the story. A child’s name and a parent’s phone number identify people; they don’t belong in analytics.',
+        buckets: [{ id: 's', label: 'Send' }, { id: 'l', label: 'Leave out' }],
+        items: [
+          { id: 'a', label: 'story_id', bucket: 's' },
+          { id: 'b', label: 'language', bucket: 's' },
+          { id: 'c', label: 'child_name', bucket: 'l' },
+          { id: 'd', label: 'timer_on', bucket: 's' },
+          { id: 'e', label: 'parent_phone', bucket: 'l' },
+        ] },
+    ],
+  },
+];

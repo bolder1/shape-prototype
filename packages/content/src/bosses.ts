@@ -1228,9 +1228,60 @@ const st2: BossBriefInput = {
   },
 };
 
+const st3: BossBriefInput = {
+  chapterId: 'st.3',
+  title: 'A metric tree and tracking plan for one feature',
+  minutes: 90,
+  scenario: [
+    'Pick one feature of your Studio product, shipped or about to ship, and write the page that says how you’ll know it worked. If you don’t have one, use the sleep timer on Kahaani, the Hyderabad bedtime-story app from this chapter: a moon button that stops the story after 10, 20 or 30 minutes.',
+    'The page has two halves. A metric tree: the product’s north star, the input metrics the feature should move, and the guardrails it must not push up, with a HEART goal, signal and metric for the dimensions that matter. And a tracking plan: the questions you’ll ask, the events that answer them, when each fires and the properties it carries, plus how you’ll read the results by cohort and what you won’t collect.',
+  ],
+  fields: [
+    { id: 'feature', label: 'The feature, and who it’s for', kind: 'text', minWords: 15, hint: 'What it does, for whom, and the change in their behaviour you expect.' },
+    { id: 'north', label: 'The north star', kind: 'text', minWords: 20, hint: 'One metric that counts the value users get, how it’s defined (window, what counts), and why it falls when they stop getting value.' },
+    { id: 'inputs', label: 'Inputs the feature should move', kind: 'list', items: 2, minWords: 12, hint: 'One per line: the input, who owns it, and how this feature should move it.' },
+    { id: 'guardrails', label: 'Guardrails', kind: 'list', items: 2, minWords: 10, hint: 'One per line: a harm that must not rise, and the level that would make you stop.' },
+    { id: 'heart', label: 'HEART: goal → signal → metric', kind: 'list', items: 2, minWords: 15, hint: 'One dimension per line (only the ones that fit): the goal in words, the signal you’d notice, and the metric as a rate, share or average over a window.' },
+    { id: 'events', label: 'Tracking plan', kind: 'list', items: 3, minWords: 15, hint: 'One event per line: name (object_action, past tense), when exactly it fires, its properties, and the question it answers.' },
+    { id: 'reading', label: 'How you’ll read it', kind: 'long', minWords: 50, hint: 'The funnel you’ll follow, the cohorts you’ll compare and at which week, the splits you’ll check, and the result that would make you change or remove the feature.' },
+    { id: 'privacy', label: 'What you won’t collect', kind: 'text', minWords: 15, hint: 'The data you’re leaving out on purpose, and how you identify users without it.' },
+  ],
+  rubric: [
+    { id: 'tree', label: 'A tree that counts value', strong: 'The north star counts value users get, is precisely defined with a window and can fall; the inputs are levers a named team can move in weeks and are plausibly connected to it; the guardrails name real harms with a stop level; and no running totals or vanity numbers sneak in.', weight: 3, required: true },
+    { id: 'heart', label: 'HEART from goals down', strong: 'Picks only the dimensions that fit the feature; each line runs from a goal in words to an observable signal to a metric that is a rate, share or average over a stated window; task success, if relevant, pairs completion with time or errors.', weight: 2, required: true },
+    { id: 'events', label: 'A tracking plan that answers questions', strong: 'Every event traces to a question; names follow one object_action, past-tense pattern and describe what happened, not the UI; triggers are exact (what counts as finished, when the screen is off); properties are only what the questions need, with fixed values where they will be counted.', weight: 3, required: true },
+    { id: 'reading', label: 'Read by cohort, not by average', strong: 'Names the funnel and its steps, compares cohorts before and after at the same week, calls out what could confuse the comparison (a campaign, a season) and how to rule it out, such as an A/B test, and states the result that would change the decision.', weight: 1 },
+    { id: 'privacy', label: 'Collect the least', strong: 'Leaves out names, phone numbers and anything else that identifies a person; uses an anonymous id; is extra careful where children are involved, mentioning the stricter rules for children’s data.', weight: 1 },
+  ],
+  tips: ['Write the three questions you’ll ask in two weeks before you name a single event. If an event answers none of them, cut it.', 'For every input, ask: if this went up and the north star didn’t, what would that tell me? If the answer is “nothing”, it isn’t an input.'],
+  example: {
+    feature: 'The sleep timer on Kahaani’s player: a moon button that stops the story after 10, 20 or 30 minutes, for parents who put a child to bed with a story and fall asleep before it ends.',
+    north: 'Story-nights a week: the number of nights, across all families, on which a child finishes at least one story, counted Monday to Sunday. It falls when families stop listening or when stories stop being finished.',
+    inputs: [
+      'Share of started stories that are finished, owned by the player team. The timer should raise it by stopping autoplay before a second, unfinished story begins.',
+      'Nights a week each family opens Kahaani, owned by the growth team. Parents who trust the app to stop on its own should be happier to open it every night.',
+    ],
+    guardrails: [
+      'Children still listening after 10 pm: must not rise above 6% of listening nights; if it does, we stop and look at the timer’s default.',
+      'Share of stories stopped by the timer in the first five minutes: above 15% means parents are using it to cut stories short, and we review the lengths.',
+    ],
+    heart: [
+      'Task success. Goal: a sleepy parent sets the timer in one go. Signal: parents open the timer and close it without choosing. Metric: share of timer opens that end in a length chosen, each week, and median seconds to choose.',
+      'Adoption. Goal: families who listen most nights try the timer. Signal: a parent sets the timer for the first time. Metric: share of weekly listening families who set a timer at least once within 14 days of release.',
+    ],
+    events: [
+      'timer_set: fires when a parent chooses a length. Properties: story_id, minutes (10, 20 or 30). Answers: which length do parents pick, and on which stories?',
+      'story_finished: fires when the last second of audio plays, even with the screen off. Properties: story_id, language, listened_min, timer_on. Answers: do stories finish more often with the timer on?',
+      'story_stopped: fires when playback stops before the end. Properties: story_id, language, at_percent, reason (timer, pause, closed). Answers: how often does the timer cut a story short, and where?',
+    ],
+    reading: 'Funnel: families who opened the player, set a timer, and finished the story. Cohorts: week-1 finish share for families who joined after release against the four weeks before, compared at the same week, leaving out the Diwali-ads cohort, which behaves differently. Split by language, because Telugu stories run longer. Since November has other changes, we hold the timer back from 10% of new families for four weeks as an A/B test. If the finish share doesn’t rise by at least 3 points, or late listening rises, we change the default or remove the timer.',
+    privacy: 'No child names, ages, phone numbers or voice recordings in analytics. Events carry an anonymous family id tied to the parent’s account, and children’s data is kept to the minimum, as the stricter rules for children require.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

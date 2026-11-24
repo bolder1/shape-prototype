@@ -125,6 +125,10 @@ import { LoadLift } from './games/LoadLift';
 import { VisionPostcard } from './games/VisionPostcard';
 import { HorizonBoard } from './games/HorizonBoard';
 import { RivalMap } from './games/RivalMap';
+import { MetricFlow } from './games/MetricFlow';
+import { HeartGrid } from './games/HeartGrid';
+import { CohortRead } from './games/CohortRead';
+import { EventWire } from './games/EventWire';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -259,6 +263,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'vision-postcard': VisionPostcard,
   'horizon-board': HorizonBoard,
   'rival-map': RivalMap,
+  'metric-flow': MetricFlow,
+  'heart-grid': HeartGrid,
+  'cohort-read': CohortRead,
+  'event-wire': EventWire,
 };
 
 interface Props {
