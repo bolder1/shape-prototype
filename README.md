@@ -8,7 +8,7 @@ Learn product design by playing it. Plans and specs live in `docs/`. Start with 
 |---|---|
 | `apps/web` | Next.js 16 app on Untitled UI + Phosphor (landing, onboarding, home `/play`, lessons `/learn`, review, skill map `/map`, boss projects `/boss`, `/dev/kit`). Rules: `docs/06-design-system.md` |
 | `packages/engine` | Curriculum (60 chapters) + personalization engine, TypeScript, tested |
-| `packages/content` | Lesson content (116 lessons, 33 chapters), boss briefs (33), Zod schemas, grading. Drafts for review: `src/chapters/`, `src/bosses.ts` |
+| `packages/content` | Lesson content (119 lessons, 34 chapters), boss briefs (34), Zod schemas, grading. Drafts for review: `src/chapters/`, `src/bosses.ts` |
 | `packages/ui` | Motion presets (shared beyond the web app) |
 | `supabase/` | `migrations/0001_init.sql` + generated `seed.sql` |
 | `prototype/` | Earlier HTML prototypes, kept as behaviour reference (run `node scripts/serve.mjs`) |

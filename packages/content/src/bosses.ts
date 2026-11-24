@@ -1279,9 +1279,63 @@ const st3: BossBriefInput = {
   },
 };
 
+const gr2: BossBriefInput = {
+  chapterId: 'gr.2',
+  title: 'Redesign your product’s first-run experience',
+  minutes: 90,
+  scenario: [
+    'Take your Studio product and redesign what a new user meets in their first sessions, from first open to the aha moment and the weeks just after. If you don’t have one yet, use Kaksha, the Chennai app for home tutors from this chapter: today it opens with a seven-screen tour, an empty Batches screen that says “No batches found.”, and a full-screen Pro offer before anything else.',
+    'Hand in the plan a team could build from: the aha moment and how you know it, what the first run asks for and what it leaves for later, the tips that wait for their moment and what triggers each, the empty states that start the work, when (and whether) you ask for money, and the numbers that will tell you it worked.',
+  ],
+  fields: [
+    { id: 'aha', label: 'The aha moment', kind: 'text', minWords: 20, hint: 'The first moment a new user gets the product’s value, the action that marks it, and the evidence that people who reach it stay.' },
+    { id: 'today', label: 'What the first run does today', kind: 'long', minWords: 40, hint: 'Walk through it step by step as a new user. Count the steps and taps before the aha, and say where people drop off or get stuck.' },
+    { id: 'first', label: 'The new first run', kind: 'list', items: 3, minWords: 10, hint: 'One step per line, from first open to the aha. For each: what it asks for and why it can’t wait.' },
+    { id: 'later', label: 'Moved later, or cut', kind: 'list', items: 3, minWords: 8, hint: 'One per line: what you took out of the first run, and whether it moves later (to which moment) or goes entirely.' },
+    { id: 'tips', label: 'Tips and their triggers', kind: 'list', items: 3, minWords: 15, hint: 'One per line: what the tip teaches, the action or date that sets it off, the screen it appears on, and what happens if it’s dismissed.' },
+    { id: 'empty', label: 'Empty states that activate', kind: 'list', items: 2, minWords: 20, hint: 'One screen per line: the message, how the first content gets there (import, template, marked sample), the one action, and what shows until then.' },
+    { id: 'upgrade', label: 'The upgrade moment', kind: 'text', minWords: 30, hint: 'When you first offer the paid plan and why then, what the offer shows (their numbers, the full price), how they say no, and when you don’t sell. If your product is free, say where you’d ask for something else, like an account or a review.' },
+    { id: 'measure', label: 'How you’ll know', kind: 'long', minWords: 40, hint: 'The activation metric (a rate over a window), time to value, one or two guardrails, and the cohorts you’ll compare.' },
+  ],
+  rubric: [
+    { id: 'aha', label: 'A real aha, with evidence', strong: 'The aha is a specific action that delivers the product’s value to the user, not a sign-up or a profile; it comes with evidence or a plan to check that reaching it predicts people staying, and doesn’t assume the correlation is the cause.', weight: 2, required: true },
+    { id: 'path', label: 'A short path to value', strong: 'The audit counts the steps before the aha honestly; the new first run keeps only what the aha needs, each step justified; everything else is moved to a named later moment or cut, and accounts or permissions are asked for in context, with the reason.', weight: 3, required: true },
+    { id: 'progressive', label: 'Teaching at the moment of need', strong: 'Tips are set off by what the user has done (or a date that matters to them), not by the clock; each appears on the screen where it’s used, can be dismissed, and the up-front tour is gone; any checklist has three or four real steps towards the aha.', weight: 2, required: true },
+    { id: 'empty', label: 'Empty states that start the work', strong: 'Each empty screen says what goes there and what to do, makes the first content cheap (import, template or clearly marked sample), has one primary action, and shows an example rather than zeros; a screen that can’t be filled yet says what will appear and when.', weight: 2 },
+    { id: 'upgrade', label: 'An honest upgrade moment', strong: 'The offer comes after value, when the user reaches for something the paid plan does; never on first open, after a failure or mid-task; it shows their own result and the full price, has a plain way to say no, and says when it won’t ask again.', weight: 2 },
+    { id: 'measure', label: 'Measured as activation', strong: 'Names an activation rate with a window and a time-to-value measure, compares weekly cohorts before and after, and sets guardrails such as week-4 retention, refunds or complaints.', weight: 1 },
+  ],
+  tips: ['Do the first run yourself on a fresh install with a stopwatch, and count every tap before the aha. The number is usually worse than anyone on the team thinks.', 'For each tip, finish the sentence “show it when the user has just…”. If you can only finish it with a day number, it’s probably in the wrong place.'],
+  example: {
+    aha: 'A tutor marks her first class and parents get the attendance update on WhatsApp. Tutors who do this in week one are three times as likely to still be using Kaksha in week four; we’ll check it’s the cause by making the first class easier for half of new tutors and comparing week-4 use.',
+    today: 'First open: a seven-screen tour of fourteen features, then a setup wizard asking for subject, fees, UPI ID and a logo. Then a full-screen Pro offer for ₹499 a year. Then an empty Batches screen that says “No batches found.” Making a batch means an 11-field form for each student. 23 taps and four screens before a batch exists, and the first class can’t be marked until there is one. 46% of new tutors never create a batch.',
+    first: [
+      'Create a batch: name, days and time, starting from a template (“Class 10 Maths, Mon Wed Fri, 5 pm”). Nothing else works without one.',
+      'Add students by picking their parents from contacts, with the permission asked right there and the reason given. A name and a number are all the first class needs.',
+      'Mark the first class: tap names to mark them present; parents get a WhatsApp message. This is the aha.',
+    ],
+    later: [
+      'The seven-screen tour: cut. Each feature is taught where it’s used instead.',
+      'Fee amounts and UPI ID: moved to the 1st of the month, on the Fees screen, when reminders become useful.',
+      'The Pro offer on first open: cut. Pro is offered when a tutor reaches for a Pro feature after a month of use.',
+    ],
+    tips: [
+      'Send homework: shown when she marks her first class done, on the class screen. Dismissed, it stays as a button on that screen and never pops up again.',
+      'Move a class: shown the first time she opens a class’s menu, inside the menu. One line, no pop-up.',
+      'Fee reminders: shown on the 1st when fees fall due, on the Fees screen, with a list of who hasn’t paid. Dismissed, it comes back once the next month only if fees are still unpaid.',
+    ],
+    empty: [
+      'Batches, first use. Message: “Your batches live here. Make one for each group you teach, and Kaksha keeps attendance and tells parents.” First content: a template batch she can edit, students from contacts. Action: one button, Create a batch. Until then: a faded example card marked Example.',
+      'Fees, before any fees are due. Message: “On the 1st, you’ll see who has paid here.” First content: nothing to import yet. Action: set each batch’s monthly fee so reminders are ready. Until then: an example row, “Aditya · ₹1,500 · Paid 2 Dec”, marked Example, instead of a chart of ₹0.',
+    ],
+    upgrade: 'First offered when a tutor tries to add her 26th student (the free plan holds 25), or reaches for report cards or a second teacher. It leads with what she asked for, shows her result (“₹33,000 collected with reminders this month”), the price as ₹499 a year, about ₹42 a month, and a plain “Not now”. If she taps a Pro feature mid-task, like a logo on a receipt, the receipt goes out plain first. No offer on first open, after a failed send, or while she’s marking a class, and after “Not now” we wait for the next Pro feature she reaches for.',
+    measure: 'Activation: share of new tutors who mark a first class with parents told within 7 days of install, by weekly cohort, against the four weeks before the change (38% today). Time to value: median minutes from install to that first class marked. Guardrails: week-4 retention must not fall, contacts-permission denials must not rise above 30%, and Pro refunds in the first month must stay under 5%.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

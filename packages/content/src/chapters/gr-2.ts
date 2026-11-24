@@ -1,0 +1,106 @@
+// Chapter gr.2 · Onboarding & activation. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const gr2: LessonContent[] = [
+  {
+    id: 'gr.2-1', title: 'Progressive onboarding', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Teach each thing when it’s first useful',
+        body: ['A tour on first open teaches everything at the moment people need it least. They have no data, no task in hand and nothing to attach the lesson to, so they swipe through and forget it.',
+          'Progressive onboarding spreads the teaching across the first days and weeks. Each tip waits for the moment it becomes useful, set off by what the person has done, not by the clock: the attendance tip after the first batch has students, the fee-reminder tip when fees fall due. Show it in place, on the screen where the thing happens, and let people dismiss it.'] },
+      { type: 'order', id: 'o1', prompt: 'Kaksha is an app for home tutors. Put these tips in the order Meenakshi, a maths tutor in Chennai, first needs them.',
+        explanation: 'Each tip waits until she can use it: a batch first, then marking a class, then sending homework after the class, and fee reminders only when fees are due.',
+        items: [
+          { id: 'a', label: 'Create your first batch' },
+          { id: 'b', label: 'Tap a name to mark them present' },
+          { id: 'c', label: 'Send tonight’s homework to the batch' },
+          { id: 'd', label: 'Send fee reminders to parents who haven’t paid' },
+        ] },
+      { type: 'sort', id: 's1', prompt: 'Should this tip be triggered by something she does, or by the calendar?',
+        explanation: 'Most tips belong to an action: they’re useful the moment she reaches for that part of the app. A few belong to dates in her world, like fees falling due on the 1st.',
+        buckets: [{ id: 'act', label: 'Something she does' }, { id: 'date', label: 'A date' }],
+        items: [
+          { id: 'a', label: 'How to reschedule, shown the first time she opens a class’s menu', bucket: 'act' },
+          { id: 'b', label: 'Fee reminders, shown on the 1st when fees fall due', bucket: 'date' },
+          { id: 'c', label: 'How to send homework, shown when she marks her first class done', bucket: 'act' },
+          { id: 'd', label: 'Exam-week batch timings, shown two weeks before board exams', bucket: 'date' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Kaksha adds a three-item “Get started” checklist. Which set of items works best?',
+        explanation: 'A checklist works when each item moves her towards the aha moment (a first class marked, parents told) and is something she’d do anyway. Profile photos and app ratings are for Kaksha, not for her.',
+        options: [
+          { id: 'a', label: 'Upload a photo, rate the app, follow us on Instagram' },
+          { id: 'b', label: 'Create a batch, add students, mark your first class' },
+          { id: 'c', label: 'Read the help centre, watch the tour, set your fees' },
+          { id: 'd', label: 'Invite a colleague, connect a bank, choose a theme' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'gr.2-2', title: 'Empty states that activate', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'The first screen is a starting line',
+        body: ['For a new user, almost every screen is empty: no batches, no students, no history. That empty screen is where activation is won or lost, so treat it as the first step of the task, not a gap waiting for data.',
+          'An empty state that activates says what goes here and what to do, offers one clear action, and makes the first step cheap: import from contacts instead of a long form, a template, or sample content clearly marked as a sample. It can show a faded example of what the screen will look like once filled. It never shows a wall of zeros.'] },
+      { type: 'pick', id: 'p1', prompt: 'Which way of filling Kaksha’s first batch gets a busy tutor going fastest?',
+        explanation: 'Her students’ parents are already in her phone. Picking them takes a few taps; an 11-field form per student takes an evening.',
+        options: [
+          { id: 'a', label: 'A form with 11 fields for each student' },
+          { id: 'b', label: 'Pick parents from her phone contacts' },
+          { id: 'c', label: 'Email a spreadsheet to Kaksha support' },
+          { id: 'd', label: 'Wait for parents to sign up themselves' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Does this help an empty screen activate, or get in the way?',
+        explanation: 'Activating pieces make the first step obvious and cheap. Zeros, unmarked fake data and rows of equal buttons make people stop and think, or doubt what they see.',
+        buckets: [{ id: 'help', label: 'Helps' }, { id: 'hurt', label: 'Gets in the way' }],
+        items: [
+          { id: 'a', label: 'A faded example card marked “Example”', bucket: 'help' },
+          { id: 'b', label: 'Tiles reading 0 students, 0%, ₹0', bucket: 'hurt' },
+          { id: 'c', label: 'One button: Create a batch', bucket: 'help' },
+          { id: 'd', label: 'Made-up students mixed in with real ones', bucket: 'hurt' },
+          { id: 'e', label: 'A template: “Class 10 Maths, Mon Wed Fri”', bucket: 'help' },
+          { id: 'f', label: 'Four equal buttons, including “Watch tutorial”', bucket: 'hurt' },
+        ] },
+      { type: 'pick', id: 'p2', prompt: 'Kaksha’s Fees tab is empty in week one, because no fees are due yet. What should it show?',
+        explanation: 'Some screens can’t be filled yet. Then the empty state explains what will appear and when, and offers the one useful thing she can do now.',
+        options: [
+          { id: 'a', label: '“No data.”' },
+          { id: 'b', label: 'A big “Set up fees now” wizard asking for UPI, amounts and due dates' },
+          { id: 'c', label: '“On the 1st, you’ll see who has paid here. Set each batch’s monthly fee so reminders are ready.”' },
+          { id: 'd', label: 'A chart of ₹0 collected' },
+        ], correct: 'c' },
+    ],
+  },
+  {
+    id: 'gr.2-3', title: 'Paywalls & upgrade moments', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Sell at the moment value meets a limit',
+        body: ['The best moment to offer an upgrade is when someone has already had value from the product and reaches for something the paid plan does: the 26th student on a free plan of 25, a report card only Pro makes. They know what they’d be paying for, because they just asked for it.',
+          'The worst moments are before any value, right after something failed, and in the middle of a task someone is waiting on. If she reaches for a paid feature mid-task, let her finish, then offer. On the paywall, use her own numbers, show the full price in rupees with the monthly figure beside it, and make “Not now” plain and easy to find.'] },
+      { type: 'pick', id: 'p1', prompt: 'When should Kaksha first show its Pro screen to Meenakshi?',
+        explanation: 'She has had value (a full batch, parents told) and is reaching for something the free plan can’t do. That’s an offer she understands.',
+        options: [
+          { id: 'a', label: 'On first open, before she makes a batch' },
+          { id: 'b', label: 'When she tries to add a 26th student, after a month of classes' },
+          { id: 'c', label: 'Right after a fee reminder fails to send' },
+          { id: 'd', label: 'While she marks attendance with the class waiting' },
+        ], correct: 'b' },
+      { type: 'sort', id: 's1', prompt: 'Free plan, paid plan or free trial?',
+        explanation: 'Freemium keeps a useful free plan and sells more. A free trial gives the whole thing for a while, then asks. A hard paywall asks before any use, which only works when people already know what they’re buying.',
+        buckets: [{ id: 'freemium', label: 'Freemium' }, { id: 'trial', label: 'Free trial' }, { id: 'hard', label: 'Hard paywall' }],
+        items: [
+          { id: 'a', label: 'Free for up to 25 students; Pro for more', bucket: 'freemium' },
+          { id: 'b', label: 'Every Pro feature for 14 days, then choose', bucket: 'trial' },
+          { id: 'c', label: 'A newspaper that shows only the headline until you subscribe', bucket: 'hard' },
+          { id: 'd', label: 'Spotify’s free plan with ads, Premium without', bucket: 'freemium' },
+        ] },
+      { type: 'pick', id: 'p2', prompt: 'Which Pro screen is fair and most likely to work?',
+        explanation: 'Her own result reminds her of the value, the yearly price is shown in full with the monthly figure, and she can say no without being shamed. Fake timers and guilt are dark patterns, and India’s 2023 guidelines list them.',
+        options: [
+          { id: 'a', label: '“Only 2 minutes left at this price!” with a countdown that resets' },
+          { id: 'b', label: '“You collected ₹33,000 with reminders this month. Pro: ₹499 a year (about ₹42 a month).” and a plain “Not now”' },
+          { id: 'c', label: '“₹41.58*” with the yearly total in the small print' },
+          { id: 'd', label: '“No thanks, I don’t care about my students”' },
+        ], correct: 'b' },
+    ],
+  },
+];

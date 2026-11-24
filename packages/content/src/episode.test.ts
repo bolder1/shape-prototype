@@ -1,7 +1,65 @@
 import { describe, expect, it } from 'vitest';
+import { EMPTY_PIECES, EMPTY_SLOTS, KAKSHA_MOMENTS, KAKSHA_PRO, KAKSHA_TIPS, PRO_MOMENTS, UPGRADE_MOVES, cueFor, cueVerdict, emptyFlaw, firstValueTaps, moveEffect, upgradeMove, type EmptyPiece, type EmptyPieceId, type KakshaTip, type ProMomentId } from './episode';
 import { AWAAZ_HEART, DATA_VIEWS, GSM_PARTS, HEART, KAHAANI_ASKS, KAHAANI_EVENTS, KAHAANI_FUNNEL, KAHAANI_METRICS, KAHAANI_SEGMENTS, KAHAANI_WEEK, METRIC_ROLES, PII_PROPS, TRACK_QUESTIONS, askValue, cohortShare, estimateGrade, eventNameFlaw, gsmPart, metricRole, propsCheck, storyNights, type AwaazLine, type KahaaniAsk, type KahaaniEvent, type KahaaniMetric, type TrackQuestion } from './episode';
 import { EVIDENCE, GALLA_BETS, GALLA_RIVALS, HORIZONS, RIVAL_RINGS, VISION_PARTS, horizonFor, ringFor, visionFlags, visionFlaw, type GallaBet, type GallaRival } from './episode';
 import { COGA_LANES, FORM_FLAWS, KEY_WAYS, RAHI_BARRIERS, RAHI_CONTROLS, RAHI_FIELDS, RAHI_PARTS, SR_GAPS, announce, fieldAnnounce, fieldFlaw, fixedControl, loadLeft, srGap, stopsOf, tabPresses, type RahiBarrier, type RahiPart, CHAABI_MOMENTS, FLOW_QUESTIONS, LOC_LANES, LOREM_SLOTS, TONES, growthFor, locFlaw, locParse, pseudoLocalize, roomFor, slotFits, toneFor, toneGap, wrapLines, wrapText, type LoremSlot, DELIGHT_LANES, GULLAK_MICROS, GULLAK_MOMENTS, MICRO_PARTS, PAY_STAGES, delightCost, delightVerdict, microComplete, microStrips, payStage, DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('gr.2 helpers', () => {
+  it('times each tip to the first moment it can be used', () => {
+    expect(cueFor({})).toBe('open');
+    expect(cueFor({ students: 1 })).toBe('batch');
+    expect(cueFor({ classes: 1 })).toBe('class');
+    expect(cueFor({ classes: 10 })).toBe('fees');   // a report needs weeks of classes, not one
+    expect(cueFor({ feesDue: true })).toBe('fees');
+    expect(cueFor({ students: 100 })).toBeNull();
+    expect(cueVerdict({ classes: 1 }, 'batch')).toBe('early');
+    expect(cueVerdict({ classes: 1 }, 'class')).toBe('right');
+    expect(cueVerdict({ students: 1 }, 'fees')).toBe('late');
+    // Every moment gets two tips, so the old up-front tour really is spread across the month.
+    const cues = Object.values(KAKSHA_TIPS).map(t => cueFor(t.needs));
+    for (const m of Object.keys(KAKSHA_MOMENTS)) expect(cues.filter(c => c === m)).toHaveLength(2);
+    // What she has done only grows through the month.
+    const ms = Object.values(KAKSHA_MOMENTS);
+    for (let i = 1; i < ms.length; i++) { expect(ms[i].students).toBeGreaterThanOrEqual(ms[i - 1].students); expect(ms[i].classes).toBeGreaterThanOrEqual(ms[i - 1].classes); }
+  });
+  it('finds what stops an empty-state piece from activating', () => {
+    expect(emptyFlaw({ slot: 'message', text: 'x', names: true, next: false })).toBe('vague');
+    expect(emptyFlaw({ slot: 'message', text: 'x', names: true, next: true, aboutApp: true })).toBe('about-app');
+    expect(emptyFlaw({ slot: 'starter', text: 'x', taps: 3, sample: 'marked' })).toBeNull();   // marked samples are fine
+    expect(emptyFlaw({ slot: 'starter', text: 'x', taps: 0, sample: 'unmarked' })).toBe('unmarked');
+    expect(emptyFlaw({ slot: 'starter', text: 'x', taps: 7 })).toBe('effort');
+    expect(emptyFlaw({ slot: 'action', text: 'x', buttons: 1, visible: false, taps: 1 })).toBe('dead-end');
+    expect(emptyFlaw({ slot: 'action', text: 'x', buttons: 2, visible: true, taps: 1 })).toBe('competing');
+    expect(emptyFlaw({ slot: 'preview', text: 'x', shows: 'art' })).toBeNull();   // a small illustration is fine
+    expect(emptyFlaw({ slot: 'preview', text: 'x', shows: 'zeros' })).toBe('zeros');
+    const pieces = Object.values(EMPTY_PIECES) as EmptyPiece[];
+    for (const slot of EMPTY_SLOTS) expect(pieces.filter(p => p.slot === slot && emptyFlaw(p) === null)).toHaveLength(1);
+    // The good build is the quickest honest one: no other choice of starter and action gets there in fewer taps
+    // without a flaw.
+    const good = pieces.filter(p => emptyFlaw(p) === null);
+    expect(firstValueTaps(good)).toBe(5);
+    const starters = pieces.filter(p => p.slot === 'starter'), actions = pieces.filter(p => p.slot === 'action');
+    for (const s of starters) for (const a of actions) if (firstValueTaps([s, a]) < 5) expect(emptyFlaw(s) ?? emptyFlaw(a)).not.toBeNull();
+  });
+  it('picks the upgrade move for a moment, and says how a wrong pick lands', () => {
+    expect(upgradeMove({ value: false, limit: true })).toBe('quiet');   // no value yet, even if she reaches for Pro
+    expect(upgradeMove({ value: true, failed: true, limit: true })).toBe('quiet');
+    expect(upgradeMove({ value: true, limit: true })).toBe('offer');
+    expect(upgradeMove({ value: true, limit: true, midTask: true })).toBe('finish');
+    expect(upgradeMove({ value: true, primed: true })).toBe('hint');
+    expect(upgradeMove({ value: true, midTask: true })).toBe('quiet');
+    expect(moveEffect('offer', 'offer')).toBe('sale');
+    expect(moveEffect('offer', 'finish')).toBe('lost');
+    expect(moveEffect('offer', 'quiet')).toBe('annoyed');
+    expect(moveEffect('finish', 'hint')).toBe('annoyed');
+    expect(moveEffect('quiet', 'offer')).toBe('missed');
+    expect(moveEffect('hint', 'quiet')).toBe('ok');
+    const moves = Object.values(PRO_MOMENTS).map(upgradeMove);
+    for (const m of UPGRADE_MOVES) expect(moves).toContain(m);
+    expect(PRO_MOMENTS.nearLimit.text).toContain(String(KAKSHA_PRO.freeStudents));
+    expect(PRO_MOMENTS.overLimit.text).toContain(`${KAKSHA_PRO.freeStudents + 1}th`);
+  });
+});
 
 describe('st.3 helpers', () => {
   it('gives each metric its role in the tree', () => {
@@ -781,6 +839,22 @@ describe('episodes', () => {
         expect(lanes).toEqual([...COGA_LANES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RAHI_BARRIERS).sort());
         for (const c of ep.game.cards) { expect(c.lane).toBe(RAHI_BARRIERS[c.visual as RahiBarrier].lane); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'cue-timeline') {   // every tip once, on the first moment cueFor finds for it
+        expect(lanes).toEqual(Object.keys(KAKSHA_MOMENTS));
+        for (const l of ep.game.lanes) expect(l.label).toBe(KAKSHA_MOMENTS[l.id as keyof typeof KAKSHA_MOMENTS].label);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(KAKSHA_TIPS).sort());
+        for (const c of ep.game.cards) { const t = KAKSHA_TIPS[c.visual as KakshaTip]; expect(c.label).toBe(t.text); expect(c.lane).toBe(cueFor(t.needs)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'empty-build') {   // every piece once, in its slot
+        expect(lanes).toEqual([...EMPTY_SLOTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(EMPTY_PIECES).sort());
+        for (const c of ep.game.cards) { const p = EMPTY_PIECES[c.visual as EmptyPieceId]; expect(c.label).toBe(p.text); expect(c.lane).toBe(p.slot); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'paywall-timing') {   // every moment once, in the move upgradeMove gives it
+        expect(lanes).toEqual([...UPGRADE_MOVES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(PRO_MOMENTS).sort());
+        for (const c of ep.game.cards) { const m = PRO_MOMENTS[c.visual as ProMomentId]; expect(c.label).toBe(m.text); expect(c.lane).toBe(upgradeMove(m)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'metric-flow') {   // every metric once, named in full, in the role metricRole gives it
         expect(lanes).toEqual([...METRIC_ROLES]);

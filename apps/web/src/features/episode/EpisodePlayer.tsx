@@ -129,6 +129,9 @@ import { MetricFlow } from './games/MetricFlow';
 import { HeartGrid } from './games/HeartGrid';
 import { CohortRead } from './games/CohortRead';
 import { EventWire } from './games/EventWire';
+import { CueTimeline } from './games/CueTimeline';
+import { EmptyBuild } from './games/EmptyBuild';
+import { PaywallTiming } from './games/PaywallTiming';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -267,6 +270,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'heart-grid': HeartGrid,
   'cohort-read': CohortRead,
   'event-wire': EventWire,
+  'cue-timeline': CueTimeline,
+  'empty-build': EmptyBuild,
+  'paywall-timing': PaywallTiming,
 };
 
 interface Props {

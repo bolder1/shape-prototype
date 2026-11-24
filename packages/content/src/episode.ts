@@ -36,7 +36,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'voice-tone', 'content-first', 'loc-ready',
   'keyboard-flow', 'sr-semantics', 'form-errors', 'cognitive-a11y',
   'vision-narrative', 'roadmap-horizons', 'rival-rings',
-  'metric-tree', 'heart-goals', 'cohort-triangle', 'track-plan']);
+  'metric-tree', 'heart-goals', 'cohort-triangle', 'track-plan',
+  'just-in-time', 'empty-activate', 'upgrade-moment']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -151,6 +152,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `heart-grid`: lanes are `GSM_PARTS` in order; every card is a line from the Apni Awaaz HEART plan, its `visual` a key of `AWAAZ_HEART` (each used once), its `label` that line's `text`, and its lane is what `gsmPart` reads in the text. A signal or metric then goes in its HEART row too (the line's `dim`); each row gets one signal and one metric. Every card needs a `note`.
  *  - `cohort-read`: lanes are `DATA_VIEWS` in order; every card is a question about Kahaani's new families, its `visual` a key of `KAHAANI_ASKS` (each used once), and its lane is that ask's `view`. Once the right view is open you estimate the answer on a slider, read by `askValue` and judged by `estimateGrade`. Every card needs a `note`.
  *  - `event-wire`: lanes are the keys of `KAHAANI_EVENTS` in order; every card is a question the team wants answered, its `visual` a key of `TRACK_QUESTIONS` (each used once), and its lane is that question's `event`. You fire the event from its place on the story player, then pick the properties that answer the question, checked by `propsCheck`. Every card needs a `note`.
+ *  - `cue-timeline`: lanes are `KAKSHA_MOMENTS` in order; every card is a piece of onboarding, its `visual` a key of `KAKSHA_TIPS` (each used once), its `label` that tip's `text`, and its lane is what `cueFor` says: the first moment in Meenakshi's first month when she can use it. A wrong pick is called too early or too late by `cueVerdict`. Every card needs a `note`.
+ *  - `empty-build`: lanes are `EMPTY_SLOTS` in order; every card is a candidate piece of Kaksha's empty Batches screen, its `visual` a key of `EMPTY_PIECES` (each used once), its `label` that piece's `text`, and its lane is the piece's `slot`. The game offers a slot's pieces together; the one to pick is the one `emptyFlaw` passes (exactly one per slot), and the finished screen reports `firstValueTaps`. Every card needs a `note`.
+ *  - `paywall-timing`: lanes are `UPGRADE_MOVES` in order; every card is a moment in Meenakshi's months with Kaksha, its `visual` a key of `PRO_MOMENTS` (each used once), and its lane is what `upgradeMove` says. Each pick lands as `moveEffect` describes (a sale, a lost draft, an annoyed tutor…). Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -184,7 +188,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'tone-dial', 'question-flow', 'loc-spot',
   'focus-path', 'sr-listen', 'form-tab', 'load-lift',
   'vision-postcard', 'horizon-board', 'rival-map',
-  'metric-flow', 'heart-grid', 'cohort-read', 'event-wire']);
+  'metric-flow', 'heart-grid', 'cohort-read', 'event-wire',
+  'cue-timeline', 'empty-build', 'paywall-timing']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -1287,6 +1292,123 @@ export const propsCheck = (need: readonly string[], chosen: readonly string[]) =
   const pii = chosen.filter(p => (PII_PROPS as readonly string[]).includes(p));
   return { missing, pii, ok: missing.length === 0 && pii.length === 0 };
 };
+
+// gr.2 · Onboarding & activation. Kaksha is a Chennai app for home tutors: batches, attendance, homework and fee
+// reminders, with parents kept up to date on WhatsApp. Its aha is a first class marked, with parents told.
+
+/** Meenakshi's first month with Kaksha (`cue-timeline` lanes), each with what she has done by then. */
+export const KAKSHA_MOMENTS = {
+  open: { label: 'First open', students: 0, classes: 0, feesDue: false },
+  batch: { label: 'First batch made', students: 8, classes: 0, feesDue: false },
+  class: { label: 'First class taken', students: 8, classes: 1, feesDue: false },
+  fees: { label: 'Fees due, 1st of the month', students: 22, classes: 12, feesDue: true },
+} as const satisfies Record<string, { label: string; students: number; classes: number; feesDue: boolean }>;
+export type KakshaMoment = keyof typeof KAKSHA_MOMENTS;
+/** What has to be true before a piece of onboarding is any use. */
+export interface TipNeeds { students?: number; classes?: number; feesDue?: boolean }
+/** The first moment at which a tip's needs are met: teach it then, not before (she can't use it) and not after (she
+ *  already needed it). Null if no moment in the first month meets them. */
+export const cueFor = (needs: TipNeeds): KakshaMoment | null =>
+  (Object.keys(KAKSHA_MOMENTS) as KakshaMoment[]).find(k => {
+    const m = KAKSHA_MOMENTS[k];
+    return m.students >= (needs.students ?? 0) && m.classes >= (needs.classes ?? 0) && (!needs.feesDue || m.feesDue);
+  }) ?? null;
+/** Whether a tip shown at a moment comes too early, right on time, or too late. */
+export const cueVerdict = (needs: TipNeeds, at: KakshaMoment): 'early' | 'right' | 'late' => {
+  const order = Object.keys(KAKSHA_MOMENTS);
+  const d = order.indexOf(at) - order.indexOf(cueFor(needs) ?? order[order.length - 1]);
+  return d < 0 ? 'early' : d > 0 ? 'late' : 'right';
+};
+/** Pieces of Kaksha's onboarding (`cue-timeline` cards). The old app showed all of them in a tour on first open. */
+export const KAKSHA_TIPS = {
+  batch: { text: 'Create your first batch: a name, the days and the time', needs: {} },
+  students: { text: 'Add students by picking parents from your phone contacts', needs: {} },
+  attendance: { text: 'Tap a name to mark them present; parents get a WhatsApp message', needs: { students: 1 } },
+  parents: { text: 'Choose which updates parents get: attendance, homework, or both', needs: { students: 1 } },
+  homework: { text: 'Send tonight’s homework to the whole batch in one go', needs: { classes: 1 } },
+  reschedule: { text: 'Move a class and every parent is told the new time', needs: { classes: 1 } },
+  remind: { text: 'Send fee reminders to parents who haven’t paid yet', needs: { feesDue: true } },
+  report: { text: 'Share a monthly attendance report with each parent', needs: { classes: 10 } },
+} as const satisfies Record<string, { text: string; needs: TipNeeds }>;
+export type KakshaTip = keyof typeof KAKSHA_TIPS;
+
+/** The parts of an empty state that activates (`empty-build` lanes), top to bottom of the screen. */
+export const EMPTY_SLOTS = ['message', 'starter', 'action', 'preview'] as const;
+export type EmptySlot = (typeof EMPTY_SLOTS)[number];
+/** A candidate piece for Kaksha's empty Batches screen. Message: does it say what goes here and what to do, or talk
+ *  about the app? Starter: how much typing before the first batch has students, and is any sample content marked as
+ *  sample? Action: how many equal buttons, and can she see one? Preview: what fills the space until she starts.
+ *  `taps` counts taps to a first batch with students in it. */
+export type EmptyPiece =
+  | { slot: 'message'; text: string; names: boolean; next: boolean; aboutApp?: boolean }
+  | { slot: 'starter'; text: string; taps: number; sample?: 'marked' | 'unmarked' }
+  | { slot: 'action'; text: string; buttons: number; visible: boolean; taps: number }
+  | { slot: 'preview'; text: string; shows: 'example' | 'zeros' | 'art'; pushesDown?: boolean };
+export type EmptyFlaw = 'about-app' | 'vague' | 'unmarked' | 'effort' | 'dead-end' | 'competing' | 'zeros' | 'pushes-down';
+/** What stops a piece from activating, or null if it helps. More than 6 taps to a first batch is too much typing for
+ *  a tutor between classes; sample content must say it's a sample. */
+export const emptyFlaw = (p: EmptyPiece): EmptyFlaw | null => {
+  switch (p.slot) {
+    case 'message': return p.aboutApp ? 'about-app' : p.names && p.next ? null : 'vague';
+    case 'starter': return p.sample === 'unmarked' ? 'unmarked' : p.taps > 6 ? 'effort' : null;
+    case 'action': return p.buttons === 0 || !p.visible ? 'dead-end' : p.buttons > 1 ? 'competing' : null;
+    case 'preview': return p.shows === 'zeros' ? 'zeros' : p.shows === 'art' && p.pushesDown ? 'pushes-down' : null;
+  }
+};
+/** Taps from the empty screen to a first batch with students in it: the button, then filling it. */
+export const firstValueTaps = (pieces: readonly EmptyPiece[]) =>
+  pieces.reduce((s, p) => s + (p.slot === 'starter' || p.slot === 'action' ? p.taps : 0), 0);
+/** The pieces in the `empty-build` game and the `empty-activate` scene. One per slot has no flaw. */
+export const EMPTY_PIECES = {
+  msgGood: { slot: 'message', text: 'Your batches live here. Make one for each group you teach, and Kaksha keeps attendance and tells parents.', names: true, next: true },
+  msgVague: { slot: 'message', text: 'No batches found.', names: false, next: false },
+  msgHype: { slot: 'message', text: 'Welcome to Kaksha, India’s smartest tuition platform!', names: false, next: false, aboutApp: true },
+  fillContacts: { slot: 'starter', text: 'Pick students’ parents from your phone contacts', taps: 4 },
+  fillForm: { slot: 'starter', text: 'A form with 11 fields per student: name, class, school, date of birth, blood group…', taps: 14 },
+  fillFake: { slot: 'starter', text: 'Five made-up students already in your batch, not marked as samples', taps: 0, sample: 'unmarked' },
+  actOne: { slot: 'action', text: 'One button: Create a batch', buttons: 1, visible: true, taps: 1 },
+  actMany: { slot: 'action', text: 'Four equal buttons: Create batch, Add student, Set fees, Watch tutorial', buttons: 4, visible: true, taps: 1 },
+  actNone: { slot: 'action', text: 'No button, just “Use the menu to add a batch”', buttons: 0, visible: false, taps: 3 },
+  showExample: { slot: 'preview', text: 'A faded example card, “Class 10 Maths · Mon Wed Fri, 5 pm · 8 students”, marked Example', shows: 'example' },
+  showZeros: { slot: 'preview', text: 'Dashboard tiles reading 0 students, 0% attendance, ₹0 collected', shows: 'zeros' },
+  showArt: { slot: 'preview', text: 'A big illustration of a teacher at a blackboard that pushes the button off the screen', shows: 'art', pushesDown: true },
+} as const satisfies Record<string, EmptyPiece>;
+export type EmptyPieceId = keyof typeof EMPTY_PIECES;
+
+/** What Kaksha should do about Pro at a moment (`paywall-timing` lanes). */
+export const UPGRADE_MOVES = ['offer', 'finish', 'hint', 'quiet'] as const;
+export type UpgradeMove = (typeof UPGRADE_MOVES)[number];
+/** A moment: has she had value yet, did something just go wrong, has she reached for something Pro does, is she in
+ *  the middle of a task someone is waiting on, and is she close to a limit or just had a win? */
+export interface ProMoment { value: boolean; failed?: boolean; limit?: boolean; midTask?: boolean; primed?: boolean }
+/** No value yet, or something just failed: don't sell. Reaching for Pro: offer it, but after the task if she's in the
+ *  middle of one. Near a limit or after a win: a quiet mention. Otherwise stay out of the way. */
+export const upgradeMove = (m: ProMoment): UpgradeMove =>
+  !m.value || m.failed ? 'quiet' : m.limit ? (m.midTask ? 'finish' : 'offer') : m.primed ? 'hint' : 'quiet';
+/** How a pick lands: a sale, a tutor annoyed by a pitch she didn't need, work lost to a block mid-task, a sale missed
+ *  because nothing was offered, or fine. */
+export const moveEffect = (chosen: UpgradeMove, right: UpgradeMove): 'sale' | 'annoyed' | 'lost' | 'missed' | 'ok' =>
+  chosen === right ? (right === 'offer' ? 'sale' : 'ok')
+    : chosen === 'offer' && right === 'finish' ? 'lost'
+      : (chosen === 'offer' || chosen === 'finish') && (right === 'quiet' || right === 'hint') ? 'annoyed'
+        : right === 'offer' || right === 'finish' ? 'missed' : 'ok';
+/** Kaksha Pro: free for up to 25 students; Pro is ₹499 a year. */
+export const KAKSHA_PRO = { yearly: 499, freeStudents: 25 } as const;
+/** Moments in Meenakshi's first months (`paywall-timing` cards). */
+export const PRO_MOMENTS = {
+  firstOpen: { text: 'First open, before she has made a batch', value: false },
+  dayTwo: { text: 'Day two: she opens Kaksha to add one more student before her first class', value: false },
+  nearLimit: { text: 'She adds her 23rd student; the free plan holds 25', value: true, primed: true },
+  overLimit: { text: 'At home on Sunday, she tries to add a 26th student for a new Class 9 batch', value: true, limit: true },
+  receiptLogo: { text: 'A parent waits at the door for a fee receipt, and she taps “Add my logo”, a Pro feature', value: true, limit: true, midTask: true },
+  worksheet: { text: 'Halfway through typing a 20-question worksheet, she taps “Attach PDF”, a Pro feature', value: true, limit: true, midTask: true },
+  monthWin: { text: 'Month end: 21 of 22 parents paid after reminders, ₹33,000 collected', value: true, primed: true },
+  failedSend: { text: 'A fee reminder didn’t send: the parent’s number was wrong', value: true, failed: true },
+  marking: { text: 'Marking attendance with the class sitting in front of her', value: true, midTask: true },
+  reportCard: { text: 'Planning the term, she looks for term-test report cards, a Pro feature', value: true, limit: true },
+  colleague: { text: 'She tries to add her colleague Selvi as a second teacher on a batch', value: true, limit: true },
+} as const satisfies Record<string, ProMoment & { text: string }>;
+export type ProMomentId = keyof typeof PRO_MOMENTS;
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

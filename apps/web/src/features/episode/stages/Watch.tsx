@@ -127,6 +127,9 @@ import { MetricTreeScene } from '../scenes/MetricTree';
 import { HeartGoalsScene } from '../scenes/HeartGoals';
 import { CohortTriangleScene } from '../scenes/CohortTriangle';
 import { TrackPlanScene } from '../scenes/TrackPlan';
+import { JustInTimeScene } from '../scenes/JustInTime';
+import { EmptyActivateScene } from '../scenes/EmptyActivate';
+import { UpgradeMomentScene } from '../scenes/UpgradeMoment';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -247,6 +250,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'heart-goals': HeartGoalsScene,
   'cohort-triangle': CohortTriangleScene,
   'track-plan': TrackPlanScene,
+  'just-in-time': JustInTimeScene,
+  'empty-activate': EmptyActivateScene,
+  'upgrade-moment': UpgradeMomentScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
