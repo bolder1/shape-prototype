@@ -113,6 +113,9 @@ import { MotionMeaningScene } from '../scenes/MotionMeaning';
 import { ReducedMotionScene } from '../scenes/ReducedMotion';
 import { MicroAnatomyScene } from '../scenes/MicroAnatomy';
 import { DelightCheckScene } from '../scenes/DelightCheck';
+import { VoiceToneScene } from '../scenes/VoiceTone';
+import { ContentFirstScene } from '../scenes/ContentFirst';
+import { LocReadyScene } from '../scenes/LocReady';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -219,6 +222,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'reduced-motion': ReducedMotionScene,
   'micro-anatomy': MicroAnatomyScene,
   'delight-check': DelightCheckScene,
+  'voice-tone': VoiceToneScene,
+  'content-first': ContentFirstScene,
+  'loc-ready': LocReadyScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

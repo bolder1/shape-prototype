@@ -115,6 +115,9 @@ import { MotionPurpose } from './games/MotionPurpose';
 import { MotionAudit } from './games/MotionAudit';
 import { MicroBuild } from './games/MicroBuild';
 import { DelightJudge } from './games/DelightJudge';
+import { ToneDial } from './games/ToneDial';
+import { QuestionFlow } from './games/QuestionFlow';
+import { LocSpot } from './games/LocSpot';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -239,6 +242,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'motion-audit': MotionAudit,
   'micro-build': MicroBuild,
   'delight-judge': DelightJudge,
+  'tone-dial': ToneDial,
+  'question-flow': QuestionFlow,
+  'loc-spot': LocSpot,
 };
 
 interface Props {

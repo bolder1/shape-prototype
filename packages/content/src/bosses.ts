@@ -1072,9 +1072,63 @@ const pr3: BossBriefInput = {
   },
 };
 
+const cw2: BossBriefInput = {
+  chapterId: 'cw.2',
+  title: 'A voice & tone guide, used ten times',
+  minutes: 90,
+  scenario: [
+    'Write a short voice and tone guide for your Studio product, then prove it works by writing the copy for 10 real moments in it. If you don’t have a product yet, use Chaabi, the Kolkata flat-rental app from this chapter: finding a flat, paying rent by UPI, raising repairs and getting the deposit back, about to launch in Bengali and Hindi.',
+    'The guide is for someone who joins next month and writes alone. Define the voice so it can be recognised, set out how the tone changes and why, and give the words to use and avoid. Then pick 10 moments that span the dial, good news to bad, low stakes to high, and write each one as it would ship, ready for translation.',
+  ],
+  fields: [
+    { id: 'product', label: 'Product and the people it talks to', kind: 'text', minWords: 15, hint: 'What it does, for whom, and the situations they’re in when they read it.' },
+    { id: 'voice', label: 'Voice: three traits', kind: 'list', items: 3, minWords: 12, hint: 'One per line: the trait, what it means in practice, and what it isn’t (“Straight, not blunt: …”).' },
+    { id: 'tone', label: 'How the tone changes', kind: 'long', minWords: 60, hint: 'Your tone scale, what moves it along (mood, stakes, anything else), and a rule for each type of moment: good news, routine, small problems, serious ones.' },
+    { id: 'words', label: 'Words and style', kind: 'list', items: 4, minWords: 6, hint: 'One per line: a word or habit to use and its opposite to avoid, with why (“tenant, not lessee”; no exclamation marks about money).' },
+    { id: 'moments', label: '10 product moments', kind: 'list', items: 10, minWords: 15, hint: 'One per line: the moment, its tone and why, then the exact copy as it ships (headline, body, button).' },
+    { id: 'translate', label: 'Ready for translation', kind: 'long', minWords: 40, hint: 'How your guide and copy keep strings whole, plain and with room to grow: placeholders, plurals, idioms you replaced, formats, and notes for translators.' },
+  ],
+  rubric: [
+    { id: 'voice', label: 'A voice you can recognise', strong: 'Three distinct traits, each with what it means in practice and a boundary (“not …”) that stops it being overdone; every one of the 10 moments sounds like the same product.', weight: 3, required: true },
+    { id: 'tone', label: 'Tone set by the moment', strong: 'The tone rules say what moves the tone (at least mood and stakes) and give a rule per type of moment; the 10 moments span the scale, and each one’s tone follows from the rules, with no playfulness on failures, money or anything at risk.', weight: 3, required: true },
+    { id: 'moments', label: 'Copy that does its job', strong: 'Each moment answers what the person needs to know then, in their order: what happened, what it means for them (amounts, dates, names) and what to do, with verb-plus-object buttons from cw.1. Serious moments are calm and specific, not just sympathetic.', weight: 3, required: true },
+    { id: 'usable', label: 'Usable by someone new', strong: 'The guide is short, concrete and example-led: a new writer could apply it to an eleventh moment without asking; the word list gives a reason for each entry.', weight: 2 },
+    { id: 'translate', label: 'Ready for translation', strong: 'Strings are whole messages with named placeholders and plural rules, idioms are replaced with plain meaning, room to grow and locale formats are planned, and translators get context notes.', weight: 1 },
+  ],
+  tips: ['Write the serious moments first. If the voice still sounds like itself when rent has failed, it will survive anything.', 'Read your 10 moments in a row, out loud. If one sounds like a different company, either the voice or that line is wrong.'],
+  example: {
+    product: 'Chaabi helps people in Kolkata rent a flat and live in it: search, sign the agreement, pay rent by UPI, raise repairs and get the deposit back. Its users are tenants in their 20s and 30s, often new to the city, reading on a phone between work and a landlord’s call, sometimes worried about money or a deadline.',
+    voice: [
+      'Straight, not blunt: we say the thing that matters first, in plain words, with the amount, the date and the name. We don’t hide news behind “Oops” and we don’t bark orders.',
+      'Neighbourly, not chummy: we sound like a helpful person in the next flat who knows how renting works. We use first names and “Mrs Sen”, not “the lessor”. We don’t do baby talk or forced slang.',
+      'Sure, not bossy: we know the rules of renting and tell people their rights and next step with confidence. We don’t lecture, and we never guess.',
+    ],
+    tone: 'Our tone moves on one dial: playful, warm, plain, serious. Two things set it. The mood of the moment sets the start: good news starts playful, routine starts warm, bad news starts plain. The stakes push it one step graver: if money, a home or a deadline is involved, go one step towards serious. Rules: good news with nothing at stake may have one light line, never at the person’s expense. Big good news (a refund, a signed agreement) is warm: amount and date first, no sound effects. Routine steps that block progress (KYC, signing) are plain: what, why, how long. Small problems are plain: what happened, that nothing else was lost, and the fix. Serious moments (failed rent, notices, disputes) are short and calm: what happened, what it means for the money or home, and two ways forward. No exclamation marks, no emoji and no “don’t worry” anywhere near money going wrong.',
+    words: [
+      'Tenant and landlord, or their names, not lessee and lessor: people don’t use legal words about their own home.',
+      'The exact amount (₹18,500), not “your payment”: money is what people check first.',
+      'A date with the month as a word (14 March), not “soon” or 14/03: soon is a promise nobody can hold, and 14/03 is ambiguous across locales.',
+      'No exclamation marks or emoji in anything about money, notices or repairs that affect safety: they read as alarm or as not taking it seriously.',
+    ],
+    moments: [
+      'Shortlist saved (good, low stakes: playful): “Five flats on your shortlist. Someone’s serious about Jadavpur.” Button: “Compare flats”.',
+      'Move-in day (good, low stakes: playful): “Keys in hand. Your rent, repairs and agreement for Flat 2A now live here.” Button: “Set up rent”.',
+      'Deposit refund approved (good, high stakes: warm): “₹41,800 of your ₹45,000 deposit is on its way. It reaches your bank by 14 March.” Button: “See the deductions”.',
+      'No search results (routine, low stakes: warm): “No flats match all your filters yet. Raise the rent limit to ₹20,000 to see 6 more, or we’ll tell you when one comes up.” Buttons: “Raise limit”, “Tell me”.',
+      'PAN needed before signing (routine, high stakes: plain): “Add your PAN to sign. Mrs Sen needs it for your rent receipts. It takes about a minute.” Button: “Add PAN”.',
+      'Repair photo failed (bad, low stakes: plain): “That photo didn’t upload. Your request is saved. Check your connection and try again.” Button: “Try again”.',
+      'Repair request accepted (routine, low stakes: warm): “Mrs Sen has seen your request about the bathroom tap. The plumber can come Saturday, 10 am to 12 pm.” Buttons: “Book Saturday”, “Pick another time”.',
+      'Rent reminder (routine, high stakes: plain): “Rent of ₹18,500 is due on the 5th, in 2 days.” Sent at 9 am, not at night. Button: “Pay ₹18,500”.',
+      'Rent failed on the due date (bad, high stakes: serious): “Your ₹18,500 rent didn’t go through, and no money left your account. It’s due today: pay with another UPI app, or tell Mrs Sen you’ll pay tomorrow.” Buttons: “Pay another way”, “Message Mrs Sen”.',
+      'Notice to leave (bad, high stakes: serious): “Mrs Sen has given you two months’ notice to leave Flat 3B, by 28 February. Your agreement allows this. You can read the notice, check your deposit terms and see flats near you.” Buttons: “Read notice”, “See flats”.',
+    ],
+    translate: 'Every string is one message with named placeholders: “Rent of {amount} is due on {date}”, never joined pieces, so Bengali and Hindi translators can put the verb at the end. Counts use plural rules (“{count, plural, one {# repair} other {# repairs}}”). I replaced the two idioms in our old copy, “We’ve got your back” and “in the bag”, with what they mean. Buttons and tabs grow with their labels, and we run a pseudo-localized build on every new screen. Dates and money are formatted by the app per locale (3 April, ₹1,00,000), and each string goes to translators with where it appears, its character limit and what each placeholder holds. Where Hindi would force a gendered verb (“You are paying”), we use a neutral form (“Payment in progress”).',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

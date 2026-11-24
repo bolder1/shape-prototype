@@ -32,7 +32,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'token-tiers', 'mode-swap', 'token-names',
   'prop-sprawl', 'variant-explosion', 'doc-page',
   'ease-curves', 'motion-timing', 'motion-meaning', 'reduced-motion',
-  'micro-anatomy', 'delight-check']);
+  'micro-anatomy', 'delight-check',
+  'voice-tone', 'content-first', 'loc-ready']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -133,6 +134,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `motion-audit`: lanes are `REDUCE_LANES` in order; every card's `visual` is a part of Dabba's home screen (a key of `DABBA_MOTIONS`, each used once), and its lane is what `reduceFor` says it becomes when Reduce motion is on. Every card needs a `note`.
  *  - `micro-build`: lanes are `MICRO_PARTS` in order; every card is one part of a Gullak micro-interaction, and its `visual` names which one (one of `GULLAK_MICROS`). Each micro-interaction gets exactly one card per part (see `microStrips`), and the game plays it once its strip is complete. Every card needs a `note`.
  *  - `delight-judge`: lanes are `DELIGHT_LANES` in order; every card's `visual` is a moment from Gullak's playful first build (a key of `GULLAK_MOMENTS`, each used once), and its lane is what `delightVerdict` says about it. The game tallies the time each costs a month with `delightCost`. Every card needs a `note`.
+ *  - `tone-dial`: lanes are `TONES` in order, lightest first; every card is a moment in Chaabi, its `visual` a key of `CHAABI_MOMENTS` (each used once). You turn a dial through the four tones, the moment's message rewrites itself in each (same voice, different tone), and its lane is what `toneFor` says the moment's mood and stakes call for. Every card needs a `note`.
+ *  - `question-flow`: lanes are `FLOW_QUESTIONS` in order, the four screens of Chaabi's move-out flow, each answering one question a tenant asks; every card is a piece of real content and its `visual` the `LOREM_SLOTS` box Dev's lorem-ipsum layout had for it, which the game shows it overflowing (`slotFits`). Every card needs a `note`.
+ *  - `loc-spot`: lanes are `LOC_LANES` in order; every card is a string on Chaabi's rent screen, its `visual` "chars|piece|piece…": how many characters its box holds, then the pieces the code joins to build it. `locFlaw` decides the `pieces` and `room` cards (and must say nothing about the others); `idiom` and `ready` are judged by people. The game previews every string with `pseudoLocalize`. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -162,7 +166,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'tier-edit', 'mode-tune', 'token-rename',
   'api-build', 'prop-type', 'doc-rewrite',
   'ease-tune', 'duration-tune', 'motion-purpose', 'motion-audit',
-  'micro-build', 'delight-judge']);
+  'micro-build', 'delight-judge',
+  'tone-dial', 'question-flow', 'loc-spot']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -703,6 +708,131 @@ export const GULLAK_MOMENTS = {
   'pull-coin': { ms: 0, perMonth: 30, mood: 'neutral', playful: true },
 } as const satisfies Record<string, DelightSpec>;
 export type GullakMoment = keyof typeof GULLAK_MOMENTS;
+
+/** Tone settings for one voice (`tone-dial` lanes), lightest first. Chaabi's voice (straight, neighbourly, sure) never
+ *  changes; how much lightness it allows itself does. */
+export const TONES = ['playful', 'warm', 'plain', 'serious'] as const;
+export type Tone = (typeof TONES)[number];
+/** A moment in Chaabi, a Kolkata app for renting a flat: how it feels to the tenant and how much rides on it (money,
+ *  a home, a deadline), plus the moment's message written in each tone. */
+export interface ToneMoment { mood: 'good' | 'neutral' | 'bad'; stakes: 'low' | 'high'; lines: Record<Tone, string> }
+/** The tone a moment calls for. Mood sets the starting point and stakes push it one step graver: bad news is plain, or
+ *  serious when money or a home is at risk; routine moments are warm, or plain when something important must be done;
+ *  good news can be playful, but only warm when it's big. */
+export const toneFor = (m: Pick<ToneMoment, 'mood' | 'stakes'>): Tone => {
+  const start = m.mood === 'good' ? 0 : m.mood === 'neutral' ? 1 : 2;
+  return TONES[start + (m.stakes === 'high' ? 1 : 0)];
+};
+/** How many steps apart two tones are on the dial (0 = the same). */
+export const toneGap = (a: Tone, b: Tone) => Math.abs(TONES.indexOf(a) - TONES.indexOf(b));
+/** The moments in the `tone-dial` game and the `voice-tone` scene. Tanvir is moving out of a Salt Lake flat, rented from
+ *  Mrs Sen with a ₹45,000 deposit, into a new one in Jadavpur. */
+export const CHAABI_MOMENTS = {
+  shortlist: { mood: 'good', stakes: 'low', lines: {
+    playful: 'Five flats on your shortlist. Someone’s serious about Jadavpur.',
+    warm: 'Five flats saved. We’ll tell you if any of them drop their rent.',
+    plain: 'You have saved 5 flats.',
+    serious: 'Five flats are saved to your shortlist. Review them before they are let.' } },
+  'move-in': { mood: 'good', stakes: 'low', lines: {
+    playful: 'Keys in hand. The new flat is officially yours to fill with plants.',
+    warm: 'Welcome home, Tanvir. Your rent, repairs and agreement are all in one place now.',
+    plain: 'Move-in confirmed for Flat 2A, Jadavpur.',
+    serious: 'Your tenancy at Flat 2A, Jadavpur, has started. Rent is due on the 5th of each month.' } },
+  'deposit-back': { mood: 'good', stakes: 'high', lines: {
+    playful: 'Ka-ching! ₹41,800 just bounced back to you.',
+    warm: '₹41,800 of your deposit is on its way. It should reach your bank by Friday.',
+    plain: 'Deposit refund: ₹41,800. Expected by Friday.',
+    serious: 'A refund of ₹41,800 has been approved against your deposit of ₹45,000.' } },
+  'no-results': { mood: 'neutral', stakes: 'low', lines: {
+    playful: 'Zero flats. Jadavpur is playing hard to get.',
+    warm: 'No flats match all your filters yet. Try raising the rent limit to ₹20,000, or we’ll tell you when one comes up.',
+    plain: 'No results. Change your filters.',
+    serious: 'No listings match your criteria.' } },
+  kyc: { mood: 'neutral', stakes: 'high', lines: {
+    playful: 'Quick paperwork party! Bring your PAN.',
+    warm: 'Nearly there! Just pop in your PAN and you’re good to go.',
+    plain: 'Add your PAN before you sign. Mrs Sen needs it for the rent receipt, and it takes about a minute.',
+    serious: 'Your PAN is required. You cannot sign the agreement without it.' } },
+  'photo-failed': { mood: 'bad', stakes: 'low', lines: {
+    playful: 'Oops, that photo got camera-shy!',
+    warm: 'Oh no, your photo didn’t make it. Let’s try that again together!',
+    plain: 'That photo didn’t upload. Check your connection and try again. Your request is saved.',
+    serious: 'Upload failed. The photo could not be attached to your repair request.' } },
+  'rent-failed': { mood: 'bad', stakes: 'high', lines: {
+    playful: 'Uh-oh, your rent took a detour! Give it another spin?',
+    warm: 'Your rent didn’t go through, but don’t worry, we’ll sort it out together.',
+    plain: 'Your rent payment didn’t go through. Try again.',
+    serious: 'Your ₹18,500 rent didn’t go through, and no money left your account. It’s due today: pay with another UPI app, or tell Mrs Sen you’ll pay tomorrow.' } },
+  notice: { mood: 'bad', stakes: 'high', lines: {
+    playful: 'Plot twist: Mrs Sen wants Flat 3B back!',
+    warm: 'Mrs Sen has sent you a notice. We know moving is a lot, and we’re here for you.',
+    plain: 'Mrs Sen has sent you a notice to leave.',
+    serious: 'Mrs Sen has given you two months’ notice to leave Flat 3B, by 28 February. Your agreement allows this. Read the notice, and see flats near you.' } },
+} as const satisfies Record<string, ToneMoment>;
+export type ChaabiMoment = keyof typeof CHAABI_MOMENTS;
+
+/** The four screens of Chaabi's move-out flow (`question-flow` lanes), each named for the one question a tenant asks
+ *  there, in the order they ask them. */
+export const FLOW_QUESTIONS = ['howmuch', 'why', 'when', 'next'] as const;
+export type FlowQuestion = (typeof FLOW_QUESTIONS)[number];
+/** The boxes in Dev's lorem-ipsum move-out screen: characters per line and how many lines each holds. */
+export const LOREM_SLOTS = {
+  headline: { perLine: 18, lines: 1 },
+  tile: { perLine: 16, lines: 2 },
+  body: { perLine: 30, lines: 2 },
+  button: { perLine: 14, lines: 1 },
+} as const satisfies Record<string, { perLine: number; lines: number }>;
+export type LoremSlot = keyof typeof LOREM_SLOTS;
+/** Lines `text` takes when wrapped word by word at `perLine` characters (a word longer than a line is broken). */
+export const wrapLines = (text: string, perLine: number) => wrapText(text, perLine).length;
+/** `text` wrapped word by word at `perLine` characters. */
+export const wrapText = (text: string, perLine: number) => {
+  const out: string[] = [];
+  let line = '';
+  for (let word of text.split(/\s+/).filter(Boolean)) {
+    while (word.length > perLine) {
+      if (line) { out.push(line); line = ''; }
+      out.push(word.slice(0, perLine));
+      word = word.slice(perLine);
+    }
+    if (!line) line = word;
+    else if (line.length + 1 + word.length <= perLine) line += ` ${word}`;
+    else { out.push(line); line = word; }
+  }
+  if (line) out.push(line);
+  return out;
+};
+/** Whether real content fits the lorem box it was drawn for. */
+export const slotFits = (text: string, slot: LoremSlot) => wrapLines(text, LOREM_SLOTS[slot].perLine) <= LOREM_SLOTS[slot].lines;
+
+/** Verdicts for a string on its way to Bengali and Hindi (`loc-spot` lanes): ready, built from pieces (joined
+ *  fragments, a number stuck to a plural), an idiom that won't survive translation, or no room to grow. */
+export const LOC_LANES = ['ready', 'pieces', 'idiom', 'room'] as const;
+export type LocLane = (typeof LOC_LANES)[number];
+/** How much longer a string may get in translation, by its English length (after IBM's globalization guidelines, at the
+ *  low end of each band): short strings grow the most. */
+export const growthFor = (len: number) => (len <= 10 ? 1 : len <= 20 ? 0.8 : len <= 30 ? 0.6 : len <= 50 ? 0.4 : len <= 70 ? 0.35 : 0.3);
+/** Characters to leave room for once `len` English characters are translated. */
+export const roomFor = (len: number) => Math.ceil(Math.round(len * (1 + growthFor(len)) * 1000) / 1000);
+/** A `loc-spot` visual: "chars|piece|piece…". */
+export const locParse = (visual: string) => {
+  const [chars, ...parts] = visual.split('|');
+  return { chars: Number(chars), parts, text: parts.join('') };
+};
+/** What a machine can tell about a string: joined from pieces, or too long for its box once translated; null when
+ *  neither (idioms and good strings need a person). */
+export const locFlaw = (s: { chars: number; parts: readonly string[] }): 'pieces' | 'room' | null => {
+  if (s.parts.length > 1) return 'pieces';
+  return roomFor(s.parts.join('').length) > s.chars ? 'room' : null;
+};
+const ACCENT: Record<string, string> = { a: 'á', e: 'é', i: 'í', o: 'ö', u: 'ü', A: 'Å', E: 'É', I: 'Î', O: 'Ö', U: 'Û', c: 'ç', n: 'ñ', y: 'ý' };
+/** A pseudo-translation for testing a layout before any translator starts: accented letters (to catch fonts and
+ *  clipped accents), padded to `roomFor` its length (to catch boxes that can't grow) and bracketed (to catch text cut
+ *  off at either end). Placeholders in {braces} are left alone. */
+export const pseudoLocalize = (text: string) => {
+  const body = text.split(/(\{[^}]*\})/).map(s => (s.startsWith('{') ? s : [...s].map(ch => ACCENT[ch] ?? ch).join(''))).join('');
+  return `[${body}${'·'.repeat(roomFor(text.length) - text.length)}]`;
+};
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

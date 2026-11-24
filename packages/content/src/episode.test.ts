@@ -1,5 +1,43 @@
 import { describe, expect, it } from 'vitest';
-import { DELIGHT_LANES, GULLAK_MICROS, GULLAK_MOMENTS, MICRO_PARTS, PAY_STAGES, delightCost, delightVerdict, microComplete, microStrips, payStage, DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { CHAABI_MOMENTS, FLOW_QUESTIONS, LOC_LANES, LOREM_SLOTS, TONES, growthFor, locFlaw, locParse, pseudoLocalize, roomFor, slotFits, toneFor, toneGap, wrapLines, wrapText, type LoremSlot, DELIGHT_LANES, GULLAK_MICROS, GULLAK_MOMENTS, MICRO_PARTS, PAY_STAGES, delightCost, delightVerdict, microComplete, microStrips, payStage, DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('cw.2 helpers', () => {
+  it('sets the tone from mood, pushed one step graver by stakes', () => {
+    expect(toneFor({ mood: 'good', stakes: 'low' })).toBe('playful');
+    expect(toneFor({ mood: 'good', stakes: 'high' })).toBe('warm');
+    expect(toneFor({ mood: 'neutral', stakes: 'low' })).toBe('warm');
+    expect(toneFor({ mood: 'neutral', stakes: 'high' })).toBe('plain');
+    expect(toneFor({ mood: 'bad', stakes: 'low' })).toBe('plain');
+    expect(toneFor({ mood: 'bad', stakes: 'high' })).toBe('serious');
+    expect(toneGap('playful', 'serious')).toBe(3);
+    expect(toneGap('plain', 'plain')).toBe(0);
+    const tones = Object.values(CHAABI_MOMENTS).map(toneFor);
+    for (const t of TONES) expect(tones.filter(x => x === t)).toHaveLength(2);
+    for (const m of Object.values(CHAABI_MOMENTS)) for (const t of TONES) expect(m.lines[t].length).toBeGreaterThan(10);
+  });
+  it('wraps text word by word', () => {
+    expect(wrapText('In your bank by Friday', 10)).toEqual(['In your', 'bank by', 'Friday']);
+    expect(wrapLines('Accept and get paid', 14)).toBe(2);
+    expect(wrapLines('Accept', 14)).toBe(1);
+    expect(wrapText('Bandyopadhyay', 5)).toEqual(['Bandy', 'opadh', 'yay']);
+    expect(wrapLines('', 10)).toBe(0);
+    expect(slotFits('₹3,200 kept back', 'tile')).toBe(true);
+    expect(slotFits('Question a deduction', 'button')).toBe(false);
+  });
+  it('leaves room for translation, most for short strings', () => {
+    expect([5, 10, 11, 20, 30, 50, 70, 71].map(growthFor)).toEqual([1, 1, 0.8, 0.8, 0.6, 0.4, 0.35, 0.3]);
+    expect(roomFor(8)).toBe(16);
+    expect(roomFor(15)).toBe(27);
+    expect(roomFor(100)).toBe(130);
+    expect(locParse('40|Rent due in |3| days')).toEqual({ chars: 40, parts: ['Rent due in ', '3', ' days'], text: 'Rent due in 3 days' });
+    expect(locFlaw(locParse('40|Rent due in |3| days'))).toBe('pieces');
+    expect(locFlaw(locParse('16|Raise a request'))).toBe('room');
+    expect(locFlaw(locParse('18|Pay rent'))).toBeNull();
+    expect(pseudoLocalize('Pay rent')).toBe('[Páý réñt········]');
+    expect(pseudoLocalize('Due {date}')).toBe('[Düé {date}··········]');
+    expect(pseudoLocalize('Pay rent').length - 2).toBe(roomFor(8));
+  });
+});
 
 describe('pr.3 helpers', () => {
   it('groups micro-interaction parts into strips', () => {
@@ -575,6 +613,29 @@ describe('episodes', () => {
         expect(lanes).toEqual([...PROP_TYPES]);
         for (const c of ep.game.cards) { expect(propValues(c.visual ?? '').length).toBeGreaterThanOrEqual(2); expect(c.note).toBeTruthy(); }
         expect(frameCount(ep.game.cards.map(c => ({ visual: c.visual, type: c.lane })))).toBe(60);
+      }
+      if (ep.game.id === 'tone-dial') {   // every moment once, at the tone its mood and stakes call for
+        expect(lanes).toEqual([...TONES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(CHAABI_MOMENTS).sort());
+        for (const c of ep.game.cards) { expect(c.lane).toBe(toneFor(CHAABI_MOMENTS[c.visual as keyof typeof CHAABI_MOMENTS])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'question-flow') {   // every screen gets content, and the lorem layout can't hold most of it
+        expect(lanes).toEqual([...FLOW_QUESTIONS]);
+        for (const q of FLOW_QUESTIONS) expect(ep.game.cards.some(c => c.lane === q)).toBe(true);
+        for (const c of ep.game.cards) { expect(Object.keys(LOREM_SLOTS)).toContain(c.visual); expect(c.note).toBeTruthy(); }
+        const over = ep.game.cards.filter(c => !slotFits(c.label, c.visual as LoremSlot)).length;
+        expect(over).toBeGreaterThan(ep.game.cards.length / 2);
+        expect(over).toBeLessThan(ep.game.cards.length);
+      }
+      if (ep.game.id === 'loc-spot') {   // the machine catches joined pieces and boxes that can't grow, and only those
+        expect(lanes).toEqual([...LOC_LANES]);
+        for (const c of ep.game.cards) {
+          const flaw = locFlaw(locParse(c.visual ?? ''));
+          expect(flaw).toBe(c.lane === 'pieces' || c.lane === 'room' ? c.lane : null);
+          expect(locParse(c.visual ?? '').chars).toBeGreaterThan(0);
+          expect(c.note).toBeTruthy();
+        }
+        for (const l of LOC_LANES) expect(ep.game.cards.filter(c => c.lane === l).length).toBeGreaterThanOrEqual(2);
       }
       if (ep.game.id === 'micro-build') {   // every micro-interaction gets exactly one card for each part
         expect(lanes).toEqual([...MICRO_PARTS]);
