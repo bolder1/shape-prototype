@@ -1026,9 +1026,55 @@ const pr2: BossBriefInput = {
   },
 };
 
+const pr3: BossBriefInput = {
+  chapterId: 'pr.3',
+  title: 'One key moment, fully specified',
+  minutes: 90,
+  scenario: [
+    'Pick one key moment in your Studio product where getting the small details right matters: a payment succeeding, a booking confirmed, a goal reached, a file sent. If you don’t have a product yet, use Gullak, the Pune UPI and savings-jar app from this chapter, and design what happens when Meera pays Raju the milkman ₹240.',
+    'Design it as a micro-interaction: trigger, rules, feedback and loops, including the slow, failed and repeated cases, not just the happy path. Prototype it in Figma, Principle, Framer or code and share a link or a screen recording. Then decide, with numbers, where any delight goes and where it doesn’t.',
+  ],
+  fields: [
+    { id: 'link', label: 'Prototype or recording', kind: 'text', minWords: 6, hint: 'The link, and the tool you used.' },
+    { id: 'trigger', label: 'Trigger', kind: 'text', minWords: 15, hint: 'What starts it, manual or system, and how the trigger shows what it will do.' },
+    { id: 'rules', label: 'Rules', kind: 'list', items: 3, minWords: 10, hint: 'One per line: what it may do and what it won’t, including double taps, limits and edge cases.' },
+    { id: 'feedback', label: 'Feedback for each outcome', kind: 'list', items: 3, minWords: 15, hint: 'One per line: the outcome (working, success, failure…), what the person sees, hears or feels, the words, and the timing in ms.' },
+    { id: 'loops', label: 'Loops and modes', kind: 'list', items: 2, minWords: 12, hint: 'One per line: how it changes over a long wait, with repetition, offline, or with Reduce motion on.' },
+    { id: 'delight', label: 'Where the delight goes, and where it doesn’t', kind: 'long', minWords: 50, hint: 'The one flourish you kept, with its duration × how often a daily user sees it, and one you cut, with why: too often, in the way, or the wrong tone.' },
+  ],
+  rubric: [
+    { id: 'parts', label: 'All four parts, built to spec', strong: 'The trigger, rules, feedback and loops are each stated specifically enough to build without guessing; manual triggers say what they will do, and system triggers have feedback that explains what the app did on its own.', weight: 3, required: true },
+    { id: 'edges', label: 'Beyond the happy path', strong: 'Rules cover the double tap, limits and edge cases; feedback is designed for every outcome the rules create (working, success, failure, pending), and failure says plainly what happened and what to do next.', weight: 3, required: true },
+    { id: 'feedback', label: 'Feedback that answers', strong: 'Presses answer within about 100 ms; status is shown in words as well as motion; durations and curves are given and fit pr.2’s bands; the feedback changes over a long wait instead of looping unchanged.', weight: 2 },
+    { id: 'delight', label: 'Delight judged, not sprinkled', strong: 'The kept flourish is rare and earned or small and quick, its cost is worked out (duration × frequency), it never blocks the next step, and a cut is justified by frequency, blocking or tone. Bad moments get no playfulness.', weight: 2 },
+    { id: 'loops', label: 'It changes over time', strong: 'At least one loop shortens or changes the interaction for repeat users or long waits, and a mode (offline, Reduce motion) keeps the meaning.', weight: 1 },
+  ],
+  tips: ['Write the rules first and list every outcome they can produce. Each outcome needs its own feedback; most products only design one.', 'Multiply before you animate: a 1-second flourish on something done twice a day is a minute a month for every user.'],
+  example: {
+    link: 'Figma prototype with Smart Animate and a 35-second screen recording: figma.com/proto/… (Gullak · Pay Raju).',
+    trigger: 'Manual: Meera taps the full-width button “Pay ₹240 to Raju” on Raju’s card, with his name and the amount in the label so the button says exactly what it will do. From the twentieth day the same trigger also appears as “Pay Raju ₹240 again” at the top of the home screen.',
+    rules: [
+      'One tap pays once: the button locks on the first tap and ignores further taps until the payment resolves.',
+      'Payments over ₹1,000 ask for the UPI PIN; Raju’s ₹240 goes through UPI Lite with no PIN, from a Lite balance Meera tops up, and Gullak says so on the button the first time.',
+      'If the bank hasn’t answered in 30 seconds, the payment is marked pending; Gullak never retries on its own and never lets Meera pay Raju again while one is pending.',
+    ],
+    feedback: [
+      'Pressed: the button darkens and scales to 98% within 80 ms, and the phone gives one light haptic tap.',
+      'Working: within 150 ms the label becomes a 20 px linear spinner (one turn per 800 ms) and the words “Waiting for your bank…”, with the button’s width kept so nothing jumps.',
+      'Success: the spinner becomes a tick that draws in over 300 ms with ease-out, one firm buzz, and “₹240 paid to Raju · 7:42 am” with a receipt link. No confetti: this happens every day.',
+      'Failure: no motion and no character. A red outline, “Payment failed. Your bank didn’t respond, and no money left your account.” and a Try again button, which is enabled straight away.',
+    ],
+    loops: [
+      'Long wait: after 5 seconds the words become “Still waiting. Don’t pay again.”; after 30 seconds “Pending. We’ll tell you when it clears”, and a notification follows when it does.',
+      'Repetition and modes: after 20 days, a one-tap “Pay Raju ₹240 again” and an offer of autopay. Offline, the button reads “You’re offline” and is disabled. With Reduce motion on, the tick appears without drawing and the press keeps only its colour change.',
+    ],
+    delight: 'Kept: when a payment’s round-up takes the Goa jar to its ₹15,000 goal, the jar fills and bursts with coins for 900 ms, once per goal. That is 900 ms × about one goal every few months, a fraction of a second a month, at a moment Meera earned, and the Done button works throughout. With Reduce motion on it becomes a still illustration of the full jar with “You saved ₹15,000 for Goa”. Cut: confetti on every payment. At 1.2 s × 60 payments it cost Meera 72 seconds a month and meant nothing after the second day. Also cut: the winking piggy on failures, because playfulness while someone is worried about their money reads as not taking it seriously.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

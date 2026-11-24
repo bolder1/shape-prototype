@@ -1,0 +1,93 @@
+// Chapter pr.3 · Micro-interactions. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const pr3: LessonContent[] = [
+  {
+    id: 'pr.3-1', title: 'Trigger → rules → feedback → loops', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'A tap is a small machine',
+        body: ['A micro-interaction is one small task done in one moment: paying, liking, toggling, refreshing. Dan Saffer splits each one into four parts. The trigger starts it. The rules decide what it may do. Feedback tells you what happened. Loops and modes decide how it changes over time or in a different situation.',
+          'Triggers are either manual, like tapping Pay ₹240, or system triggers, like a payment clearing and Gullak rounding up the change into a savings jar. Rules are where most bugs hide: can a second tap pay twice? What happens below ₹500 balance? Feedback must answer within 100 ms and say something specific, in words as well as motion.',
+          'Loops are what most teams forget. If the bank takes ten seconds, does the spinner say anything new? Does the twentieth payment to the same milkman still take four taps? Modes cover the same interaction offline or with a setting changed. Write all four down before anyone animates anything.'] },
+      { type: 'sort', id: 's1', prompt: 'Which part of Gullak’s Pay button is each of these?',
+        explanation: 'The trigger starts it, rules limit it, feedback reports it, and loops change it over time.',
+        buckets: [{ id: 'trigger', label: 'Trigger' }, { id: 'rules', label: 'Rules' }, { id: 'feedback', label: 'Feedback' }],
+        items: [
+          { id: 'a', label: 'Meera taps “Pay ₹240”', bucket: 'trigger' },
+          { id: 'b', label: 'The button locks after one tap so it can’t pay twice', bucket: 'rules' },
+          { id: 'c', label: 'The label becomes a spinner and “Waiting for your bank”', bucket: 'feedback' },
+          { id: 'd', label: 'Payments over ₹1,000 need the UPI PIN; smaller ones can go through UPI Lite', bucket: 'rules' },
+          { id: 'e', label: 'A tick draws in and the phone buzzes once', bucket: 'feedback' },
+          { id: 'f', label: 'Gullak’s balance drops below ₹500 and a nudge appears', bucket: 'trigger' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'The bank has taken 12 seconds and the spinner looks the same as at 1 second. Which part is missing?',
+        explanation: 'Feedback that changes with the wait is a loop. After a few seconds it should say “Still waiting. Don’t pay again.”',
+        options: [
+          { id: 'a', label: 'The trigger' },
+          { id: 'b', label: 'A loop: the feedback should change as the wait goes on' },
+          { id: 'c', label: 'A rule about the PIN' },
+          { id: 'd', label: 'Nothing; spinners should never change' },
+        ], correct: 'b' },
+      { type: 'pick', id: 'p2', prompt: 'Which of these is a system trigger?',
+        explanation: 'Nobody tapped anything: the app noticed something and started the interaction itself.',
+        options: [
+          { id: 'a', label: 'Meera pulling down the passbook' },
+          { id: 'b', label: 'Meera holding the Pay button' },
+          { id: 'c', label: 'A ₹234 payment clearing, so Gullak puts the ₹6 change into her Goa jar' },
+          { id: 'd', label: 'Meera switching dark mode on' },
+        ], correct: 'c' },
+      { type: 'order', id: 'o1', prompt: 'Put the round-up micro-interaction in Saffer’s order.',
+        explanation: 'Trigger, then rules, then feedback, then what changes over time.',
+        items: [
+          { id: 'a', label: 'A ₹234 payment clears' },
+          { id: 'b', label: 'Round up to ₹240, only if the balance stays above ₹500' },
+          { id: 'c', label: 'A ₹6 coin drops into the Goa jar and its total ticks up' },
+          { id: 'd', label: 'After the tenth round-up, a Sunday summary replaces the coin' },
+        ] },
+    ],
+  },
+  {
+    id: 'pr.3-2', title: 'Delight vs. distraction', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Delight is earned, quick and in tune',
+        body: ['Delight is a small surprise that makes a moment feel cared for. Distraction is the same flourish in the wrong place: too often, in the way, or in the wrong mood. Gullak’s first build rained coins on every launch, threw confetti on every payment and chimed on every tap. By the third day Meera was waiting 1.5 seconds to see her own balance.',
+          'Do the sum before you ship a flourish: how long it plays times how often a daily user sees it. Confetti for 1.2 seconds on 60 payments a month is 72 seconds of watching. Frequent moments get small feedback, like a 300 ms tick. Big celebrations are for rare, earned moments, like a savings goal reached.',
+          'Then check the mood. A winking piggy on a failed payment, or a party on a late fee, reads as mockery. Delight never blocks the next step, can be skipped, and stays quiet with Reduce motion on.'] },
+      { type: 'sort', id: 's1', prompt: 'Delight or distraction?',
+        explanation: 'Rare and earned, or small and fast, is delight. Frequent, blocking or tone-deaf is distraction.',
+        buckets: [{ id: 'delight', label: 'Delight' }, { id: 'distraction', label: 'Distraction' }],
+        items: [
+          { id: 'a', label: 'The Goa jar fills and bursts once when Meera reaches ₹15,000', bucket: 'delight' },
+          { id: 'b', label: 'Coins rain for 1.5 s before the balance shows, on every launch', bucket: 'distraction' },
+          { id: 'c', label: 'A 300 ms tick and one buzz after each payment', bucket: 'delight' },
+          { id: 'd', label: 'A winking piggy saying “Oopsie!” on a failed payment', bucket: 'distraction' },
+          { id: 'e', label: 'The piggy rolls with her finger as she pulls to refresh', bucket: 'delight' },
+          { id: 'f', label: 'A coin jingle on every button tap', bucket: 'distraction' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Confetti plays for 1.2 seconds on each of Meera’s 60 payments a month. How long does she spend watching it?',
+        explanation: '1.2 × 60 = 72 seconds a month, on something that stopped being a surprise on day two.',
+        options: [
+          { id: 'a', label: '12 seconds' },
+          { id: 'b', label: '72 seconds' },
+          { id: 'c', label: '6 seconds' },
+          { id: 'd', label: '7 minutes' },
+        ], correct: 'b' },
+      { type: 'pick', id: 'p2', prompt: 'Ishita wants to keep the coin rain on launch. Which change makes it delight?',
+        explanation: 'Play it rarely, at a moment that earned it, and never in front of what Meera opened the app for.',
+        options: [
+          { id: 'a', label: 'Make it faster, 1 second instead of 1.5' },
+          { id: 'b', label: 'Add a sound so it’s more fun' },
+          { id: 'c', label: 'Show the balance at once and play the rain only on the day a savings goal is reached' },
+          { id: 'd', label: 'Let people turn it off in Settings' },
+        ], correct: 'c' },
+      { type: 'pick', id: 'p3', prompt: 'Meera pays an ₹8,400 hospital bill. What should the success moment be?',
+        explanation: 'The same calm tick as any payment. Read the moment before you celebrate it.',
+        options: [
+          { id: 'a', label: 'The usual tick, the amount and the receipt, with no confetti' },
+          { id: 'b', label: 'Extra confetti, because it’s a big payment' },
+          { id: 'c', label: 'A dancing piggy to cheer her up' },
+          { id: 'd', label: 'A badge for the biggest payment of the month' },
+        ], correct: 'a' },
+    ],
+  },
+];

@@ -111,6 +111,8 @@ import { EaseCurvesScene } from '../scenes/EaseCurves';
 import { MotionTimingScene } from '../scenes/MotionTiming';
 import { MotionMeaningScene } from '../scenes/MotionMeaning';
 import { ReducedMotionScene } from '../scenes/ReducedMotion';
+import { MicroAnatomyScene } from '../scenes/MicroAnatomy';
+import { DelightCheckScene } from '../scenes/DelightCheck';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -215,6 +217,8 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'motion-timing': MotionTimingScene,
   'motion-meaning': MotionMeaningScene,
   'reduced-motion': ReducedMotionScene,
+  'micro-anatomy': MicroAnatomyScene,
+  'delight-check': DelightCheckScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

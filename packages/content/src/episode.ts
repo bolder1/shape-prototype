@@ -31,7 +31,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'component-kit', 'icon-audit', 'image-choice', 'table-tidy',
   'token-tiers', 'mode-swap', 'token-names',
   'prop-sprawl', 'variant-explosion', 'doc-page',
-  'ease-curves', 'motion-timing', 'motion-meaning', 'reduced-motion']);
+  'ease-curves', 'motion-timing', 'motion-meaning', 'reduced-motion',
+  'micro-anatomy', 'delight-check']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -130,6 +131,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `duration-tune`: lanes are the `DURATION_BANDS` ids in order; every card is a transition in Dabba, its `visual` is "ms|kind" (how long Dabba's first build ran it, outside the card's band, and one of `DURATION_KINDS` to draw). You tune the duration on a slider and it is judged by `durationVerdict`. Every card needs a `note`.
  *  - `motion-purpose`: lanes are `MOTION_JOBS` in order; every card is a motion in Dabba, its `visual` one of `MEANING_MOTIONS` (each used once), drawn and played by the game. Every card needs a `note`.
  *  - `motion-audit`: lanes are `REDUCE_LANES` in order; every card's `visual` is a part of Dabba's home screen (a key of `DABBA_MOTIONS`, each used once), and its lane is what `reduceFor` says it becomes when Reduce motion is on. Every card needs a `note`.
+ *  - `micro-build`: lanes are `MICRO_PARTS` in order; every card is one part of a Gullak micro-interaction, and its `visual` names which one (one of `GULLAK_MICROS`). Each micro-interaction gets exactly one card per part (see `microStrips`), and the game plays it once its strip is complete. Every card needs a `note`.
+ *  - `delight-judge`: lanes are `DELIGHT_LANES` in order; every card's `visual` is a moment from Gullak's playful first build (a key of `GULLAK_MOMENTS`, each used once), and its lane is what `delightVerdict` says about it. The game tallies the time each costs a month with `delightCost`. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -158,7 +161,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'state-sheet', 'icon-odd', 'image-budget', 'table-build',
   'tier-edit', 'mode-tune', 'token-rename',
   'api-build', 'prop-type', 'doc-rewrite',
-  'ease-tune', 'duration-tune', 'motion-purpose', 'motion-audit']);
+  'ease-tune', 'duration-tune', 'motion-purpose', 'motion-audit',
+  'micro-build', 'delight-judge']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -632,6 +636,73 @@ export const DABBA_MOTIONS = {
   badge: { travel: 4, meaning: true },
 } as const satisfies Record<string, MotionSpec>;
 export type DabbaPart = keyof typeof DABBA_MOTIONS;
+
+/** The four parts of a micro-interaction (Dan Saffer's model), in `micro-build` lane order: what starts it, what it is
+ *  allowed to do, how you know it happened, and how it changes over time or in another mode. */
+export const MICRO_PARTS = ['trigger', 'rules', 'feedback', 'loops'] as const;
+export type MicroPart = (typeof MICRO_PARTS)[number];
+/** The micro-interactions in Gullak, a Pune UPI and savings-jar app, that the `micro-build` game and scene draw. */
+export const GULLAK_MICROS = ['pay', 'roundup', 'refresh'] as const;
+export type GullakMicro = (typeof GULLAK_MICROS)[number];
+/** Groups `micro-build` cards into strips: for each micro-interaction (a card's `visual`), the card ids under each part. */
+export const microStrips = (cards: readonly { id: string; lane: string; visual?: string }[]) => {
+  const out: Record<string, Record<string, string[]>> = {};
+  for (const c of cards) {
+    const strip = (out[c.visual ?? ''] ??= {});
+    (strip[c.lane] ??= []).push(c.id);
+  }
+  return out;
+};
+/** Whether a strip has exactly one card for every part. */
+export const microComplete = (strip: Record<string, readonly string[]> | undefined) => !!strip && MICRO_PARTS.every(p => strip[p]?.length === 1);
+/** What Gullak's Pay button shows `ms` after the tap: the press within 100 ms, then a spinner with "Waiting for your
+ *  bank", then past 5 seconds "Still waiting. Don't pay again", and past 30 seconds the payment is marked pending with
+ *  a promise to tell you. The loop is the feedback changing as the wait goes on. */
+export const PAY_STAGES = [
+  { id: 'press', until: 100 },
+  { id: 'working', until: 5000 },
+  { id: 'slow', until: 30000 },
+  { id: 'pending', until: Infinity },
+] as const;
+export type PayStage = (typeof PAY_STAGES)[number]['id'];
+export const payStage = (ms: number): PayStage => PAY_STAGES.find(s => ms < s.until)!.id;
+
+/** A playful moment in Gullak: how long it plays, how often a daily user sees it, whether it holds up what they came to
+ *  do, the mood of the moment it plays in, and whether it is playful (confetti, a dance, a jingle, a wink). */
+export interface DelightSpec { ms: number; perMonth: number; blocks?: boolean; mood: 'good' | 'neutral' | 'bad'; playful: boolean }
+/** Critique verdicts for a playful moment (`delight-judge` lanes): keep it, it plays too often, it gets in the way, or
+ *  it strikes the wrong tone. */
+export const DELIGHT_LANES = ['keep', 'often', 'blocking', 'tone'] as const;
+export type DelightLane = (typeof DELIGHT_LANES)[number];
+/** Flourishes up to this long are small enough to repeat every day, or to sit in front of the next step. */
+export const SMALL_MS = 300;
+/** A big flourish seen more than this many times a month (about twice a week) stops being a surprise. */
+export const RARE_PER_MONTH = 8;
+/** The critique, in order: playfulness on a bad moment (a failure, a fine) is the wrong tone whatever else is true; then
+ *  anything longer than a small flourish that holds up the next step is in the way; then a big flourish on something
+ *  done more than about twice a week plays too often. What's left is delight: rare and earned, or small. */
+export const delightVerdict = (m: DelightSpec): DelightLane => {
+  if (m.mood === 'bad' && m.playful) return 'tone';
+  if (m.blocks && m.ms > SMALL_MS) return 'blocking';
+  if (m.perMonth > RARE_PER_MONTH && m.ms > SMALL_MS) return 'often';
+  return 'keep';
+};
+/** Seconds a month a daily user spends watching a moment, to one decimal place. */
+export const delightCost = (m: Pick<DelightSpec, 'ms' | 'perMonth'>) => Math.round((m.ms * m.perMonth) / 100) / 10;
+/** The playful moments in Gullak's first build (the `delight-judge` game's cards point at these by `visual`). */
+export const GULLAK_MOMENTS = {
+  'coin-rain': { ms: 1500, perMonth: 90, blocks: true, mood: 'neutral', playful: true },
+  'unlock-dance': { ms: 2000, perMonth: 60, blocks: true, mood: 'neutral', playful: true },
+  'pay-confetti': { ms: 1200, perMonth: 60, mood: 'good', playful: true },
+  'tap-jingle': { ms: 600, perMonth: 900, mood: 'neutral', playful: true },
+  'balance-sparkle': { ms: 800, perMonth: 90, mood: 'neutral', playful: true },
+  'failed-wink': { ms: 900, perMonth: 2, mood: 'bad', playful: true },
+  'late-fee-party': { ms: 1000, perMonth: 1, mood: 'bad', playful: true },
+  'goal-burst': { ms: 900, perMonth: 0.5, mood: 'good', playful: true },
+  'tick-draw': { ms: 300, perMonth: 60, mood: 'good', playful: false },
+  'pull-coin': { ms: 0, perMonth: 30, mood: 'neutral', playful: true },
+} as const satisfies Record<string, DelightSpec>;
+export type GullakMoment = keyof typeof GULLAK_MOMENTS;
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

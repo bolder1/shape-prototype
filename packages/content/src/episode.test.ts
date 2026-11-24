@@ -1,5 +1,41 @@
 import { describe, expect, it } from 'vitest';
-import { DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { DELIGHT_LANES, GULLAK_MICROS, GULLAK_MOMENTS, MICRO_PARTS, PAY_STAGES, delightCost, delightVerdict, microComplete, microStrips, payStage, DABBA_MOTIONS, DURATION_BANDS, DURATION_KINDS, EASES, EASE_CURVES, MEANING_MOTIONS, MOTION_JOBS, REDUCE_LANES, bandOf, bezierAt, bezierCss, curveFor, durationVerdict, reduceFor, staggerEnd, staggerStep, timingOf, type DurationBand, API_KINDS, BUTTON_API, DOC_BLOCKS, PROP_TYPES, apiFrom, comboCount, frameCount, oldPropKind, propValues, readSeconds, wordCount, type ApiDecision, COMPONENT, MODE_SPECS, NAME_FLAWS, TOKEN_TIERS, badName, blastRadius, darkCheck, modeHex, nameFlaw, nameWords, parentOf, rampSteps, resolveTokens, tierOf, type ModeToken, EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('pr.3 helpers', () => {
+  it('groups micro-interaction parts into strips', () => {
+    const cards = [
+      { id: 'a', lane: 'trigger', visual: 'pay' }, { id: 'b', lane: 'rules', visual: 'pay' }, { id: 'c', lane: 'feedback', visual: 'pay' }, { id: 'd', lane: 'loops', visual: 'pay' },
+      { id: 'e', lane: 'trigger', visual: 'refresh' }, { id: 'f', lane: 'trigger', visual: 'refresh' },
+    ];
+    const s = microStrips(cards);
+    expect(s.pay).toEqual({ trigger: ['a'], rules: ['b'], feedback: ['c'], loops: ['d'] });
+    expect(microComplete(s.pay)).toBe(true);
+    expect(microComplete(s.refresh)).toBe(false);   // two triggers, nothing else
+    expect(microComplete(s.roundup)).toBe(false);
+  });
+  it('changes the Pay button’s feedback as the wait goes on', () => {
+    expect([0, 99, 100, 4999, 5000, 29999, 30000, 120000].map(payStage)).toEqual(['press', 'press', 'working', 'working', 'slow', 'slow', 'pending', 'pending']);
+    expect(PAY_STAGES.map(s => s.id)).toEqual(['press', 'working', 'slow', 'pending']);
+  });
+  it('critiques delight in order: tone, then blocking, then frequency', () => {
+    expect(delightVerdict({ ms: 900, perMonth: 1, mood: 'bad', playful: true })).toBe('tone');
+    expect(delightVerdict({ ms: 300, perMonth: 2, mood: 'bad', playful: false })).toBe('keep');   // a plain, calm failure
+    expect(delightVerdict({ ms: 2000, perMonth: 60, blocks: true, mood: 'bad', playful: true })).toBe('tone');   // tone wins
+    expect(delightVerdict({ ms: 1500, perMonth: 1, blocks: true, mood: 'good', playful: true })).toBe('blocking');   // even when rare
+    expect(delightVerdict({ ms: 250, perMonth: 60, blocks: true, mood: 'good', playful: true })).toBe('keep');   // small enough to sit in front
+    expect(delightVerdict({ ms: 1200, perMonth: 60, mood: 'good', playful: true })).toBe('often');
+    expect(delightVerdict({ ms: 1200, perMonth: 8, mood: 'good', playful: true })).toBe('keep');   // twice a week is still rare
+    expect(delightVerdict({ ms: 300, perMonth: 60, mood: 'good', playful: false })).toBe('keep');
+    const lanes = Object.values(GULLAK_MOMENTS).map(delightVerdict);
+    for (const l of DELIGHT_LANES) expect(lanes).toContain(l);
+  });
+  it('costs a flourish in seconds a month', () => {
+    expect(delightCost(GULLAK_MOMENTS['pay-confetti'])).toBe(72);
+    expect(delightCost(GULLAK_MOMENTS['coin-rain'])).toBe(135);
+    expect(delightCost(GULLAK_MOMENTS['goal-burst'])).toBe(0.5);   // 0.45 s, to one decimal
+    expect(delightCost(GULLAK_MOMENTS['pull-coin'])).toBe(0);
+  });
+});
 
 describe('pr.2 helpers', () => {
   it('solves cubic-bezier curves like a browser', () => {
@@ -539,6 +575,18 @@ describe('episodes', () => {
         expect(lanes).toEqual([...PROP_TYPES]);
         for (const c of ep.game.cards) { expect(propValues(c.visual ?? '').length).toBeGreaterThanOrEqual(2); expect(c.note).toBeTruthy(); }
         expect(frameCount(ep.game.cards.map(c => ({ visual: c.visual, type: c.lane })))).toBe(60);
+      }
+      if (ep.game.id === 'micro-build') {   // every micro-interaction gets exactly one card for each part
+        expect(lanes).toEqual([...MICRO_PARTS]);
+        const strips = microStrips(ep.game.cards);
+        expect(Object.keys(strips).sort()).toEqual([...GULLAK_MICROS].sort());
+        for (const m of GULLAK_MICROS) expect(microComplete(strips[m])).toBe(true);
+        for (const c of ep.game.cards) expect(c.note).toBeTruthy();
+      }
+      if (ep.game.id === 'delight-judge') {   // every playful moment once, judged by the rule
+        expect(lanes).toEqual([...DELIGHT_LANES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(GULLAK_MOMENTS).sort());
+        for (const c of ep.game.cards) { expect(c.lane).toBe(delightVerdict(GULLAK_MOMENTS[c.visual as keyof typeof GULLAK_MOMENTS])); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'ease-tune') {   // every moment's curve follows from where it starts and ends
         expect(lanes).toEqual([...EASES]);
