@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, FRAME_LEAD, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -272,6 +272,35 @@ describe('episodes', () => {
         for (const p of parts) expect(SAFAR_PARTS).toContain(p);
         expect(new Set(parts).size).toBe(parts.length);
         for (const c of ep.game.cards) expect(c.note).toBeTruthy();
+      }
+      if (ep.game.id === 'fidelity-tidy') {   // every part of the drawn wireframe is decided once, and each kind of call comes up
+        expect(lanes).toEqual(['plain', 'real', 'fine']);
+        const parts = ep.game.cards.map(c => c.visual);
+        for (const p of parts) expect(KHELO_PARTS).toContain(p);
+        expect(new Set(parts).size).toBe(parts.length);
+        for (const c of ep.game.cards) expect(c.note).toBeTruthy();
+      }
+      if (ep.game.id === 'grid-place') {   // a page the grid can draw: one full-width block per row, or main with at most one side beside it
+        expect(lanes).toEqual(Object.keys(GRID_AREA));
+        const rows = new Map<number, string[]>();
+        for (const c of ep.game.cards) {
+          const r = Number(c.visual);
+          expect(Number.isInteger(r) && r >= 1).toBe(true);
+          expect(c.note).toBeTruthy();
+          rows.set(r, [...(rows.get(r) ?? []), c.lane]);
+        }
+        for (const ls of rows.values()) {
+          if (ls.includes('bleed') || ls.includes('full')) expect(ls).toHaveLength(1);
+          else { expect(ls.filter(l => l === 'main')).toHaveLength(1); expect(ls.filter(l => l === 'side').length).toBeLessThanOrEqual(1); }
+        }
+        const stack = phoneStack(ep.game.cards).map(c => Number(c.visual));
+        expect(stack).toEqual([...stack].sort((a, b) => a - b));
+        expect(phoneStack([{ lane: 'side', visual: '2' }, { lane: 'main', visual: '2' }, { lane: 'full', visual: '1' }]).map(c => c.lane)).toEqual(['full', 'main', 'side']);
+      }
+      if (ep.game.id === 'pattern-stamp') {   // patterns the library draws, and every screen of the flow gets built
+        expect(lanes).toEqual(['cards', 'chips', 'form', 'sheet']);
+        for (const c of ep.game.cards) { expect(KHELO_SCREENS).toContain(c.visual); expect(c.note).toBeTruthy(); }
+        expect(new Set(ep.game.cards.map(c => c.visual))).toEqual(new Set(KHELO_SCREENS));
       }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card

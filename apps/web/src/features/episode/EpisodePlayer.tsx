@@ -92,6 +92,9 @@ import { TaskFix } from './games/TaskFix';
 import { MethodPick } from './games/MethodPick';
 import { SeverityRate } from './games/SeverityRate';
 import { HeuristicSweep } from './games/HeuristicSweep';
+import { FidelityTidy } from './games/FidelityTidy';
+import { GridPlace } from './games/GridPlace';
+import { PatternStamp } from './games/PatternStamp';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -193,6 +196,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'method-pick': MethodPick,
   'severity-rate': SeverityRate,
   'heuristic-sweep': HeuristicSweep,
+  'fidelity-tidy': FidelityTidy,
+  'grid-place': GridPlace,
+  'pattern-stamp': PatternStamp,
 };
 
 interface Props {

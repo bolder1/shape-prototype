@@ -90,6 +90,9 @@ import { TaskWritingScene } from '../scenes/TaskWriting';
 import { ModUnmodScene } from '../scenes/ModUnmod';
 import { SeverityScene } from '../scenes/Severity';
 import { HeuristicEvalScene } from '../scenes/HeuristicEval';
+import { StayUglyScene } from '../scenes/StayUgly';
+import { WireGridScene } from '../scenes/WireGrid';
+import { PatternLibraryScene } from '../scenes/PatternLibrary';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -173,6 +176,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'mod-unmod': ModUnmodScene,
   'severity': SeverityScene,
   'heuristic-eval': HeuristicEvalScene,
+  'stay-ugly': StayUglyScene,
+  'wire-grid': WireGridScene,
+  'pattern-library': PatternLibraryScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

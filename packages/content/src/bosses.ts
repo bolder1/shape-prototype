@@ -776,9 +776,49 @@ const rs4: BossBriefInput = {
   },
 };
 
+const ia3: BossBriefInput = {
+  chapterId: 'ia.3',
+  title: 'Wireframe a booking flow',
+  minutes: 90,
+  scenario: [
+    'Saaf sends trained cleaners to flats in Pune. Today people book over WhatsApp, and every booking takes six messages. The brief for the app: a customer picks a service (kitchen, bathrooms or the full home), says the flat size (1, 2 or 3 BHK), which sets the price, picks a date and a two-hour arrival window, gives the address with society name, flat number and any gate instructions, and pays by UPI now or in cash after the clean. They should see the total before paying and get a confirmation with the cleaner’s name.',
+    'Wireframe the five screens of this booking flow on a phone. Draw them on paper or in Figma at low fidelity, then describe them here so a reviewer who can’t see your drawing could rebuild them: the grid, what’s on each screen top to bottom, the pattern each part uses, the real content, and the notes your drawing needs.',
+  ],
+  fields: [
+    { id: 'grid', label: 'Your grid and fidelity', kind: 'long', minWords: 25, hint: 'Columns, margins and gutters, and that every screen uses them. What you kept plain (images, colour, type) and what you made real (prices, labels, names).' },
+    { id: 'screens', label: 'The five screens, in order', kind: 'list', items: 5, minWords: 25, hint: 'For each: its name and one job, the blocks from top to bottom with the pattern each one uses and its real content, and the one primary action.' },
+    { id: 'notes', label: 'Notes on the wireframes', kind: 'list', items: 3, minWords: 10, hint: 'A state, rule or behaviour the drawing can’t show, and which screen it belongs to. For example, what a full time window looks like.' },
+    { id: 'choice', label: 'One pattern choice you made', kind: 'text', minWords: 20, hint: 'The job, the pattern you used, the one you considered and rejected, and why.' },
+  ],
+  rubric: [
+    { id: 'flow', label: 'The brief, end to end', strong: 'Five screens cover the brief in a sensible order: service and flat size with the price, date and window, address with gate instructions, a review with the total before paying, payment choice, and a confirmation with the cleaner’s name. Each screen has one job and one primary action.', weight: 2, required: true },
+    { id: 'fidelity', label: 'Plain looks, real content', strong: 'Images and branding are grey boxes and there is no colour or styling, but every label, price and example is real (“2 BHK · ₹2,400”, “10 am – 12 pm”), not lorem ipsum or ₹XXX.', weight: 2, required: true },
+    { id: 'patterns', label: 'Patterns that fit the jobs', strong: 'Each part uses a familiar pattern chosen for its job: chips or a segmented control for a few visible choices, a form with labels for the address, a sheet or a review step for side tasks, and the choice section names a rejected alternative with a clear reason.', weight: 2 },
+    { id: 'grid', label: 'One grid throughout', strong: 'A stated phone grid (e.g. 4 columns, 16 px margins), used on every screen, with blocks described by the columns they span and the primary action in the same place each time.', weight: 1 },
+    { id: 'notes', label: 'Notes for what isn’t drawn', strong: 'Notes cover states and rules the drawing can’t show, such as a full window, a price change when the flat size changes, or what happens if UPI fails, each tied to its screen.', weight: 1 },
+  ],
+  tips: ['Write the real content before drawing a box. The longest society name and the price for each flat size will change your layout.', 'Draw each pattern once, then copy it. If two screens show the same thing differently, one of them is wrong.'],
+  example: {
+    grid: 'A 360 px phone, 4 columns, 16 px margins and 16 px gutters, on all five screens. Every block spans all 4 columns except the date chips (each one column wide, in a row that scrolls sideways). The primary action is always a full-width sticky bar at the bottom. One system font in two sizes, black on white, with grey boxes for the logo and the photos; every price, label and time is the real one from the brief.',
+    screens: [
+      '1 · Choose a clean. Job: pick what to clean and see the price. Top bar with a grey logo box and “Pune, Kothrud”. Three cards, one per service, each with a grey photo box, the name, what’s included (“Kitchen: hob, chimney, tiles, sink”) and “from ₹1,200”. Under the chosen card, segmented chips “1 BHK · 2 BHK · 3 BHK”; the price updates to “2 BHK · ₹2,400”. Sticky bar: “Choose a time · ₹2,400”.',
+      '2 · Pick a time. Job: choose a date and an arrival window. A row of seven date chips (“Today 12”, “Sat 13”…). Below, a 2 × 3 grid of window chips (“8 – 10 am”, “10 am – 12 pm”…), full ones greyed out with “Full”. A line, “The clean takes about 4 hours for a 2 BHK.” Sticky bar: “Add address”, disabled until a window is picked.',
+      '3 · Where. Job: tell the cleaner how to reach the flat. A form with labels above each field: Society or building (“Mayur Colony, Kothrud”), Flat and wing (“B-702”), and Gate instructions, optional (“Tell security it’s for Mehta”). A saved-address card above the form for returning customers. Sticky bar: “Review booking”.',
+      '4 · Review and pay. Job: check everything before money moves. A summary card: service, flat size, date, window and address, each with “Change”. Price lines: “Full home, 2 BHK ₹2,400”, “Visit fee ₹0”, “Total ₹2,400”. Two payment chips: “UPI now” and “Cash after the clean”. A “Have a code?” link opens a bottom sheet with one field and Apply. Sticky bar: “Pay ₹2,400 by UPI” (or “Confirm booking” for cash).',
+      '5 · Booked. Job: reassure and say what happens next. A tick in a grey circle, “Booked for Sat 13, 10 am – 12 pm”. A card with a grey avatar box: “Sunita will clean your flat. She’ll call 15 minutes before she arrives.” The address and total again. Two text buttons: “Add to calendar” and “Need to change it?”. Sticky bar: “Done”.',
+    ],
+    notes: [
+      'Pick a time: a window with no cleaner free shows greyed with “Full” and can’t be tapped; if the whole day is full, the date chip itself greys out.',
+      'Choose a clean: changing the flat size updates the price on the card and in the sticky bar at once, with no extra tap.',
+      'Review and pay: if the UPI payment fails or is cancelled, the person comes back to this screen with everything kept and the message “Payment didn’t go through. You haven’t been charged.”',
+    ],
+    choice: 'For the arrival window I first drew a dropdown, “Select a time slot”. I rejected it because it hides which windows are full until you open it, and people pick by what’s free. Six chips in a 2 × 3 grid show every window and its state at a glance, and are easy to tap with a thumb.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

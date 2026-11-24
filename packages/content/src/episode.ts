@@ -25,7 +25,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'happy-path', 'fewer-steps', 'ui-states',
   'taste-reason', 'feedback-frame', 'receive-critique',
   'affinity-map', 'observation-insight', 'persona-jtbd', 'journey-map',
-  'task-writing', 'mod-unmod', 'severity', 'heuristic-eval']);
+  'task-writing', 'mod-unmod', 'severity', 'heuristic-eval',
+  'stay-ugly', 'wire-grid', 'pattern-library']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -103,6 +104,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `method-pick`: lanes `person`, `remote`, `unmod`; every card's `visual` is how many people take part (costed by `studyCost`), and it needs a `note`.
  *  - `severity-rate`: lanes are `SEVERITY` in order; every card's `visual` is "people of 5 who hit it|impact 1–3" (see `findingOf`), its lane is what `severityOf` says, and it needs a `note`.
  *  - `heuristic-sweep`: up to 4 lanes, each a heuristic id from `NIELSEN_10`; every card's `visual` is the part of the Safar booking screen that breaks it (one of `SAFAR_PARTS`, each used once) and its `note` the fix.
+ *  - `fidelity-tidy`: lanes `plain`, `real`, `fine`; every card's `visual` is the part of the Khelo turf-list wireframe it's about (one of `KHELO_PARTS`, each used once), and it needs a `note`.
+ *  - `grid-place`: lanes `bleed`, `full`, `main`, `side` (areas of a 12-column page, see `GRID_AREA`); every card's `visual` is its row on the page (1, 2, …). A row holds one `bleed` or `full` block, or a `main` block with at most one `side` block beside it (see `phoneStack`). Every card needs a `note`.
+ *  - `pattern-stamp`: lanes `cards`, `chips`, `form`, `sheet` (patterns from the wireframe library, drawn by the game); every card's `visual` is the screen of the Khelo booking flow it goes on (one of `KHELO_SCREENS`, every screen used), and it needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -125,7 +129,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'edge-branch', 'step-trim', 'state-pick',
   'taste-filter', 'frame-feedback', 'calm-reply',
   'affinity-wall', 'insight-sharpen', 'tool-fit', 'journey-plot',
-  'task-fix', 'method-pick', 'severity-rate', 'heuristic-sweep']);
+  'task-fix', 'method-pick', 'severity-rate', 'heuristic-sweep',
+  'fidelity-tidy', 'grid-place', 'pattern-stamp']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -258,6 +263,19 @@ export const NIELSEN_10 = [
 /** The parts of the Safar train-booking screen a `heuristic-sweep` card can point at (the game and scene draw each). */
 export const SAFAR_PARTS = ['back', 'route', 'date', 'quota', 'search', 'passengers', 'fare', 'book'] as const;
 export type SafarPart = (typeof SAFAR_PARTS)[number];
+
+/** The parts of the Khelo turf-list wireframe a `fidelity-tidy` card can point at (the game and scene draw each, as drafted and as fixed). */
+export const KHELO_PARTS = ['logo', 'tabs', 'search', 'photo', 'name', 'rating', 'price', 'button'] as const;
+export type KheloPart = (typeof KHELO_PARTS)[number];
+/** Where each `grid-place` lane sits on a 12-column desktop grid: first and last column. `bleed` also runs past the margins, edge to edge. */
+export const GRID_AREA = { bleed: [1, 12], full: [1, 12], main: [1, 8], side: [9, 12] } as const;
+export type GridArea = keyof typeof GRID_AREA;
+/** A grid-placed page on a 4-column phone grid: every block goes full width, rows top to bottom, and in a shared row the main block comes before the side one. */
+export const phoneStack = <C extends { lane: string; visual?: string }>(cards: readonly C[]) =>
+  [...cards].sort((a, b) => Number(a.visual) - Number(b.visual) || Number(a.lane === 'side') - Number(b.lane === 'side'));
+/** The five screens of the Khelo turf-booking flow, in order (a `pattern-stamp` card's `visual`). */
+export const KHELO_SCREENS = ['find', 'turf', 'slot', 'players', 'pay'] as const;
+export type KheloScreen = (typeof KHELO_SCREENS)[number];
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }
