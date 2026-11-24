@@ -27,7 +27,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'affinity-map', 'observation-insight', 'persona-jtbd', 'journey-map',
   'task-writing', 'mod-unmod', 'severity', 'heuristic-eval',
   'stay-ugly', 'wire-grid', 'pattern-library',
-  'form-pain', 'press-feedback', 'two-devices', 'direct-touch']);
+  'form-pain', 'press-feedback', 'two-devices', 'direct-touch',
+  'component-kit', 'icon-audit', 'image-choice', 'table-tidy']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -112,6 +113,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `wait-feedback`: lanes are `FEEDBACK` in order; every card's `visual` is how long the action takes in ms, its lane is what `feedbackFor` says, and it needs a `note`.
  *  - `port-phone`: lanes `show`, `menu`, `sheet`, `thumb`; every card's `visual` is the part of the desktop packing dashboard it's about (one of `PACKING_PARTS`, each used once), and its `note` the phone version.
  *  - `gesture-map`: lanes are `GESTURES` in order; every card needs a `note`, and every card that isn't a tap has a `visual`: the visible button that does the same job, because a gesture is never the only way.
+ *  - `state-sheet`: lanes are `KIT_STATES` in order; every card's `visual` is the component it puts in that state (one of `KIT_PARTS`), each component × state cell is used at most once, and every card needs a `note`.
+ *  - `icon-odd`: lanes `style`, `size`, `meaning`, `label` (how one icon breaks its row); every card's `visual` is a row of five icons and the odd one's place, "home,search,…|2", plus for `style` and `size` cards how it's drawn wrong, "…|2|fill" (see `iconRow`, `ICON_FLAWS`). A `meaning` card's odd icon is one of `WRONG_METAPHORS`, and no other icon is. Every card needs a `note`.
+ *  - `image-budget`: lanes are `IMAGE_KINDS` in order; every card's `visual` is the short name of the screen the image goes on, and it needs a `note`. The game adds up each pick's weight with `pageWeight`.
+ *  - `table-build`: lanes `align`, `format`, `stress`, `cut`; every card's `visual` is the part of Hisaab's udhaar table it fixes (one of `LEDGER_PARTS`, each used once), and it needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -136,7 +141,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'affinity-wall', 'insight-sharpen', 'tool-fit', 'journey-plot',
   'task-fix', 'method-pick', 'severity-rate', 'heuristic-sweep',
   'fidelity-tidy', 'grid-place', 'pattern-stamp',
-  'form-triage', 'wait-feedback', 'port-phone', 'gesture-map']);
+  'form-triage', 'wait-feedback', 'port-phone', 'gesture-map',
+  'state-sheet', 'icon-odd', 'image-budget', 'table-build']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
@@ -308,6 +314,46 @@ export type PackingPart = (typeof PACKING_PARTS)[number];
 /** Gestures a `gesture-map` card can be given, in lane order. */
 export const GESTURES = ['tap', 'swipe', 'drag', 'pinch'] as const;
 export type Gesture = (typeof GESTURES)[number];
+
+/** Components a `state-sheet` card can draw, and the states it can put them in (lane order). */
+export const KIT_PARTS = ['button', 'input', 'card'] as const;
+export type KitPart = (typeof KIT_PARTS)[number];
+export const KIT_STATES = ['focus', 'disabled', 'loading', 'error'] as const;
+export type KitState = (typeof KIT_STATES)[number];
+
+/** Icons the `icon-odd` game can draw, with the label shown under each. */
+export const ICONS = {
+  home: 'Home', search: 'Search', sale: 'New sale', udhaar: 'Udhaar', stock: 'Stock', customers: 'Customers', reports: 'Reports',
+  settings: 'Settings', bell: 'Alerts', scan: 'Scan', share: 'Share', call: 'Call', rupee: 'Payments', trash: 'Delete', edit: 'Edit',
+  calendar: 'Calendar', bolt: 'Quick sale', chat: 'Messages', dollar: 'Payments', mailbox: 'Messages',
+} as const;
+export type IconName = keyof typeof ICONS;
+/** Metaphors that don't belong in a rupee app for Indian shopkeepers: a dollar sign, an American kerbside mailbox. */
+export const WRONG_METAPHORS = ['dollar', 'mailbox'] as const satisfies readonly IconName[];
+/** How the odd icon of a `style` or `size` row is drawn wrong. */
+export const ICON_FLAWS = { style: ['fill', 'bold'], size: ['small', 'big'] } as const;
+/** Parses an `icon-odd` card's visual: "home,search,sale|2|fill" → the icons in the row, the odd one's index, and how it's drawn wrong (style and size rows only). */
+export const iconRow = (visual: string) => {
+  const [list = '', odd = '', flaw] = visual.split('|');
+  return { icons: list.split(',') as IconName[], odd: Number(odd), flaw };
+};
+
+/** The kinds of image an `image-budget` card can be given, in lane order. */
+export const IMAGE_KINDS = ['photo', 'illus', 'icon', 'none'] as const;
+export type ImageKind = (typeof IMAGE_KINDS)[number];
+/** Rough weight of each kind on a phone screen, in kB: a compressed photo, an SVG illustration, an icon, nothing. */
+export const IMAGE_KB = { photo: 120, illus: 8, icon: 1, none: 0 } as const satisfies Record<ImageKind, number>;
+/** Total weight in kB of the images picked for a set of screens. */
+export const pageWeight = (kinds: readonly string[]) => kinds.reduce((s, k) => s + (IMAGE_KB[k as ImageKind] ?? 0), 0);
+
+/** Parts of Hisaab's udhaar table a `table-build` card can point at (the game redraws each once fixed). */
+export const LEDGER_PARTS = ['amount', 'days', 'date', 'header', 'overdue', 'total', 'grid', 'id'] as const;
+export type LedgerPart = (typeof LEDGER_PARTS)[number];
+/** Rupees in Indian digit grouping, rounded to whole rupees: 125000 → "₹1,25,000". */
+export const inr = (n: number) => {
+  const s = String(Math.round(Math.abs(n))), head = s.slice(0, -3), tail = s.slice(-3);
+  return `${n < 0 ? '−' : ''}₹${head ? `${head.replace(/\B(?=(\d{2})+(?!\d))/g, ',')},` : ''}${tail}`;
+};
 
 /** One idea in a RICE duel. Confidence is a percentage. */
 export interface RiceIdea { name: string; reach: number; impact: number; confidence: number; effort: number }

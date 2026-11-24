@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { EPISODES, Episode, Exercise, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+import { EPISODES, Episode, Exercise, ICON_FLAWS, ICONS, IMAGE_KINDS, KIT_PARTS, KIT_STATES, LEDGER_PARTS, WRONG_METAPHORS, iconRow, inr, pageWeight, FEEDBACK, FORM_LANES, GESTURES, MANDI_FIELDS, PACKING_PARTS, WAIT_LIMITS, feedbackFor, formSeconds, FRAME_LEAD, GRID_AREA, KHELO_PARTS, KHELO_SCREENS, phoneStack, JOURNEY_STAGES, NIELSEN_10, SAFAR_PARTS, SEVERITY, findingOf, flawSpan, severityOf, studyCost, taskWords, KOSH_PARTS, TOOL_PARTS, findExercise, insightParts, journeyFeelings, journeyLow, participantOf, themeReach, contrastLane, contrastRatio, unitHealth, unitNumbers, foggMissing, foggPoint, funnelCounts, funnelRates, leakiestStep, hslChange, hslDial, lessonById, measureSetting, measureVerdict, riceIdeas, riceScore } from './index';
+
+describe('ui.4 helpers', () => {
+  it('writes rupees in Indian grouping, rounded', () => {
+    expect(inr(125000)).toBe('₹1,25,000');
+    expect(inr(999)).toBe('₹999');
+    expect(inr(1250.4)).toBe('₹1,250');
+    expect(inr(12345678)).toBe('₹1,23,45,678');
+  });
+  it('weighs images', () => expect(pageWeight(['photo', 'illus', 'icon', 'none'])).toBe(129));
+});
 
 describe('findExercise', () => {
   it('turns episode questions and game cards into valid review picks', () => {
@@ -337,6 +347,38 @@ describe('episodes', () => {
       if (ep.game.id === 'gesture-map') {   // gestures the phone can play, and every gesture beyond a tap has a visible twin
         expect(lanes).toEqual([...GESTURES]);
         for (const c of ep.game.cards) { expect(c.note).toBeTruthy(); if (c.lane !== 'tap') expect(c.visual).toBeTruthy(); }
+      }
+      if (ep.game.id === 'state-sheet') {   // components and states the sheet can draw, each cell filled at most once
+        expect(lanes).toEqual([...KIT_STATES]);
+        const cells = ep.game.cards.map(c => `${c.visual}:${c.lane}`);
+        expect(new Set(cells).size).toBe(cells.length);
+        for (const c of ep.game.cards) { expect(KIT_PARTS).toContain(c.visual); expect(c.note).toBeTruthy(); }
+        for (const part of KIT_PARTS) expect(ep.game.cards.some(c => c.visual === part)).toBe(true);
+      }
+      if (ep.game.id === 'icon-odd') {   // rows of five drawable icons; only a "picture" card's odd one is a wrong metaphor
+        expect(lanes).toEqual(['style', 'size', 'meaning', 'label']);
+        for (const c of ep.game.cards) {
+          const { icons, odd, flaw } = iconRow(c.visual ?? '');
+          if (c.lane === 'style' || c.lane === 'size') expect(ICON_FLAWS[c.lane] as readonly string[]).toContain(flaw); else expect(flaw).toBeUndefined();
+          expect(icons).toHaveLength(5);
+          for (const n of icons) expect(Object.keys(ICONS)).toContain(n);
+          expect(Number.isInteger(odd) && odd >= 0 && odd < icons.length).toBe(true);
+          const wrong = icons.filter(n => (WRONG_METAPHORS as readonly string[]).includes(n));
+          expect(wrong).toEqual(c.lane === 'meaning' ? [icons[odd]] : []);
+          expect(c.note).toBeTruthy();
+        }
+      }
+      if (ep.game.id === 'image-budget') {   // the right picks weigh far less than a photo everywhere
+        expect(lanes).toEqual([...IMAGE_KINDS]);
+        for (const c of ep.game.cards) { expect(c.visual).toBeTruthy(); expect(c.note).toBeTruthy(); }
+        expect(pageWeight(ep.game.cards.map(c => c.lane))).toBeLessThan(pageWeight(ep.game.cards.map(() => 'photo')) / 2);
+      }
+      if (ep.game.id === 'table-build') {   // every part of the drawn table is fixed once
+        expect(lanes).toEqual(['align', 'format', 'stress', 'cut']);
+        const parts = ep.game.cards.map(c => c.visual);
+        expect(new Set(parts)).toEqual(new Set(LEDGER_PARTS));
+        expect(parts).toHaveLength(LEDGER_PARTS.length);
+        for (const c of ep.game.cards) expect(c.note).toBeTruthy();
       }
       if (ep.game.id === 'align-snap') expect(lanes).toEqual(['left', 'center', 'right']);   // the three snap lines
       if (['gestalt-hunt', 'squint-test', 'spacing-fix'].includes(ep.game.id)) for (const c of ep.game.cards) expect(c.visual).toBeTruthy();   // visual games draw every card

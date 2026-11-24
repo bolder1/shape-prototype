@@ -852,9 +852,48 @@ const ia4: BossBriefInput = {
   },
 };
 
+const ui4: BossBriefInput = {
+  chapterId: 'ui.4',
+  title: 'Take your wireframes to high fidelity',
+  minutes: 120,
+  scenario: [
+    'Saaf sends trained cleaners to flats in Pune, and its five-screen booking flow is wireframed: 1 Choose a clean (service cards and flat size, with the price), 2 Pick a time (date chips and two-hour arrival windows), 3 Where (society, flat and gate instructions), 4 Review and pay (a summary, the price lines, UPI now or cash after), 5 Booked (the cleaner’s name and what happens next). Use your own wireframes from the Wireframing boss if you have them, or this outline. Saaf also needs a “My bookings” screen listing a customer’s past and upcoming cleans with date, service, cleaner, amount and status.',
+    'Take it to high fidelity in Figma or any tool. Build the components first, then the screens from them. Describe your work here so a reviewer who can’t see your file could check it: the foundations, every component with its states, two finished screens, the icons and images, and how My bookings shows its data.',
+  ],
+  fields: [
+    { id: 'foundations', label: 'Your foundations', kind: 'long', minWords: 30, hint: 'The type scale, colour roles (with at least two contrast ratios), spacing scale and corner radius the screens use.' },
+    { id: 'components', label: 'Components and their states', kind: 'list', items: 3, minWords: 25, hint: 'One item each for the button, the input and the card: the variants (e.g. primary, secondary, text, destructive), sizes, and how focus, disabled, loading and error look.' },
+    { id: 'screens', label: 'Two screens in high fidelity', kind: 'list', items: 2, minWords: 40, hint: 'Choose a clean and Review and pay. Top to bottom: each part, the component it uses, its real content and its size or colour role, and the one primary action.' },
+    { id: 'imagery', label: 'Icons and images', kind: 'long', minWords: 30, hint: 'Which icon family and size, where icons have labels, and for each image: photo, illustration or none, and why. Include alt text for one image.' },
+    { id: 'data', label: 'My bookings', kind: 'text', minWords: 25, hint: 'Columns, alignment, number and date formats, sorting, how status shows without colour alone, and what the phone shows instead of a table.' },
+  ],
+  rubric: [
+    { id: 'components', label: 'Components with every state', strong: 'Button, input and card are each defined once, with a clear rank of button variants (one primary per screen, destructive set apart), labels above inputs with helper and error text, cards with one job, and focus, disabled, loading and error states described for each.', weight: 3, required: true },
+    { id: 'screens', label: 'Screens built from the components', strong: 'Both screens are described top to bottom with real content (“2 BHK · ₹2,400”), use only the defined components and foundations, keep the wireframe’s structure and grid, and have one primary action each.', weight: 2, required: true },
+    { id: 'foundations', label: 'Foundations that hold together', strong: 'A named type scale, colour roles with contrast ratios that pass AA (4.5:1 for body text), a 4- or 8-pt spacing scale and one radius, applied consistently.', weight: 1 },
+    { id: 'imagery', label: 'Icons and images with a job', strong: 'One icon family on one grid with labels where meaning isn’t universal, ₹ and local metaphors, 44–48 px tap areas; photos only for real things (the cleaner, not stock), illustrations for ideas and empty states, and meaningful alt text.', weight: 1 },
+    { id: 'data', label: 'Data that reads at a glance', strong: 'Amounts right-aligned in tabular figures with ₹ and Indian grouping, dates in one short format, upcoming bookings sorted first, status in words as well as colour, no heavy grid lines, and rows turned into cards on a phone.', weight: 1 },
+  ],
+  tips: ['Build the button, input and card with all their states before you touch a screen. Every screen after that is assembly.', 'Check your finished screens in greyscale and at arm’s length. The primary action should still be the first thing you see.'],
+  example: {
+    foundations: 'Type: Inter, a 1.25 scale from a 16 px base: 32 / 25 / 20 / 16 / 13, body at 16/24. Colour roles: text #101828 (17.7:1 on white), muted text #475467 (7.7:1), brand teal #0E7C66 for primary buttons with white text (5.1:1), error #B42318 (6.6:1), surface white, raised surface #F9FAFB, borders #D0D5DD. Spacing on an 8-pt scale: 4, 8, 12, 16, 24, 32. One radius, 12 px for cards and inputs, 10 px for buttons. The 4-column grid with 16 px margins from the wireframes stays.',
+    components: [
+      'Button: four variants. Primary, filled teal with white text, one per screen, full width at the bottom, 52 px tall. Secondary, white with a teal border. Text, teal text with no box, for “Change”. Destructive, red text, kept apart from the primary. States: pressed darkens by one step; focus adds a 2 px #1570EF ring 2 px outside; disabled is #F2F4F7 with #98A2B3 text and a reason line above; loading shows a spinner and “Paying…”, keeps its width and ignores taps.',
+      'Input: label above in 14 px medium, a 48 px box with a #D0D5DD border, helper text below in muted 13 px. Focus: 2 px teal border. Disabled: #F9FAFB fill with muted text still readable. Error: red border, an alert icon and a message under the box such as “Enter your flat number, like B-702”, with what was typed kept. The flat field opens the default keyboard; the phone field opens the number pad with +91 shown.',
+      'Card: white, 12 px radius, 1 px border, 16 px padding, one job. The service card has a title (20 px semibold), one line of what’s included (muted), “from ₹1,200” on the right, and the whole card is tappable with a selected state: a 2 px teal border and a filled check. Focus is a ring round the whole card. Loading is a skeleton of the title and price lines; error says “Couldn’t load prices · Retry” inside the card.',
+    ],
+    screens: [
+      'Choose a clean. Top bar: the Saaf logo on the left, “Kothrud, Pune” with a map-pin icon and label on the right. Heading “What should we clean?” at 25 px. Three service cards stacked with 12 px between them: Kitchen (“Hob, chimney, tiles, sink · from ₹1,200”), Bathrooms (“from ₹900”), Full home (“from ₹2,400”), each with a small square illustration in one style. Under the selected card, segmented chips “1 BHK · 2 BHK · 3 BHK”, 44 px tall. A sticky white bar with a top border holds the primary button “Choose a time · ₹2,400”.',
+      'Review and pay. Heading “Check your booking”. A summary card with four rows, each a muted label on the left, the value on the right and a text button “Change”: Service “Full home, 2 BHK”, When “Sat 13 Dec, 10 am – 12 pm”, Where “B-702, Mayur Colony, Kothrud”, Gate “Tell security it’s for Mehta”. A price card with right-aligned tabular amounts: “Full home, 2 BHK ₹2,400”, “Visit fee ₹0”, a rule, and “Total ₹2,400” in bold. Two radio cards: “UPI now” and “Cash after the clean”. A text button “Have a code?” opens a bottom sheet. Primary button: “Pay ₹2,400 by UPI”.',
+    ],
+    imagery: 'Icons: Phosphor regular, 24 px on a 24 px grid with a 1.5 px stroke, outline everywhere and filled only for the selected tab; every icon has a word beside or under it except search and close, and every icon button has a 48 px tap area. ₹ is used for money, a chat bubble for messages. Images: the three service cards use small illustrations, because a photo of a clean kitchen is generic stock; the Booked screen shows a real photo of the assigned cleaner, cropped square, because customers want to know who is coming; My bookings has no images. Alt text for the cleaner photo: “Sunita Patil, your cleaner, smiling in her Saaf uniform”.',
+    data: 'On desktop, My bookings is a table with columns Date, Service, Cleaner, Amount (₹) and Status. Upcoming bookings sit first, then past ones newest first; Date and Amount headers sort. Dates read “Sat 13 Dec”, amounts “₹2,400”, right-aligned in tabular figures. Status is a small badge with words and an icon: “Upcoming”, “Done”, “Cancelled”, never colour alone. Only light rules between rows, no vertical lines. On a phone each booking is a card: date and service on the first line, cleaner and amount on the second, the status badge on the right; tapping opens the details.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

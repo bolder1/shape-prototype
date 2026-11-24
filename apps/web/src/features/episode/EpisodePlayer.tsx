@@ -99,6 +99,10 @@ import { FormTriage } from './games/FormTriage';
 import { WaitFeedback } from './games/WaitFeedback';
 import { PortPhone } from './games/PortPhone';
 import { GestureMap } from './games/GestureMap';
+import { StateSheet } from './games/StateSheet';
+import { IconOdd } from './games/IconOdd';
+import { ImageBudget } from './games/ImageBudget';
+import { TableBuild } from './games/TableBuild';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -207,6 +211,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'wait-feedback': WaitFeedback,
   'port-phone': PortPhone,
   'gesture-map': GestureMap,
+  'state-sheet': StateSheet,
+  'icon-odd': IconOdd,
+  'image-budget': ImageBudget,
+  'table-build': TableBuild,
 };
 
 interface Props {

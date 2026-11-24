@@ -1,0 +1,112 @@
+// Chapter ui.4 · UI components & screens. Draft by Claude, for review.
+import type { LessonContent } from '../schema';
+
+export const ui4: LessonContent[] = [
+  {
+    id: 'ui.4-1', title: 'Buttons, inputs, cards', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Three parts that do most of the work',
+        body: ['Most screens are built from buttons, inputs and cards. A button needs a rank: one primary action per screen (filled), secondary actions outlined, the least important as plain text, and anything that destroys data styled apart and kept away from the main action. If three buttons look the same, people have to read all three to find the one they want.',
+          'Each part also needs its states, drawn before anyone builds it. A button: default, pressed, focus, disabled and loading. An input: a label above the box, helper text, focus, disabled and an error that says how to fix it. A card: one job, one clear title, and a loading skeleton and an error of its own. A part without its states gets them invented by whoever codes it, differently every time.'] },
+      { type: 'sort', id: 's1', prompt: 'Hisaab’s “Record payment” screen. What rank does each action get?',
+        explanation: 'One filled button for the job people came to do, outlined for the useful alternative, plain text for the rarely needed, and destructive actions set apart.',
+        buckets: [{ id: 'primary', label: 'Primary (filled)' }, { id: 'secondary', label: 'Secondary or text' }, { id: 'danger', label: 'Destructive, set apart' }],
+        items: [
+          { id: 'a', label: 'Save payment', bucket: 'primary' },
+          { id: 'b', label: 'Send receipt on WhatsApp', bucket: 'secondary' },
+          { id: 'c', label: 'Delete this customer', bucket: 'danger' },
+          { id: 'd', label: 'Add a note', bucket: 'secondary' },
+          { id: 'e', label: 'Clear all udhaar for this customer', bucket: 'danger' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'The amount box on Hisaab shows an error. Which is the best version?',
+        explanation: 'The error sits under the field, keeps the red border, says what is wrong and how to fix it, and keeps what was typed.',
+        options: [
+          { id: 'a', label: 'A red border and nothing else' },
+          { id: 'b', label: 'A pop-up: “Error in form”' },
+          { id: 'c', label: 'A red border, and under it: “Enter an amount above ₹0”, with the typed text kept' },
+          { id: 'd', label: 'The box shakes and clears' },
+        ], correct: 'c' },
+    ],
+  },
+  {
+    id: 'ui.4-2', title: 'Iconography', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Icons are words people have to guess',
+        body: ['Only a handful of icons are understood without a label: search, home, close, back, play, share on some platforms. Everything else is a guess, and a wrong guess costs a tap. Put a short label under or beside an icon unless it’s one of those few, and test the ones you keep on the people who will use them. A dollar sign for payments or an American mailbox for messages means little to a shopkeeper in Jaipur.',
+          'Then make the set consistent. Use one icon family, one stroke width, one corner style and one grid (usually 24 px), and draw every icon to fill the same visual area so none looks bigger. Use outline for normal and filled for selected, not a mix. Keep the icon at 20–24 px but give it a 44–48 px tap area.'] },
+      { type: 'sort', id: 's1', prompt: 'Hisaab’s home screen icons. What is wrong with each?',
+        explanation: 'An icon breaks the set when its style or size differs, when its picture means something else to the user, or when it needs a word nobody gave it.',
+        buckets: [{ id: 'style', label: 'Breaks the style' }, { id: 'meaning', label: 'Wrong picture' }, { id: 'label', label: 'Needs a label' }],
+        items: [
+          { id: 'a', label: 'One filled icon in a row of outlines', bucket: 'style' },
+          { id: 'b', label: 'A $ sign on the Payments tile', bucket: 'meaning' },
+          { id: 'c', label: 'A lightning bolt, no word, for “Quick sale”', bucket: 'label' },
+          { id: 'd', label: 'One icon with a 3 px stroke beside 2 px ones', bucket: 'style' },
+          { id: 'e', label: 'An American kerbside mailbox for Messages', bucket: 'meaning' },
+          { id: 'f', label: 'A book icon, no word, for the udhaar register', bucket: 'label' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'A 20 px icon button closes a sheet. How big should its tap area be?',
+        explanation: 'The icon can stay small, but the touch target around it should be about 44–48 px so a thumb can hit it.',
+        options: [
+          { id: 'a', label: '20 px, the same as the icon' },
+          { id: 'b', label: 'About 44–48 px, with the icon centred in it' },
+          { id: 'c', label: 'The full width of the screen' },
+          { id: 'd', label: 'It doesn’t matter for icons' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'ui.4-3', title: 'Imagery & illustration use', minutes: 4,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'Every image has a job, or it goes',
+        body: ['Use a photo when people need to see the real thing: the exact pack of atta, the shop, the person they’re paying. Use an illustration for ideas no camera can catch, like “your records are backed up”, and for empty states and onboarding. Use an icon to label a small action or a list row. Use nothing when the words or numbers are the content, as in a ledger or a report.',
+          'Generic stock photos, such as a handshake or a smiling man at a laptop, tell people nothing and make the product feel like someone else’s. Show the people who really use it. Keep illustrations in one style, crop photos to the same ratios, write alt text that says what the image shows, and remember the cost: a 120 kB photo on every screen adds up on a cheap data plan and a slow 4G connection.'] },
+      { type: 'sort', id: 's1', prompt: 'Screens in Hisaab. What image does each need?',
+        explanation: 'Photos show real things, illustrations show ideas and empty moments, and text-heavy screens like ledgers work best without decoration.',
+        buckets: [{ id: 'photo', label: 'A photo' }, { id: 'illus', label: 'An illustration' }, { id: 'none', label: 'No image' }],
+        items: [
+          { id: 'a', label: 'A stock item, so the shopkeeper picks the right 5 kg atta pack', bucket: 'photo' },
+          { id: 'b', label: '“No udhaar yet”, the first time the register is empty', bucket: 'illus' },
+          { id: 'c', label: 'The customer ledger with 40 rows of amounts', bucket: 'none' },
+          { id: 'd', label: 'The website header, showing who Hisaab is for', bucket: 'photo' },
+          { id: 'e', label: 'Onboarding: “Your khata is backed up every night”', bucket: 'illus' },
+          { id: 'f', label: 'The monthly sales report', bucket: 'none' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Hisaab’s website shows a stock photo of a man in a suit shaking hands. What’s the main problem?',
+        explanation: 'It says nothing about the product or who it’s for. A real shopkeeper at a real counter tells visitors at once that this is for them.',
+        options: [
+          { id: 'a', label: 'The photo is too small' },
+          { id: 'b', label: 'It shows no real user or use, so it says nothing about who Hisaab is for' },
+          { id: 'c', label: 'Photos never belong on websites' },
+          { id: 'd', label: 'It should be black and white' },
+        ], correct: 'b' },
+    ],
+  },
+  {
+    id: 'ui.4-4', title: 'Data display & tables', minutes: 5,
+    steps: [
+      { type: 'concept', id: 'c1', title: 'A table is for comparing',
+        body: ['People read tables to compare and to find: who owes the most, which bill is oldest. So line the numbers up. Right-align amounts and use tabular figures, where every digit is the same width, so place values stack. Left-align text. Format every value the same way: “₹1,25,000” in Indian grouping, no stray decimals, dates as “3 Dec”, and a dash for an empty cell rather than a blank.',
+          'Then take things away. Drop vertical lines and keep light horizontal rules, or none. Cut columns nobody uses. Put units in the header (“Owed (₹)”), in sentence case. Show what matters with more than colour: “Overdue 45 days” in red text, not a red row alone. Make the total stand out, keep the header visible while scrolling, and on a phone, turn each row into a small card with the two or three values people need.'] },
+      { type: 'sort', id: 's1', prompt: 'Hisaab’s udhaar table. What fix does each part need?',
+        explanation: 'Numbers line up when right-aligned with tabular figures, values read faster in one consistent format, and lines and columns that carry nothing go.',
+        buckets: [{ id: 'align', label: 'Align it' }, { id: 'format', label: 'Format it the same' }, { id: 'cut', label: 'Cut it' }],
+        items: [
+          { id: 'a', label: 'Amounts owed, centred in their column', bucket: 'align' },
+          { id: 'b', label: 'Dates written as 2024-12-03, 3/12 and “Dec 3rd”', bucket: 'format' },
+          { id: 'c', label: 'Vertical lines between every column', bucket: 'cut' },
+          { id: 'd', label: 'Days overdue, centred', bucket: 'align' },
+          { id: 'e', label: 'Amounts as 1250.5, ₹800 and 12000.00', bucket: 'format' },
+          { id: 'f', label: 'A customer ID column, C-00231, that nobody looks at', bucket: 'cut' },
+        ] },
+      { type: 'pick', id: 'p1', prompt: 'Overdue rows are marked only with a pale red background. What should change?',
+        explanation: 'Colour alone fails people who can’t tell red apart and is easy to miss. Add words, like “Overdue 45 days”, and keep the colour as a second signal.',
+        options: [
+          { id: 'a', label: 'Make the red brighter' },
+          { id: 'b', label: 'Add the words “Overdue 45 days” in the row, and keep the colour as a second signal' },
+          { id: 'c', label: 'Move overdue rows to a separate screen' },
+          { id: 'd', label: 'Nothing: red means overdue' },
+        ], correct: 'b' },
+    ],
+  },
+];
