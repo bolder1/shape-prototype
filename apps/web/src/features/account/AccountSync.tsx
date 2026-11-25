@@ -4,7 +4,7 @@
 import { useEffect } from 'react';
 import type { Session, SupabaseClient } from '@supabase/supabase-js';
 import { getBrowserSupabase } from '@/lib/supabase/client';
-import { flushEvents, logEvent, onEvent } from '../progress/events';
+import { logEvent, onEvent, syncEvents } from '../progress/events';
 import { useAccount, type AccountUser } from './session';
 import { syncNow, watchStores } from './sync';
 
@@ -28,10 +28,10 @@ export function AccountSync() {
       current = session.user.id;
       set({ status: 'signed-in', user: toUser(session) });
       const userId = session.user.id;
-      void syncNow(sb, userId).then(() => flushEvents(sb, userId));
+      void syncNow(sb, userId).then(() => syncEvents(sb, userId));
       const unwatch = watchStores(sb, userId);
       let t: ReturnType<typeof setTimeout> | undefined;
-      const offEvents = onEvent(() => { clearTimeout(t); t = setTimeout(() => void flushEvents(sb, userId), 3_000); });
+      const offEvents = onEvent(() => { clearTimeout(t); t = setTimeout(() => void syncEvents(sb, userId), 3_000); });
       stop = () => { unwatch(); offEvents(); clearTimeout(t); };
     };
 
