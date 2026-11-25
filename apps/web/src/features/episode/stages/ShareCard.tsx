@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { CheckIcon, DownloadSimpleIcon, ShareNetworkIcon } from '@phosphor-icons/react/ssr';
 import { Button } from '@/components/base/buttons/button';
 import { encodeShare, type ShareData } from '@/lib/share';
+import { logEvent } from '../../progress/events';
 
 export function ShareCard({ data, title, label }: { data: ShareData; title: string; label: string }) {
   const [status, setStatus] = useState<'idle' | 'working' | 'copied' | 'shared'>('idle');
@@ -14,7 +15,11 @@ export function ShareCard({ data, title, label }: { data: ShareData; title: stri
 
   const share = async () => {
     setStatus('working');
-    const url = `${window.location.origin}/s/${code}`;
+    // A signed link shows "Verified by Shape"; if signing is unavailable, the plain link still works.
+    const signed = await fetch('/api/share/sign', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ code }) })
+      .then(r => (r.ok ? r.json() as Promise<{ code: string }> : null)).then(r => r?.code ?? code).catch(() => code);
+    const url = `${window.location.origin}/s/${signed}`;
+    logEvent('share', data.l, { grade: data.g, percent: data.p });
     try {
       const blob = await (await fetch(image)).blob();
       const file = new File([blob], `shape-grade-${data.g}.png`, { type: 'image/png' });

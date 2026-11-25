@@ -1,10 +1,11 @@
 'use client';
 // Learner progress: XP, daily streak, completed lessons, review queue, boss projects.
-// Kept in localStorage until accounts exist (then it syncs to Supabase: xp_events, streaks, review_cards).
+// Kept in localStorage; when signed in it syncs to Supabase (features/account/sync.ts, table learner_state).
 // XP is an append-only ledger (docs/03-backend.md §3): the total and weekly league scores are derived from it.
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { BossAnswers, BossVerdict, Level } from '@shape/content';
+import { logEvent } from './events';
 
 export interface StepResult { exerciseKey: string; firstTry: boolean; attempts: number }
 export interface LessonRecord { completedAt: string; xp: number; firstTry: number; total: number }
@@ -80,6 +81,7 @@ export const useProgress = create<ProgressState>()(persist((set, get) => ({
       xp: s.xp + gained, ledger: earn(s.ledger, gained, 'boss', chapterId), streak, bossDrafts,
       bosses: { ...s.bosses, [chapterId]: { attempts: [...(prev?.attempts ?? []), attempt], best, bestPercent: Math.max(prev?.bestPercent ?? 0, attempt.percent), xp: (prev?.xp ?? 0) + gained } },
     });
+    logEvent('boss_submitted', chapterId, { verdict: attempt.verdict, percent: attempt.percent, xp: gained });
     return { xp: gained, streak: streak.current, newDay, improved: !prev || RANK[attempt.verdict] > RANK[prev.best] };
   },
 
@@ -95,6 +97,7 @@ export const useProgress = create<ProgressState>()(persist((set, get) => ({
       xp: s.xp + gained, ledger: earn(s.ledger, gained, 'lesson', lessonId), streak, review,
       lessons: { ...s.lessons, [lessonId]: { completedAt: new Date().toISOString(), xp: (prev?.xp ?? 0) + gained, firstTry: results.filter(r => r.firstTry).length, total: results.length } },
     });
+    logEvent('lesson_done', lessonId, { xp: gained, firstTry: results.filter(r => r.firstTry).length, total: results.length });
     return { xp: gained, streak: streak.current, newDay };
   },
 
@@ -116,6 +119,7 @@ export const useProgress = create<ProgressState>()(persist((set, get) => ({
     }
     const { streak, newDay } = bumpStreak(s.streak);
     set({ xp: s.xp + gained, ledger: earn(s.ledger, gained, 'review'), streak, review });
+    logEvent('review_done', undefined, { xp: gained, right: results.filter(r => r.firstTry).length, total: results.length });
     return { xp: gained, streak: streak.current, newDay };
   },
 

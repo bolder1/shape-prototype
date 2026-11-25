@@ -219,6 +219,7 @@ import { Quiz } from './stages/Quiz';
 import { Takeaways } from './stages/Takeaways';
 import { Watch } from './stages/Watch';
 import { play } from '@/lib/sound';
+import { logEvent } from '../progress/events';
 import { SoundToggle } from '@/components/SoundToggle';
 
 const STAGES = [
@@ -477,6 +478,7 @@ function Run({ episode, title, eyebrow, name, exitHref, next, onComplete, onRepl
     // Everything answered goes to the review deck; misses come back tomorrow.
     const results: StepResult[] = all.filter(i => !i.unseen).map(i => ({ exerciseKey: `${episode.lessonId}:${i.stage}.${i.id}`, firstTry: i.correct, attempts: 1 }));
     setSaved(onComplete(results, result.xp));
+    logEvent('grade', episode.lessonId, { grade: result.grade, percent: result.percent, right: result.right, total: result.total });
     go('grade');
   };
 

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { RouteProvider } from "@/providers/router-provider";
 import { Theme } from "@/providers/theme";
+import { AccountSync } from "@/features/account/AccountSync";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col bg-primary antialiased">
         <RouteProvider>
           <Theme>{children}</Theme>
+          <AccountSync />
         </RouteProvider>
       </body>
     </html>

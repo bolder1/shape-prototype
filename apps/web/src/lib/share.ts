@@ -1,7 +1,8 @@
 // Share codes: an episode result packed into a URL-safe string, so a grade card can be shared without accounts.
 // The share page and image route are public and the code is user-editable, so everything is validated on the way in:
 // lesson titles always come from our content (never from the code), numbers are bounded, and the name is cleaned and capped.
-// Not signed: a determined person can fake a card. Fine for a prototype brag card; sign it once accounts exist.
+// The server can sign a code (lib/share-sign.ts, /api/share/sign): a signed card shows "Verified by Shape",
+// an unsigned one still works but makes no claim.
 import { z } from 'zod';
 import { chapterById } from '@shape/engine';
 import { lessonById, parseLessonId } from '@shape/content';
@@ -31,7 +32,8 @@ export function encodeShare(data: ShareData): string {
 }
 
 /** The decoded share, plus everything the card needs from our own content. `null` for anything invalid. */
-export function decodeShare(code: string) {
+export function decodeShare(signedOrBare: string) {
+  const code = signedOrBare.split('.')[0];   // a signed code is `code.sig` (lib/share-sign.ts); the signature is checked separately
   if (!/^[A-Za-z0-9_-]{10,600}$/.test(code)) return null;
   try {
     const parsed = ShareData.safeParse(JSON.parse(fromB64Url(code)));
