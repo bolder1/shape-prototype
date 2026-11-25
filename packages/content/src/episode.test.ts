@@ -8,6 +8,7 @@ import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_V
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
 import { OUTPUT_METHODS, PROTO_TOOLS, THELA_BEHAVIOURS, THELA_QUESTIONS, THELA_STUDIES, TOOL_CAN, WIRE_KINDS, missingNeeds, outputMethod, protoTool, wireKind, type ThelaBehaviour, type ThelaQuestion, type ThelaStudy } from './advproto';
 import { ADVANTAGE_CALLS, BET_CALLS, MUNIM_BETS, MUNIM_CAPABILITIES, MUNIM_CLAIMS, PLATFORM_CALLS, advantageCall, betCall, platformCall, type MunimBet, type MunimCapability, type MunimClaim } from './designstrategy';
+import { HABIT_CALLS, NUDGE_CALLS, REFERRAL_CALLS, REWARD_CALLS, RIYAAZ_BEHAVIOURS, RIYAAZ_MECHANICS, RIYAAZ_NUDGES, RIYAAZ_REFERRALS, habitCall, nudgeCall, referralCall, rewardCall, type RiyaazBehaviour, type RiyaazMechanic, type RiyaazNudge, type RiyaazReferral } from './retention';
 import { HAZRI_CHOICES, HAZRI_LINES, HAZRI_PROGRAM, PERSONA_FLAWS, PROGRAM_QUARTERS, STUDY_FLAWS, personaFlaw, programLane, studyFlaw, type HazriChoice, type HazriLine, type HazriStep } from './inclusive';
 import { ANSWER_FLAWS, AUDIT_CALLS, MODEL_PLACES, TAAR_ANSWERS, TAAR_AUDIT, TAAR_CHUNKS, answerFlaw, auditCall, modelPlace, ungrounded, type TaarAnswer, type TaarAuditItem, type TaarChunk } from './contentstrategy';
 import { BRAND_CALLS, PARITY_CALLS, SAWARI_DECISIONS, SAWARI_DRIFTS, SAWARI_REQUESTS, SYNC_MOVES, brandCall, parityCall, passingSteps, syncMove, type SawariDecision, type SawariDrift, type SawariRequest } from './multibrand';
@@ -1185,6 +1186,26 @@ describe('episodes', () => {
         expect(lanes).toEqual([...BET_CALLS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(MUNIM_BETS).sort());
         for (const c of ep.game.cards) { const k = c.visual as MunimBet; expect(c.label).toBe(MUNIM_BETS[k].text); expect(c.lane).toBe(betCall(MUNIM_BETS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'habit-zone') {   // every card once, judged by habitCall
+        expect(lanes).toEqual([...HABIT_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RIYAAZ_BEHAVIOURS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as RiyaazBehaviour; expect(c.label).toBe(RIYAAZ_BEHAVIOURS[k].text); expect(c.lane).toBe(habitCall(RIYAAZ_BEHAVIOURS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'nudge-crit') {   // every card once, judged by nudgeCall
+        expect(lanes).toEqual([...NUDGE_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RIYAAZ_NUDGES).sort());
+        for (const c of ep.game.cards) { const k = c.visual as RiyaazNudge; expect(c.label).toBe(RIYAAZ_NUDGES[k].text); expect(c.lane).toBe(nudgeCall(RIYAAZ_NUDGES[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'reward-pick') {   // every card once, judged by rewardCall
+        expect(lanes).toEqual([...REWARD_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RIYAAZ_MECHANICS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as RiyaazMechanic; expect(c.label).toBe(RIYAAZ_MECHANICS[k].text); expect(c.lane).toBe(rewardCall(RIYAAZ_MECHANICS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'referral-math') {   // every card once, judged by referralCall
+        expect(lanes).toEqual([...REFERRAL_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RIYAAZ_REFERRALS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as RiyaazReferral; expect(c.label).toBe(RIYAAZ_REFERRALS[k].text); expect(c.lane).toBe(referralCall(RIYAAZ_REFERRALS[k])); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'layer-pick') {   // every capability once, placed by platformCall
         expect(lanes).toEqual([...PLATFORM_CALLS]);

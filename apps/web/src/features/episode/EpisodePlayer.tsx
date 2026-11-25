@@ -194,6 +194,10 @@ import { ProgramRoad } from './games/ProgramRoad';
 import { MoatCrit } from './games/MoatCrit';
 import { BetBook } from './games/BetBook';
 import { LayerPick } from './games/LayerPick';
+import { HabitZone } from './games/HabitZone';
+import { NudgeCrit } from './games/NudgeCrit';
+import { RewardPick } from './games/RewardPick';
+import { ReferralMath } from './games/ReferralMath';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -397,6 +401,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'moat-crit': MoatCrit,
   'bet-book': BetBook,
   'layer-pick': LayerPick,
+  'habit-zone': HabitZone,
+  'nudge-crit': NudgeCrit,
+  'reward-pick': RewardPick,
+  'referral-math': ReferralMath,
 };
 
 interface Props {

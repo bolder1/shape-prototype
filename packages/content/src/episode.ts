@@ -58,7 +58,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'logic-cart', 'proto-ladder', 'output-range',
   'content-model', 'content-lifecycle', 'grounded-answer',
   'study-session', 'persona-rewrite', 'maturity-road',
-  'moat-map', 'bet-portfolio', 'platform-layers']);
+  'moat-map', 'bet-portfolio', 'platform-layers',
+  'practice-loop', 'nudge-week', 'streak-trap', 'viral-loop']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -238,6 +239,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `moat-crit`: lanes are `ADVANTAGE_CALLS` in order; every card is a claim from Munim's draft design strategy, its `visual` a key of `MUNIM_CLAIMS` (each used once), its `label` that claim's `text`, and its lane `advantageCall` of it. Each card shows its evidence and months to copy (against `COPY_MONTHS`); right calls plot it on a value × time-to-copy moat map. Every card needs a `note`.
  *  - `bet-book`: lanes are `BET_CALLS` in order; every card is a design bet, its `visual` a key of `MUNIM_BETS` (each used once), its `label` that bet's `text`, and its lane `betCall` of it, from its expected value (`betRange`) on the cautious and hopeful chance. Right calls draw the range against zero and fill the budget (`MUNIM_BUDGET`, `betSpend`, `portfolioMix`). Every card needs a `note`.
  *  - `layer-pick`: lanes are `PLATFORM_CALLS` in order; every card is a capability Munim's products need, its `visual` a key of `MUNIM_CAPABILITIES` (each used once), its `label` that capability's `text`, and its lane `platformCall` of it. Right calls place it on a product map: the shared platform layer, a product's column (dashed for harvest), or the vendor shelf. Every card needs a `note`.
+ *  - `habit-zone`: lanes are `HABIT_CALLS` in order; every card is something people do in Riyaaz, its `visual` a key of `RIYAAZ_BEHAVIOURS` (each used once), its `label` that behaviour's `text`, and its lane `habitCall` of it: who it helps first, then how often (`HABIT_MIN_PER_WEEK`). Right calls plot it on the habit zone, times a week × helps the singer. Every card needs a `note`.
+ *  - `nudge-crit`: lanes are `NUDGE_CALLS` in order; every card is a draft notification, its `visual` a key of `RIYAAZ_NUDGES` (each used once), its `label` that notification's `text`, and its lane `nudgeCall` of it: pressure, then whose need, then the moment (quiet hours, `IGNORE_LIMIT`). Each card shows on a lock screen with its time; right calls file it into Sunita's week (sent, or held with `holdReason`). Every card needs a `note`.
+ *  - `reward-pick`: lanes are `REWARD_CALLS` in order; every card is a game mechanic, its `visual` a key of `RIYAAZ_MECHANICS` (each used once), its `label` that mechanic's `text`, and its lane `rewardCall` of it: money from loss or chance, then what it counts, then whether it controls. Right calls fill a scorecard; kept ones light the need they support (`SDT_NEEDS`). Every card needs a `note`.
+ *  - `referral-math`: lanes are `REFERRAL_CALLS` in order; every card is a referral design, its `visual` a key of `RIYAAZ_REFERRALS` (each used once), its `label` that design's `text`, and its lane `referralCall` of it against `REFERRAL_BASE`: fairness, then kept K, then K. Each card shows its invites × conversion × kept sum; right calls plot K against kept K. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -292,7 +297,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'logic-wire', 'proto-fit', 'output-plan',
   'model-build', 'rot-audit', 'answer-crit',
   'study-fix', 'persona-crit', 'program-road',
-  'moat-crit', 'bet-book', 'layer-pick']);
+  'moat-crit', 'bet-book', 'layer-pick',
+  'habit-zone', 'nudge-crit', 'reward-pick', 'referral-math']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

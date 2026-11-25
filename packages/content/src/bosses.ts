@@ -2310,9 +2310,60 @@ const st4: BossBriefInput = {
   },
 };
 
+const gr4: BossBriefInput = {
+  chapterId: 'gr.4',
+  title: 'A retention loop, with its ethics crit',
+  minutes: 120,
+  scenario: [
+    'Design the loop that brings people back to a product: your own, your Studio product, or Riyaaz, the Bengaluru music-practice app from this chapter, whose second-month retention has stalled at 31%, whose students get 24 notifications a week, whose streak lifted opens while practice fell, and whose ₹200 cashback brought sign-ups who left.',
+    'Choose the behaviour worth making a habit and say why, design the loop step by step, and set the rules for notifications, game mechanics and referral. Say how you will measure it, against what holdout, and what would make you stop. Then crit your own design for ethical risks as hard as a sceptical reviewer would, and say what you changed because of it.',
+  ],
+  fields: [
+    { id: 'summary', label: 'The loop in three sentences', kind: 'text', minWords: 35, hint: 'The behaviour you are building a habit around, how the loop works, and the outcome it is for.' },
+    { id: 'behaviour', label: 'The behaviour, and why it’s in the habit zone', kind: 'text', minWords: 40, hint: 'How often people do it or should, what evidence says it helps them (not only your numbers), and two behaviours you chose not to build habits around, and why.' },
+    { id: 'loop', label: 'The loop, step by step', kind: 'list', items: 4, minWords: 15, hint: 'One line each for the cue (and the anchor in people’s day), the routine, the reward, and the investment that loads the next cue.' },
+    { id: 'nudges', label: 'Notification rules', kind: 'text', minWords: 40, hint: 'The weekly cap and what counts against it, quiet hours, the back-off after ignored messages, when you ask for permission, and the controls people get.' },
+    { id: 'mechanics', label: 'Game mechanics: kept, changed and cut', kind: 'list', items: 3, minWords: 15, hint: 'One per line: the mechanic, what it counts, and whether you keep it, retarget it, soften it or cut it, and why.' },
+    { id: 'referral', label: 'The referral loop', kind: 'text', minWords: 40, hint: 'What people share and why, any reward and what it is tied to, today’s K and kept K and your target, and how you keep every invite the user’s choice.' },
+    { id: 'metrics', label: 'Metrics, holdout and kill criteria', kind: 'long', minWords: 50, hint: 'The habit measure, the outcome measure, guardrails (opt-outs, complaints, overuse), the holdout and how long it runs, and the results that would make you stop or roll back.' },
+    { id: 'ethics', label: 'The ethics crit', kind: 'list', items: 3, minWords: 20, hint: 'One risk per line: who could be harmed and how (compulsion, pressure, privacy, young or vulnerable users), and what you changed or will watch because of it.' },
+  ],
+  rubric: [
+    { id: 'behaviour', label: 'The right habit', strong: 'The habit is a frequent behaviour that serves the user’s own goal, with evidence; rare but useful behaviours get timely prompts instead; frequent behaviours that only serve the product’s numbers are deliberately left alone.', weight: 2, required: true },
+    { id: 'loop', label: 'A loop that runs', strong: 'The cue is anchored in people’s existing routine at a time they chose, the routine is small, the reward is informative and tied to the goal, and the investment visibly loads the next cue.', weight: 2 },
+    { id: 'rules', label: 'Notifications, mechanics and referral done fairly', strong: 'Notifications have one budget, quiet hours, back-off and controls by kind, with no pressure; mechanics count the real skill and inform rather than control, with nothing that sells loss or chance; referral is built on what people want to share, rewards tie to real use, and every invite is the user’s choice.', weight: 3 },
+    { id: 'metrics', label: 'Measured honestly', strong: 'Habit and outcome measures rather than opens; guardrails for opt-outs, complaints and overuse; a holdout run long enough for habits to form; kept K rather than sign-ups; and kill criteria set before launch.', weight: 2, required: true },
+    { id: 'ethics', label: 'A real ethics crit', strong: 'Names specific risks to specific people (compulsion, guilt or fear, privacy of contacts and recordings, teenagers), passes the “would they be glad if they understood it” test, and shows what was changed because of the crit, not only what will be monitored.', weight: 3, required: true },
+  ],
+  tips: ['Write the ethics crit before you polish the design, then go back and change the design. A crit that changes nothing is a disclaimer.', 'For every mechanic or message, say out loud what it counts and who it serves. If the honest answer is “opens” and “us”, it isn’t part of a healthy loop.'],
+  example: {
+    summary: 'Riyaaz builds one habit: a short daily riyaz after a routine the student already has, like morning chai. The tanpura opens tuned to their Sa at the time they chose, ten minutes of one exercise ends in a shruti map against last week, and the saved take opens tomorrow and goes to their teacher. It is for singing better, so we judge it by practice days and notes in tune, not opens.',
+    behaviour: 'Daily practice is the habit: students who practise five days a week improve pitch accuracy three times faster than those who practise twice, and it happens most days in a stable place and time. Renewing the plan and registering for the grade exam are useful but happen once or twice a year, so they get a clear reminder at the right moment. The clip feed and the leaderboard are frequent but don’t help anyone sing, so we won’t build habits around them, and we removed the spin wheel.',
+    loop: [
+      'Cue: at the time the student picks in onboarding, tied to an anchor they name (“after morning chai”), the tanpura opens already tuned to their Sa.',
+      'Routine: ten minutes of one alankar or phrase at their level, short enough to do on a bad day, with the pitch tracker listening.',
+      'Reward: a shruti map of which notes sat true and which drifted, compared with last week, plus the teacher’s note when there is one.',
+      'Investment: the take is saved, so tomorrow opens with it for comparison and the best take of the week goes to the teacher before class.',
+    ],
+    nudges: 'At most three notifications a week that the student didn’t cause; teacher replies, bookings and receipts don’t count. Nothing that can wait goes out from 22:00 to 7:00. After three ignored reminders of one kind we stop that kind and ask in the app whether another time, fewer days or none would suit. We ask for permission after the first practice, not on the first screen, and settings are by kind: teacher replies, practice reminders, offers. No guilt, fear or countdowns, and one person owns the budget across teams.',
+    mechanics: [
+      'Keep: the shruti map after every take. It counts notes in tune and tells the student how they are doing without anything to lose.',
+      'Retarget and soften: the streak now counts a day only after ten minutes of singing the tracker can hear, against a weekly goal the student sets (five of seven by default), with rest days and a freeze.',
+      'Cut: the ₹49 streak repair, mystery boxes at ₹19 a spin and expiring gems. They take money from loss or chance, and some of our students are teenagers.',
+    ],
+    referral: 'Students share a 30-second duet of their take beside the teacher’s demo, because they are proud of it, and the link opens the same phrase for a friend to try. Teachers invite whole classes with one link and get a free batch dashboard. The only reward is ₹150 off for both people once the friend has practised on ten days. Today K is 0.12 and kept K 0.06; the target is kept K of 0.2. Every invite goes to someone the student picks, says who it is from, and nothing is locked behind inviting; no contact uploads, no auto-posting.',
+    metrics: 'Habit: the share of new students practising four days a week for four weeks in a row, today 14%, target 22%, and the L28 curve. Outcome: notes in tune on the weekly check phrase, today 71%, target 76%, and teachers’ “learnt” marks per month. Guardrails: notification opt-outs under 4% a month, complaints about invites, and students practising over 90 minutes a day, which teachers say strains voices. Half of new students get the new loop and half the old one for 12 weeks, because habits take two months to form. We roll back if opt-outs rise above 6%, if notes in tune fall against the holdout, or if kept K for referrals falls below 0.06.',
+    ethics: [
+      'Compulsion: a daily loop can turn into anxiety about missing a day. We made the goal weekly and chosen by the student, added rest days and a freeze, and the app suggests a rest after 90 minutes in a day.',
+      'Pressure in messages: reminders tempted the team to use guilt (“your guru will be disappointed”) and fear of losing a streak. We banned both in the copy guidelines, and every new notification type is reviewed against the 2023 dark pattern guidelines before it ships.',
+      'Privacy and young users: recordings are personal and some students are 16. Takes are private by default, every share is a fresh choice, we never upload contacts, and under-18 accounts can’t join public rankings or see offers.',
+    ],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

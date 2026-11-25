@@ -192,6 +192,10 @@ import { MaturityRoadScene } from '../scenes/MaturityRoad';
 import { MoatMapScene } from '../scenes/MoatMap';
 import { BetPortfolioScene } from '../scenes/BetPortfolio';
 import { PlatformLayersScene } from '../scenes/PlatformLayers';
+import { PracticeLoopScene } from '../scenes/PracticeLoop';
+import { NudgeWeekScene } from '../scenes/NudgeWeek';
+import { StreakTrapScene } from '../scenes/StreakTrap';
+import { ViralLoopScene } from '../scenes/ViralLoop';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -377,6 +381,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'moat-map': MoatMapScene,
   'bet-portfolio': BetPortfolioScene,
   'platform-layers': PlatformLayersScene,
+  'practice-loop': PracticeLoopScene,
+  'nudge-week': NudgeWeekScene,
+  'streak-trap': StreakTrapScene,
+  'viral-loop': ViralLoopScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
