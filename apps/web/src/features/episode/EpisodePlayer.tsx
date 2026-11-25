@@ -173,6 +173,9 @@ import { ScaleDial } from './games/ScaleDial';
 import { OpticalNudge } from './games/OpticalNudge';
 import { ElevationLift } from './games/ElevationLift';
 import { DetailLoupe } from './games/DetailLoupe';
+import { ChartPick } from './games/ChartPick';
+import { PaletteTune } from './games/PaletteTune';
+import { DashCritique } from './games/DashCritique';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -355,6 +358,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'optical-nudge': OpticalNudge,
   'elevation-lift': ElevationLift,
   'detail-loupe': DetailLoupe,
+  'chart-pick': ChartPick,
+  'palette-tune': PaletteTune,
+  'dash-critique': DashCritique,
 };
 
 interface Props {

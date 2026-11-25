@@ -51,7 +51,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'survey-sample', 'margin-band', 'dashboard-dig', 'source-weave',
   'roadmap-plan', 'atom-repo', 'research-guardrails',
   'service-blueprint', 'role-swimlane', 'scale-up',
-  'optical-centre', 'light-source', 'detail-pass']);
+  'optical-centre', 'light-source', 'detail-pass',
+  'chart-forms', 'colour-jobs', 'decision-board']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -210,6 +211,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `optical-nudge`: lanes are `OPTICAL_FIXES` in order; every card is a shape on Bunkar's screens placed by its box, its `visual` a key of `BUNKAR_CASES` (each used once), its `label` that case's `text`, and its lane `opticalFix` of it. Right calls apply the correction, measured where it can be (`centroidShift`, `equalAreaDiameter`), with a toggle between the maths and the eye. Every card needs a `note`.
  *  - `elevation-lift`: lanes are `ELEVATIONS` in order; every card is a surface on Bunkar's sari page or checkout, its `visual` a key of `BUNKAR_SURFACES` (each used once), its `label` that surface's `text`, and its lane `elevationOf` of it. Right calls lift it in a side view and give it its shadow token (`SHADOWS`, `shadowCss`); a dark-mode switch shows height as lightness (`DARK_LIGHTNESS`), with a scrim for overlays (`SCRIM_ALPHA`). Every card needs a `note`.
  *  - `detail-loupe`: lanes are `CRAFT_CHECKS` in order; every card is a detail on Bunkar's Diwali screens, its `visual` a key of `BUNKAR_DETAILS` (each used once), its `label` that detail's `text`, and its lane `craftCheck` of it. The game draws the detail under a loupe; a right call shows it fixed and adds `craftFix` to a running change list (`changeList`). Every card needs a `note`.
+ *  - `chart-pick`: lanes are `CHART_FORMS` in order; every card is a question someone at Roshni asks of its data, its `visual` a key of `ROSHNI_QUESTIONS` (each used once), its `label` that question's `text`, and its lane `chartFor` of it. Right calls draw the question's real data in that form, bars from zero (`valueAxis`), distributions binned (`histogram`).
+ *  - `palette-tune`: lanes are `PALETTE_JOBS` in order; every card is a chart on Roshni's console, its `visual` a key of `ROSHNI_CHARTS` (each used once), its `label` that chart's `text`, and its lane `paletteFor` of it. The chart starts grey; a right call colours it (`markColour`) and a switch shows it as a deuteranope sees it (`simulateCvd`).
+ *  - `dash-critique`: lanes are `TILE_VERDICTS` in order; every card is a tile on the old Jaipur ops dashboard, its `visual` a key of `ROSHNI_TILES` (each used once), its `label` that tile's `text`, and its lane `tileVerdict` of it. The board rebuilds as tiles are kept, fixed, moved or cut, down to `boardAfter`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -257,7 +261,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'survey-spot', 'gap-read', 'signal-gate', 'source-triangle',
   'roadmap-slot', 'atom-build', 'plan-critique',
   'blueprint-build', 'role-swim', 'scale-dial',
-  'optical-nudge', 'elevation-lift', 'detail-loupe']);
+  'optical-nudge', 'elevation-lift', 'detail-loupe',
+  'chart-pick', 'palette-tune', 'dash-critique']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

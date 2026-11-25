@@ -1967,9 +1967,60 @@ const ui5: BossBriefInput = {
   },
 };
 
+const ui6: BossBriefInput = {
+  chapterId: 'ui.6',
+  title: 'A dashboard for one decision',
+  minutes: 120,
+  scenario: [
+    'Neelkamal Travels runs 180 sleeper buses from four depots in north Karnataka. Every evening at 6 pm, each depot manager decides which buses go out on tomorrow night’s routes and which are held back for maintenance. Today they decide from a 40-tab spreadsheet and phone calls to mechanics, and last quarter 23 buses broke down on the road, each costing about ₹1.8 lakh in refunds, towing and a replacement bus.',
+    'Design the analytics dashboard the depot managers use for that decision. Name the persona and the decision in one sentence, list the questions they ask on the way to it, choose the metrics and the chart for each (with its colour, and how it stays honest and readable for colour-blind users), lay out the screen, design the states when data is late, missing or empty, and say how you’d test it with a manager. You can use Neelkamal or a real product whose data you know (say which), as long as the persona and decision are specific.',
+  ],
+  fields: [
+    { id: 'persona', label: 'Persona and decision', kind: 'text', minWords: 30, hint: 'Who opens it, when, on what device, and the one decision they make. How they decide today without it, and what a bad decision costs.' },
+    { id: 'questions', label: 'The questions on the way to the decision', kind: 'list', items: 4, minWords: 8, hint: 'In the persona’s words, in the order they ask them. Each one should change what they decide.' },
+    { id: 'tiles', label: 'Tiles: metric, chart and comparison', kind: 'list', items: 5, minWords: 18, hint: 'One per tile: the question it answers, the metric, the chart form and why, and what it’s read against (target, threshold, last period).' },
+    { id: 'cut', label: 'What you left off, and where it went', kind: 'text', minWords: 25, hint: 'The tempting metrics you didn’t include, and whether each moved to someone else’s dashboard or was cut as a vanity metric.' },
+    { id: 'layout', label: 'Layout', kind: 'text', minWords: 35, hint: 'What sits top left and why, the reading order, what’s on the first screen at the persona’s real screen size, default filters, and what a tap or click opens.' },
+    { id: 'honesty', label: 'Honesty and colour', kind: 'text', minWords: 35, hint: 'Baselines, axes, sorting, how many series per chart, the job each palette does, status colours with icons and words, contrast, and a colour-blind check.' },
+    { id: 'states', label: 'Late, missing and empty data', kind: 'text', minWords: 25, hint: 'What the screen says when the overnight load fails, a depot’s data is partial, or there is nothing to act on. How freshness shows on every tile.' },
+    { id: 'test', label: 'How you’d test it', kind: 'long', minWords: 40, hint: 'A task with real data, who you’d test with, what you’d time and watch for, and the outcome you’d measure once it ships.' },
+  ],
+  rubric: [
+    { id: 'decision', label: 'Framed by one person and one decision', strong: 'Names a specific persona, when and where they open it, and a single repeated decision with its cost. Every question and tile traces back to that decision, and the questions are in the persona’s words and order.', weight: 3, required: true },
+    { id: 'charts', label: 'The right, honest chart for each question', strong: 'Each tile’s form follows its task: sorted bars to compare, a line for many periods, a distribution where spread matters, a table to look up exact values, one number only with its comparison. Bars start at zero, there are no dual axes, pies and gauges are avoided or justified, and every number has a target, threshold or prior period.', weight: 3, required: true },
+    { id: 'edit', label: 'Ruthless editing', strong: 'Fits on one screen. Tempting metrics are named and either moved to the board whose decision they serve or cut as vanity, with a reason for each.', weight: 2 },
+    { id: 'colour', label: 'Colour with a job, readable by everyone', strong: 'Each palette does one job (categorical, sequential, diverging, highlight); status colours are reserved and paired with icons and words; marks clear 3:1; the palette is checked in a colour-blindness simulator; labels are direct where possible.', weight: 2 },
+    { id: 'layout', label: 'Layout that answers first', strong: 'The answer to the main question sits top left at the real screen size, details below in reading order; defaults mean it answers on open; drill-downs lead to the action (hold, assign, call).', weight: 1 },
+    { id: 'states', label: 'States and trust', strong: 'Freshness on every tile; a clear stale or failed-load state that prevents a wrong decision; partial and empty states that say what to do.', weight: 1 },
+    { id: 'test', label: 'Tested on the decision', strong: 'Tests with real managers on real past data, times the decision against the current way, watches what they ignore, and measures the outcome after launch (breakdowns, refunds) rather than page views.', weight: 1 },
+  ],
+  tips: ['Write the decision as one sentence above your canvas. Before adding any tile, ask which bus it would hold back or send out.', 'Draw every chart with last month’s real numbers, not placeholder data. A cut axis or an unreadable pie only shows up with real values.'],
+  example: {
+    persona: 'Shivakumar, depot manager at Hubballi (46 buses), opens it at 6 pm on the depot office’s 24-inch monitor, and again on his phone at 9 pm before buses leave. He decides which buses run tomorrow night, which are held for maintenance, and where the spares go. Today he does it from a spreadsheet and calls to the head mechanic; a wrong “run” call means a breakdown at 2 am on the Pune highway, about ₹1.8 lakh and 36 stranded passengers.',
+    questions: [
+      '“Which of my buses are risky to send out tomorrow night?”',
+      '“What’s wrong with them, and can the workshop fix it before 8 pm tomorrow?”',
+      '“If I hold them, which routes are short of a bus, and do I have spares?”',
+      '“Are breakdowns at my depot getting better or worse than last month?”',
+    ],
+    tiles: [
+      'Buses at risk tomorrow (top left): a table of buses ranked by risk from overdue service, open defects and engine alerts, each with its route and departure time, riskiest first. A table, because he needs exact bus numbers to act on.',
+      'Why each is at risk: in the same rows, the defects as short labels (“Brake pads 2 mm”, “AC compressor fault ×3”) and a small bar from zero of kilometres since service against the 15,000 km limit line.',
+      'Workshop capacity tomorrow: one horizontal bar from zero of booked mechanic hours against the 64 available, so he sees whether a held bus can be fixed in time.',
+      'Route cover: tomorrow’s 38 departures as a list, each marked covered or short with an icon and a word, with the three spare buses and where they are now beside it.',
+      'Breakdowns per 100,000 km, last 12 weeks: one line for Hubballi in blue, the other three depots in grey, with the 1.5 target as a labelled dashed line.',
+    ],
+    cut: 'Moved: revenue per seat and occupancy by route go to the commercial team’s board; they matter for pricing, not for which bus runs. Fuel efficiency by driver goes to the fleet head’s weekly review. The CO₂ figure from the electric pilot goes to the investor update. Cut: total kilometres driven this year and an all-time on-time percentage, which only creep and decide nothing tonight.',
+    layout: 'On the 24-inch screen, two columns: the at-risk table fills the left two-thirds, top to bottom, because that is the question he opens it for. On the right, workshop capacity on top, route cover below, then the breakdown trend. Default filters are his depot and tomorrow night, so it answers on open. Clicking a bus opens its defect history with “Hold for maintenance” and “Assign spare”. On the phone at 9 pm it collapses to the at-risk list and route cover only, in that order.',
+    honesty: 'Every bar starts at zero and is sorted; the trend is the only line and has one y-axis; there are no gauges or pies. Colour has two jobs: highlight on the trend (Hubballi in blue, other depots grey, labelled directly) and status for risk, using reserved red, amber and green, each with an icon and a word, never colour alone. I checked the status and series colours in deuteranopia and protanopia simulators, and every mark clears 3:1 on the white background. Risk is a score, so the table shows its inputs next to it rather than asking him to trust a number.',
+    states: 'Each tile says “Updated 5:45 pm” in its corner. If the 5:30 telematics load fails, a banner says “Engine alerts last updated 11:20 am. Check with the workshop before clearing buses”, and the affected column is marked stale. A bus with no data is listed at the top as “No data since 14 Nov”, not hidden. On a night with no risky buses, the table says “No buses at risk for tomorrow. 46 cleared”, with the date, so he knows it worked rather than broke.',
+    test: 'I’d test with three of the four depot managers on last month’s real data: five past evenings, including the two before breakdowns, deciding which buses to hold once with the spreadsheet and once with the dashboard, in a balanced order. I’d time each decision, note which tiles they look at and ignore, and check whether they hold the buses that actually broke down. After launch I’d measure on-road breakdowns per 100,000 km and refund costs per depot over the next quarter against last quarter’s 23 breakdowns, and remove any tile nobody opens in a month.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

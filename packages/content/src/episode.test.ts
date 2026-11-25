@@ -6,6 +6,7 @@ import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_A
 import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, PROMPT_PARTS, aiRole, fieldTreatment, type HisaabCase, type HisaabField, type HisaabTask } from './ai';
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
+import { CHART_FORMS, PALETTE_JOBS, ROSHNI_CHARTS, ROSHNI_QUESTIONS, ROSHNI_TILES, TILE_VERDICTS, chartFor, paletteFor, tileVerdict, type RoshniChart, type RoshniQuestion, type RoshniTile } from './dataviz';
 import { BUNKAR_CASES, BUNKAR_DETAILS, BUNKAR_SURFACES, CRAFT_CHECKS, ELEVATIONS, OPTICAL_FIXES, craftCheck, craftFix, elevationOf, opticalFix, type BunkarCase, type BunkarDetail, type BunkarSurface } from './polish';
 import { BLUEPRINT_ROWS, NABZ_DUTIES, NABZ_ROLES, NABZ_STEPS, NABZ_TASKS, SCALE_PATTERNS, blueprintRow, dutyOwner, scalePattern, type NabzDuty, type NabzStep, type NabzTask } from './service';
 import { BOLO_CLAIMS, BOLO_GAPS, BOLO_ITEMS, BOLO_SIGNALS, GAP_CALLS, GATES, MARGIN_MAX, SURVEY_PARTS, WEIGHTS, gapCall, gapInterval, signalGate, surveyFlaw, triangulate, type BoloClaim, type BoloGap, type BoloItem, type BoloSignal } from './survey';
@@ -1078,6 +1079,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...CRAFT_CHECKS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(BUNKAR_DETAILS).sort());
         for (const c of ep.game.cards) { const d = BUNKAR_DETAILS[c.visual as BunkarDetail]; expect(c.label).toBe(d.text); expect(c.lane).toBe(craftCheck(d)); expect(craftFix(d) === null).toBe(c.lane === 'ship'); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'chart-pick') {   // every question once, given the form its task needs
+        expect(lanes).toEqual([...CHART_FORMS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(ROSHNI_QUESTIONS).sort());
+        for (const c of ep.game.cards) { const q = ROSHNI_QUESTIONS[c.visual as RoshniQuestion]; expect(c.label).toBe(q.text); expect(c.lane).toBe(chartFor(q)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'palette-tune') {   // every chart once, given the job its colour should do
+        expect(lanes).toEqual([...PALETTE_JOBS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(ROSHNI_CHARTS).sort());
+        for (const c of ep.game.cards) { const ch = ROSHNI_CHARTS[c.visual as RoshniChart]; expect(c.label).toBe(ch.text); expect(c.lane).toBe(paletteFor(ch)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'dash-critique') {   // every tile once, with the verdict Manoj's decision gives it
+        expect(lanes).toEqual([...TILE_VERDICTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(ROSHNI_TILES).sort());
+        for (const c of ep.game.cards) { const t = ROSHNI_TILES[c.visual as RoshniTile]; expect(c.label).toBe(t.text); expect(c.lane).toBe(tileVerdict(t)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);
