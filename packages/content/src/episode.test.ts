@@ -6,6 +6,7 @@ import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_A
 import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, PROMPT_PARTS, aiRole, fieldTreatment, type HisaabCase, type HisaabField, type HisaabTask } from './ai';
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
+import { ADOPTION_READS, CONTRIBUTION_PATHS, RASTA_CHANGES, RASTA_REQUESTS, RASTA_SCANS, VERSION_BUMPS, adoptionRead, bumpFor, contributionPath, type RastaChange, type RastaRequest, type RastaScan } from './governance';
 import { CHART_FORMS, PALETTE_JOBS, ROSHNI_CHARTS, ROSHNI_QUESTIONS, ROSHNI_TILES, TILE_VERDICTS, chartFor, paletteFor, tileVerdict, type RoshniChart, type RoshniQuestion, type RoshniTile } from './dataviz';
 import { BUNKAR_CASES, BUNKAR_DETAILS, BUNKAR_SURFACES, CRAFT_CHECKS, ELEVATIONS, OPTICAL_FIXES, craftCheck, craftFix, elevationOf, opticalFix, type BunkarCase, type BunkarDetail, type BunkarSurface } from './polish';
 import { BLUEPRINT_ROWS, NABZ_DUTIES, NABZ_ROLES, NABZ_STEPS, NABZ_TASKS, SCALE_PATTERNS, blueprintRow, dutyOwner, scalePattern, type NabzDuty, type NabzStep, type NabzTask } from './service';
@@ -1094,6 +1095,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...TILE_VERDICTS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(ROSHNI_TILES).sort());
         for (const c of ep.game.cards) { const t = ROSHNI_TILES[c.visual as RoshniTile]; expect(c.label).toBe(t.text); expect(c.lane).toBe(tileVerdict(t)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'contribution-route') {   // every request once, routed by need
+        expect(lanes).toEqual([...CONTRIBUTION_PATHS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RASTA_REQUESTS).sort());
+        for (const c of ep.game.cards) { const r = RASTA_REQUESTS[c.visual as RastaRequest]; expect(c.label).toBe(r.text); expect(c.lane).toBe(contributionPath(r)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'release-plan') {   // every change once, bumped by what it does to consumers
+        expect(lanes).toEqual([...VERSION_BUMPS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RASTA_CHANGES).sort());
+        for (const c of ep.game.cards) { const ch = RASTA_CHANGES[c.visual as RastaChange]; expect(c.label).toBe(ch.text); expect(c.lane).toBe(bumpFor(ch)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'adoption-read') {   // every squad's scan once, with the diagnosis it reads as
+        expect(lanes).toEqual([...ADOPTION_READS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RASTA_SCANS).sort());
+        for (const c of ep.game.cards) { const sc = RASTA_SCANS[c.visual as RastaScan]; expect(c.label).toBe(sc.text); expect(c.lane).toBe(adoptionRead(sc)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

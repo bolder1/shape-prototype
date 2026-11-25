@@ -2018,9 +2018,58 @@ const ui6: BossBriefInput = {
   },
 };
 
+const ds4: BossBriefInput = {
+  chapterId: 'ds.4',
+  title: 'A governance proposal for 40 designers',
+  minutes: 120,
+  scenario: [
+    'Tijori is a Bengaluru fintech with 40 product designers in 12 squads across three products: a consumer UPI and savings app, a merchant app for kirana stores, and a lending portal for small businesses, on iOS, Android and web. Its design system has a core team of three designers and four engineers. The queue has 74 open requests, the oldest from February. Three squads run their own forks of the button. Last quarter a minor release changed the default input height and broke the loan application form on Android for two days.',
+    'The head of design has asked you for a governance proposal she can take to the design and engineering leadership group. Cover the team model, who decides what, how contributions get in, how releases are numbered and old APIs retired, how adoption and its outcomes are measured, and how you’ll roll the change out. You can use Tijori or a real organisation of a similar size that you know (say which), as long as the numbers are specific.',
+  ],
+  fields: [
+    { id: 'diagnosis', label: 'What’s wrong today', kind: 'text', minWords: 35, hint: 'The current model and why it fails at this size, with the evidence: queue length and age, forks, broken releases, what squads do instead of waiting.' },
+    { id: 'model', label: 'Team model', kind: 'text', minWords: 40, hint: 'Centralised, federated or hybrid, and why. What the core team owns, what squads own, and any roles in between (champions, rotations).' },
+    { id: 'rights', label: 'Who decides what', kind: 'list', items: 4, minWords: 12, hint: 'One decision per line (a new core component, a contribution merging, a breaking change, an exception for one squad): who decides, who is consulted, and how it escalates.' },
+    { id: 'path', label: 'The contribution path', kind: 'long', minWords: 60, hint: 'How a request is routed (reuse, local, contribute, core) and by what rule, the steps from proposal to release, response times, and what makes it cheaper than building around the system.' },
+    { id: 'versioning', label: 'Versioning and deprecation', kind: 'text', minWords: 45, hint: 'What counts as patch, minor and major (including defaults and dropped platforms), the deprecation window and what gates removal, codemods, how often majors ship, and how design and code releases stay in step.' },
+    { id: 'metrics', label: 'Measuring adoption and outcomes', kind: 'text', minWords: 45, hint: 'How you count adoption (instances, not installs), version lag and detach rate per squad, the outcomes the system is meant to improve, how you’ll compare them fairly, and what you won’t make a target.' },
+    { id: 'rollout', label: 'Rollout', kind: 'long', minWords: 50, hint: 'The first 90 days: what changes when, which squads go first, how you clear the existing queue and forks, how you’ll know it’s working, and what you’ll stop doing.' },
+    { id: 'risks', label: 'Risks and objections', kind: 'list', items: 3, minWords: 15, hint: 'One per line: an objection you expect from a squad, an engineer or leadership, and how the proposal answers it.' },
+  ],
+  rubric: [
+    { id: 'diagnosis', label: 'Grounded in evidence about this organisation', strong: 'Names the current model and shows with specific numbers (queue age, forks, incidents, team ratios) why it fails at 40 designers. The proposal’s parts each answer a named problem.', weight: 2 },
+    { id: 'model', label: 'A model with clear ownership', strong: 'Chooses a model that fits the size and explains why the alternatives fail. The core team’s scope, the squads’ scope and any champion roles are explicit, and someone is accountable for the whole.', weight: 3, required: true },
+    { id: 'path', label: 'A contribution path squads will use', strong: 'Routes requests by a stated rule (exists, one squad, shared, wide), welcomes fixes from anyone, agrees the design before building, has response times, and is cheaper than going around: short template, office hours, pairing, credit.', weight: 3, required: true },
+    { id: 'rights', label: 'Written decision rights', strong: 'Each recurring decision has an owner, the people consulted, published criteria and an escalation route. Exceptions have a process rather than a person to lobby.', weight: 2 },
+    { id: 'versioning', label: 'Releases squads can trust', strong: 'Semver applied correctly, including defaults and platform support as breaking. Deprecate before removing, a window gated on usage reaching zero, codemods, planned majors announced early, one version across design and code, a changelog grouped by what consumers must do.', weight: 2 },
+    { id: 'metrics', label: 'Honest measurement', strong: 'Counts instances by scan, adds version lag and detach rate per squad, ties the system to outcomes (design-to-ship time, defects, QA rounds) compared like for like, and refuses to make coverage a target on its own.', weight: 2 },
+    { id: 'rollout', label: 'A rollout that can start Monday', strong: 'A sequenced 90 days with pilot squads, a plan for the existing queue and forks, signals that show it’s working, and objections answered rather than ignored.', weight: 1 },
+  ],
+  tips: ['Draw the routing rule as four boxes before writing anything else. If you can’t say which box a request goes in, the squads can’t either.', 'For every rule in your proposal, name the incident or number it answers. Rules without a reason are the first ones squads ignore.'],
+  example: {
+    diagnosis: 'Tijori runs a centralised model that fitted 12 designers and fails at 40: seven people serve 12 squads, the queue holds 74 requests with a median age of nine weeks, and three squads forked the button rather than wait. Releases carry no contract: 2.6.0, a minor, changed the default input height and broke the Android loan form for two days, so four squads have now pinned old versions and stopped getting fixes.',
+    model: 'A hybrid. The core team owns foundations (tokens, type, grid, motion), the 30 core components, accessibility, the release process and the final review. Squads own product-layer components built on system parts. Each product (consumer, merchant, lending) names one designer and one engineer as system champions, with a fifth of their time for reviews and office hours, rotating every six months. A fully federated model was rejected because nobody would be accountable for the whole; staying centralised would need the core team to triple.',
+    rights: [
+      'New core component: the core design lead decides, against the routing rule, consulting the champions of every squad that needs it; disputes go to the monthly design leadership review.',
+      'Merging a contribution: a core reviewer approves against the published checklist (API fits, tokens only, accessibility, docs); the contributing squad is consulted on changes and credited.',
+      'Breaking change: the core engineering lead decides, consulting champions, and it ships only in a planned major announced at least eight weeks ahead.',
+      'An exception for one squad (a local component, a pinned version): the squad’s design lead decides, logs it in the register with an expiry date, and the core team reviews the register every quarter.',
+    ],
+    path: 'Every request is routed by one rule. If something already does the job, we reuse it and fix the docs that hid it. If one squad needs it, the squad builds it locally on system parts and logs it; a second request triggers promotion. Fixes, variants, and components two squads share are contributed by the squad that needs them first. New components that three or more squads need are built by the core team. Contributors fill a one-page template (problem, squads, screenshots), the core team responds within five working days, the design and API are agreed before anyone builds, the squad builds in the system paired with a core engineer, and the release notes credit them. Office hours run every Thursday.',
+    versioning: 'One version across the Figma library and the code packages, released together with one changelog grouped as breaking, added and deprecated, and fixed. Patch restores documented behaviour; minor adds or deprecates without changing anything; major covers removed or renamed APIs, changed defaults, required props and dropped platforms. Deprecated APIs keep working with a console warning and a docs badge for at least two minors, with a codemod, and are removed only when the weekly scan shows zero uses. Majors ship twice a year, in January and July, announced eight weeks ahead with a migration guide.',
+    metrics: 'A weekly code scan and Figma library analytics count instances per squad as current system, old major, detached or local. The quarterly report shows coverage, version lag and detach rate per squad with a diagnosis and one action each. Outcomes are design-to-ship days, accessibility defects per release and design QA rounds, compared between similar screens built with and without the system. Coverage is never a target; leadership goals sit on the outcomes.',
+    rollout: 'Weeks 1–2: publish the routing rule, template and decision rights, and triage all 74 requests against the rule in two working sessions with champions; we expect around a third to be reuse or local. Weeks 3–6: pilot the contribution path with the merchant squads, who asked most often, and ship 2.7.0 with the input height restored and the forked buttons’ needs as variants. Weeks 7–12: roll out to the other products, run codemods for the three forks, and set the July major’s scope. We stop accepting requests by Slack DM. It is working if the median queue age falls under two weeks, squads contribute at least eight changes, and no minor breaks a build.',
+    risks: [
+      'Squads: “Contributing is extra work on top of our roadmap.” The template is one page, a core engineer pairs on the build, and the alternative they already pay is maintaining a fork.',
+      'Engineering leadership: “Twice-yearly majors will slow down important fixes.” Fixes and additions ship weekly as patches and minors; only breaking changes wait, and an urgent one can go through the leadership review.',
+      'The head of design: “Leadership wants one adoption number.” We give them one outcome headline, design-to-ship time, and keep coverage per squad as the diagnostic behind it, because a coverage target would be met by wrapping.',
+    ],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

@@ -176,6 +176,9 @@ import { DetailLoupe } from './games/DetailLoupe';
 import { ChartPick } from './games/ChartPick';
 import { PaletteTune } from './games/PaletteTune';
 import { DashCritique } from './games/DashCritique';
+import { ContributionRoute } from './games/ContributionRoute';
+import { ReleasePlan } from './games/ReleasePlan';
+import { AdoptionRead } from './games/AdoptionRead';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -361,6 +364,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'chart-pick': ChartPick,
   'palette-tune': PaletteTune,
   'dash-critique': DashCritique,
+  'contribution-route': ContributionRoute,
+  'release-plan': ReleasePlan,
+  'adoption-read': AdoptionRead,
 };
 
 interface Props {

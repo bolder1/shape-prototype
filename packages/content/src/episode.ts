@@ -52,7 +52,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'roadmap-plan', 'atom-repo', 'research-guardrails',
   'service-blueprint', 'role-swimlane', 'scale-up',
   'optical-centre', 'light-source', 'detail-pass',
-  'chart-forms', 'colour-jobs', 'decision-board']);
+  'chart-forms', 'colour-jobs', 'decision-board',
+  'contribution-models', 'deprecation-path', 'adoption-signals']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -214,6 +215,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `chart-pick`: lanes are `CHART_FORMS` in order; every card is a question someone at Roshni asks of its data, its `visual` a key of `ROSHNI_QUESTIONS` (each used once), its `label` that question's `text`, and its lane `chartFor` of it. Right calls draw the question's real data in that form, bars from zero (`valueAxis`), distributions binned (`histogram`).
  *  - `palette-tune`: lanes are `PALETTE_JOBS` in order; every card is a chart on Roshni's console, its `visual` a key of `ROSHNI_CHARTS` (each used once), its `label` that chart's `text`, and its lane `paletteFor` of it. The chart starts grey; a right call colours it (`markColour`) and a switch shows it as a deuteranope sees it (`simulateCvd`).
  *  - `dash-critique`: lanes are `TILE_VERDICTS` in order; every card is a tile on the old Jaipur ops dashboard, its `visual` a key of `ROSHNI_TILES` (each used once), its `label` that tile's `text`, and its lane `tileVerdict` of it. The board rebuilds as tiles are kept, fixed, moved or cut, down to `boardAfter`.
+ *  - `contribution-route`: lanes are `CONTRIBUTION_PATHS` in order; every card is a request in the Rasta design-system team's queue, its `visual` a key of `RASTA_REQUESTS` (each used once), its `label` that request's `text`, and its lane `contributionPath` of it. Right calls show who does each step (`PATH_STEPS`) and spend the core team's hours (`PATH_HOURS`) against the quarter's `REQUEST_BUDGET`. Every card needs a `note`.
+ *  - `release-plan`: lanes are `VERSION_BUMPS` in order; every card is a change queued for Rasta's next release, its `visual` a key of `RASTA_CHANGES` (each used once), its `label` that change's `text`, and its lane `bumpFor` of it. Right calls write the change into the changelog (`CHANGELOG_SECTIONS`) of this week's release or the planned major (`planReleases` from `RASTA_VERSION`). Every card needs a `note`.
+ *  - `adoption-read`: lanes are `ADOPTION_READS` in order; every card is a squad's component scan, its `visual` a key of `RASTA_SCANS` (each used once), its `label` that scan's `text`, and its lane `adoptionRead` of it. The game draws the scan as 100 cells (`waffle`); the player estimates the live system share (`systemShare`, graded by `shareGrade`), then sees the full scan and diagnoses it. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -262,7 +266,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'roadmap-slot', 'atom-build', 'plan-critique',
   'blueprint-build', 'role-swim', 'scale-dial',
   'optical-nudge', 'elevation-lift', 'detail-loupe',
-  'chart-pick', 'palette-tune', 'dash-critique']);
+  'chart-pick', 'palette-tune', 'dash-critique',
+  'contribution-route', 'release-plan', 'adoption-read']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

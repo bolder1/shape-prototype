@@ -174,6 +174,9 @@ import { DetailPassScene } from '../scenes/DetailPass';
 import { ChartFormsScene } from '../scenes/ChartForms';
 import { ColourJobsScene } from '../scenes/ColourJobs';
 import { DecisionBoardScene } from '../scenes/DecisionBoard';
+import { ContributionModelsScene } from '../scenes/ContributionModels';
+import { DeprecationPathScene } from '../scenes/DeprecationPath';
+import { AdoptionSignalsScene } from '../scenes/AdoptionSignals';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -341,6 +344,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'chart-forms': ChartFormsScene,
   'colour-jobs': ColourJobsScene,
   'decision-board': DecisionBoardScene,
+  'contribution-models': ContributionModelsScene,
+  'deprecation-path': DeprecationPathScene,
+  'adoption-signals': AdoptionSignalsScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
