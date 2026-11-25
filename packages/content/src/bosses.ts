@@ -2409,9 +2409,53 @@ const br4: BossBriefInput = {
   },
 };
 
+const bz4: BossBriefInput = {
+  chapterId: 'bz.4',
+  title: 'A business case for a redesign, with projected ROI',
+  minutes: 120,
+  scenario: [
+    'Write the business case for a redesign: of your own product, your Studio product, or Raahi’s operator app, where 1,400 bus operators set seat layouts and fares. Raahi sells 18 lakh bookings a year and keeps ₹60 on each; a support contact costs it ₹95. Operators’ layout mistakes cause double-booked seats, which Raahi refunds in full. Sameer Batra, the CFO, will read it in five minutes and will ask what you get, what it really costs, and how sure you are.',
+    'Open with the ask. Put the problem in money, including what doing nothing costs, and compare at least three options. Size each benefit as volume × change × what each is worth, with the evidence it rests on and a low, base and high case. Count every cost. Show ROI and payback in all three cases, with your working. Then say how you will know early, and what result would make you stop.',
+  ],
+  fields: [
+    { id: 'ask', label: 'The ask', kind: 'text', minWords: 25, hint: 'How much, how many people, for how long, to do what, and what you want decided. One or two sentences a CFO could approve.' },
+    { id: 'problem', label: 'The problem in money', kind: 'text', minWords: 40, hint: 'What it costs today a year, with the numbers behind it, and how that cost grows if nothing changes.' },
+    { id: 'options', label: 'Options considered', kind: 'list', items: 3, minWords: 15, hint: 'One per line, including doing nothing: what it is, what it costs, and why you did or didn’t choose it.' },
+    { id: 'benefits', label: 'Benefits, by driver', kind: 'list', items: 2, minWords: 30, hint: 'One driver per line: volume × change × ₹ each, with the low, base and high change, the evidence each rests on (a test, a pilot, a benchmark), and what you credit design with.' },
+    { id: 'costs', label: 'Every cost', kind: 'text', minWords: 30, hint: 'Building (people × months × loaded cost), running a year, and what waits because of it.' },
+    { id: 'returns', label: 'ROI and payback, three cases', kind: 'long', minWords: 50, hint: 'For each case: yearly benefit, year-one cost, net, ROI as (benefit − cost) ÷ cost, and payback in months as build ÷ (benefit − running) × 12. Show the working, and say what year two looks like.' },
+    { id: 'know', label: 'How we’ll know, and when we’d stop', kind: 'text', minWords: 40, hint: 'The first stage you want funded, the leading number you will read and when, the threshold to continue, and who decides.' },
+  ],
+  rubric: [
+    { id: 'ask', label: 'The decision comes first', strong: 'The case opens with a specific ask (money, people, time, scope) that could be approved as written.', weight: 1 },
+    { id: 'money', label: 'Benefits in money, sized properly', strong: 'Every benefit is volume × an absolute change × a unit value at contribution or cost saved, never revenue; time saved is discounted to what becomes money; signals like scores are kept out of the total.', weight: 3, required: true },
+    { id: 'honest', label: 'Honest about certainty', strong: 'Each driver has a low, base and high case tied to named evidence; the base is more cautious than the best result, with a reason; design is credited only with what a control or pilot shows.', weight: 2, required: true },
+    { id: 'costs', label: 'Every cost counted', strong: 'Building, a year of running and what waits are all counted, and the options include doing nothing with its cost.', weight: 2 },
+    { id: 'returns', label: 'Returns that add up', strong: 'ROI and payback for all three cases follow from the stated benefits and costs, the working is shown and correct, and the low case is shown even if it loses money.', weight: 2, required: true },
+    { id: 'know', label: 'A way to know early', strong: 'The money is staged; a leading number, read date and threshold are agreed before work starts, with who decides and what happens if it misses.', weight: 1 },
+  ],
+  tips: ['Check every number by redoing it on a calculator in the order you wrote it. A CFO who finds one wrong figure stops trusting the rest.', 'Write the low case first. If you can’t make the low case honest, the base case isn’t ready either.'],
+  example: {
+    ask: 'Fund four people (two designers, an engineer and a product manager) for four months, ₹40 lakh, to rebuild the seat-layout and fare tools in Raahi’s operator app, starting with the 200 largest operators.',
+    problem: 'Operators set seat layouts by hand, and mistakes double-book 0.4% of bookings: about 7,200 seats a year. Each costs Raahi ₹1,390: a full ₹900 refund, ₹300 of goodwill credit and two support calls. That is ₹1 crore a year, before the riders we lose. Operators also make 42,000 support calls a year about layouts and fares, ₹40 lakh at ₹95 each. Both grow with bookings, about 20% a year, so doing nothing costs more each year.',
+    options: [
+      'Do nothing: no spend, but double bookings and operator calls cost about ₹1.4 crore a year and grow 20% a year with bookings.',
+      'Add validation to today’s layout screen, ₹8 lakh: catches overlapping seat numbers, about a third of errors, but not wrong bus types or fare mistakes. Our fallback if the case is refused.',
+      'Rebuild the layout and fare tools from templates of each bus model, ₹40 lakh: removes most hand entry. Chosen, because the template test removed half the errors.',
+    ],
+    benefits: [
+      'Double bookings: 18 lakh bookings × a fall of 0.1 to 0.3 points (base 0.2, from 0.4% to 0.2%) × ₹1,390 = ₹25 lakh to ₹75 lakh, base ₹50 lakh. Evidence: 40 operators on the template prototype for six weeks had half the error rate of 40 matched operators who didn’t. The high case assumes the large operators do better than the test; the base doesn’t.',
+      'Operator calls: 42,000 calls × a fall of 30% to 60% (base 50%) × ₹95 = ₹12 lakh to ₹24 lakh, base ₹20 lakh. Evidence: layout and fare questions are 70% of operator calls by support tags, and the prototype group called 55% less. We don’t count the time operators save, or routes going live sooner; we’ll report those as signals.',
+    ],
+    costs: 'Building: four people for four months at a loaded ₹2.5 lakh a person-month, ₹40 lakh. Running: ₹4 lakh a year for the bus-model template library and its upkeep. What waits: the operator payouts screen moves back a quarter; it has no money case yet, so we have not costed it, but we name it. Year one costs ₹44 lakh.',
+    returns: 'Base: benefit ₹50 lakh + ₹20 lakh = ₹70 lakh a year. Net ₹70 lakh − ₹44 lakh = ₹26 lakh; ROI 26 ÷ 44 = 59%. Payback: (₹70 lakh − ₹4 lakh) ÷ 12 = ₹5.5 lakh a month, so ₹40 lakh ÷ ₹5.5 lakh = 7.3 months. Low: ₹25 lakh + ₹12 lakh = ₹37 lakh; net −₹7 lakh, ROI −16% in year one; payback ₹40 lakh ÷ (₹33 lakh ÷ 12) = about 14.5 months, inside year two. High: ₹75 lakh + ₹24 lakh = ₹99 lakh; net ₹55 lakh, ROI 125%; payback 5.1 months. Year two has only the ₹4 lakh running cost, so even the low case returns about ₹33 lakh, and more as bookings grow.',
+    know: 'Fund the first stage, ₹15 lakh for templates covering the 200 largest operators, who sell 60% of seats. Read double bookings per 1,000 bookings for those operators weekly against the rest, and decide at week ten. If their rate is under 3 per 1,000 (from 4), release the remaining ₹25 lakh; between 3 and 3.5, fix and read again in four weeks; above 3.5, stop and fall back to the ₹8 lakh validation. Sameer and the head of operator success decide together.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4, br4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4, br4, bz4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

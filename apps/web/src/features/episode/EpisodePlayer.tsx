@@ -201,6 +201,9 @@ import { ReferralMath } from './games/ReferralMath';
 import { ArcMap } from './games/ArcMap';
 import { FamilySort } from './games/FamilySort';
 import { SearchShare } from './games/SearchShare';
+import { ValueSize } from './games/ValueSize';
+import { CaseEdit } from './games/CaseEdit';
+import { EngageSort } from './games/EngageSort';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -411,6 +414,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'arc-map': ArcMap,
   'family-sort': FamilySort,
   'search-share': SearchShare,
+  'value-size': ValueSize,
+  'case-edit': CaseEdit,
+  'engage-sort': EngageSort,
 };
 
 interface Props {

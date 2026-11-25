@@ -60,7 +60,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'study-session', 'persona-rewrite', 'maturity-road',
   'moat-map', 'bet-portfolio', 'platform-layers',
   'practice-loop', 'nudge-week', 'streak-trap', 'viral-loop',
-  'campaign-arc', 'brand-spectrum', 'brand-tracker']);
+  'campaign-arc', 'brand-spectrum', 'brand-tracker',
+  'impact-chain', 'case-shape', 'studio-rate']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -247,6 +248,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `arc-map`: lanes are `CAMPAIGN_ROLES` in order; every card is a piece of Sukoon's “Switch off” campaign, its `visual` a key of `SUKOON_PIECES` (each used once), its `label` that piece's `text`, and its lane `arcRole` of it: about the brand or a claim is cut, the rest carry the part of the story they show. Each card shows its channel; right calls place it on the campaign arc (tension, turn, proof) or the cutting-room floor. Every card needs a `note`.
  *  - `family-sort`: lanes are `ARCH_CALLS` in order; every card is an offering, its `visual` a key of `SUKOON_OFFERS` (each used once), its `label` that offering's `text`, and its lane `archCall` of it: promise, then risk, then equity, then buyer. Right calls add it to the brand family tree under the name `archName` gives it. Every card needs a `note`.
  *  - `search-share`: lanes are `SOS_CALLS` in order; every card is a month of search data, its `visual` a key of `SUKOON_READINGS` (each used once), its `label` that reading's `text`, and its lane `sosCall` of it: a distorted count first, then share of search against share of market (`SOS_GAP`). Right calls plot clean readings on a share of search × share of market chart and set distorted ones aside with their `distortion`. Every card needs a `note`.
+ *  - `value-size`: lanes are `IMPACT_BANDS` in order; every card is a claimed design impact, its `visual` a key of `RAAHI_IMPACTS` (each used once), its `label` that claim's `text`, and its lane `impactBand` of it: no control or no money link can't be counted, then the yearly `impactValue` against `BAND_EDGES`. Each card shows its volume × change × ₹ each × share realised; right calls add it to an impact ledger with its value. Every card needs a `note`.
+ *  - `case-edit`: lanes are `CASE_FIXES` in order; every card is a line of Aparna's business case, its `visual` a key of `RAAHI_CASE` (each used once), its `label` that line's `text`, and its lane `caseFix` of it: benefits need money, then honesty; costs need to be complete. Right calls write the line's `fixed` version into the case under its `part`; the finished case shows `caseReturns` for each of `SCENARIOS`. Every card needs a `note`.
+ *  - `engage-sort`: lanes are `ENGAGE_CALLS` in order; every card is an enquiry to Kolam, its `visual` a key of `KOLAM_ENQUIRIES` (each used once), its `label` that enquiry's `text`, and its lane `engageCall` of it: spec work or an `effectiveRate` below `floorRate` is declined, then a stream is a retainer, a clear one-off fixed, the rest time and materials. Each card shows its rate on a gauge against the floor and `targetRate`; right calls fill Kolam's quarter. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -303,7 +307,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'study-fix', 'persona-crit', 'program-road',
   'moat-crit', 'bet-book', 'layer-pick',
   'habit-zone', 'nudge-crit', 'reward-pick', 'referral-math',
-  'arc-map', 'family-sort', 'search-share']);
+  'arc-map', 'family-sort', 'search-share',
+  'value-size', 'case-edit', 'engage-sort']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
