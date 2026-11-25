@@ -179,6 +179,9 @@ import { DashCritique } from './games/DashCritique';
 import { ContributionRoute } from './games/ContributionRoute';
 import { ReleasePlan } from './games/ReleasePlan';
 import { AdoptionRead } from './games/AdoptionRead';
+import { BrandTune } from './games/BrandTune';
+import { ParitySort } from './games/ParitySort';
+import { SyncFlow } from './games/SyncFlow';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -367,6 +370,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'contribution-route': ContributionRoute,
   'release-plan': ReleasePlan,
   'adoption-read': AdoptionRead,
+  'brand-tune': BrandTune,
+  'parity-sort': ParitySort,
+  'sync-flow': SyncFlow,
 };
 
 interface Props {

@@ -6,6 +6,7 @@ import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_A
 import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, PROMPT_PARTS, aiRole, fieldTreatment, type HisaabCase, type HisaabField, type HisaabTask } from './ai';
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
+import { BRAND_CALLS, PARITY_CALLS, SAWARI_DECISIONS, SAWARI_DRIFTS, SAWARI_REQUESTS, SYNC_MOVES, brandCall, parityCall, passingSteps, syncMove, type SawariDecision, type SawariDrift, type SawariRequest } from './multibrand';
 import { ADOPTION_READS, CONTRIBUTION_PATHS, RASTA_CHANGES, RASTA_REQUESTS, RASTA_SCANS, VERSION_BUMPS, adoptionRead, bumpFor, contributionPath, type RastaChange, type RastaRequest, type RastaScan } from './governance';
 import { CHART_FORMS, PALETTE_JOBS, ROSHNI_CHARTS, ROSHNI_QUESTIONS, ROSHNI_TILES, TILE_VERDICTS, chartFor, paletteFor, tileVerdict, type RoshniChart, type RoshniQuestion, type RoshniTile } from './dataviz';
 import { BUNKAR_CASES, BUNKAR_DETAILS, BUNKAR_SURFACES, CRAFT_CHECKS, ELEVATIONS, OPTICAL_FIXES, craftCheck, craftFix, elevationOf, opticalFix, type BunkarCase, type BunkarDetail, type BunkarSurface } from './polish';
@@ -1110,6 +1111,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...ADOPTION_READS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RASTA_SCANS).sort());
         for (const c of ep.game.cards) { const sc = RASTA_SCANS[c.visual as RastaScan]; expect(c.label).toBe(sc.text); expect(c.lane).toBe(adoptionRead(sc)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'brand-tune') {   // every one of Meera's requests once, themed, tuned or kept shared
+        expect(lanes).toEqual([...BRAND_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAWARI_REQUESTS).sort());
+        for (const c of ep.game.cards) { const r = SAWARI_REQUESTS[c.visual as SawariRequest]; expect(c.label).toBe(r.text); expect(c.lane).toBe(brandCall(r)); expect(c.note).toBeTruthy(); if (c.lane === 'tune') expect(passingSteps(r.tune!).length).toBeGreaterThan(0); }
+      }
+      if (ep.game.id === 'parity-sort') {   // every booking-flow decision once, by how it may differ across platforms
+        expect(lanes).toEqual([...PARITY_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAWARI_DECISIONS).sort());
+        for (const c of ep.game.cards) { const d = SAWARI_DECISIONS[c.visual as SawariDecision]; expect(c.label).toBe(d.text); expect(c.lane).toBe(parityCall(d)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'sync-flow') {   // every drift once, sent the way its source says
+        expect(lanes).toEqual([...SYNC_MOVES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAWARI_DRIFTS).sort());
+        for (const c of ep.game.cards) { const d = SAWARI_DRIFTS[c.visual as SawariDrift]; expect(c.label).toBe(d.text); expect(c.lane).toBe(syncMove(d)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

@@ -53,7 +53,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'service-blueprint', 'role-swimlane', 'scale-up',
   'optical-centre', 'light-source', 'detail-pass',
   'chart-forms', 'colour-jobs', 'decision-board',
-  'contribution-models', 'deprecation-path', 'adoption-signals']);
+  'contribution-models', 'deprecation-path', 'adoption-signals',
+  'theme-stack', 'platform-parity', 'sync-loop']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -218,6 +219,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `contribution-route`: lanes are `CONTRIBUTION_PATHS` in order; every card is a request in the Rasta design-system team's queue, its `visual` a key of `RASTA_REQUESTS` (each used once), its `label` that request's `text`, and its lane `contributionPath` of it. Right calls show who does each step (`PATH_STEPS`) and spend the core team's hours (`PATH_HOURS`) against the quarter's `REQUEST_BUDGET`. Every card needs a `note`.
  *  - `release-plan`: lanes are `VERSION_BUMPS` in order; every card is a change queued for Rasta's next release, its `visual` a key of `RASTA_CHANGES` (each used once), its `label` that change's `text`, and its lane `bumpFor` of it. Right calls write the change into the changelog (`CHANGELOG_SECTIONS`) of this week's release or the planned major (`planReleases` from `RASTA_VERSION`). Every card needs a `note`.
  *  - `adoption-read`: lanes are `ADOPTION_READS` in order; every card is a squad's component scan, its `visual` a key of `RASTA_SCANS` (each used once), its `label` that scan's `text`, and its lane `adoptionRead` of it. The game draws the scan as 100 cells (`waffle`); the player estimates the live system share (`systemShare`, graded by `shareGrade`), then sees the full scan and diagnoses it. Every card needs a `note`.
+ *  - `brand-tune`: lanes are `BRAND_CALLS` in order; every card is a request from Sawari's brand team, its `visual` a key of `SAWARI_REQUESTS` (each used once), its `label` that request's `text`, and its lane `brandCall` of it. Right calls apply it to a Sawari preview in light and dark (`BRAND_THEMES`); a `tune` card then gets a slider along its ramp (`SAWARI_RAMPS`), checked live by `tuneCheck`. Every card needs a `note`.
+ *  - `parity-sort`: lanes are `PARITY_CALLS` in order; every card is a decision in Sawari's booking flow, its `visual` a key of `SAWARI_DECISIONS` (each used once), its `label` that decision's `text`, and its lane `parityCall` of it. Right calls draw what each platform shows (`show`, across `PARITY_PLATFORMS`). Every card needs a `note`.
+ *  - `sync-flow`: lanes are `SYNC_MOVES` in order; every card is a difference the nightly check found between Figma and code, its `visual` a key of `SAWARI_DRIFTS` (each used once), its `label` that drift's `text`, and its lane `syncMove` of it. Right calls animate the change along the flow to the side it acts on (`driftSide`) and count `DRIFTS_FOUND` down. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -267,7 +271,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'blueprint-build', 'role-swim', 'scale-dial',
   'optical-nudge', 'elevation-lift', 'detail-loupe',
   'chart-pick', 'palette-tune', 'dash-critique',
-  'contribution-route', 'release-plan', 'adoption-read']);
+  'contribution-route', 'release-plan', 'adoption-read',
+  'brand-tune', 'parity-sort', 'sync-flow']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

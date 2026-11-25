@@ -2067,9 +2067,57 @@ const ds4: BossBriefInput = {
   },
 };
 
+const ds5: BossBriefInput = {
+  chapterId: 'ds.5',
+  title: 'A second brand, one set of components',
+  minutes: 120,
+  scenario: [
+    'Kosh is a Pune personal-finance company whose design system, used by 30 designers in nine squads, runs its savings and mutual-fund app on iOS, Android and web. Kosh has just bought Thikana, a home-loan brand with its own apps, a deep green and saffron palette, a slab-serif display face, square corners and about 160 components of its own, seven of them different versions of a text field. Thikana keeps its name and look. Leadership wants it on Kosh’s system within two quarters, and the first plan on the table is to copy Kosh’s component library into a Thikana repository and restyle it.',
+    'Write the plan the head of design will take to leadership instead: how Thikana becomes a second brand on the same components, in light and dark, on all three platforms, with Figma and code kept in step. You can use Kosh and Thikana, or a real multi-brand system you know (say which), as long as the specifics are concrete.',
+  ],
+  fields: [
+    { id: 'audit', label: 'What actually differs', kind: 'text', minWords: 35, hint: 'Compare the two brands as a designer would: which differences are brand (colour, type, radius, motion, illustration), which are behaviour or content, and which of Thikana’s components are duplicates of Kosh’s. Give numbers.' },
+    { id: 'architecture', label: 'Token architecture', kind: 'long', minWords: 60, hint: 'The layers from primitives to components, where the brand sits, how brand and mode combine into themes, what a component reads, and why no component needs to know which brand it is in.' },
+    { id: 'brandLayer', label: 'What a brand may set', kind: 'list', items: 4, minWords: 10, hint: 'One group of brand tokens per line (colour roles, type, shape, motion, component tokens), with Thikana’s values and any that had to be tuned to pass.' },
+    { id: 'shared', label: 'What stays shared', kind: 'text', minWords: 35, hint: 'What no brand may change and why: feedback colours, tap targets, focus, the spacing scale, the component API. How you answer Thikana’s requests that cross that line.' },
+    { id: 'platforms', label: 'Across iOS, Android and web', kind: 'text', minWords: 40, hint: 'What must be identical everywhere, what is adapted to each platform’s units, and where you use the platform’s own controls. How a component spec records it and how parity is checked.' },
+    { id: 'pipeline', label: 'Keeping design and code in step', kind: 'long', minWords: 50, hint: 'The source of truth for token values, component APIs and new designs; what the build outputs for each brand, mode and platform; the checks it runs; how Figma stays in sync; how drift is caught and which way it moves; how versions are released.' },
+    { id: 'rollout', label: 'Two quarters', kind: 'long', minWords: 50, hint: 'What happens in what order: the brand layer, the first flow to move, retiring Thikana’s duplicate components, what Thikana’s designers and engineers need, and how you’ll know it worked.' },
+    { id: 'risks', label: 'Risks and objections', kind: 'list', items: 3, minWords: 15, hint: 'One per line: an objection from Thikana’s brand team, an engineer or leadership, and how the plan answers it.' },
+  ],
+  rubric: [
+    { id: 'architecture', label: 'One set of components, brands as themes', strong: 'Components read only semantic and component tokens; each brand supplies values, combined with modes into themes built for every platform. No brand props, brand variants or copied libraries, and the plan says why a fork fails.', weight: 3, required: true },
+    { id: 'boundary', label: 'A clear brand boundary', strong: 'Publishes a short list of what a brand may set, with Thikana’s values, and what stays shared (feedback colours, targets, focus, spacing scale, API) with reasons. Requests across the line get an answer, such as a component token or a tuned value, rather than an exception.', weight: 3, required: true },
+    { id: 'checks', label: 'Every theme checked', strong: 'The build checks contrast for every text and control pair in every brand and mode and fails on any miss. Failing brand colours are tuned along their ramps, with the ratios given.', weight: 2 },
+    { id: 'platforms', label: 'Parity in meaning, not pixels', strong: 'Prices, steps, copy and brand are identical everywhere; type, targets and elevation are adapted in each platform’s units; navigation, sharing and pickers are native. Specs carry a platform table, and the shared rows are checked each release.', weight: 2 },
+    { id: 'pipeline', label: 'A source of truth with a direction', strong: 'Token values live in one repository and build Figma variables and every platform’s code; the API lives in code with Figma mirroring it (Code Connect); new designs become truth through an RFC. A drift check names the side that moves, unapproved changes are reverted, and Figma and code release under one version.', weight: 2 },
+    { id: 'rollout', label: 'A rollout that retires the duplicates', strong: 'A sequenced plan that moves one flow first, maps Thikana’s duplicates onto shared components, supports Thikana’s team, and names measures of success such as duplicate count, fixes reaching both brands, and parity defects.', weight: 1 },
+  ],
+  tips: ['Before you pick a single colour, write the list of tokens a brand may set. Every argument with Thikana’s brand team gets easier once that list exists.', 'Test your architecture with a third brand: if adding one would mean editing components, the brand is in the wrong layer.'],
+  example: {
+    audit: 'Of Thikana’s 160 components, 118 do a job Kosh’s system already does: seven text fields, four buttons, three cards. The real brand differences are a green and saffron palette, a slab serif for headings, square corners and slower motion, which fit in about 40 tokens. Twelve components are genuinely Thikana’s, such as the EMI calculator and the property document checklist, and they stay as product components built on system tokens.',
+    architecture: 'Four layers. Primitives hold raw values, including Thikana’s green and saffron ramps. Each brand has a brand layer that points semantic tokens (`color-action-primary`, `font-family-display`, `radius-container`) at its own primitives, and each brand has light and dark values, so Kosh and Thikana in light and dark are four themes. Component tokens (`card-accent-border`, `button-primary-bg`) point at semantic tokens, and components read only component and semantic tokens. The build outputs the four themes for CSS, Compose and Swift. A screen gets its brand by loading a theme at the root, so no component has a brand prop or a brand variant, and a fix to the Button reaches both apps in the same release. Copying the library was rejected because every fix would land twice and the copies would drift within a quarter.',
+    brandLayer: [
+      'Colour roles: action, accent, link and surface tint. Thikana’s action is green-700 (5.0:1 with white). White on its saffron accent is 2.2:1 and green-900 only 4.2:1, so saffron buttons take green-950 labels at 6.9:1.',
+      'Type: the display face only. Thikana’s slab serif for headings; body text stays in the system sans, which covers Devanagari for the Marathi release.',
+      'Shape and motion: container radius 2 px against Kosh’s 8, and a base duration of 260 ms; reduced motion still removes motion in both brands.',
+      'Component tokens: a saffron top edge on cards (`card-accent-border`) and a green tint on the loan status header, set per brand rather than built as variants.',
+    ],
+    shared: 'Error, warning and success colours keep their meaning in every brand, so Thikana’s request for saffron errors was declined: saffron is its accent. The 44 pt and 48 dp tap targets, the focus ring, the spacing scale and every component’s props and slots are shared, because they serve access and the code. Requests that cross the line get an alternative: a slimmer look comes from less padding, not a smaller target, and a different card edge comes from a component token.',
+    platforms: 'Identical everywhere: EMI amounts and fees, the order of the loan application steps, every error message (from one content source) and the brand values. Adapted: body text at 17 pt with Dynamic Type, 16 sp and 1 rem; tap targets at 44 pt, 48 dp and 44 px; elevation as a shadow on iOS and web and a tonal surface on Android. Native: back navigation, the share sheet for loan documents, switches, and date and time pickers. Every component spec has a platform table, and each release checks its shared rows on all three platforms.',
+    pipeline: 'Token values live in one tokens repository in the W3C design-token format, and nobody edits its outputs. The build checks contrast for every pair in all four themes, then outputs CSS, Compose and Swift and updates the Figma variables for both brands and modes. Component APIs live in code; the Figma components mirror their property names, and Code Connect shows the real code in Dev Mode. New designs are explored in Figma branches and become truth when an RFC is approved. A nightly check compares the library with the code and opens an issue naming the side that must move: approved changes are built or synced, unapproved ones are reverted where they were made. Figma and code release together under one version and one changelog.',
+    rollout: 'Weeks 1–3: publish the brand token list and the shared rules, build Thikana’s brand layer, and tune the values that fail. Weeks 4–8: move Thikana’s loan application flow onto shared components on all three platforms, with two Thikana designers and engineers paired with the system team. Weeks 9–20: map the remaining duplicates onto shared components flow by flow, retiring the seven text fields first, and add the nightly drift check. Weeks 21–26: move the last flows and archive Thikana’s old library. It worked if Thikana’s duplicates fall from 118 to zero, the next Button fix reaches both apps in one release, and parity defects fall release on release.',
+    risks: [
+      'Thikana’s brand team: “Our brand will be diluted.” Everything people recognise, colour, the slab serif, square corners and motion, is in the brand layer; what’s shared is what riders never notice until it breaks.',
+      'Engineering: “Four themes on three platforms is twelve outputs to maintain.” They are built from one source by one pipeline with automatic checks, which is less work than maintaining two libraries by hand.',
+      'Leadership: “Copying is faster.” For one quarter. After that every fix costs twice and Thikana stops getting improvements; the brand layer is about three weeks of work.',
+    ],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
