@@ -1,13 +1,14 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FireIcon, HouseIcon, LightningIcon, MapTrifoldIcon, TrophyIcon } from '@phosphor-icons/react/ssr';
+import { FireIcon, HouseIcon, LightningIcon, ListChecksIcon, MapTrifoldIcon, TrophyIcon } from '@phosphor-icons/react/ssr';
 import { cx } from '@/utils/cx';
 import { doneToday, liveStreak, useProgress } from '../progress/store';
 import { SoundToggle } from '@/components/SoundToggle';
 
 const NAV = [
   { href: '/play', label: 'Home', icon: HouseIcon },
+  { href: '/syllabus', label: 'Syllabus', icon: ListChecksIcon },
   { href: '/map', label: 'Skill map', icon: MapTrifoldIcon },
   { href: '/league', label: 'League', icon: TrophyIcon },
 ];

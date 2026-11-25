@@ -1,6 +1,6 @@
 // What the map shows for each chapter: status, place on the learner's path, and why it's there.
 import { CONTENT } from '@shape/content';
-import { chapterById, chapters, domainById, TIER_LEVEL, unlocks, type ColumnRole, type PathResult } from '@shape/engine';
+import { chapterById, chapters, domainById, TIER_LEVEL, unlocks, type ColumnRole, type DomainId, type PathResult, type TColumn } from '@shape/engine';
 import { computeOutcome } from '../onboarding/profile';
 import type { SavedProfile } from '../onboarding/storage';
 import type { LessonRecord } from '../progress/store';
@@ -22,8 +22,9 @@ export const TIER_NAME = { bar: 'Literacy', stem: 'Practitioner', deep: 'Expert'
 export function buildModel(profile: SavedProfile | null, lessons: Record<string, LessonRecord>) {
   let result: PathResult | null = null;
   try { result = profile ? computeOutcome(profile.answers).result : null; } catch { result = null; }
-  const path = result?.path.map(p => p.id) ?? profile?.path ?? [];
-  const cols = Object.fromEntries((result?.tshape.columns ?? []).map(c => [c.domain, c]));
+  // The saved path already has the learner's syllabus edits applied, so it wins over a fresh computation.
+  const path = profile?.path?.length ? profile.path : result?.path.map(p => p.id) ?? [];
+  const cols: Partial<Record<DomainId, TColumn>> = Object.fromEntries((result?.tshape.columns ?? []).map(c => [c.domain, c]));
 
   const info: Record<string, ChapterInfo> = {};
   for (const c of chapters) {
@@ -36,7 +37,7 @@ export function buildModel(profile: SavedProfile | null, lessons: Record<string,
       : doneLessons > 0 ? 'progress' : onPath ? 'path' : content.length ? 'available' : 'later';
     info[c.id] = { id: c.id, status, pathIndex: onPath ? pathIndex : null, doneLessons, contentLessons: content.length, role: col?.role ?? null, why: whyText(c.id, onPath, col, path) };
   }
-  return { info, path, hasProfile: !!profile };
+  return { info, path, cols, hasProfile: !!profile };
 }
 
 /** Plain-language reason a chapter is (or isn't) on the learner's path. */

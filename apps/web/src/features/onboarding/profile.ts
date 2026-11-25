@@ -14,6 +14,8 @@ export interface Answers {
   quizResults: Partial<Record<DomainId, boolean>>;
   minutesPerDay: number;
   fromZero: boolean;
+  /** Learning days a week. The survey asks; the older story flow assumed every day. */
+  daysPerWeek?: number;
 }
 
 /** Skills in the order the journey visits them: station by station along the road. */
@@ -26,7 +28,7 @@ export function toProfile(a: Answers): Profile {
   const calibration = Object.fromEntries(Object.entries(a.quizResults).map(([k, ok]) => [k, ok ? 1 : 0.5]));
   return {
     goal: asp.goal, spine, interests: a.interests,
-    weeklyHours: Math.max(1, Math.round((a.minutesPerDay * 7) / 60)),
+    weeklyHours: Math.max(1, Math.round((a.minutesPerDay * (a.daysPerWeek ?? 7)) / 60)),
     selfRating: a.fromZero ? {} : a.ratings,
     calibration: a.fromZero ? {} : calibration,
   };

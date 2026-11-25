@@ -1,8 +1,8 @@
 import { OnboardingExperience } from "@/features/onboarding/OnboardingExperience";
 
-export const metadata = { title: "Map your skills" };
+export const metadata = { title: "Set up your plan" };
 
-// A short 3D story along the road from idea to launch (docs/05-onboarding-story.md).
+// A short survey, one question per screen, that builds the learner's path (features/onboarding/survey).
 export default function OnboardingPage() {
   return <OnboardingExperience />;
 }

@@ -1,6 +1,6 @@
 'use client';
 // Shared pieces for episode stages: Nib (the buddy), answer buttons, the confetti burst and the stage header.
-import { useMemo } from 'react';
+import { createContext, createElement, useContext, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { CheckIcon, XIcon } from '@phosphor-icons/react/ssr';
 import { springs } from '@shape/ui';
@@ -110,11 +110,15 @@ export function Burst({ count = 28, seed = 1 }: { count?: number; seed?: number 
 }
 
 /** Big stage heading with an eyebrow (the stage name). */
+/** Heading level for StageTitle: h1 in the episode player, lower when a stage is embedded in another page (e.g. the landing demo). */
+export const StageHeading = createContext<'h1' | 'h2' | 'h3'>('h1');
+
 export function StageTitle({ eyebrow, title, children }: { eyebrow: string; title: string; children?: React.ReactNode }) {
+  const H = useContext(StageHeading);
   return (
     <motion.header initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={springs.gentle} className="flex flex-col gap-1.5">
       <p className="text-sm font-semibold tracking-wide text-brand-secondary uppercase">{eyebrow}</p>
-      <h1 className="text-display-xs font-semibold text-primary md:text-display-sm">{title}</h1>
+      {createElement(H, { className: 'text-display-xs font-semibold text-primary md:text-display-sm' }, title)}
       {children && <p className="text-lg text-tertiary">{children}</p>}
     </motion.header>
   );
