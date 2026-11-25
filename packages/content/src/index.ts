@@ -38,6 +38,7 @@ import { br3 } from './chapters/br-3';
 import { bz2 } from './chapters/bz-2';
 import { bz3 } from './chapters/bz-3';
 import { dc2 } from './chapters/dc-2';
+import { dc3 } from './chapters/dc-3';
 import { fd1_1 } from './episodes/fd-1-1';
 import { fd1_2 } from './episodes/fd-1-2';
 import { fd1_3 } from './episodes/fd-1-3';
@@ -81,6 +82,7 @@ import { br3_1, br3_2, br3_3, br3_4 } from './episodes/br-3';
 import { bz2_1, bz2_2, bz2_3 } from './episodes/bz-2';
 import { bz3_1, bz3_2, bz3_3 } from './episodes/bz-3';
 import { dc2_1, dc2_2, dc2_3 } from './episodes/dc-2';
+import { dc3_1, dc3_2, dc3_3 } from './episodes/dc-3';
 import type { Exercise, LessonContent } from './schema';
 import type { Episode } from './episode';
 
@@ -92,6 +94,7 @@ export * from './marketing';
 export * from './pitch';
 export * from './sales';
 export * from './handoff';
+export * from './ai';
 
 /** Lessons that have the rich episode format, keyed by lesson id. The rest play as classic lessons. */
 export const EPISODES: Record<string, Episode> = { 'fd.1-1': fd1_1, 'fd.1-2': fd1_2, 'fd.1-3': fd1_3, 'fd.1-4': fd1_4,
@@ -133,14 +136,15 @@ export const EPISODES: Record<string, Episode> = { 'fd.1-1': fd1_1, 'fd.1-2': fd
   'br.3-1': br3_1, 'br.3-2': br3_2, 'br.3-3': br3_3, 'br.3-4': br3_4,
   'bz.2-1': bz2_1, 'bz.2-2': bz2_2, 'bz.2-3': bz2_3,
   'bz.3-1': bz3_1, 'bz.3-2': bz3_2, 'bz.3-3': bz3_3,
-  'dc.2-1': dc2_1, 'dc.2-2': dc2_2, 'dc.2-3': dc2_3 };
+  'dc.2-1': dc2_1, 'dc.2-2': dc2_2, 'dc.2-3': dc2_3,
+  'dc.3-1': dc3_1, 'dc.3-2': dc3_2, 'dc.3-3': dc3_3 };
 export * from './grade';
 export * from './boss';
 export * from './boss-grade';
 export * from './bosses';
 
 /** Chapters with playable content, keyed by curriculum chapter id. Lessons are in curriculum order. */
-export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1, 'gr.1': gr1, 'br.1': br1, 'bz.1': bz1, 'dc.1': dc1, 'ld.2': ld2, 'ia.2': ia2, 'fd.3': fd3, 'rs.3': rs3, 'rs.4': rs4, 'ia.3': ia3, 'ia.4': ia4, 'ui.4': ui4, 'ds.2': ds2, 'ds.3': ds3, 'pr.2': pr2, 'pr.3': pr3, 'cw.2': cw2, 'ax.2': ax2, 'st.2': st2, 'st.3': st3, 'gr.2': gr2, 'gr.3': gr3, 'br.2': br2, 'br.3': br3, 'bz.2': bz2, 'bz.3': bz3, 'dc.2': dc2 };
+export const CONTENT: Record<string, LessonContent[]> = { 'fd.1': fd1, 'fd.2': fd2, 'rs.1': rs1, 'ia.1': ia1, 'ui.1': ui1, 'cw.1': cw1, 'st.1': st1, 'rs.2': rs2, 'ui.2': ui2, 'ui.3': ui3, 'ds.1': ds1, 'pr.1': pr1, 'ax.1': ax1, 'gr.1': gr1, 'br.1': br1, 'bz.1': bz1, 'dc.1': dc1, 'ld.2': ld2, 'ia.2': ia2, 'fd.3': fd3, 'rs.3': rs3, 'rs.4': rs4, 'ia.3': ia3, 'ia.4': ia4, 'ui.4': ui4, 'ds.2': ds2, 'ds.3': ds3, 'pr.2': pr2, 'pr.3': pr3, 'cw.2': cw2, 'ax.2': ax2, 'st.2': st2, 'st.3': st3, 'gr.2': gr2, 'gr.3': gr3, 'br.2': br2, 'br.3': br3, 'bz.2': bz2, 'bz.3': bz3, 'dc.2': dc2, 'dc.3': dc3 };
 
 export const hasContent = (chapterId: string) => !!CONTENT[chapterId]?.length;
 

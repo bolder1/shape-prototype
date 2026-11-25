@@ -151,6 +151,9 @@ import { SignalRoute } from './games/SignalRoute';
 import { SpecWrite } from './games/SpecWrite';
 import { QaPass } from './games/QaPass';
 import { TokenTrace } from './games/TokenTrace';
+import { AiDelegate } from './games/AiDelegate';
+import { GuessFlag } from './games/GuessFlag';
+import { EvalFix } from './games/EvalFix';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -311,6 +314,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'spec-write': SpecWrite,
   'qa-pass': QaPass,
   'token-trace': TokenTrace,
+  'ai-delegate': AiDelegate,
+  'guess-flag': GuessFlag,
+  'eval-fix': EvalFix,
 };
 
 interface Props {

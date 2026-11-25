@@ -149,6 +149,9 @@ import { CsLoopScene } from '../scenes/CsLoop';
 import { SpecHandoffScene } from '../scenes/SpecHandoff';
 import { DesignQaScene } from '../scenes/DesignQa';
 import { TokenPipelineScene } from '../scenes/TokenPipeline';
+import { AiWorkflowScene } from '../scenes/AiWorkflow';
+import { BillScanScene } from '../scenes/BillScan';
+import { PromptEvalsScene } from '../scenes/PromptEvals';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -291,6 +294,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'spec-handoff': SpecHandoffScene,
   'design-qa': DesignQaScene,
   'token-pipeline': TokenPipelineScene,
+  'ai-workflow': AiWorkflowScene,
+  'bill-scan': BillScanScene,
+  'prompt-evals': PromptEvalsScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

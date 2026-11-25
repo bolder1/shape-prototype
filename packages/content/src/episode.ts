@@ -44,7 +44,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'landing-anatomy', 'conversion-copy', 'campaign-cut', 'seo-read',
   'story-spine', 'objection-room', 'bluf-email',
   'demo-tour', 'pricing-page', 'cs-loop',
-  'spec-handoff', 'design-qa', 'token-pipeline']);
+  'spec-handoff', 'design-qa', 'token-pipeline',
+  'ai-workflow', 'bill-scan', 'prompt-evals']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -181,6 +182,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `spec-write`: lanes are `SPEC_SOURCES` in order; every card is a line Sana could put in the Gaadi handoff, its `visual` a key of `GAADI_SPEC` (each used once), its `label` that line's `text`, and its lane the line's `source`. Spec lines join a spec page that ticks off `DEV_QUESTIONS` (`specAnswered`); Dev Mode lines show their `inspect`. Every card needs a `note`.
  *  - `qa-pass`: lanes are `QA_LANES` in order; every card is a difference between design and build, its `visual` a key of `GAADI_QA` (each used once), and its lane `qaLane` of that finding. Right calls file a ticket (`qaTicket`) and the release gate shows `qaVerdict` of the blockers filed so far. Every card needs a `note`.
  *  - `token-trace`: lanes are `REF_KINDS` in order; every card is a line of Gaadi code, its `visual` a key of `GAADI_CODE` (each used once), its `label` containing that line's `code`, and its lane `refKind` of it. Each call shows the button before and after `TOKEN_CHANGE` (`renderedGreen`, `onGreen`); the lint (`lintFlags`) counts as you go. Every card needs a `note`.
+ *  - `ai-delegate`: lanes are `AI_ROLES` in order; every card is a task in Meera's week, its `visual` a key of `HISAAB_TASKS` (each used once), its `label` that task's `text`, and its lane `aiRole` of it. Placed tasks fill a week board with `roleReason`, and the counter shows `hoursBack`. Every card needs a `note`.
+ *  - `guess-flag`: lanes are `FIELD_TREATMENTS` in order; every card is a field the AI read off a supplier's bill, its `visual` a key of `HISAAB_FIELDS` (each used once), its `label` containing that field's `read` and confidence, and its lane `fieldTreatment` of it. Placed fields build the review screen; the end compares `slipped` and `reviewLoad` for `DRAFT_TREATMENT` and the learner's screen. Every card needs a `note`.
+ *  - `eval-fix`: lanes are `PROMPT_PARTS` in order; every card is a test question for Ask Hisaab, its `visual` a key of `HISAAB_EVALS` (each used once), its `label` containing the question and the bad reply, and its lane that case's `fix`. Right calls add the line to `buildPrompt` or `codeChanges`, and the test results (`evalRun`) update. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -221,7 +225,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'page-stack', 'copy-swap', 'asset-fit', 'serp-spot',
   'story-strip', 'objection-reply', 'summary-build',
   'demo-build', 'plan-pick', 'signal-route',
-  'spec-write', 'qa-pass', 'token-trace']);
+  'spec-write', 'qa-pass', 'token-trace',
+  'ai-delegate', 'guess-flag', 'eval-fix']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
