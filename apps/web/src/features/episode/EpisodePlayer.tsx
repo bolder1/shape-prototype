@@ -185,6 +185,9 @@ import { SyncFlow } from './games/SyncFlow';
 import { LogicWire } from './games/LogicWire';
 import { ProtoFit } from './games/ProtoFit';
 import { OutputPlan } from './games/OutputPlan';
+import { ModelBuild } from './games/ModelBuild';
+import { RotAudit } from './games/RotAudit';
+import { AnswerCrit } from './games/AnswerCrit';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -379,6 +382,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'logic-wire': LogicWire,
   'proto-fit': ProtoFit,
   'output-plan': OutputPlan,
+  'model-build': ModelBuild,
+  'rot-audit': RotAudit,
+  'answer-crit': AnswerCrit,
 };
 
 interface Props {

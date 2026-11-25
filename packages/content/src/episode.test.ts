@@ -7,6 +7,7 @@ import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, 
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
 import { OUTPUT_METHODS, PROTO_TOOLS, THELA_BEHAVIOURS, THELA_QUESTIONS, THELA_STUDIES, TOOL_CAN, WIRE_KINDS, missingNeeds, outputMethod, protoTool, wireKind, type ThelaBehaviour, type ThelaQuestion, type ThelaStudy } from './advproto';
+import { ANSWER_FLAWS, AUDIT_CALLS, MODEL_PLACES, TAAR_ANSWERS, TAAR_AUDIT, TAAR_CHUNKS, answerFlaw, auditCall, modelPlace, ungrounded, type TaarAnswer, type TaarAuditItem, type TaarChunk } from './contentstrategy';
 import { BRAND_CALLS, PARITY_CALLS, SAWARI_DECISIONS, SAWARI_DRIFTS, SAWARI_REQUESTS, SYNC_MOVES, brandCall, parityCall, passingSteps, syncMove, type SawariDecision, type SawariDrift, type SawariRequest } from './multibrand';
 import { ADOPTION_READS, CONTRIBUTION_PATHS, RASTA_CHANGES, RASTA_REQUESTS, RASTA_SCANS, VERSION_BUMPS, adoptionRead, bumpFor, contributionPath, type RastaChange, type RastaRequest, type RastaScan } from './governance';
 import { CHART_FORMS, PALETTE_JOBS, ROSHNI_CHARTS, ROSHNI_QUESTIONS, ROSHNI_TILES, TILE_VERDICTS, chartFor, paletteFor, tileVerdict, type RoshniChart, type RoshniQuestion, type RoshniTile } from './dataviz';
@@ -1142,6 +1143,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...OUTPUT_METHODS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(THELA_STUDIES).sort());
         for (const c of ep.game.cards) { const st = THELA_STUDIES[c.visual as ThelaStudy]; expect(c.label).toBe(st.text); expect(c.lane).toBe(outputMethod(st)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'model-build') {   // every piece of the old page once, placed by modelPlace, each with what it becomes
+        expect(lanes).toEqual([...MODEL_PLACES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(TAAR_CHUNKS).sort());
+        for (const c of ep.game.cards) { const ch = TAAR_CHUNKS[c.visual as TaarChunk]; expect(c.label).toBe(ch.text); expect(c.lane).toBe(modelPlace(ch)); expect(ch.as).toBeTruthy(); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'rot-audit') {   // every audit item once, called by auditCall; anything that goes has a redirect
+        expect(lanes).toEqual([...AUDIT_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(TAAR_AUDIT).sort());
+        for (const c of ep.game.cards) { const it = TAAR_AUDIT[c.visual as TaarAuditItem]; expect(c.label).toBe(it.text); expect(c.lane).toBe(auditCall(it)); if (c.lane === 'merge' || c.lane === 'retire') expect(it.redirect).toBeTruthy(); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'answer-crit') {   // every Assist answer once, judged by answerFlaw; invented answers have a line no source supports
+        expect(lanes).toEqual([...ANSWER_FLAWS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(TAAR_ANSWERS).sort());
+        for (const c of ep.game.cards) { const a = TAAR_ANSWERS[c.visual as TaarAnswer]; expect(c.label).toBe(a.question); expect(c.lane).toBe(answerFlaw(a)); expect(ungrounded(a).length > 0).toBe(c.lane === 'invents'); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

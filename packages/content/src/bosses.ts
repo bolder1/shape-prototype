@@ -2160,9 +2160,51 @@ const pr4: BossBriefInput = {
   },
 };
 
+const cw3: BossBriefInput = {
+  chapterId: 'cw.3',
+  title: 'A content model for a help centre',
+  minutes: 120,
+  scenario: [
+    'Design the content model for a help centre: your Studio product’s, or Taar’s, the Pune broadband company from this chapter, whose 640 help pages feed a website, an app, an IVR and Taar Assist, an AI chatbot. Start from real content: take at least ten existing articles, or write realistic ones, and pull them apart.',
+    'Define the content types, their fields with rules, the references between them and the taxonomies for tags. Then show it holds up: rebuild two real articles in the model, say how each channel reads them, and set the governance that keeps the content true, including how the AI assistant is allowed to use it.',
+  ],
+  fields: [
+    { id: 'scope', label: 'Help centre and channels', kind: 'text', minWords: 25, hint: 'Whose help centre, how much content there is today, and every channel that reads it (website, app, voice, chatbot, agents’ tools).' },
+    { id: 'types', label: 'Content types', kind: 'list', items: 4, minWords: 12, hint: 'One per line: the type, what it is for, and why it is its own type (reused, or has its own lifecycle).' },
+    { id: 'fields', label: 'Fields and rules', kind: 'long', minWords: 60, hint: 'For your main article type and one other: each field, its format, length limit, whether it’s required, and which channel needs it. No presentation fields.' },
+    { id: 'relations', label: 'References and taxonomies', kind: 'text', minWords: 35, hint: 'Which types reference which, and the controlled lists used for tags (topic, product, customer), with a few values each.' },
+    { id: 'rebuild', label: 'Two articles, rebuilt', kind: 'long', minWords: 60, hint: 'Two real articles in the model, field by field. Point out what used to be copied or styled and where it lives now.' },
+    { id: 'governance', label: 'Owners, reviews and retirement', kind: 'text', minWords: 40, hint: 'Who owns each type, review cadence by risk, the publishing workflow, and how items are retired, redirected and removed from every index.' },
+    { id: 'ai', label: 'How the AI uses it', kind: 'text', minWords: 35, hint: 'Which fields the assistant retrieves and quotes, what it must never claim without a source, when it hands off to a person, and the fixed words around its answers.' },
+  ],
+  rubric: [
+    { id: 'structure', label: 'Types, fields and references that fit the content', strong: 'Types come from real content and are named as the business talks; anything reused or with its own lifecycle is its own type and is referenced, not copied; fields have formats, limits and required rules, and no field describes presentation.', weight: 3, required: true },
+    { id: 'channels', label: 'Works for every channel', strong: 'Each field is justified by a channel that uses it, and the rebuilt articles show the same content serving the website, the app, voice and the assistant without rewriting.', weight: 3, required: true },
+    { id: 'taxonomy', label: 'Taxonomy that finds and routes', strong: 'Tags come from small controlled lists with clear values, drive navigation, search and routing, and let one item appear wherever it fits without copies.', weight: 2 },
+    { id: 'governance', label: 'Governance that keeps it true', strong: 'Every type has an owner team; review cadence follows risk; one workflow covers every change; time-bound content expires by itself; retirement includes redirects and removal from the AI’s index.', weight: 2 },
+    { id: 'ai', label: 'Ready for AI-generated answers', strong: 'Names the fields the assistant grounds on, the claims it must never make without a source, the cases that go to a person, and the label, source link and feedback around every answer.', weight: 1 },
+  ],
+  tips: ['Model from the awkward articles, not the tidy ones. The page with three plans, a router photo and an outage warning pasted in will tell you more than the clean one.', 'For every field, name the channel that needs it. A field nobody reads is a field nobody fills.'],
+  example: {
+    scope: 'Taar’s help centre: about 640 articles in English, Hindi and Marathi, read by the website, the Taar app, the IVR voice line, the agents’ support console and Taar Assist, an AI chatbot that answers from retrieved articles. Today every article is a title and a rich-text body, and plan prices are copied into 23 of them.',
+    types: [
+      'Help article: one task or answer for a customer; the main type, holding steps and references.',
+      'Plan: a broadband plan with its speed, data and price; referenced by every article that mentions it, so a price change happens once.',
+      'Device: a router model with its photo, ports and what each light means; referenced by 41 articles that today copy it by hand.',
+      'Outage notice: an area, a cause, a start and an expected end; it has its own lifecycle and expires at its end time.',
+      'Contact option: a channel, number or link and its hours; on 612 pages today, edited once in the model.',
+    ],
+    fields: 'Help article: `title`, plain text, required, up to 60 characters, starting with a verb (search, navigation, IVR menu). `summary`, plain text, required, up to 160 characters (search results, Assist quotes it, agents see it first). `steps`, an ordered list, required for task articles, one action per step, each with optional `image` and `alt` (web, app, IVR reads one at a time). `tip`, plain text, optional, at most one (web draws a box, app a banner, IVR reads it after the steps). `plans` and `device`, references, optional. `topic`, `service`, `customer`, tags, required. `owner`, `reviewBy`, set by the workflow. Plan: `name`, required, translated; `speedMbps`, number; `data`, text; `priceMonthly`, number in rupees including GST, required, not translated; `validFrom`, date.',
+    relations: 'Help article references Plan, Device and Contact option; Outage notice references the areas it affects and is shown on any article tagged with the same service in that area. Taxonomies are controlled lists: Topic (Internet not working, Billing and payments, Plans, Router and Wi-Fi, Moving and closing), Service (Fibre, AirFiber), Customer (Home, Business). Navigation, search filters and Assist routing are built from them.',
+    rebuild: '“Reset your Taar router”: `title` Reset your Taar router; `summary` If your internet stops working, a reset fixes it in most homes in about 2 minutes; `steps` hold the reset button for 10 seconds, wait for the green light, reconnect your phone; `device` → Hub X2 (its photo used to be pasted in); `tip` replaces the blue box; tags Internet not working, Fibre, Home. “Understand your bill”: `summary` and five `steps` explaining each line; `plans` → Fibre 100 and Fibre 300 instead of the copied price table; the “₹799” that went stale now comes from Plan.priceMonthly; the bold red “Pay now” line becomes a `tip` that names the label, Pay bill.',
+    governance: 'Owners: Billing owns Plan and billing articles, Network support owns Device and troubleshooting, Network operations owns Outage notices, Legal owns policies, content design owns the model, the style guide and the writing. Reviews: billing every 90 days, troubleshooting and account every 180, policy yearly; outage notices expire at their end time. Workflow: draft, owner’s expert check, content check, publish, next review set. Retiring unpublishes, redirects the URL to the nearest useful article and removes the item from Assist’s index the same day.',
+    ai: 'Assist retrieves articles by tag and quotes only `summary`, `steps` and referenced Plan fields. It must never state a price, credit, refund or date that no retrieved source gives, and says “I don’t know” with the next step instead. Money disputes, closures and possible fraud always offer Talk to a person. Every answer is labelled “Answer by Taar Assist · AI”, links the article it used and asks “Was this right?”; 120 real questions are rerun after every model or content change.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

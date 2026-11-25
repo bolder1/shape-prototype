@@ -183,6 +183,9 @@ import { SyncLoopScene } from '../scenes/SyncLoop';
 import { LogicCartScene } from '../scenes/LogicCart';
 import { ProtoLadderScene } from '../scenes/ProtoLadder';
 import { OutputRangeScene } from '../scenes/OutputRange';
+import { ContentModelScene } from '../scenes/ContentModel';
+import { ContentLifecycleScene } from '../scenes/ContentLifecycle';
+import { GroundedAnswerScene } from '../scenes/GroundedAnswer';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -359,6 +362,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'logic-cart': LogicCartScene,
   'proto-ladder': ProtoLadderScene,
   'output-range': OutputRangeScene,
+  'content-model': ContentModelScene,
+  'content-lifecycle': ContentLifecycleScene,
+  'grounded-answer': GroundedAnswerScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
