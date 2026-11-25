@@ -188,6 +188,9 @@ import { OutputPlan } from './games/OutputPlan';
 import { ModelBuild } from './games/ModelBuild';
 import { RotAudit } from './games/RotAudit';
 import { AnswerCrit } from './games/AnswerCrit';
+import { StudyFix } from './games/StudyFix';
+import { PersonaCrit } from './games/PersonaCrit';
+import { ProgramRoad } from './games/ProgramRoad';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -385,6 +388,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'model-build': ModelBuild,
   'rot-audit': RotAudit,
   'answer-crit': AnswerCrit,
+  'study-fix': StudyFix,
+  'persona-crit': PersonaCrit,
+  'program-road': ProgramRoad,
 };
 
 interface Props {

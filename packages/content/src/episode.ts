@@ -56,7 +56,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'contribution-models', 'deprecation-path', 'adoption-signals',
   'theme-stack', 'platform-parity', 'sync-loop',
   'logic-cart', 'proto-ladder', 'output-range',
-  'content-model', 'content-lifecycle', 'grounded-answer']);
+  'content-model', 'content-lifecycle', 'grounded-answer',
+  'study-session', 'persona-rewrite', 'maturity-road']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -230,6 +231,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `model-build`: lanes are `MODEL_PLACES` in order; every card is a piece of Taar's old help page, its `visual` a key of `TAAR_CHUNKS` (each used once), its `label` that chunk's `text`, and its lane `modelPlace` of it. Right calls add it to a content model beside the deck (its `as`); shared types show the edits they save (`editsFor`). Every card needs a `note`.
  *  - `rot-audit`: lanes are `AUDIT_CALLS` in order; every card is an item in Taar's quarterly audit, its `visual` a key of `TAAR_AUDIT` (each used once), its `label` that item's `text`, and its lane `auditCall` of it. Right calls show its owner (`KIND_OWNER`), review status (`reviewDue`) or redirect, and update the help centre's tally. Every card needs a `note`.
  *  - `answer-crit`: lanes are `ANSWER_FLAWS` in order; every card is a Taar Assist answer, its `visual` a key of `TAAR_ANSWERS` (each used once), its `label` that answer's `question`, and its lane `answerFlaw` of it. The deck shows the answer's lines and sources; right calls mark each line against its source (`ungrounded`). Every card needs a `note`.
+ *  - `study-fix`: lanes are `STUDY_FLAWS` in order; every card is a choice in Hazri's plan for sessions with disabled participants, its `visual` a key of `HAZRI_CHOICES` (each used once), its `label` that choice's `text`, and its lane `studyFlaw` of it. The study's stages (`STUDY_STEPS`) fill in as you go; right calls show the plan's `fix`. Every card needs a `note`.
+ *  - `persona-crit`: lanes are `PERSONA_FLAWS` in order; every card is a line from a draft persona, its `visual` a key of `HAZRI_LINES` (each used once), its `label` that line's `text`, and its lane `personaFlaw` of it. Each card shows its evidence (of `PERSONA_SESSIONS`); right calls rebuild Revathi's card with the line, its `rewrite` or nothing. Every card needs a `note`.
+ *  - `program-road`: lanes are `PROGRAM_QUARTERS` in order; every card is a step of Hazri's accessibility programme, its `visual` a key of `HAZRI_PROGRAM` (each used once), its `label` that step's `text`, and its lane `programLane` of it, the earliest quarter its `needs` allow. Too-early calls name what isn't done yet (`unmetNeeds`); right calls add it to a roadmap beside the deck. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -282,7 +286,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'contribution-route', 'release-plan', 'adoption-read',
   'brand-tune', 'parity-sort', 'sync-flow',
   'logic-wire', 'proto-fit', 'output-plan',
-  'model-build', 'rot-audit', 'answer-crit']);
+  'model-build', 'rot-audit', 'answer-crit',
+  'study-fix', 'persona-crit', 'program-road']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

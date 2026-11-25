@@ -2202,9 +2202,57 @@ const cw3: BossBriefInput = {
   },
 };
 
+const ax3: BossBriefInput = {
+  chapterId: 'ax.3',
+  title: 'An accessibility maturity roadmap',
+  minutes: 120,
+  scenario: [
+    'Plan the first year of an accessibility programme for a company: your own employer, your Studio product’s company, or Hazri, the Bengaluru HR and payroll platform from this chapter, with one accessibility specialist, squads that ship new barriers every sprint, and a Munich customer asking for a conformance report against EN 301 549.',
+    'Assess where the company stands today, with evidence, and where it should be in a year. Then lay out the roadmap in order, with owners and dependencies: the policy and standard, how accessibility gets built into design and engineering, how disabled people take part in research and in the team, what the company publishes, and how leadership will know it’s working. Be accurate about which laws and standards apply, and say where legal needs to confirm.',
+  ],
+  fields: [
+    { id: 'company', label: 'The company and why now', kind: 'text', minWords: 30, hint: 'What it makes, who uses it, how big the product and team are, and what is forcing the question now (a customer, a complaint, a market, a law).' },
+    { id: 'baseline', label: 'Where it stands today', kind: 'list', items: 4, minWords: 12, hint: 'One dimension per line (leadership and budget, skills, design and build process, research with disabled people, procurement): its stage today, from Inactive to Optimize, and the evidence for it.' },
+    { id: 'standard', label: 'Policy and standard', kind: 'text', minWords: 40, hint: 'The standard you commit to and for what (web, apps, documents), the laws and buyer requirements behind it and which ones legal must confirm, and what happens when a release falls short.' },
+    { id: 'roadmap', label: 'The roadmap, quarter by quarter', kind: 'list', items: 4, minWords: 25, hint: 'One quarter per line: what starts, who owns each piece, and what it depends on from earlier quarters.' },
+    { id: 'process', label: 'Built into design and build', kind: 'long', minWords: 50, hint: 'Design system components, annotations at handoff, definition of done, automated checks and their limits, the manual pass before release, and who decides when an issue blocks a release.' },
+    { id: 'people', label: 'People and research', kind: 'long', minWords: 50, hint: 'Training by role, champions, the specialist’s new job, how disabled people take part in research (recruiting, pay, access, how often), and hiring.' },
+    { id: 'proof', label: 'What you publish and measure', kind: 'text', minWords: 40, hint: 'Conformance reports and an accessibility statement, the measures on the leadership dashboard, and the targets for the year.' },
+  ],
+  rubric: [
+    { id: 'baseline', label: 'An honest baseline', strong: 'Each dimension’s stage is backed by evidence (an audit, sessions with disabled people, how work actually flows), and the aims for the year are a stage or two up, not a leap to Optimize everywhere.', weight: 2 },
+    { id: 'sequence', label: 'A roadmap that can be done in order', strong: 'Every quarter starts only what earlier quarters made possible: an owner, budget and baseline first; a policy, fixed components and training before release gates; critical fixes before a conformance report. Every item has an owner.', weight: 3, required: true },
+    { id: 'system', label: 'Built into how the company works', strong: 'Accessibility lives in the design system, handoff, definition of done, CI and a manual release pass, with champions in every team; the specialist moves from reviewing everything to the hard problems; nothing depends on one person.', weight: 3, required: true },
+    { id: 'people', label: 'Disabled people involved throughout', strong: 'A standing, fairly paid panel tests often, across a range of access needs, on participants’ own setups; core personas carry access needs; the company hires disabled people and works with its employee network.', weight: 2 },
+    { id: 'standards', label: 'Standards and law, accurately', strong: 'Names WCAG 2.2 AA as the target and where it applies, separates law (the RPwD Act 2016, the European Accessibility Act where it applies) from buyer requirements (EN 301 549 conformance reports), says what legal must confirm, and treats compliance as the floor.', weight: 1 },
+    { id: 'measures', label: 'Measures of outcome', strong: 'Tracks critical issues shipped, time to fix, conformance of key journeys and what disabled participants could complete, reviewed by leadership; commits to honest conformance reports and a public statement with known issues.', weight: 1 },
+  ],
+  tips: ['Draw the dependencies before you draw the quarters. If a step needs something that isn’t there yet, it moves right.', 'Write the line the CFO will read first: what it costs, what it protects (a deal, a market, a legal risk) and what it saves by fixing barriers once in components.'],
+  example: {
+    company: 'Hazri, a Bengaluru HR and payroll platform: about 9 lakh employees at 1,400 employers use the Hazri app for attendance, leave, payslips and expenses, and HR teams run payroll in Hazri Admin on the web. Eight squads, one accessibility specialist (Tenzin). Why now: Kranich Logistik, a Munich customer, asked for a conformance report against EN 301 549 and the deal slipped a quarter, and sessions showed a blind employee couldn’t apply for leave.',
+    baseline: [
+      'Leadership and budget, Inactive: no executive owns accessibility, there is no budget line, and no policy names a standard.',
+      'Knowledge and skills, Launch: Tenzin and two designers know WCAG well; in a survey, 6 of 40 engineers had ever tested with a screen reader.',
+      'Design and build process, Launch: Tenzin reviews 30 pull requests a week; nothing in the definition of done or CI checks accessibility; the design system’s date picker announces no dates.',
+      'Research with disabled people, Inactive: the first six sessions ran this quarter; there is no panel, and the separate “Accessible Arun” persona is unused.',
+      'Procurement, Inactive: Hazri can’t produce a conformance report and doesn’t ask its own vendors for one.',
+    ],
+    standard: 'Policy: Hazri’s web app, mobile apps, emails and PDFs meet WCAG 2.2 AA. No release ships with a known critical issue; a serious issue needs a dated fix plan signed by the squad’s lead. Behind it: the RPwD Act 2016 in India, which legal is reviewing for what it asks of a private software company; customers’ procurement rules, like Kranich’s request for an EN 301 549 conformance report; and the European Accessibility Act, which legal will check against how our EU customers use Hazri. Meeting WCAG 2.2 AA also meets 2.1 AA, which EN 301 549 references for the web.',
+    roadmap: [
+      'Q1 (Jan–Mar): the chief product officer becomes accountable, with a budget of ₹1.2 crore and Tenzin as lead; an audit of leave, payslips and the payroll run by Tenzin and six disabled participants; one designer and one engineer per squad named as champions. Depends on nothing.',
+      'Q2 (Apr–Jun): the policy (needs the executive); the design system team fixes and documents the 12 most-used components (needs the audit and the champions); squads fix every critical issue the audit found (needs the audit); Tenzin runs training by role with the champions (needs the champions); the paid panel starts.',
+      'Q3 (Jul–Sep): accessibility joins every squad’s definition of done, with automated checks in CI and a manual pass each release (needs the policy, components and training; owner Kiran); Tenzin writes the EN 301 549 conformance report for Hazri Admin and Nandini publishes the accessibility statement (both need the critical fixes and the policy).',
+      'Q4 (Oct–Dec): accessibility measures go on the leadership dashboard, reviewed every quarter (needs the gate’s data; owner the CPO); procurement asks every software vendor for a conformance report and checks it (needs our own report as the model).',
+    ],
+    process: 'Design system: each component documents its keyboard behaviour, focus, accessible name and states, tested with TalkBack, VoiceOver and NVDA; squads use those before building their own. Handoff: designers annotate focus order, names and announcements on every new screen. Definition of done: a keyboard pass, a screen reader pass on one platform, 200% zoom with reflow, and clean automated checks. CI runs automated checks on every pull request and blocks new violations, but tools catch only part of it, so a champion’s manual pass is part of each release. The squad lead decides whether an issue blocks; a critical one always does, and Tenzin settles disagreements.',
+    people: 'Training by role in Q2: designers learn annotation and inclusive personas; engineers test with a keyboard and TalkBack; PMs write accessibility acceptance criteria; support learns to log accessibility complaints. Champions spend two hours a week and meet monthly. Tenzin stops reviewing every pull request and takes the hard problems, the audits and the panel. The panel: 12 disabled employees and customers recruited through a disability-led organisation and Hazri’s employee network, across screen reader, zoom, voice and switch, Deaf and cognitive needs, paid ₹1,500 an hour plus costs, two sessions a month on their own devices. Core personas carry access needs from the research. Hiring: job ads and interviews are accessible, and the same networks help reach disabled candidates for the next ten design and engineering roles.',
+    proof: 'Publish: an EN 301 549 conformance report for Hazri Admin in Q3 and for the app by Q4, each criterion marked honestly as Supports, Partially supports or Does not support, with remarks; a public accessibility statement naming the standard, known issues with fix dates, and an email and phone line for problems, answered within two working days. Dashboard: critical issues shipped per quarter (zero by Q4), median time to fix serious issues (under 30 days), WCAG 2.2 AA conformance of the five busiest journeys (all five by December), and the share of panel participants who complete leave, payslips and the payroll run (90%).',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

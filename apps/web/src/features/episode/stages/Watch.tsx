@@ -186,6 +186,9 @@ import { OutputRangeScene } from '../scenes/OutputRange';
 import { ContentModelScene } from '../scenes/ContentModel';
 import { ContentLifecycleScene } from '../scenes/ContentLifecycle';
 import { GroundedAnswerScene } from '../scenes/GroundedAnswer';
+import { StudySessionScene } from '../scenes/StudySession';
+import { PersonaRewriteScene } from '../scenes/PersonaRewrite';
+import { MaturityRoadScene } from '../scenes/MaturityRoad';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -365,6 +368,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'content-model': ContentModelScene,
   'content-lifecycle': ContentLifecycleScene,
   'grounded-answer': GroundedAnswerScene,
+  'study-session': StudySessionScene,
+  'persona-rewrite': PersonaRewriteScene,
+  'maturity-road': MaturityRoadScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

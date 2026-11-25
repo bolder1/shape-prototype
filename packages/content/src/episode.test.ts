@@ -7,6 +7,7 @@ import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, 
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
 import { OUTPUT_METHODS, PROTO_TOOLS, THELA_BEHAVIOURS, THELA_QUESTIONS, THELA_STUDIES, TOOL_CAN, WIRE_KINDS, missingNeeds, outputMethod, protoTool, wireKind, type ThelaBehaviour, type ThelaQuestion, type ThelaStudy } from './advproto';
+import { HAZRI_CHOICES, HAZRI_LINES, HAZRI_PROGRAM, PERSONA_FLAWS, PROGRAM_QUARTERS, STUDY_FLAWS, personaFlaw, programLane, studyFlaw, type HazriChoice, type HazriLine, type HazriStep } from './inclusive';
 import { ANSWER_FLAWS, AUDIT_CALLS, MODEL_PLACES, TAAR_ANSWERS, TAAR_AUDIT, TAAR_CHUNKS, answerFlaw, auditCall, modelPlace, ungrounded, type TaarAnswer, type TaarAuditItem, type TaarChunk } from './contentstrategy';
 import { BRAND_CALLS, PARITY_CALLS, SAWARI_DECISIONS, SAWARI_DRIFTS, SAWARI_REQUESTS, SYNC_MOVES, brandCall, parityCall, passingSteps, syncMove, type SawariDecision, type SawariDrift, type SawariRequest } from './multibrand';
 import { ADOPTION_READS, CONTRIBUTION_PATHS, RASTA_CHANGES, RASTA_REQUESTS, RASTA_SCANS, VERSION_BUMPS, adoptionRead, bumpFor, contributionPath, type RastaChange, type RastaRequest, type RastaScan } from './governance';
@@ -1158,6 +1159,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...ANSWER_FLAWS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(TAAR_ANSWERS).sort());
         for (const c of ep.game.cards) { const a = TAAR_ANSWERS[c.visual as TaarAnswer]; expect(c.label).toBe(a.question); expect(c.lane).toBe(answerFlaw(a)); expect(ungrounded(a).length > 0).toBe(c.lane === 'invents'); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'study-fix') {   // every plan choice once, judged by studyFlaw; every flawed one has its fix
+        expect(lanes).toEqual([...STUDY_FLAWS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(HAZRI_CHOICES).sort());
+        for (const c of ep.game.cards) { const ch = HAZRI_CHOICES[c.visual as HazriChoice]; expect(c.label).toBe(ch.text); expect(c.lane).toBe(studyFlaw(ch)); expect(!!ch.fix).toBe(c.lane !== 'sound'); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'persona-crit') {   // every persona line once, judged by personaFlaw; kept lines have evidence
+        expect(lanes).toEqual([...PERSONA_FLAWS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(HAZRI_LINES).sort());
+        for (const c of ep.game.cards) { const l = HAZRI_LINES[c.visual as HazriLine]; expect(c.label).toBe(l.text); expect(c.lane).toBe(personaFlaw(l)); if (c.lane === 'keep') expect(l.evidence).toBeGreaterThan(0); else expect(l.rewrite).not.toBeUndefined(); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'program-road') {   // every programme step once, in the earliest quarter its needs allow
+        expect(lanes).toEqual([...PROGRAM_QUARTERS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(HAZRI_PROGRAM).sort());
+        for (const c of ep.game.cards) { const k = c.visual as HazriStep; expect(c.label).toBe(HAZRI_PROGRAM[k].text); expect(c.lane).toBe(programLane(k)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);
