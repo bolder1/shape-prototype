@@ -48,7 +48,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'ai-workflow', 'bill-scan', 'prompt-evals',
   'sprint-cadence', 'workshop-room', 'sprint-week',
   'tradeoff-matrix', 'principle-poster', 'rule-break',
-  'survey-sample', 'margin-band', 'dashboard-dig', 'source-weave']);
+  'survey-sample', 'margin-band', 'dashboard-dig', 'source-weave',
+  'roadmap-plan', 'atom-repo', 'research-guardrails']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -198,6 +199,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `gap-read`: lanes are `GAP_CALLS` in order; every card is a gap from Bolo's research, its `visual` a key of `BOLO_GAPS` (each used once), its `label` that gap's `text`, and its lane `gapCall` of it. The player estimates the ± margin on a dial (`marginGrade`, up to `MARGIN_MAX`), then sees the interval (`gapInterval`) against zero and the line that matters, and calls it. Every card needs a `note`.
  *  - `signal-gate`: lanes are `GATES` in order; every card is a number from Bolo's dashboard, its `visual` a key of `BOLO_SIGNALS` (each used once), its `label` that signal's `text`, and its lane `signalGate` of it. The game draws the gates as a flow with the tracking note and any split (`segmentChanges`), and sends the card to the gate it stops at. Every card needs a `note`.
  *  - `source-triangle`: lanes are `WEIGHTS` in order; every card is a claim from Bolo's decision memo, its `visual` a key of `BOLO_CLAIMS` (each used once), its `label` that claim's `text`, and its lane `triangulate` of it. The game files each source under what people say or do (`METHOD_KIND`), marks whether it agrees, and right calls build the memo. Every card needs a `note`.
+ *  - `roadmap-slot`: lanes are `SLOTS` in order; every card is a request from Musafir's research inbox, its `visual` a key of `MUSAFIR_REQUESTS` (each used once), its `label` that request's `text`, and its lane `roadmapSlot` of it. The game draws the January–June timeline with the decision's week (`weekDate`) and, on a right call, the study scheduled backwards from it (`studyWeeks`), with the team's load per week (`weekLoad`, up to `RESEARCHERS`). Every card needs a `note`.
+ *  - `atom-build`: lanes are `ATOM_LANES` in order; every card is a draft note for Musafir's repository, its `visual` a key of `MUSAFIR_ATOMS` (each used once), its `label` that note's `text`, and its lane `atomLane` of it. Right calls add the note to a graph linked to the notes it rests on, with the studies behind each (`studiesBehind`, `MUSAFIR_STUDIES`). Every card needs a `note`.
+ *  - `plan-critique`: lanes are `SUPPORT` in order; every card is a squad's research plan, its `visual` a key of `MUSAFIR_PLANS` (each used once), its `label` that plan's `text`, and its lane `support` of it. The game draws the plan's lines (who, method, people, stakes, data) and a right call puts the red pen on `decidingLine`; the end totals researcher hours (`researcherHours`). Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -242,7 +246,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'ai-delegate', 'guess-flag', 'eval-fix',
   'ceremony-route', 'room-read', 'sprint-fit',
   'matrix-read', 'principle-test', 'rule-call',
-  'survey-spot', 'gap-read', 'signal-gate', 'source-triangle']);
+  'survey-spot', 'gap-read', 'signal-gate', 'source-triangle',
+  'roadmap-slot', 'atom-build', 'plan-critique']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

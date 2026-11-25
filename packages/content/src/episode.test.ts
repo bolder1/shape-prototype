@@ -5,6 +5,7 @@ import { GUIDE_SECTIONS, KIT_SLOTS, MARK_VERDICTS, SUKOON_KIT, SUKOON_MARKS, SUK
 import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_ASSETS, SUKOON_DRAFTS, SUKOON_SECTIONS, SUKOON_SEO_BEFORE, copyFlaws, copyLine, seoIssues, type CopyDraft, type SeoIssue, type SukoonAsset, type SukoonDraft, type SukoonSection } from './marketing';
 import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, PROMPT_PARTS, aiRole, fieldTreatment, type HisaabCase, type HisaabField, type HisaabTask } from './ai';
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
+import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
 import { BOLO_CLAIMS, BOLO_GAPS, BOLO_ITEMS, BOLO_SIGNALS, GAP_CALLS, GATES, MARGIN_MAX, SURVEY_PARTS, WEIGHTS, gapCall, gapInterval, signalGate, surveyFlaw, triangulate, type BoloClaim, type BoloGap, type BoloItem, type BoloSignal } from './survey';
 import { CEREMONIES, MOVES, RASOI_ITEMS, RASOI_MOMENTS, RASOI_QUESTIONS, SPRINT_CALLS, ceremonyFor, moveFor, sprintCall, type RasoiItem, type RasoiMoment, type RasoiQuestion } from './team';
 import { GAADI_CODE, GAADI_QA, GAADI_SPEC, QA_LANES, REF_KINDS, SPEC_SOURCES, qaLane, refKind, type GaadiCode, type GaadiQa, type GaadiSpecItem } from './handoff';
@@ -1026,6 +1027,25 @@ describe('episodes', () => {
         expect(lanes).toEqual([...WEIGHTS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(BOLO_CLAIMS).sort());
         for (const c of ep.game.cards) { const cl = BOLO_CLAIMS[c.visual as BoloClaim]; expect(c.label).toBe(cl.text); expect(c.lane).toBe(triangulate(cl)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'roadmap-slot') {   // every request once, slotted by its decision, and every scheduled study drawable on the half
+        expect(lanes).toEqual([...SLOTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(MUSAFIR_REQUESTS).sort());
+        for (const c of ep.game.cards) {
+          const r = MUSAFIR_REQUESTS[c.visual as MusafirRequest];
+          expect(c.label).toBe(r.text); expect(c.lane).toBe(roadmapSlot(r)); expect(c.note).toBeTruthy();
+          if (c.lane === 'q1' || c.lane === 'q2') expect(studyWeeks(r)![0]).toBeGreaterThanOrEqual(1);
+        }
+      }
+      if (ep.game.id === 'atom-build') {   // every note once, filed where its level, source and links put it
+        expect(lanes).toEqual([...ATOM_LANES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(MUSAFIR_ATOMS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as MusafirAtom; expect(c.label).toBe(MUSAFIR_ATOMS[k].text); expect(c.lane).toBe(atomLane(k)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'plan-critique') {   // every plan once, given the support its riskiest line needs
+        expect(lanes).toEqual([...SUPPORT]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(MUSAFIR_PLANS).sort());
+        for (const c of ep.game.cards) { const pl = MUSAFIR_PLANS[c.visual as MusafirPlan]; expect(c.label).toBe(pl.text); expect(c.lane).toBe(support(pl)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

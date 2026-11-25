@@ -1817,9 +1817,56 @@ const rs5: BossBriefInput = {
   },
 };
 
+const rs6: BossBriefInput = {
+  chapterId: 'rs.6',
+  title: 'A two-quarter research roadmap',
+  minutes: 120,
+  scenario: [
+    'You lead research for your Studio product, or for a real or fictional company you know well, and you have to say what research happens in the next two quarters and why. If you don’t have one, use Musafir, the intercity bus booking app from this chapter: 2,400 operators in 19 states, nine squads, and a research team of three researchers and one ResearchOps lead.',
+    'Start from the company’s decisions, not the requests. Tie every study to a decision with an owner and a date, schedule it backwards so it lands in time, and check it against your team’s capacity. Say what you won’t do and where those requests go. Then show how findings will be kept and found, how squads will run their own research safely, and how the roadmap will change when the company’s plans do.',
+  ],
+  fields: [
+    { id: 'context', label: 'The company and its decisions', kind: 'long', minWords: 50, hint: 'What the company does, the research team you have (people and weeks), and the five to eight decisions the company will make in these two quarters, each with an owner and a date.' },
+    { id: 'studies', label: 'The roadmap', kind: 'list', items: 5, minWords: 25, hint: 'One study per line: the question, the decision it feeds and its date, the method and why, how many weeks, the latest start date, and who leads it.' },
+    { id: 'capacity', label: 'Capacity and slack', kind: 'text', minWords: 30, hint: 'Your busiest weeks and how many studies run at once against how many researchers you have, the time you keep unplanned, and what you moved or shrank to make it fit.' },
+    { id: 'declined', label: 'What you won’t do', kind: 'list', items: 3, minWords: 15, hint: 'Three requests you’re not running as studies, each with why (no decision, already answered, low stakes, after the horizon) and where it goes instead.' },
+    { id: 'repository', label: 'Keeping what you learn', kind: 'long', minWords: 40, hint: 'How findings go into a repository: what counts as a fact, insight and recommendation, how they’re linked and tagged, who owns it, and what consent allows you to keep.' },
+    { id: 'squads', label: 'Research by squads', kind: 'long', minWords: 40, hint: 'What squads can run themselves, what needs a review, what a researcher leads, and what never runs. The support you give (training, templates, panel, office hours) and how you’ll check quality.' },
+    { id: 'review', label: 'Keeping it current', kind: 'text', minWords: 25, hint: 'How often you review the roadmap and with whom, where it’s published, and what you’ll do when a decision date moves.' },
+  ],
+  rubric: [
+    { id: 'decisions', label: 'Tied to decisions', strong: 'Every study names the decision it feeds, with an owner and a date, and the decisions are real for this company and its half. No study exists only because someone asked for it.', weight: 3, required: true },
+    { id: 'timing', label: 'Scheduled backwards, within capacity', strong: 'Each study’s latest start is the decision date minus its length, and the dates are right. The busiest weeks never need more leads than the team has, some time is kept unplanned, and the trade-offs made to fit are named.', weight: 3, required: true },
+    { id: 'focus', label: 'Says no well', strong: 'Turns down or redirects requests for clear reasons (no decision, already answered, reversible and testable, beyond the horizon), and gives each a home: a link, a squad test, the backlog, the next plan.', weight: 2 },
+    { id: 'methods', label: 'Methods fit the questions', strong: 'Each method suits its question and stakes: behaviour over opinion where possible, generative work for open questions, live tests for reversible ones, and care for sensitive participants.', weight: 2 },
+    { id: 'ops', label: 'Repository and guardrails', strong: 'The repository stores linked facts, insights and recommendations with sources and an owner, within what consent allows. Squad research has clear levels of support, a consented panel and a quality check; consent and data breaches stop a study.', weight: 2 },
+    { id: 'living', label: 'A living plan', strong: 'Sets a review rhythm tied to the company roadmap, publishes questions and dates, and says concretely what happens when a decision moves.', weight: 1 },
+  ],
+  tips: ['Write the decisions column first and leave the studies blank. If a study can’t point at a row, it isn’t on the roadmap.', 'Next to every “decided on”, write “starts by”. If “starts by” has already passed, shrink the study, move the decision, or say plainly that it will be decided without new research.'],
+  example: {
+    context: 'Musafir sells seats on 2,400 private intercity bus operators in 19 states. Research is Lavanya Iyer (head), two researchers, and Siddharth Rao on ResearchOps: three people who can lead studies, about 60 researcher-weeks from January to June 2027 after leave and slack. The half’s decisions: redesign the boarding details on the ticket (Priya Nair, 8 March); launch Musafir Pass and its price (Aisha Khan, 22 March); what operator app v2 rebuilds first (Manoj Yadav, 17 May); how ratings rank operators in search (Rohan Desai, 31 May); which safety features go into the second half (Kavya Reddy, 14 June); the Pass renewal flow (Aisha Khan, 21 June).',
+    studies: [
+      'Why do 1 in 9 travellers struggle to find their boarding point? Feeds the ticket redesign on 8 March. A two-week diary study with nine travellers across three cities, then a readout. Four weeks, starts by 8 February. Sneha leads.',
+      'Will people pay ₹199 a quarter for Musafir Pass? Feeds the launch and price decision on 22 March. Twelve interviews with frequent travellers plus a fake-door price test at three prices, because stated willingness to pay runs high. Six weeks, starts by 8 February. Arjun leads.',
+      'How do depot clerks in small towns actually update seat availability? Feeds operator app v2’s scope on 17 May. Contextual visits to six depots in Madhya Pradesh and Karnataka. Eight weeks including travel, starts by 22 March. Arjun leads.',
+      'What makes a woman travelling alone at night choose a bus? Feeds the safety-feature decision on 14 June. Researcher-led interviews with 14 women, with clear consent, the right to stop and a counsellor’s number ready, plus an analysis of safety tickets. Ten weeks, starts by 5 April. Sneha leads.',
+      'Do operator ratings make people trust an operator they’ve never used? Feeds the search ranking decision on 31 May. Unmoderated tests of three ranking designs with 40 panel members, then six follow-up calls. Five weeks, starts by 26 April. Lavanya leads, with the search squad.',
+    ],
+    capacity: 'The busiest stretch is weeks 17 to 19, late April to mid-May: the depot, safety and ratings studies overlap, three studies for three leads. The three-week Pass renewal test starts on 31 May, once the depot and ratings studies are done. We keep about a fifth of the time, roughly one day a week each, unplanned for urgent questions. To make it fit we cut the depot visits from nine to six and gave the seat-map question to the search squad to A/B test.',
+    declined: [
+      'Dark mode (Android): no decision depends on it. If Android builds it, usage after launch will show whether people use it.',
+      'Why people call about refunds (support): last August’s interviews and 1,400 tagged tickets already answer it. Priya gets the repository link and the recommendation to show the refund date.',
+      'Train tickets (CEO’s office): a big question, but decided in October. It goes into the Q3 plan, and Q1 and Q2 studies tag anything about trips that mix bus and train.',
+    ],
+    repository: 'Every study is broken into facts, each one observation with its study, participant and date; insights, stored only once facts from two studies back them; and recommendations, each linked to an insight. Facts are tagged by journey stage (search, booking, boarding, cancellation), product area and type of traveller. Siddharth owns it and reviews the tags monthly. A contradicting fact is linked to the insight it challenges and flags it for review. Recordings are deleted after 12 months, as our consent form says; the anonymised facts stay.',
+    squads: 'Squads run low-stakes tests of their own designs with the panel and the usability template, and bring questions to Thursday office hours. Interviews, surveys and anything with money or a launch riding on it get a researcher’s review of the guide or sample first, within two working days. A researcher leads big open questions and any study with people who could be hurt by taking part, like harassment survivors or drivers talking about their employers. Nothing runs that breaks consent or uses booking data to recruit. Everyone takes a two-hour course first, and each quarter we audit five squad studies for guide quality, consent records, and whether the findings reached the repository.',
+    review: 'Every six weeks Lavanya reviews the roadmap with the product leads against the company roadmap, and the current version lives on the research wiki as questions, decisions and dates. When a decision moves, its study is re-slotted from the new date at the next review. If it moves earlier than the study can land, we tell the owner that day and agree whether to shrink the study or decide on what the repository already holds.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

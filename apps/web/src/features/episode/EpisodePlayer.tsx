@@ -164,6 +164,9 @@ import { SurveySpot } from './games/SurveySpot';
 import { GapRead } from './games/GapRead';
 import { SignalGate } from './games/SignalGate';
 import { SourceTriangle } from './games/SourceTriangle';
+import { RoadmapSlot } from './games/RoadmapSlot';
+import { AtomBuild } from './games/AtomBuild';
+import { PlanCritique } from './games/PlanCritique';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -337,6 +340,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'gap-read': GapRead,
   'signal-gate': SignalGate,
   'source-triangle': SourceTriangle,
+  'roadmap-slot': RoadmapSlot,
+  'atom-build': AtomBuild,
+  'plan-critique': PlanCritique,
 };
 
 interface Props {

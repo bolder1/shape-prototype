@@ -162,6 +162,9 @@ import { SurveySampleScene } from '../scenes/SurveySample';
 import { MarginBandScene } from '../scenes/MarginBand';
 import { DashboardDigScene } from '../scenes/DashboardDig';
 import { SourceWeaveScene } from '../scenes/SourceWeave';
+import { RoadmapPlanScene } from '../scenes/RoadmapPlan';
+import { AtomRepoScene } from '../scenes/AtomRepo';
+import { ResearchGuardrailsScene } from '../scenes/ResearchGuardrails';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -317,6 +320,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'margin-band': MarginBandScene,
   'dashboard-dig': DashboardDigScene,
   'source-weave': SourceWeaveScene,
+  'roadmap-plan': RoadmapPlanScene,
+  'atom-repo': AtomRepoScene,
+  'research-guardrails': ResearchGuardrailsScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
