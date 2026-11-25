@@ -1776,9 +1776,50 @@ const fd4: BossBriefInput = {
   },
 };
 
+const rs5: BossBriefInput = {
+  chapterId: 'rs.5',
+  title: 'A survey that decides',
+  minutes: 120,
+  scenario: [
+    'Your Studio product has two directions it could take next, and not enough money for both. Design, run and analyse a survey of at least 30 people that decides between them. If you don’t have a product yet, use Bolo, the spoken-English app from this chapter: “Live rooms” (small speaking groups with a tutor, three evenings a week) against “Daily drills” (ten-minute self-paced speaking drills), for learners in Lucknow, Indore, Coimbatore and Patna.',
+    'Write the decision rule before you send anything: which answer decides, and how big a gap would be enough. Then sample people who cover everyone the decision affects, write and pilot the questions, run it, and report the gap with its interval against the line you set. Finish by checking the answer against another kind of evidence, and say what would change your mind.',
+  ],
+  fields: [
+    { id: 'decision', label: 'The decision and the rule', kind: 'long', minWords: 40, hint: 'The two directions, who decides and by when, the one question whose answer decides it, the smallest gap that would be enough, and what you’ll do if the result is unclear. Written before you field it.' },
+    { id: 'sample', label: 'Who you’ll ask', kind: 'long', minWords: 40, hint: 'Everyone the decision affects, the list you’ll draw from and what it misses, how you’ll pick people, the channel, the margin you need and the responses and invitations that gives (at your expected response rate), and how you’ll check who answered.' },
+    { id: 'questions', label: 'The questions', kind: 'list', items: 6, minWords: 10, hint: 'One per line, with its answer options. Neutral wording, one idea each, about recent behaviour where you can, ranges that don’t overlap, balanced scales, and a way out.' },
+    { id: 'pilot', label: 'What the pilot changed', kind: 'text', minWords: 25, hint: 'Who read it aloud, what they misread or couldn’t answer, and what you changed.' },
+    { id: 'results', label: 'Results', kind: 'long', minWords: 50, hint: 'Invitations, responses and the response rate; the shares on the deciding question; the gap with its 95% interval (a lead within one sample is about twice as noisy as one share); who under-responded and whether it changes the answer. Any subgroup, with its own margin.' },
+    { id: 'call', label: 'The call, checked another way', kind: 'long', minWords: 50, hint: 'Read the gap against the line you set and make the call. Then check it against behaviour (analytics, a pilot, usability sessions): does it agree? Name any conflict, what you’ll do about it, and the result that would change your mind.' },
+  ],
+  rubric: [
+    { id: 'rule', label: 'Decision rule set in advance', strong: 'Names both directions, the deciding question, the smallest gap that would decide it and what happens if the interval is unclear, all before fielding. The call later follows the rule rather than the other way round.', weight: 3, required: true },
+    { id: 'sample', label: 'A sample that covers the decision', strong: 'The list and channel reach everyone affected, including lapsed or non-users where the decision is about them. People are picked at random, not self-selected. The target number comes from the margin needed, invitations from a realistic response rate, and at least 30 people answer. Who answered is compared with who was asked.', weight: 3, required: true },
+    { id: 'numbers', label: 'Honest numbers', strong: 'Reports invitations, responses and response rate; gives the gap with a correctly worked 95% interval, treating a lead within one sample as one; reads it against the line set in advance; and treats small or after-the-fact subgroups as questions, with their own wide margins.', weight: 3, required: true },
+    { id: 'questions', label: 'Questions that measure people', strong: 'Every question is neutral, asks one thing, prefers recent behaviour to promises, and has options that don’t overlap, balance, and include a way out. The pilot found real problems and the changes are named.', weight: 2 },
+    { id: 'checked', label: 'Checked another way', strong: 'Compares the answer with behavioural evidence, names where it agrees and any say–do conflict, does something sensible about the conflict, and states the result that would change the decision.', weight: 2 },
+  ],
+  tips: ['Write the rule as a sentence you could hand to someone else: “If A leads B by at least 5 points and the interval is clear of zero, we build A.” If you can’t, the survey can’t decide anything yet.', 'For one share, the 95% margin is about ±1/√n. For a lead between two answers from the same people, roughly double it. At n = 30, that’s ±18 points on a share: enough to spot a landslide, not a close race.'],
+  example: {
+    decision: 'Bolo must choose next year’s direction: Live rooms (a tutor and five learners, three evenings a week) or Daily drills (ten-minute speaking drills with instant feedback). Kunal Bhatia, our PM, decides by 15 December. The deciding question: “In a normal week, which would you use more?” Rule, written on 10 November: we build the direction that leads by at least 5 points, if the 95% interval of the lead is clear of zero. If the interval reaches zero, we run a planned second wave. If the lead is under 5 points either way, we choose on cost, which favours drills.',
+    sample: 'Both directions are meant to win back people who stopped, so the population is everyone who signed up June to October, lapsed or not: 38,400 people. The sign-up list has every phone number; it misses people who never finished sign-up, which we accept. An in-app survey would miss lapsed learners, so we send SMS and WhatsApp links, in English, Hindi and Tamil, with two reminders, to people drawn at random from the list. We want the lead’s margin near ±5 points, so about ±2.5 on one share: 1,537 responses. At our first wave’s 41% response rate, that’s about 3,750 invitations; we sent 4,000 to be safe. We compare respondents with the list on city, plan and days since last practice.',
+    questions: [
+      'In a normal week, which would you use more: a live speaking room with a tutor, three evenings a week, or a 10-minute speaking drill you can do any time? (Live rooms / Daily drills / Neither; the first two in random order)',
+      'In the last 7 days, on how many days did you practise English? (None / 1–2 / 3–4 / 5–7)',
+      'Last week, on which evenings were you free for 30 minutes between 7 and 10 pm? (Weekdays only / Weekends only / Both / Neither)',
+      'Where do you usually practise? (At home, alone / At home, with others around / Travelling / At work or college / Somewhere else)',
+      'What is your main reason for learning English? (Job interviews / College exams / Calls at work / Travel / Something else)',
+      'Have you practised with Bolo in the last 30 days? (Yes / No / Not sure)',
+    ],
+    pilot: 'Five learners, two of them lapsed, read it aloud on a call. Two took “live room” to mean a recorded video class, so the first question now says “with a tutor”. One practises on the bus and had nowhere to go in question 4, so we added “Travelling”. We randomised the order of the two directions so neither always comes first.',
+    results: 'We sent 4,000 invitations and got 1,600 answers (40%), so one share is ±2.4 points. Daily drills 55% (880), Live rooms 39% (624), Neither 6%. The lead is 16 points, and because it’s a lead within one sample its 95% interval is 11.3 to 20.7 points, roughly twice the margin on one share. Lapsed learners answered less often (31% against 47% of active ones); weighting them back to their share of the list moves the lead by under a point. Job-seekers prefer live rooms far more than students: 58% of 400 against 31% of 320, a gap of 27 ± 7 points. Women over 30 looked keen on live rooms in our first wave, but from 30 of them the gap was 17 ± 18, so we treat it as a question, not a finding.',
+    call: 'The lead clears zero and our 5-point line, so by the rule we set in November we build Daily drills. Behaviour agrees: learners who practise in short sessions on four or more days a week renew at twice the rate, and 71% of sessions start between 9 and 11 pm, outside the evening slot live rooms need. One conflict: job-seekers say they want live rooms, but only 9% of 2,000 offered a free one joined. Six calls suggested why: the 7 pm slot, and speaking to strangers felt like an interview. So live rooms aren’t dead for job-seekers: we’ll pilot a 9 pm room for them and decide on attendance, not on what they say. What would change our mind: if, after eight weeks, drill users don’t practise on more days a week than today’s learners do.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

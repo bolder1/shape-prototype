@@ -47,7 +47,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'spec-handoff', 'design-qa', 'token-pipeline',
   'ai-workflow', 'bill-scan', 'prompt-evals',
   'sprint-cadence', 'workshop-room', 'sprint-week',
-  'tradeoff-matrix', 'principle-poster', 'rule-break']);
+  'tradeoff-matrix', 'principle-poster', 'rule-break',
+  'survey-sample', 'margin-band', 'dashboard-dig', 'source-weave']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -193,6 +194,10 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `matrix-read`: lanes are `MATRIX_CALLS` in order; every card is one of Haat's open decisions, its `visual` a key of `HAAT_DECISIONS` (each used once), its `label` that decision's `text`, and its lane `matrixCall` of it. The game draws the matrix, lets the player weigh it through each lens and swing the unsure cell low or high (`lensWinners`, `withCell`), and strikes options that fail a must-have. Every card needs a `note`.
  *  - `principle-test`: lanes are `PRINCIPLE_VERDICTS` in order; every card is a draft principle, its `visual` a key of `HAAT_PRINCIPLES` (each used once), its `label` that principle's `text`, and its lane `principleVerdict` of it. Right calls of `decides` light the disputes they settle (`HAAT_DISPUTES`, `disputeState`); a dispute pulled both ways is resolved by `PRINCIPLE_RANK`. Every card needs a `note` (the rewrite, or what it settles).
  *  - `rule-call`: lanes are `RULE_CALLS` in order; every card is a request to break a Haat rule, its `visual` a key of `HAAT_BREAKS` (each used once), its `label` that request's `text`, and its lane `ruleCall` of it. Right calls stamp the rule in a rulebook (`HAAT_RULES`, `rulebook`). Every card needs a `note`.
+ *  - `survey-spot`: lanes are `SURVEY_PARTS` in order; every card is an item from Bolo's draft survey, its `visual` a key of `BOLO_ITEMS` (each used once), its `label` that item's `stem`, and its lane `surveyFlaw` of it. The game draws the item as it would go out (question, answer options, who gets it) and the player taps the broken part or sends it; the end sizes the fixed survey (`BOLO_FIELD`, `moe`). Every card needs a `note`.
+ *  - `gap-read`: lanes are `GAP_CALLS` in order; every card is a gap from Bolo's research, its `visual` a key of `BOLO_GAPS` (each used once), its `label` that gap's `text`, and its lane `gapCall` of it. The player estimates the ± margin on a dial (`marginGrade`, up to `MARGIN_MAX`), then sees the interval (`gapInterval`) against zero and the line that matters, and calls it. Every card needs a `note`.
+ *  - `signal-gate`: lanes are `GATES` in order; every card is a number from Bolo's dashboard, its `visual` a key of `BOLO_SIGNALS` (each used once), its `label` that signal's `text`, and its lane `signalGate` of it. The game draws the gates as a flow with the tracking note and any split (`segmentChanges`), and sends the card to the gate it stops at. Every card needs a `note`.
+ *  - `source-triangle`: lanes are `WEIGHTS` in order; every card is a claim from Bolo's decision memo, its `visual` a key of `BOLO_CLAIMS` (each used once), its `label` that claim's `text`, and its lane `triangulate` of it. The game files each source under what people say or do (`METHOD_KIND`), marks whether it agrees, and right calls build the memo. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -236,7 +241,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'spec-write', 'qa-pass', 'token-trace',
   'ai-delegate', 'guess-flag', 'eval-fix',
   'ceremony-route', 'room-read', 'sprint-fit',
-  'matrix-read', 'principle-test', 'rule-call']);
+  'matrix-read', 'principle-test', 'rule-call',
+  'survey-spot', 'gap-read', 'signal-gate', 'source-triangle']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

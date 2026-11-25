@@ -158,6 +158,10 @@ import { SprintWeekScene } from '../scenes/SprintWeek';
 import { TradeoffMatrixScene } from '../scenes/TradeoffMatrix';
 import { PrinciplePosterScene } from '../scenes/PrinciplePoster';
 import { RuleBreakScene } from '../scenes/RuleBreak';
+import { SurveySampleScene } from '../scenes/SurveySample';
+import { MarginBandScene } from '../scenes/MarginBand';
+import { DashboardDigScene } from '../scenes/DashboardDig';
+import { SourceWeaveScene } from '../scenes/SourceWeave';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -309,6 +313,10 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'tradeoff-matrix': TradeoffMatrixScene,
   'principle-poster': PrinciplePosterScene,
   'rule-break': RuleBreakScene,
+  'survey-sample': SurveySampleScene,
+  'margin-band': MarginBandScene,
+  'dashboard-dig': DashboardDigScene,
+  'source-weave': SourceWeaveScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

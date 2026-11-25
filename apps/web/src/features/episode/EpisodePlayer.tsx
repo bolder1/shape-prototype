@@ -160,6 +160,10 @@ import { SprintFit } from './games/SprintFit';
 import { MatrixRead } from './games/MatrixRead';
 import { PrincipleTest } from './games/PrincipleTest';
 import { RuleCall } from './games/RuleCall';
+import { SurveySpot } from './games/SurveySpot';
+import { GapRead } from './games/GapRead';
+import { SignalGate } from './games/SignalGate';
+import { SourceTriangle } from './games/SourceTriangle';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -329,6 +333,10 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'matrix-read': MatrixRead,
   'principle-test': PrincipleTest,
   'rule-call': RuleCall,
+  'survey-spot': SurveySpot,
+  'gap-read': GapRead,
+  'signal-gate': SignalGate,
+  'source-triangle': SourceTriangle,
 };
 
 interface Props {
