@@ -61,7 +61,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'moat-map', 'bet-portfolio', 'platform-layers',
   'practice-loop', 'nudge-week', 'streak-trap', 'viral-loop',
   'campaign-arc', 'brand-spectrum', 'brand-tracker',
-  'impact-chain', 'case-shape', 'studio-rate']);
+  'impact-chain', 'case-shape', 'studio-rate',
+  'state-lift', 'frame-budget', 'agent-loop']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -251,6 +252,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `value-size`: lanes are `IMPACT_BANDS` in order; every card is a claimed design impact, its `visual` a key of `RAAHI_IMPACTS` (each used once), its `label` that claim's `text`, and its lane `impactBand` of it: no control or no money link can't be counted, then the yearly `impactValue` against `BAND_EDGES`. Each card shows its volume × change × ₹ each × share realised; right calls add it to an impact ledger with its value. Every card needs a `note`.
  *  - `case-edit`: lanes are `CASE_FIXES` in order; every card is a line of Aparna's business case, its `visual` a key of `RAAHI_CASE` (each used once), its `label` that line's `text`, and its lane `caseFix` of it: benefits need money, then honesty; costs need to be complete. Right calls write the line's `fixed` version into the case under its `part`; the finished case shows `caseReturns` for each of `SCENARIOS`. Every card needs a `note`.
  *  - `engage-sort`: lanes are `ENGAGE_CALLS` in order; every card is an enquiry to Kolam, its `visual` a key of `KOLAM_ENQUIRIES` (each used once), its `label` that enquiry's `text`, and its lane `engageCall` of it: spec work or an `effectiveRate` below `floorRate` is declined, then a stream is a retainer, a clear one-off fixed, the rest time and materials. Each card shows its rate on a gauge against the floor and `targetRate`; right calls fill Kolam's quarter. Every card needs a `note`.
+ *  - `data-home`: lanes are `DATA_HOMES` in order; every card is a piece of data Chakki's product card shows or uses, its `visual` a key of `CHAKKI_DATA` (each used once), its `label` that datum's `text`, and its lane `dataHome` of it: computable is derived, then the parent's is a prop, then shared state is lifted, the rest is the card's own state. Right calls write its line into the component `componentCode` builds. Every card needs a `note`.
+ *  - `anim-fix`: lanes are `ANIM_FIXES` in order; every card is an animation in Chakki's app, its `visual` a key of `CHAKKI_MOTIONS` (each used once), its `label` that animation's `text`, and its lane `animFix` of it: geometry (`worstWork` is layout) moves to transform, then an exit unmounted too early, then a restart that jumps. Each card shows its code and the browser's work per frame; right calls show the fixed code. Every card needs a `note`.
+ *  - `agent-review`: lanes are `REVIEW_CALLS` in order; every card is a change in a coding agent's pull request, its `visual` a key of `CHAKKI_CHANGES` (each used once), its `label` that change's `text`, and its lane `reviewCall` of it: not asked for or weakening a check is reverted, then a broken convention becomes a rule, then what only a person can prove is checked by hand. Right calls build the reviewed pull request and the rules file (`rulesFile`). Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -308,7 +312,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'moat-crit', 'bet-book', 'layer-pick',
   'habit-zone', 'nudge-crit', 'reward-pick', 'referral-math',
   'arc-map', 'family-sort', 'search-share',
-  'value-size', 'case-edit', 'engage-sort']);
+  'value-size', 'case-edit', 'engage-sort',
+  'data-home', 'anim-fix', 'agent-review']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

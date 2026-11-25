@@ -204,6 +204,9 @@ import { SearchShare } from './games/SearchShare';
 import { ValueSize } from './games/ValueSize';
 import { CaseEdit } from './games/CaseEdit';
 import { EngageSort } from './games/EngageSort';
+import { DataHome } from './games/DataHome';
+import { AnimFix } from './games/AnimFix';
+import { AgentReview } from './games/AgentReview';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -417,6 +420,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'value-size': ValueSize,
   'case-edit': CaseEdit,
   'engage-sort': EngageSort,
+  'data-home': DataHome,
+  'anim-fix': AnimFix,
+  'agent-review': AgentReview,
 };
 
 interface Props {

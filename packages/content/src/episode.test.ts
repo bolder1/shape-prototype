@@ -8,6 +8,7 @@ import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_V
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
 import { OUTPUT_METHODS, PROTO_TOOLS, THELA_BEHAVIOURS, THELA_QUESTIONS, THELA_STUDIES, TOOL_CAN, WIRE_KINDS, missingNeeds, outputMethod, protoTool, wireKind, type ThelaBehaviour, type ThelaQuestion, type ThelaStudy } from './advproto';
 import { ADVANTAGE_CALLS, BET_CALLS, MUNIM_BETS, MUNIM_CAPABILITIES, MUNIM_CLAIMS, PLATFORM_CALLS, advantageCall, betCall, platformCall, type MunimBet, type MunimCapability, type MunimClaim } from './designstrategy';
+import { ANIM_FIXES, CHAKKI_CHANGES, CHAKKI_DATA, CHAKKI_MOTIONS, DATA_HOMES, REVIEW_CALLS, animFix, dataHome, reviewCall, type ChakkiChange, type ChakkiDatum, type ChakkiMotion } from './designeng';
 import { CASE_FIXES, ENGAGE_CALLS, IMPACT_BANDS, KOLAM_ENQUIRIES, RAAHI_CASE, RAAHI_IMPACTS, caseFix, engageCall, impactBand, type KolamEnquiry, type RaahiCaseLine, type RaahiImpact } from './designroi';
 import { ARCH_CALLS, CAMPAIGN_ROLES, SOS_CALLS, SUKOON_OFFERS, SUKOON_PIECES, SUKOON_READINGS, arcRole, archCall, sosCall, type SukoonOffer, type SukoonPiece, type SukoonReading } from './brandstrategy';
 import { HABIT_CALLS, NUDGE_CALLS, REFERRAL_CALLS, REWARD_CALLS, RIYAAZ_BEHAVIOURS, RIYAAZ_MECHANICS, RIYAAZ_NUDGES, RIYAAZ_REFERRALS, habitCall, nudgeCall, referralCall, rewardCall, type RiyaazBehaviour, type RiyaazMechanic, type RiyaazNudge, type RiyaazReferral } from './retention';
@@ -1223,6 +1224,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...SOS_CALLS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUKOON_READINGS).sort());
         for (const c of ep.game.cards) { const k = c.visual as SukoonReading; expect(c.label).toBe(SUKOON_READINGS[k].text); expect(c.lane).toBe(sosCall(SUKOON_READINGS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'data-home') {   // every datum once, homed by dataHome
+        expect(lanes).toEqual([...DATA_HOMES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(CHAKKI_DATA).sort());
+        for (const c of ep.game.cards) { const k = c.visual as ChakkiDatum; expect(c.label).toBe(CHAKKI_DATA[k].text); expect(c.lane).toBe(dataHome(CHAKKI_DATA[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'anim-fix') {   // every animation once, judged by animFix
+        expect(lanes).toEqual([...ANIM_FIXES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(CHAKKI_MOTIONS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as ChakkiMotion; expect(c.label).toBe(CHAKKI_MOTIONS[k].text); expect(c.lane).toBe(animFix(CHAKKI_MOTIONS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'agent-review') {   // every change once, called by reviewCall
+        expect(lanes).toEqual([...REVIEW_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(CHAKKI_CHANGES).sort());
+        for (const c of ep.game.cards) { const k = c.visual as ChakkiChange; expect(c.label).toBe(CHAKKI_CHANGES[k].text); expect(c.lane).toBe(reviewCall(CHAKKI_CHANGES[k])); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'value-size') {   // every claim once, banded by impactBand
         expect(lanes).toEqual([...IMPACT_BANDS]);

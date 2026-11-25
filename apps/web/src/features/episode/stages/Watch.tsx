@@ -202,6 +202,9 @@ import { BrandTrackerScene } from '../scenes/BrandTracker';
 import { ImpactChainScene } from '../scenes/ImpactChain';
 import { CaseShapeScene } from '../scenes/CaseShape';
 import { StudioRateScene } from '../scenes/StudioRate';
+import { StateLiftScene } from '../scenes/StateLift';
+import { FrameBudgetScene } from '../scenes/FrameBudget';
+import { AgentLoopScene } from '../scenes/AgentLoop';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -397,6 +400,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'impact-chain': ImpactChainScene,
   'case-shape': CaseShapeScene,
   'studio-rate': StudioRateScene,
+  'state-lift': StateLiftScene,
+  'frame-budget': FrameBudgetScene,
+  'agent-loop': AgentLoopScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

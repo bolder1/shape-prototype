@@ -2453,9 +2453,53 @@ const bz4: BossBriefInput = {
   },
 };
 
+const dc4: BossBriefInput = {
+  chapterId: 'dc.4',
+  title: 'Ship a working, deployed front-end of your Studio product',
+  minutes: 120,
+  scenario: [
+    'Build and deploy one real flow of your Studio product as a working front-end: at least three screens or states that someone can use on their own phone, from a public link. React is the default (Next.js or Vite, deployed on Vercel, Netlify or Cloudflare Pages); another framework is fine if you can explain the same decisions in it. Fake the back end with local data if you need to, but every state the design shows has to be reachable: loading, empty, error and success.',
+    'Use a coding agent if you like, and say how. Then write up what you built: the components and where each piece of their data lives, how the motion is written and what it costs a frame, how you briefed and reviewed the agent, and what you checked by hand on a real phone. Hand in the live link, the repository, and the write-up below.',
+  ],
+  fields: [
+    { id: 'link', label: 'The live link and the repository', kind: 'text', minWords: 15, hint: 'The public URL, the repo, the flow someone should try first, and the phone and browser you tested on.' },
+    { id: 'components', label: 'Components and their data', kind: 'list', items: 3, minWords: 20, hint: 'One component per line: what it shows, its props, its own state, what is lifted to a parent and why, and what it derives instead of storing.' },
+    { id: 'states', label: 'Every state, reachable', kind: 'text', minWords: 30, hint: 'How someone (or a story) reaches loading, empty, error and success for the main screen, and where those states are shown together, such as Storybook or a /states page.' },
+    { id: 'motion', label: 'Motion in code', kind: 'list', items: 2, minWords: 20, hint: 'One animation per line: what it does, the properties it animates and what that costs a frame, how it exits and handles being interrupted, and what happens with reduced motion.' },
+    { id: 'agent', label: 'How you built it with an agent', kind: 'long', minWords: 50, hint: 'Your brief and rules file, a plan you corrected, and at least two things you reverted or had redone and why. If you didn’t use an agent, how you reviewed your own code to the same standard.' },
+    { id: 'checked', label: 'What you checked by hand', kind: 'text', minWords: 40, hint: 'On a real mid-range phone: frame rate on the heaviest animation, a screen reader pass, keyboard focus on desktop, a 320 px width with large text, and what you fixed after each.' },
+    { id: 'next', label: 'What you’d fix next', kind: 'text', minWords: 20, hint: 'The two weakest parts of what you shipped, honestly, and what you would do about each.' },
+  ],
+  rubric: [
+    { id: 'live', label: 'It is live and it works', strong: 'The link opens on a phone, the main flow can be completed without help, and loading, empty, error and success states are all reachable and look designed.', weight: 3, required: true },
+    { id: 'data', label: 'Every piece of data has one home', strong: 'Each component’s props, own state, lifted state and derived values are named, nothing is stored twice or kept in sync by effects, and lists use stable keys.', weight: 2, required: true },
+    { id: 'motion', label: 'Motion that is cheap and behaves', strong: 'Animations move transform and opacity (or use FLIP for real layout changes), exits play because elements stay mounted, interruptions carry on from the current value, and reduced motion swaps large movement for a fade.', weight: 2 },
+    { id: 'agent', label: 'The agent was briefed and reviewed', strong: 'The brief has goal, scope and proof; conventions are in a rules file; the write-up names specific changes that were reverted or redone, and nothing was merged that weakens a check or that the author can’t explain.', weight: 2, required: true },
+    { id: 'checked', label: 'Checked on a real device', strong: 'Frame rate, a screen reader, keyboard focus and small screens with large text were each checked by hand on named devices, with what was found and fixed.', weight: 2 },
+    { id: 'honest', label: 'Honest about what is weak', strong: 'Names real weaknesses in what shipped, with a specific next step for each, rather than a list of features to add.', weight: 1 },
+  ],
+  tips: ['Deploy on day one, even if it is only the first screen. Everything you check afterwards happens on the real link, on a real phone.', 'Build a states page that shows every state of your main component side by side. It is your QA checklist, and the first thing a reviewer will want.'],
+  example: {
+    link: 'chakki-substitutions.vercel.app, repo github.com/…/chakki-web. Try: add Sharbati atta to the cart, open the cart, and choose what happens if it’s out of stock. Tested on a Redmi 12 with Chrome and an iPhone 12 with Safari.',
+    components: [
+      'ProductCard: shows name, photo, price, the “11% off” badge and a quantity stepper. Props: product, size, slotLabel. Lifted to the category page: quantity, saved and grind, because the cart bar, the Lists tab and checkout read them. Own state: whether the mill panel is open, whether the photo has loaded, and the 1.5-second “Added” tick. Derived: line total, sold out and discount.',
+      'CartSheet: shows the cart lines and the total. Props: lines and onClose from the page; the total and the item count are derived from lines, never stored. Own state: none, because open and closed live in the page so the cart bar and the back button can both close it.',
+      'SubstitutionPicker: replace with similar, call me or refund, built on the design system’s RadioGroup. Props: value, onChange and lockedAt. Derived: whether it is locked, from lockedAt and the current time, so it can’t disagree with the order. Own state: none.',
+    ],
+    states: 'The category page reads from a local JSON catalogue through a fake fetch with a delay I can set in the URL: ?delay=3000 shows the loading skeleton, ?empty shows the empty category, and ?fail shows the error with Retry. Success is the default. Every state of ProductCard and SubstitutionPicker is in Storybook, deployed at /storybook, side by side, including sold out, compact, in the cart and locked.',
+    motion: [
+      'The cart sheet slides up with transform: translateY, laid out once at its open position, 280 ms ease-out, so it is compositor-only; it ran at 60 fps on the Redmi in a DevTools trace. It is a motion.div inside AnimatePresence, so it slides out before it unmounts, and it can be dragged down: on release, a spring carries the finger’s velocity. With reduced motion it fades in place instead.',
+      'Sorting by price uses Motion’s layout prop on each card, which is FLIP: the grid lays out once and only transforms animate. Sorting again mid-way carries on from where the cards are. With reduced motion the cards move instantly and the list fades for 150 ms so the change is still noticed.',
+    ],
+    agent: 'I used Claude Code. AGENTS.md says: colours come from tokens.css, never hex; sheets and dialogs come from @chakki/ui; dates use date-fns and no new dependency without asking; never delete, skip or silence a test or lint rule; run typecheck, tests and lint before saying done. For the picker I briefed the goal, the Figma states, the files to read, “don’t touch checkout”, and that done means tests for the 30-minute lock at 29, 30 and 31 minutes. I corrected its plan, which built a new sheet, before any code. In review I reverted a rename of ProductCard across 30 files that nobody asked for, and an eslint-disable on a useEffect that was hiding a stale value; I fixed the dependencies instead. It wrote a hex green twice, so I added a lint rule that bans hex in components. I can explain every line that merged.',
+    checked: 'On the Redmi 12: a Performance trace of the cart sheet and the sort, both with no long frames and no layout during the animation. TalkBack across the picker: it said “radio button” but not which option was chosen, because the label was outside the input; fixed and re-checked. Keyboard on desktop: focus went behind the sheet; it now traps focus and returns it to the cart button. At 320 px with 130% text, the Gujarati “Replace with similar” wrapped under the radio; I let the label wrap with a hanging indent.',
+    next: 'The fake fetch never fails half-way, so I haven’t designed what happens if the cart saves but the substitution doesn’t; I would add that state next. And my tests cover logic but not looks: I would add visual snapshots of the Storybook states so the agent can catch layout breaks itself.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4, br4, bz4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4, br4, bz4, dc4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
