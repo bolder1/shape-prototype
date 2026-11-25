@@ -33,7 +33,7 @@ function Row({ x, y, name, qty, tone, lift = 0, twin }: { x: number; y: number; 
       <text x={54} y={40} fontSize={11.5} fontWeight={600} fill={SC.muted}>{qty}</text>
       {twin !== undefined && twin > 0 && (
         <g opacity={twin}>
-          <g transform="translate(130 16)"><rect width={20} height={20} rx={6} fill={SC.surface} stroke={SC.line} /><text x={10} y={15} textAnchor="middle" fontSize={13} fontWeight={900} fill={SC.text}>−</text><rect x={26} width={20} height={20} rx={6} fill={SC.surface} stroke={SC.line} /><text x={36} y={15} textAnchor="middle" fontSize={13} fontWeight={900} fill={SC.text}>+</text></g>
+          <g transform="translate(130 28)"><rect width={20} height={20} rx={6} fill={SC.surface} stroke={SC.line} /><text x={10} y={15} textAnchor="middle" fontSize={13} fontWeight={900} fill={SC.text}>−</text><rect x={26} width={20} height={20} rx={6} fill={SC.surface} stroke={SC.line} /><text x={36} y={15} textAnchor="middle" fontSize={13} fontWeight={900} fill={SC.text}>+</text></g>
           <text x={204} y={31} textAnchor="middle" fontSize={16} fontWeight={900} fill={SC.text}>⋯</text>
         </g>
       )}
@@ -128,10 +128,15 @@ export function DirectTouchScene({ t }: { t: number }) {
         )}
         {/* the ⋯ menu on okra */}
         {menu > 0 && (
-          <g opacity={menu} transform={`translate(${PX + 96} ${rowY(1) + 44})`}>
-            <rect width={150} height={74} rx={10} fill={SC.surface} stroke={SC.line} strokeWidth={1.5} />
-            <text x={14} y={28} fontSize={13} fontWeight={800} fill={SC.error}>Remove</text>
-            <text x={14} y={56} fontSize={13} fontWeight={800} fill={SC.text}>Move to next week</text>
+          <g opacity={menu}>
+            <circle cx={PX + 20 + 204} cy={rowY(1) + 26} r={13} fill="none" stroke={SC.brand} strokeWidth={2} />
+            <g transform={`translate(${PX + 16} ${PY + 346})`}>
+              <rect width={228} height={100} rx={14} fill={SC.surface} stroke={SC.line} strokeWidth={1.5} />
+              <text x={16} y={24} fontSize={11} fontWeight={800} fill={SC.muted}>OKRA</text>
+              <text x={16} y={54} fontSize={13} fontWeight={800} fill={SC.error}>Remove</text>
+              <line x1={16} x2={212} y1={66} y2={66} stroke={SC.line} />
+              <text x={16} y={86} fontSize={13} fontWeight={800} fill={SC.text}>Move to next week</text>
+            </g>
           </g>
         )}
         {t >= 29 && (

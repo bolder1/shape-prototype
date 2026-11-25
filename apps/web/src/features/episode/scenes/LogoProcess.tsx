@@ -170,7 +170,8 @@ export function LogoProcessScene({ t }: { t: number }) {
             })}
             {t >= 23.4 && (
               <text x={0} y={350} fontSize={16} fontWeight={800} fill={SC.text} opacity={p(t, 23.4, 24)}>
-                Mandala strokes: {SUKOON_MARKS.mandala.thin} units = {markPx(SUKOON_MARKS.mandala.thin).toFixed(2)} px at 16 px. The sunset’s idea was its gradient. The half-sun: {markPx(SUKOON_MARKS.breath.thin)} px, one colour.
+                <tspan x={0}>Mandala strokes: {SUKOON_MARKS.mandala.thin} units = {markPx(SUKOON_MARKS.mandala.thin).toFixed(2)} px at 16 px. The sunset’s idea was its gradient.</tspan>
+                <tspan x={0} dy={22}>The half-sun: {markPx(SUKOON_MARKS.breath.thin)} px, one colour.</tspan>
               </text>
             )}
           </g>

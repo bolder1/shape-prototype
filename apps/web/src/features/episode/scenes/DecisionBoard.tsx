@@ -144,7 +144,7 @@ export function DecisionBoardScene({ t }: { t: number }) {
         {t >= 11 && t < 14 && (
           <g opacity={p(t, 12, 12.6) * (1 - p(t, 13.4, 14))}>
             {['→ Finance board', '→ Customer app', '→ Growth board'].map((s, i) => (
-              <text key={s} x={616} y={90 + i * 28} fontSize={21} fontWeight={800} fill={SC.muted} textAnchor="end">{s}</text>
+              <text key={s} x={624} y={288 + i * 24} fontSize={18} fontWeight={800} fill={SC.muted} textAnchor="end">{s}</text>
             ))}
           </g>
         )}
@@ -159,7 +159,7 @@ export function DecisionBoardScene({ t }: { t: number }) {
               <circle cx={200} cy={210} r={92} fill={SC.surface} stroke={SC.line} strokeWidth={4} />
               <path d={`M200 210 L200 118 A92 92 0 ${mins > 10 ? 1 : 0} 1 ${200 + 92 * Math.sin((mins / 20) * Math.PI * 2)} ${210 - 92 * Math.cos((mins / 20) * Math.PI * 2)} Z`} fill={BLUE} opacity={0.85} />
               <text x={360} y={200} fontSize={64} fontWeight={900} fill={SC.text}>{mins} min</text>
-              <text x={360} y={244} fontSize={21} fontWeight={800} fill={SC.muted}>{k < 1 ? 'On paper' : 'Same six routes, new board'}</text>
+              <text x={360} y={244} fontSize={21} fontWeight={800} fill={SC.muted}>{k < 1 ? 'On paper' : <><tspan x={360}>Same six routes,</tspan><tspan x={360} dy={28}>new board</tspan></>}</text>
             </g>
           );
         })()}

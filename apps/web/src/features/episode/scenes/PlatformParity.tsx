@@ -95,10 +95,10 @@ export function PlatformParityScene({ t }: { t: number }) {
               </Frame>
             ))}
             <g opacity={p(t, 7, 7.6)}>
-              <rect x={428} y={286} width={180} height={34} rx={17} fill={SC.error} />
-              <text x={518} y={310} fontSize={21} fontWeight={800} fill="#fff" textAnchor="middle">Copied wheel</text>
+              <rect x={428} y={314} width={180} height={34} rx={17} fill={SC.error} />
+              <text x={518} y={338} fontSize={21} fontWeight={800} fill="#fff" textAnchor="middle">Copied wheel</text>
             </g>
-            <text x={32} y={310} fontSize={21} fontWeight={700} fill={SC.muted} opacity={p(t, 8, 8.6)}>Keyboard ✕ · screen reader ✕</text>
+            <text x={32} y={338} fontSize={21} fontWeight={700} fill={SC.muted} opacity={p(t, 8, 8.6)}>Keyboard ✕ · screen reader ✕</text>
           </g>
         )}
 

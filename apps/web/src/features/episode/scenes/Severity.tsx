@@ -131,7 +131,7 @@ export function SeverityScene({ t }: { t: number }) {
             );
           })}
           <text y={340} fontSize={14} fontWeight={700} fill={SC.muted} opacity={p(t, 30, 30.6)}>Cosmetic ones are logged and parked.</text>
-          <text y={364} fontSize={14} fontWeight={700} fill={SC.muted} opacity={p(t, 30.6, 31.2)}>Effort sits apart, so a hard fix can’t sink a serious problem.</text>
+          <text y={364} fontSize={14} fontWeight={700} fill={SC.muted} opacity={p(t, 30.6, 31.2)}><tspan x={0}>Effort sits apart, so a hard fix</tspan><tspan x={0} dy={20}>can’t sink a serious problem.</tspan></text>
         </g>
       )}
     </svg>

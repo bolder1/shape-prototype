@@ -8,6 +8,7 @@ import { GUIDE_RULES, SUKOON_GUIDE, contrastRatio, type SukoonUse } from '@shape
 import { back, clamp, Grid, p, SC } from './shared';
 import { MarkArt, SUKOON } from './LogoProcess';
 import { FACE } from './BrandPalette';
+import { wrapWords } from './PlatformParity';
 
 const W = 960, H = 540;
 const RED = '#B42318', GREEN = '#067647', GOLD = '#C9A227';
@@ -31,7 +32,7 @@ export function UseArt({ k, fixed = false, box }: { k: SukoonUse; fixed?: boolea
       art = <g><rect width={160} height={100} fill={P.sand} /><Lockup x={fixed ? 34 : 6} y={20} h={36} sx={fixed ? 1 : 1.4} /><text x={80} y={82} textAnchor="middle" fontSize={11} fontWeight={700} fontFamily={FACE.tiro} fill={P.ink}>Calm after cardio · FitZone</text></g>;
       break;
     case 'whatsapp':
-      art = <g><rect width={160} height={100} fill={P.sage} />{fixed ? <Lockup x={12} y={12} h={22} ink="#FFFFFF" sun="#FFFFFF" /> : <Lockup x={2} y={2} h={22} ink="#FFFFFF" sun="#FFFFFF" />}<text x={fixed ? 12 : 4} y={fixed ? 66 : 32} fontSize={14} fontWeight={700} fontFamily={FACE.tiro} fill="#FFFFFF">Five minutes. Free today.</text></g>;
+      art = <g><rect width={160} height={100} fill={P.sage} />{fixed ? <Lockup x={12} y={12} h={22} ink="#FFFFFF" sun="#FFFFFF" /> : <Lockup x={2} y={2} h={22} ink="#FFFFFF" sun="#FFFFFF" />}<text x={fixed ? 12 : 4} y={fixed ? 62 : 32} fontSize={14} fontWeight={700} fontFamily={FACE.tiro} fill="#FFFFFF">{fixed ? <><tspan x={12}>Five minutes.</tspan><tspan x={12} dy={18}>Free today.</tspan></> : 'Five minutes. Free today.'}</text></g>;
       break;
     case 'partnerList':
       art = (
@@ -47,12 +48,12 @@ export function UseArt({ k, fixed = false, box }: { k: SukoonUse; fixed?: boolea
           {!fixed && Array.from({ length: 14 }, (_, i) => <circle key={i} cx={(i * 47) % 160} cy={(i * 29) % 100} r={1.6} fill={GOLD} />)}
           {fixed && [30, 80, 130].map(cx => <g key={cx}><ellipse cx={cx} cy={84} rx={12} ry={5} fill={P.peach} /><path d={`M${cx} 70 C${cx + 4} 76 ${cx + 3} 80 ${cx} 80 C${cx - 3} 80 ${cx - 4} 76 ${cx} 70 Z`} fill={P.sand} /></g>)}
           <Lockup x={10} y={8} h={18} ink="#FFFFFF" sun="#FFFFFF" />
-          <text x={10} y={54} fontSize={16} fontWeight={700} fontFamily={FACE.tiro} fill={fixed ? P.sand : GOLD}>Diwali: a calmer week</text>
+          <text x={10} y={46} fontSize={16} fontWeight={700} fontFamily={FACE.tiro} fill={fixed ? P.sand : GOLD}><tspan x={10}>Diwali:</tspan><tspan x={10} dy={18}>a calmer week</tspan></text>
         </g>
       );
       break;
     case 'peachButton':
-      art = <g><rect width={160} height={100} fill={P.sand} /><text x={14} y={30} fontSize={14} fontWeight={700} fontFamily={FACE.tiro} fill={P.ink}>Calm in five minutes</text><rect x={14} y={56} width={84} height={26} rx={13} fill={fixed ? P.sage : P.peach} /><text x={56} y={73} textAnchor="middle" fontSize={11} fontWeight={700} fontFamily={FACE.mukta} fill="#FFFFFF">Start free</text></g>;
+      art = <g><rect width={160} height={100} fill={P.sand} /><text x={14} y={26} fontSize={14} fontWeight={700} fontFamily={FACE.tiro} fill={P.ink}><tspan x={14}>Calm in five</tspan><tspan x={14} dy={18}>minutes</tspan></text><rect x={14} y={56} width={84} height={26} rx={13} fill={fixed ? P.sage : P.peach} /><text x={56} y={73} textAnchor="middle" fontSize={11} fontWeight={700} fontFamily={FACE.mukta} fill="#FFFFFF">Start free</text></g>;
       break;
     case 'comic':
       art = <g><rect width={160} height={100} fill={P.sand} /><text x={14} y={42} fontSize={15} fontWeight={700} fontFamily={fixed ? FACE.tiro : '"Comic Sans MS", "Chalkboard SE", cursive'} fill={P.ink}>“Slow is also</text><text x={14} y={62} fontSize={15} fontWeight={700} fontFamily={fixed ? FACE.tiro : '"Comic Sans MS", "Chalkboard SE", cursive'} fill={P.ink}>a speed.”</text><Lockup x={110} y={76} h={14} /></g>;
@@ -141,7 +142,7 @@ export function BrandGuideScene({ t }: { t: number }) {
             <g transform="translate(140 150)">
               <rect x={-sun * k} y={-sun * k + 10} width={330 + 2 * sun * k} height={h - 10 + 2 * sun * k} fill={P.peach} opacity={0.25} stroke={P.peach} strokeDasharray="6 5" />
               <Lockup x={0} y={0} h={h} />
-              {[0, 1].map(i => <g key={i} opacity={p(t, 12.6, 13)}><rect x={i ? 330 : -sun} y={h / 2 - 10} width={sun} height={20} fill={SUKOON.sage} opacity={0.6} /><text x={i ? 330 + sun / 2 : -sun / 2} y={h / 2 + 34} textAnchor="middle" fontSize={12} fontWeight={800} fill={SC.muted}>1 sun</text></g>)}
+              {[0, 1].map(i => <g key={i} opacity={p(t, 12.6, 13)}><rect x={i ? 330 : -sun} y={h / 2 - 10} width={sun} height={20} fill={SUKOON.sage} opacity={0.6} /><text x={i ? 330 + sun + 8 : -sun - 8} y={h / 2 + 4} textAnchor={i ? 'start' : 'end'} fontSize={12} fontWeight={800} fill={SC.muted}>1 sun</text></g>)}
               <g transform="translate(470 -10)" opacity={p(t, 13.4, 14)}>
                 <text x={0} y={0} fontSize={14} fontWeight={800} fill={SC.muted}>Minimum size</text>
                 <Lockup x={0} y={14} h={24} />
@@ -194,7 +195,10 @@ export function BrandGuideScene({ t }: { t: number }) {
               <g key={k} transform={`translate(0 ${i * 128})`} opacity={p(t, 26.2 + i * 0.8, 26.7 + i * 0.8)}>
                 <Thumb k={k} x={0} y={0} w={180} fixed mark="do" />
                 <Thumb k={k} x={200} y={0} w={180} mark="dont" />
-                <text x={410} y={50} fontSize={14} fontWeight={800} fill={SC.text}>{GUIDE_RULES[k === 'gym' ? 'stretch' : k === 'whatsapp' ? 'clear' : 'pair'].rule}</text>
+                {(() => {
+                  const lines = wrapWords(GUIDE_RULES[k === 'gym' ? 'stretch' : k === 'whatsapp' ? 'clear' : 'pair'].rule, 52);
+                  return <text x={410} y={60 - (lines.length - 1) * 10} fontSize={14} fontWeight={800} fill={SC.text}>{lines.map((l, j) => <tspan key={j} x={410} dy={j ? 20 : 0}>{l}</tspan>)}</text>;
+                })()}
               </g>
             ))}
           </g>

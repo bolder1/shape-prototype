@@ -24,13 +24,13 @@ function Day({ d, x, y, lit, hot }: { d: number; x: number; y: number; lit: Cere
       <rect width={150} height={104} rx={12} fill={SC.surface} stroke={lit && meets.includes(lit) ? CEREMONY_TONE[lit] : SC.line} strokeWidth={lit && meets.includes(lit) ? 3 : 1} />
       <text x={12} y={24} fontSize={13} fontWeight={800} fill={SC.muted}>Day {d}</text>
       {meets.map((m, i) => (
-        <g key={m} transform={`translate(12 ${38 + i * 20})`} opacity={!lit || lit === m ? 1 : 0.35}>
+        <g key={m} transform={`translate(12 ${meets.length > 2 ? 32 + i * 16 : 38 + i * 20})`} opacity={!lit || lit === m ? 1 : 0.35}>
           <rect width={8} height={14} rx={3} fill={CEREMONY_TONE[m]} />
           <text x={14} y={12} fontSize={12} fontWeight={700} fill={SC.text}>{CEREMONY_SHORT[m]}</text>
         </g>
       ))}
       {hot && (
-        <g transform="translate(12 82)">
+        <g transform={`translate(12 ${meets.length > 2 ? 84 : 82})`}>
           <rect width={126} height={16} rx={5} fill={SC.soft} stroke={SC.brand} />
           <text x={6} y={12} fontSize={10.5} fontWeight={800} fill={SC.text}>{hot}</text>
         </g>
@@ -44,7 +44,7 @@ export function SprintCadenceScene({ t }: { t: number }) {
   const title = t < 6 ? 'Three weeks, then a handoff' : t < 11 ? 'The surprises' : t < 16 ? 'Two tracks' : t < 21 ? 'Stand-up' : t < 26 ? 'Refinement' : t < 31 ? 'Review, then retro' : 'Thin slices, early answers';
   const lit: Ceremony | null = t < 16 ? null : t < 21 ? 'standup' : t < 26 ? 'refinement' : t < 28.5 ? 'review' : 'retro';
   const hotDay = t < 21 ? 3 : t < 26 ? 6 : 10;
-  const hotText = t < 21 ? 'Rohan: the 9 pm cut-off' : t < 26 ? 'Swap flow, sized' : t < 28.5 ? 'Pause, live on staging' : 'Designs to refinement first';
+  const hotText = t < 21 ? 'Rohan: the 9 pm cut-off' : t < 26 ? 'Swap flow, sized' : t < 28.5 ? 'Pause, live on staging' : 'Refinement first';
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="h-full w-full" role="img" aria-label={`Animated story: Nisha, Rasoi's designer, spends three weeks alone on 22 screens for Pause my meals, and on day 1 of the build the developers' questions cross out half of them. Next time she works in two tracks: ${TRACKS.map(tr => `${tr.label}, ${tr.does}`).join('; ')}. On a ten-day sprint calendar, Rohan's blocker is raised at the next stand-up, the swap flow is sized at refinement on day ${CEREMONY_DAY.refinement}, and on day ${CEREMONY_DAY.review} pausing is shown working at the review before the retro. Raised at stand-up, blockers wait ${AT_STANDUP} days in all; held for the retro, they would wait ${AT_RETRO}.`}>
       <rect width={W} height={H} fill={SC.soft} />

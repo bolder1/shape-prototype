@@ -5,6 +5,7 @@
 // code prototypes built to be thrown away. Pure function of t (0–36). Also exports `TOOL_FILL`, which `proto-fit` uses.
 import { PROTO_NEED_LABEL, PROTO_NEEDS, PROTO_TOOLS, PROTO_TOOL_LABEL, THELA_QUESTIONS, TOOL_CAN, TOOL_DAYS, protoTool, type ProtoTool } from '@shape/content';
 import { back, clamp, Grid, lerp, p, SC } from './shared';
+import { wrapWords } from './PlatformParity';
 
 const W = 640, H = 360;
 /** One fill per tool; white text on each passes 4.5:1. */
@@ -84,8 +85,8 @@ export function ProtoLadderScene({ t }: { t: number }) {
               const tool = PROTO_TOOLS[i];
               const adds = TOOL_CAN[tool].filter(n => i === 0 || !TOOL_CAN[PROTO_TOOLS[i - 1]].includes(n));
               return (
-                <text x={32} y={330} fontSize={21} fontWeight={800} fill={SC.text} opacity={p(t, 11.8 + i * 5, 12.4 + i * 5)}>
-                  {i === 0 ? 'Makes real: ' : 'Adds: '}{adds.map(n => PROTO_NEED_LABEL[n].toLowerCase()).slice(0, 3).join(', ')}
+                <text x={32} y={316} fontSize={21} fontWeight={800} fill={SC.text} opacity={p(t, 11.8 + i * 5, 12.4 + i * 5)}>
+                  {wrapWords(`${i === 0 ? 'Makes real:' : 'Adds:'} ${adds.map(n => PROTO_NEED_LABEL[n].toLowerCase()).slice(0, 3).join(', ')}`, 46).map((l, j) => <tspan key={j} x={32} dy={j ? 28 : 0}>{l}</tspan>)}
                 </text>
               );
             })()}

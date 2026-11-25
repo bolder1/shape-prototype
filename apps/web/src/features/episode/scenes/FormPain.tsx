@@ -96,7 +96,7 @@ export function FormPainScene({ t }: { t: number }) {
       <rect width={W} height={H} fill={SC.soft} />
       <Grid />
       <g opacity={clamp(back(t / 0.6))}><MandiForm fixed={fixed} focus={focus} x={PX} y={PY} scale={PS} closed={closed} /></g>
-      {t < 20 && <text x={PX + 110} y={PY + FORM_H * PS + 18} textAnchor="middle" fontSize={12} fontWeight={700} fill={SC.muted} opacity={1 - p(t, 19, 19.6)}>Scroll for 4 more: date of birth, city, state, how did you hear…</text>}
+      {t < 20 && <text x={PX + FORM_W * PS + 14} y={PY + FORM_H * PS - 8} fontSize={12} fontWeight={700} fill={SC.muted} opacity={1 - p(t, 19, 19.6)}>← Scroll for 4 more: date of birth, city, state, how did you hear…</text>}
 
       {/* stopwatch */}
       {!Number.isNaN(clockS) && (

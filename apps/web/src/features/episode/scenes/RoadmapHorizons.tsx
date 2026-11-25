@@ -9,6 +9,7 @@ import { GALLA_BETS, HORIZONS, horizonFor, type Evidence, type GallaBet, type Ho
 import { back, clamp, Grid, lerp, p, SC } from './shared';
 import { INK, INK_MUTED } from './EaseCurves';
 import { GALLA } from './VisionNarrative';
+import { wrapWords } from './PlatformParity';
 
 const W = 960, H = 540;
 /** Column colours; white on each passes 4.5:1. */
@@ -21,14 +22,19 @@ export const EVIDENCE_NAME: Record<Evidence, string> = { tested: 'Fix tested', p
 /** What the team calls each bet, for “after …” tags. */
 export const BET_NAME: Record<GallaBet, string> = { reminders: 'reminders', backup: 'backup', collect: 'the UPI link', disputes: 'statements', voice: 'voice entry', stock: 'stock alerts', reorder: 'reorder', loans: 'loans', gst: 'the GST suite', dark: 'dark mode' };
 
-/** A bet on the board, 200 × 46: its short problem, an evidence tag, and a border as sure as its column. */
+/** Vertical step between bet cards in a column: a two-line card and a gap. */
+const ROW = 66;
+
+/** A bet on the board, 200 wide and 46 tall (61 when its short problem wraps to two lines): the problem, an evidence
+ *  tag, and a border as sure as its column. */
 export function BetCard({ x, y, bet, at, k = 1, w = 200 }: { x: number; y: number; bet: GallaBet; at: Horizon; k?: number; w?: number }) {
   const b = GALLA_BETS[bet];
+  const lines = wrapWords(b.short, Math.floor((w - 24) / 7.4)).slice(0, 2), extra = (lines.length - 1) * 15;
   return (
     <g transform={`translate(${x} ${y})`} opacity={k}>
-      <rect width={w} height={46} rx={10} fill="#FFFFFF" stroke={HORIZON_FILL[at]} strokeWidth={2} strokeDasharray={HORIZON_DASH[at]} />
-      <text x={12} y={20} fontSize={12} fontWeight={900} fill={INK}>{b.short}</text>
-      <text x={12} y={37} fontSize={10.5} fontWeight={800} fill={INK_MUTED}>{EVIDENCE_NAME[b.evidence]}{'after' in b ? ` · after ${BET_NAME[b.after]}` : ''}</text>
+      <rect width={w} height={46 + extra} rx={10} fill="#FFFFFF" stroke={HORIZON_FILL[at]} strokeWidth={2} strokeDasharray={HORIZON_DASH[at]} />
+      <text x={12} y={20} fontSize={12} fontWeight={900} fill={INK}>{lines.map((l, j) => <tspan key={j} x={12} dy={j ? 15 : 0}>{l}</tspan>)}</text>
+      <text x={12} y={37 + extra} fontSize={10.5} fontWeight={800} fill={INK_MUTED}>{EVIDENCE_NAME[b.evidence]}{'after' in b ? ` · after ${BET_NAME[b.after]}` : ''}</text>
     </g>
   );
 }
@@ -114,10 +120,10 @@ export function RoadmapHorizonsScene({ t }: { t: number }) {
             ))}
             {t >= 17 && t < 22.2 && (
               <g transform={`translate(${COL.now.x + 10} 160)`}>
-                <rect width={200} height={64} rx={10} fill="#FFFFFF" stroke={HORIZON_FILL.now} strokeWidth={2} />
-                <text x={12} y={26} fontSize={13} fontWeight={900} fill={INK} opacity={1 - p(t, 18.6, 19.2)} textDecoration={t > 18 ? 'line-through' : undefined}>Automatic WhatsApp reminders</text>
-                <text x={12} y={26} fontSize={13} fontWeight={900} fill={INK} opacity={p(t, 19, 19.6)}>Customers forget what they owe</text>
-                <text x={12} y={48} fontSize={11} fontWeight={800} fill={INK_MUTED} opacity={p(t, 19.8, 20.4)}>The fix can change. The problem won’t.</text>
+                <rect width={200} height={96} rx={10} fill="#FFFFFF" stroke={HORIZON_FILL.now} strokeWidth={2} />
+                <text x={12} y={26} fontSize={13} fontWeight={900} fill={INK} opacity={1 - p(t, 18.6, 19.2)} textDecoration={t > 18 ? 'line-through' : undefined}><tspan x={12}>Automatic WhatsApp</tspan><tspan x={12} dy={17}>reminders</tspan></text>
+                <text x={12} y={26} fontSize={13} fontWeight={900} fill={INK} opacity={p(t, 19, 19.6)}><tspan x={12}>Customers forget</tspan><tspan x={12} dy={17}>what they owe</tspan></text>
+                <text x={12} y={68} fontSize={11} fontWeight={800} fill={INK_MUTED} opacity={p(t, 19.8, 20.4)}><tspan x={12}>The fix can change.</tspan><tspan x={12} dy={15}>The problem won’t.</tspan></text>
               </g>
             )}
             {(Object.entries(rows) as [Horizon, GallaBet[]][]).map(([h, bets]) => bets.map((bet, r) => {
@@ -125,12 +131,12 @@ export function RoadmapHorizonsScene({ t }: { t: number }) {
               const k = bet === 'collect' && h === 'next' ? 1 : p(t, drop.at, drop.at + 0.5);
               const moving = bet === 'collect' && h === 'next', q = p(t, 28.8, 29.6);
               const x = COL[h].x + 10 + (moving ? lerp(COL.now.x - COL.next.x, 0, q) : 0);
-              const y = moving ? lerp(150 + 2 * 56, 150 + r * 56, q) : lerp(120, 150 + r * 56, k);
+              const y = moving ? lerp(150 + 2 * ROW, 150 + r * ROW, q) : lerp(120, 150 + r * ROW, k);
               return <BetCard key={bet} x={x} y={y} bet={bet} at={h} k={k} w={h === 'off' ? 150 : 200} />;
             }))}
             {t >= 27 && t < 31 && (
               <g opacity={p(t, 27.8, 28.3) * (1 - p(t, 30.4, 31))}>
-                <path d={`M${COL.now.x + 210} 173 C ${COL.now.x + 250} 173 ${COL.next.x - 20} ${lerp(173, 320, p(t, 28.8, 29.6))} ${COL.next.x + 8} ${lerp(173, 320, p(t, 28.8, 29.6))}`} fill="none" stroke={HORIZON_FILL.next} strokeWidth={3} strokeDasharray="6 4" />
+                <path d={`M${COL.now.x + 210} ${150 + 30} C ${COL.now.x + 250} ${150 + 30} ${COL.next.x - 20} ${lerp(150 + 30, 150 + 3 * ROW + 30, p(t, 28.8, 29.6))} ${COL.next.x + 8} ${lerp(150 + 30, 150 + 3 * ROW + 30, p(t, 28.8, 29.6))}`} fill="none" stroke={HORIZON_FILL.next} strokeWidth={3} strokeDasharray="6 4" />
                 <text x={COL.next.x + 10} y={470} fontSize={12.5} fontWeight={900} fill={SC.text}>It lives inside the reminder:</text>
                 <text x={COL.next.x + 10} y={488} fontSize={12.5} fontWeight={900} fill={SC.text}>one column after it</text>
               </g>

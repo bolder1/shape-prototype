@@ -70,7 +70,7 @@ export function AiWorkflowScene({ t }: { t: number }) {
               <rect y={14} width={solo * 34} height={26} rx={8} fill={SC.line} opacity={0.5} />
               <rect y={14} width={w} height={26} rx={8} fill={ROLE_TONE.delegate} />
               <text x={solo * 34 + 14} y={33} fontSize={14} fontWeight={800} fill={SC.muted}>{solo} h by hand</text>
-              <text x={w + 10} y={33} fontSize={14} fontWeight={900} fill={SC.text} opacity={k2}>{ai} h with AI, checked</text>
+              <text x={0} y={60} fontSize={14} fontWeight={900} fill={SC.text} opacity={k2}>{ai} h with AI, checked</text>
             </g>
           );
         })}

@@ -54,10 +54,10 @@ export function ResearchGuardrailsScene({ t }: { t: number }) {
             ))}
             <g transform="translate(580 0)" opacity={p(t, 3, 3.6)}>
               {[0, 1, 2].map(i => <circle key={i} cx={30 + i * 70} cy={40} r={26} fill={SC.surface} stroke={SC.design} strokeWidth={3} />)}
-              <text y={120} fontSize={15} fontWeight={800} fill={SC.muted}>Three researchers.</text>
-              <text y={150} fontSize={44} fontWeight={900} fill={SC.text}>60 → 12</text>
-              <text y={176} fontSize={15} fontWeight={800} fill={SC.muted}>requests a quarter → studies they can run</text>
-              <Para x={0} y={210} w={300} h={80} size={14} muted>So the squads have started talking to travellers on their own.</Para>
+              <text y={98} fontSize={15} fontWeight={800} fill={SC.muted}>Three researchers.</text>
+              <text y={152} fontSize={44} fontWeight={900} fill={SC.text}>60 → 12</text>
+              <text y={178} fontSize={15} fontWeight={800} fill={SC.muted}>requests a quarter → studies they can run</text>
+              <Para x={0} y={212} w={300} h={80} size={14} muted>So the squads have started talking to travellers on their own.</Para>
             </g>
           </g>
         )}
