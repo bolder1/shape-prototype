@@ -2361,9 +2361,57 @@ const gr4: BossBriefInput = {
   },
 };
 
+const br4: BossBriefInput = {
+  chapterId: 'br.4',
+  title: 'A launch campaign narrative, across three channels',
+  minutes: 120,
+  scenario: [
+    'Write the narrative for a launch campaign: for your own product, your Studio product, or Sukoon Teams, the plan HR departments buy so their staff get Sukoon, launching in Bengaluru, Pune and Hyderabad with ₹1.5 crore. Sukoon’s brand narrative is “Work got faster. Your head didn’t. Five minutes to switch off, and be where you are.” The last campaign was remembered when it told one person’s story, and forgotten when it listed features.',
+    'Find the tension your audience really lives with, and build one arc with the customer as the hero and the brand as the guide. Say which brand in the family fronts the campaign and how the master brand appears. Cut the story across three channels by what each can carry, so every piece works alone and they add up in sequence. Then say how you will know it built the brand, not only how it sold in week one.',
+  ],
+  fields: [
+    { id: 'summary', label: 'The campaign in three sentences', kind: 'text', minWords: 35, hint: 'Who it is for, the story it tells, and what should be different in their minds and choices six months later.' },
+    { id: 'tension', label: 'The tension, and where you found it', kind: 'text', minWords: 40, hint: 'The moment your audience lives with, in their words, with what is at stake for them, and the research it came from. Name the villain: a problem, not a rival.' },
+    { id: 'arc', label: 'The arc', kind: 'list', items: 3, minWords: 15, hint: 'One line each for the tension, the turn (what the brand offers as the guide, as something you can see and do) and the proof (the new normal, shown).' },
+    { id: 'brand', label: 'Which brand fronts it, and why', kind: 'text', minWords: 30, hint: 'Where it sits in the family (master, sub-brand, endorsed, own), how the master brand appears, and what that borrows and risks.' },
+    { id: 'channels', label: 'Three channels', kind: 'list', items: 3, minWords: 20, hint: 'One per line: the channel, the part of the arc it carries and why it can, the execution in a sentence, and what someone does next.' },
+    { id: 'measures', label: 'How you will know it built the brand', kind: 'long', minWords: 50, hint: 'Brand measures and their baseline, the holdout, read dates, how you clean the numbers, the activation measures kept separate, and the result that would count as a win or make you change course.' },
+    { id: 'risks', label: 'What could go wrong', kind: 'list', items: 2, minWords: 15, hint: 'One per line: a way the story could misfire or mislead (a claim it implies, a group it leaves out, harm to the master brand), and what you changed or will watch.' },
+  ],
+  rubric: [
+    { id: 'tension', label: 'A real tension', strong: 'A specific moment the audience lives with, found in research and in their words, with stakes for them; the villain is the problem, not a competitor.', weight: 2, required: true },
+    { id: 'arc', label: 'The customer is the hero', strong: 'Tension, turn and proof in order; the brand arrives at the turn as the guide with a plan you can see and do; the proof is shown, not claimed; it retells the brand narrative and a rival couldn’t put its logo on it.', weight: 3, required: true },
+    { id: 'architecture', label: 'The right brand fronts it', strong: 'The fronting brand’s place in the family is justified by promise, risk, equity and buyer, and the master brand appears in a way that matches that choice.', weight: 1 },
+    { id: 'channels', label: 'One story, cut by channel', strong: 'Each channel carries the part of the arc it can hold for the attention it gets; every piece works alone and they add up in sequence; each says what the person does next.', weight: 2 },
+    { id: 'measures', label: 'Measured on the right clock', strong: 'Brand measures (a tracker against a holdout, clean share of search against share of market) with baselines and read dates set before launch, kept separate from activation measures, and a stated result that counts as a win.', weight: 2, required: true },
+    { id: 'risks', label: 'Honest about risk', strong: 'Names specific ways the story could mislead or misfire, for whom, and shows what was changed because of them.', weight: 1 },
+  ],
+  tips: ['Write the tension in the words someone used in research before you write a single line of copy. If you can’t quote anyone, you haven’t found it yet.', 'Read each piece aloud with a rival’s name in place of yours. If it still works, it isn’t your story.'],
+  example: {
+    summary: 'For HR heads at Bengaluru, Pune and Hyderabad tech firms who are losing good people to burnout, “Switch off at work” tells the story of a team lead whose team stops answering at midnight. Sukoon Teams is the guide: five minutes a day their staff will actually use. Six months on we want HR heads to name Sukoon Teams when they think of burnout, and to put it on their shortlist.',
+    tension: 'In 14 interviews, HR heads told us their best people leave quietly after a crunch: “I find out in the exit interview that they were drowning for six months.” They’ve bought wellness tools nobody opened. The stakes are their people and their own credibility with leadership. The villain is the always-on team culture they can’t fix with a poster, not other wellness apps.',
+    arc: [
+      'Tension: Priya, an engineering lead in Bengaluru, sees her best engineer online at 1 am again, and the last wellness app the company bought has a 4% open rate.',
+      'Turn: Sukoon Teams starts with a five-minute switch-off at 6 pm in the team’s own Slack, which Priya does first; staff join in one tap, and she sees only how many took part, never who.',
+      'Proof: six weeks later the 1 am messages have stopped, the engineer stays, and the pilot numbers show those who used it on four days a week slept 26 minutes longer.',
+    ],
+    brand: 'Sukoon Teams, a sub-brand: the promise is the same, but HR chooses and pays, and needs a name for the contract and the deck. It borrows the trust staff already have in Sukoon, which is why open rates beat generic tools. The risk is shared: if Teams is seen as surveillance, it lands on Sukoon, so privacy is part of the story, not small print.',
+    channels: [
+      'LinkedIn, a 45-second film for HR heads: carries the whole arc, because people watch longer there for their work. It ends on “See the pilot numbers”, which opens the study.',
+      'Billboards outside tech parks in Whitefield and Hinjewadi at 8 pm: carry the tension in one line, “Still online. Still at work. Still leaving?”, so HR heads recognise it on the drive home before they see the film.',
+      'A 20-minute webinar with Priya and two HR heads from the pilot: carries the proof, with numbers people can question live, and ends with booking a four-week free trial for one team.',
+    ],
+    measures: 'Brand: a monthly tracker of 300 HR leaders, asking whether they have heard of Sukoon Teams and would shortlist it, with three months of baseline. The campaign runs in Bengaluru and Pune and is held back from Hyderabad until month four, so lift is the change in the two cities minus the change in Hyderabad. Share of search for “sukoon teams” and “sukoon for work” (not “sukoon”, which is a common word and a song) against our share of corporate wellness contracts, read quarterly. Activation is kept separate: trial bookings and pilot-to-contract conversion, read weekly by sales. A win is a 6-point lift in shortlisting against the holdout by month four and share of search above market share by month six; under 2 points by month four and we rework the film, not the media plan.',
+    risks: [
+      'Surveillance: HR seeing who switched off would turn a care tool into monitoring. The story shows Priya seeing only totals, and the product enforces it: no individual data for groups under five people.',
+      'Overpromising: “the engineer stays” could imply Sukoon fixes burnout. The proof line says only what the pilot measured, and the film shows the team also changing its meeting hours, so Sukoon is the guide, not a cure.',
+    ],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4, br4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

@@ -198,6 +198,9 @@ import { HabitZone } from './games/HabitZone';
 import { NudgeCrit } from './games/NudgeCrit';
 import { RewardPick } from './games/RewardPick';
 import { ReferralMath } from './games/ReferralMath';
+import { ArcMap } from './games/ArcMap';
+import { FamilySort } from './games/FamilySort';
+import { SearchShare } from './games/SearchShare';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -405,6 +408,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'nudge-crit': NudgeCrit,
   'reward-pick': RewardPick,
   'referral-math': ReferralMath,
+  'arc-map': ArcMap,
+  'family-sort': FamilySort,
+  'search-share': SearchShare,
 };
 
 interface Props {

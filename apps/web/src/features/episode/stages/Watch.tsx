@@ -196,6 +196,9 @@ import { PracticeLoopScene } from '../scenes/PracticeLoop';
 import { NudgeWeekScene } from '../scenes/NudgeWeek';
 import { StreakTrapScene } from '../scenes/StreakTrap';
 import { ViralLoopScene } from '../scenes/ViralLoop';
+import { CampaignArcScene } from '../scenes/CampaignArc';
+import { BrandSpectrumScene } from '../scenes/BrandSpectrum';
+import { BrandTrackerScene } from '../scenes/BrandTracker';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -385,6 +388,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'nudge-week': NudgeWeekScene,
   'streak-trap': StreakTrapScene,
   'viral-loop': ViralLoopScene,
+  'campaign-arc': CampaignArcScene,
+  'brand-spectrum': BrandSpectrumScene,
+  'brand-tracker': BrandTrackerScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

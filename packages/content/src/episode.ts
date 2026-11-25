@@ -59,7 +59,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'content-model', 'content-lifecycle', 'grounded-answer',
   'study-session', 'persona-rewrite', 'maturity-road',
   'moat-map', 'bet-portfolio', 'platform-layers',
-  'practice-loop', 'nudge-week', 'streak-trap', 'viral-loop']);
+  'practice-loop', 'nudge-week', 'streak-trap', 'viral-loop',
+  'campaign-arc', 'brand-spectrum', 'brand-tracker']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -243,6 +244,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `nudge-crit`: lanes are `NUDGE_CALLS` in order; every card is a draft notification, its `visual` a key of `RIYAAZ_NUDGES` (each used once), its `label` that notification's `text`, and its lane `nudgeCall` of it: pressure, then whose need, then the moment (quiet hours, `IGNORE_LIMIT`). Each card shows on a lock screen with its time; right calls file it into Sunita's week (sent, or held with `holdReason`). Every card needs a `note`.
  *  - `reward-pick`: lanes are `REWARD_CALLS` in order; every card is a game mechanic, its `visual` a key of `RIYAAZ_MECHANICS` (each used once), its `label` that mechanic's `text`, and its lane `rewardCall` of it: money from loss or chance, then what it counts, then whether it controls. Right calls fill a scorecard; kept ones light the need they support (`SDT_NEEDS`). Every card needs a `note`.
  *  - `referral-math`: lanes are `REFERRAL_CALLS` in order; every card is a referral design, its `visual` a key of `RIYAAZ_REFERRALS` (each used once), its `label` that design's `text`, and its lane `referralCall` of it against `REFERRAL_BASE`: fairness, then kept K, then K. Each card shows its invites × conversion × kept sum; right calls plot K against kept K. Every card needs a `note`.
+ *  - `arc-map`: lanes are `CAMPAIGN_ROLES` in order; every card is a piece of Sukoon's “Switch off” campaign, its `visual` a key of `SUKOON_PIECES` (each used once), its `label` that piece's `text`, and its lane `arcRole` of it: about the brand or a claim is cut, the rest carry the part of the story they show. Each card shows its channel; right calls place it on the campaign arc (tension, turn, proof) or the cutting-room floor. Every card needs a `note`.
+ *  - `family-sort`: lanes are `ARCH_CALLS` in order; every card is an offering, its `visual` a key of `SUKOON_OFFERS` (each used once), its `label` that offering's `text`, and its lane `archCall` of it: promise, then risk, then equity, then buyer. Right calls add it to the brand family tree under the name `archName` gives it. Every card needs a `note`.
+ *  - `search-share`: lanes are `SOS_CALLS` in order; every card is a month of search data, its `visual` a key of `SUKOON_READINGS` (each used once), its `label` that reading's `text`, and its lane `sosCall` of it: a distorted count first, then share of search against share of market (`SOS_GAP`). Right calls plot clean readings on a share of search × share of market chart and set distorted ones aside with their `distortion`. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -298,7 +302,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'model-build', 'rot-audit', 'answer-crit',
   'study-fix', 'persona-crit', 'program-road',
   'moat-crit', 'bet-book', 'layer-pick',
-  'habit-zone', 'nudge-crit', 'reward-pick', 'referral-math']);
+  'habit-zone', 'nudge-crit', 'reward-pick', 'referral-math',
+  'arc-map', 'family-sort', 'search-share']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
