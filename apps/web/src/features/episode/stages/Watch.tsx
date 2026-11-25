@@ -155,6 +155,9 @@ import { PromptEvalsScene } from '../scenes/PromptEvals';
 import { SprintCadenceScene } from '../scenes/SprintCadence';
 import { WorkshopRoomScene } from '../scenes/WorkshopRoom';
 import { SprintWeekScene } from '../scenes/SprintWeek';
+import { TradeoffMatrixScene } from '../scenes/TradeoffMatrix';
+import { PrinciplePosterScene } from '../scenes/PrinciplePoster';
+import { RuleBreakScene } from '../scenes/RuleBreak';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -303,6 +306,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'sprint-cadence': SprintCadenceScene,
   'workshop-room': WorkshopRoomScene,
   'sprint-week': SprintWeekScene,
+  'tradeoff-matrix': TradeoffMatrixScene,
+  'principle-poster': PrinciplePosterScene,
+  'rule-break': RuleBreakScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

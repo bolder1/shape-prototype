@@ -157,6 +157,9 @@ import { EvalFix } from './games/EvalFix';
 import { CeremonyRoute } from './games/CeremonyRoute';
 import { RoomRead } from './games/RoomRead';
 import { SprintFit } from './games/SprintFit';
+import { MatrixRead } from './games/MatrixRead';
+import { PrincipleTest } from './games/PrincipleTest';
+import { RuleCall } from './games/RuleCall';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -323,6 +326,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'ceremony-route': CeremonyRoute,
   'room-read': RoomRead,
   'sprint-fit': SprintFit,
+  'matrix-read': MatrixRead,
+  'principle-test': PrincipleTest,
+  'rule-call': RuleCall,
 };
 
 interface Props {

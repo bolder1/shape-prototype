@@ -4,6 +4,7 @@ import { twoProp } from './stats';
 import { GUIDE_SECTIONS, KIT_SLOTS, MARK_VERDICTS, SUKOON_KIT, SUKOON_MARKS, SUKOON_USES, kitFlaw, markVerdict, sectionBroken, type KitOption, type SukoonKitKey, type SukoonMark, type SukoonUse } from './identity';
 import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_ASSETS, SUKOON_DRAFTS, SUKOON_SECTIONS, SUKOON_SEO_BEFORE, copyFlaws, copyLine, seoIssues, type CopyDraft, type SeoIssue, type SukoonAsset, type SukoonDraft, type SukoonSection } from './marketing';
 import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, PROMPT_PARTS, aiRole, fieldTreatment, type HisaabCase, type HisaabField, type HisaabTask } from './ai';
+import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { CEREMONIES, MOVES, RASOI_ITEMS, RASOI_MOMENTS, RASOI_QUESTIONS, SPRINT_CALLS, ceremonyFor, moveFor, sprintCall, type RasoiItem, type RasoiMoment, type RasoiQuestion } from './team';
 import { GAADI_CODE, GAADI_QA, GAADI_SPEC, QA_LANES, REF_KINDS, SPEC_SOURCES, qaLane, refKind, type GaadiCode, type GaadiQa, type GaadiSpecItem } from './handoff';
 import { PARCHA_BUYERS, PARCHA_SIGNALS, PLAN_IDS, ROUTES, SUNRISE_MOMENTS, demoFlaws, planFor, type ParchaBuyer, type ParchaSignal, type SunriseMoment } from './sales';
@@ -982,6 +983,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...SPRINT_CALLS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RASOI_QUESTIONS).sort());
         for (const c of ep.game.cards) { const q = RASOI_QUESTIONS[c.visual as RasoiQuestion]; expect(c.label).toBe(q.text); expect(c.lane).toBe(sprintCall(q)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'matrix-read') {   // every open decision once, read the way the matrix says
+        expect(lanes).toEqual([...MATRIX_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(HAAT_DECISIONS).sort());
+        for (const c of ep.game.cards) { const d = HAAT_DECISIONS[c.visual as HaatDecision]; expect(c.label).toBe(d.text); expect(c.lane).toBe(matrixCall(d)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'principle-test') {   // every draft once, judged by the opposite test and the live disputes
+        expect(lanes).toEqual([...PRINCIPLE_VERDICTS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(HAAT_PRINCIPLES).sort());
+        for (const c of ep.game.cards) { const pr = HAAT_PRINCIPLES[c.visual as HaatPrinciple]; expect(c.label).toBe(pr.text); expect(c.lane).toBe(principleVerdict(pr)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'rule-call') {   // every request once, called by floors, reasons and how often
+        expect(lanes).toEqual([...RULE_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(HAAT_BREAKS).sort());
+        for (const c of ep.game.cards) { const b = HAAT_BREAKS[c.visual as HaatBreak]; expect(c.label).toBe(b.text); expect(c.lane).toBe(ruleCall(b)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

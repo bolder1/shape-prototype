@@ -1726,9 +1726,59 @@ const ld1: BossBriefInput = {
   },
 };
 
+const fd4: BossBriefInput = {
+  chapterId: 'fd.4',
+  title: 'Five principles, three decisions',
+  minutes: 90,
+  scenario: [
+    'Your Studio product needs design principles that settle arguments, not decorate a wall. If you don’t have a product yet, use Haat, the grocery and essentials marketplace from this chapter: 40 lakh households a week, 14 designers, and the same arguments every month.',
+    'Start from the arguments. List the decisions your team keeps reopening, write five principles that each take a side a sensible team could reject and say what they cost, and rank any that clash. Then use them on three real decisions: name the options, the principle that settles each, and what you gave up. Finally, be honest about where principles stop: one decision they can’t settle, and when your team should break one of them.',
+  ],
+  fields: [
+    { id: 'product', label: 'The product and its live arguments', kind: 'long', minWords: 30, hint: 'What the product is and who uses it, then the three or four decisions your team keeps reopening, each with its two sides.' },
+    { id: 'principles', label: 'Five principles', kind: 'list', items: 5, minWords: 12, hint: 'One per line. Each names a choice and its cost (“X, even when Y”). A sensible team could choose the opposite of every one.' },
+    { id: 'opposites', label: 'The opposite of each', kind: 'list', items: 5, minWords: 8, hint: 'One per line, in the same order: the opposite principle, and the kind of product that could reasonably hold it.' },
+    { id: 'ranking', label: 'When two collide', kind: 'text', minWords: 20, hint: 'Which of your principles pull against each other, which wins, and a decision where that order matters.' },
+    { id: 'decisions', label: 'Three decisions, settled', kind: 'list', items: 3, minWords: 30, hint: 'One per line: the decision and its options, the principle that settles it, which option wins, and what you give up.' },
+    { id: 'limits', label: 'Where principles stop', kind: 'long', minWords: 40, hint: 'One decision your principles can’t settle and why (a priority call, a guess to check, or no option that works), what you’d do instead, and when your team should break one of the five.' },
+  ],
+  rubric: [
+    { id: 'decide', label: 'Principles that take sides', strong: 'All five pass the opposite test: the opposites are principles a real, sensible team could hold. Each names what it costs (“even when…”, “over…”). None is a platitude or a visual style.', weight: 3, required: true },
+    { id: 'settled', label: 'Decisions actually settled', strong: 'Each of the three decisions names its options, cites one principle, follows it to a clear winner, and states what is given up. A reader could reach the same answer from the principle alone.', weight: 3, required: true },
+    { id: 'specific', label: 'Specific to this product', strong: 'The principles come from the product’s own arguments and users; swapping in another company’s name would make most of them wrong.', weight: 2 },
+    { id: 'ranked', label: 'Clashes ranked', strong: 'Names a real tension between two of the principles, says which wins, and shows a decision where the order changes the outcome.', weight: 1 },
+    { id: 'limits', label: 'Honest about limits', strong: 'Picks a decision the principles genuinely can’t settle, names why (priorities, evidence or no viable option) and the right next step; says when a principle should bend, separating floors from preferences.', weight: 1 },
+  ],
+  tips: ['Write the arguments first, the principles second. A principle that doesn’t settle any argument on your list isn’t finished.', 'For every principle, finish the sentence “…even when”. If you can’t, it doesn’t cost you anything yet.'],
+  example: {
+    product: 'Haat is a grocery and essentials marketplace in 30 Indian cities: 40 lakh households order each week from our dark stores and from local sellers. Arguments we keep reopening: show the ₹25 delivery fee early or at checkout; when an item is out of stock, swap it or ask; let brand-paid results sit above the best match in search; let big seller price changes go live instantly or hold them for review.',
+    principles: [
+      'The first price you see is the price you pay, even when hiding the fee would sell more.',
+      'The basket is the customer’s: we never change what’s in it without asking, even when asking is slower.',
+      'A weekly shop in under three minutes, even if that means we decide small things for people.',
+      'Search answers the search: paid results are labelled and never above the best match, even when a brand pays more.',
+      'Buyers are protected before sellers are pleased: big price jumps wait for a human, even for our largest sellers.',
+    ],
+    opposites: [
+      'Show the lowest possible price first and add costs later, as many travel sites do to win comparison searches.',
+      'Fill the order as best we can without interrupting people, as a personal-shopper service might.',
+      'People choose every detail themselves, however long it takes, like a specialist store for enthusiasts.',
+      'Promoted products lead the results, clearly marked, as many ad-funded marketplaces choose.',
+      'Sellers run their own shop on the platform, as an open marketplace focused on seller growth would.',
+    ],
+    ranking: 'The basket principle and the three-minute shop clash on substitutions: speed says swap automatically, the basket says ask. The basket wins. So when an item is out of stock we ask, with a three-minute timer and a suggested swap preselected, rather than silently replacing it.',
+    decisions: [
+      'Delivery fee under ₹199: cart page only, every product card, or the basket bar from the first item. “The first price you see is the price you pay” rules out cart-only. The basket bar shows it from the first item without crowding every card. We give up the extra orders a hidden fee would win.',
+      'Out-of-stock items: swap automatically, ask and wait three minutes, or refund. The basket principle outranks speed, so we ask, with a suggested swap preselected. We give up some picker speed, and some complete orders when people don’t reply.',
+      'A shampoo brand offers ₹40 lakh a quarter for the top search slot on “shampoo”. “Search answers the search” means the paid result can appear, labelled, but below the best match. We give up part of that deal, and the brand team has to sell a smaller slot.',
+    ],
+    limits: 'Our principles can’t settle “Pay later” at checkout. Growth’s weights and trust’s weights pick different winners, and none of the five speaks to credit. That’s a priority call for Kabir, our head of product, made with a trade-off matrix showing what each answer costs, not a principle stretched until it fits. We’d break a principle only with evidence that it hurts the people it was written for: if testing showed people prefer automatic swaps for staples like milk, we’d log an exception for staples, and rewrite the principle if the same finding appeared in three categories. The price principle is a floor: we’d never break it to win orders.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

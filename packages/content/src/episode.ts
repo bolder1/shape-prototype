@@ -46,7 +46,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'demo-tour', 'pricing-page', 'cs-loop',
   'spec-handoff', 'design-qa', 'token-pipeline',
   'ai-workflow', 'bill-scan', 'prompt-evals',
-  'sprint-cadence', 'workshop-room', 'sprint-week']);
+  'sprint-cadence', 'workshop-room', 'sprint-week',
+  'tradeoff-matrix', 'principle-poster', 'rule-break']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -189,6 +190,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `ceremony-route`: lanes are `CEREMONIES` in order; every card is something that comes up for Nisha in the sprint, its `visual` a key of `RASOI_ITEMS` (each used once), its `label` containing that item's day and `text`, and its lane `ceremonyFor` of it. Placed items land on a sprint calendar on the day they're raised (`raisedOn`, `waitDays`), and the end compares `blockedDays` with holding everything for the retro. Every card needs a `note`.
  *  - `room-read`: lanes are `MOVES` in order; every card is a moment in Nisha's workshop, its `visual` a key of `RASOI_MOMENTS` (each used once, in minute order), its `label` containing that moment's minute and `text`, and its lane `moveFor` of it. First calls feed `workshopResult`: the room lights up who's been heard, and the clock shows minutes over. Every card needs a `note`.
  *  - `sprint-fit`: lanes are `SPRINT_CALLS` in order; every card is a question on Rasoi's list, its `visual` a key of `RASOI_QUESTIONS` (each used once), its `label` that question's `text`, and its lane `sprintCall` of it. Right calls pile up by lane and a counter adds `teamDays` (`daysSpent`). Every card needs a `note`.
+ *  - `matrix-read`: lanes are `MATRIX_CALLS` in order; every card is one of Haat's open decisions, its `visual` a key of `HAAT_DECISIONS` (each used once), its `label` that decision's `text`, and its lane `matrixCall` of it. The game draws the matrix, lets the player weigh it through each lens and swing the unsure cell low or high (`lensWinners`, `withCell`), and strikes options that fail a must-have. Every card needs a `note`.
+ *  - `principle-test`: lanes are `PRINCIPLE_VERDICTS` in order; every card is a draft principle, its `visual` a key of `HAAT_PRINCIPLES` (each used once), its `label` that principle's `text`, and its lane `principleVerdict` of it. Right calls of `decides` light the disputes they settle (`HAAT_DISPUTES`, `disputeState`); a dispute pulled both ways is resolved by `PRINCIPLE_RANK`. Every card needs a `note` (the rewrite, or what it settles).
+ *  - `rule-call`: lanes are `RULE_CALLS` in order; every card is a request to break a Haat rule, its `visual` a key of `HAAT_BREAKS` (each used once), its `label` that request's `text`, and its lane `ruleCall` of it. Right calls stamp the rule in a rulebook (`HAAT_RULES`, `rulebook`). Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -231,7 +235,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'demo-build', 'plan-pick', 'signal-route',
   'spec-write', 'qa-pass', 'token-trace',
   'ai-delegate', 'guess-flag', 'eval-fix',
-  'ceremony-route', 'room-read', 'sprint-fit']);
+  'ceremony-route', 'room-read', 'sprint-fit',
+  'matrix-read', 'principle-test', 'rule-call']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({
