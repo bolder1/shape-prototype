@@ -96,20 +96,20 @@ export function statsFrom(events: RewardEvent[], longestStreak = 0): Stats {
 
 export const BADGES: BadgeDef[] = [
   // Mastery: what you know.
-  { id: 'lessons', name: 'Lesson by lesson', kind: 'mastery', describe: 'Finish {n} lessons', tiers: [1, 25, 100], measure: s => s.lessons.size },
-  { id: 'top-marks', name: 'Top marks', kind: 'mastery', describe: 'Earn an S grade on {n} lessons', tiers: [5, 25, 75], measure: s => s.sGrades },
-  { id: 'chapter-master', name: 'Chapter master', kind: 'mastery', describe: 'Get an S on every lesson in {n} chapters', tiers: [1, 5, 15], measure: s => s.chaptersMastered },
+  { id: 'lessons', name: 'Lesson by lesson', kind: 'mastery', describe: 'Finish {n} lesson{s}', tiers: [1, 25, 100], measure: s => s.lessons.size },
+  { id: 'top-marks', name: 'Top marks', kind: 'mastery', describe: 'Earn an S grade on {n} lesson{s}', tiers: [5, 25, 75], measure: s => s.sGrades },
+  { id: 'chapter-master', name: 'Chapter master', kind: 'mastery', describe: 'Get an S on every lesson in {n} chapter{s}', tiers: [1, 5, 15], measure: s => s.chaptersMastered },
   { id: 'well-rounded', name: 'Well rounded', kind: 'mastery', describe: 'Finish a chapter in {n} skill families', tiers: [3, 7, DOMAIN_IDS.length], measure: s => s.domainsTouched },
   // Craft: what you can make.
-  { id: 'boss-slayer', name: 'Boss slayer', kind: 'craft', describe: 'Pass {n} boss projects', tiers: [1, 5, 15], measure: s => s.bossesPassed.size },
-  { id: 'distinction', name: 'With distinction', kind: 'craft', describe: 'Pass {n} boss projects with distinction', tiers: [1, 3, 10], measure: s => s.bossesDistinction.size },
-  { id: 'flawless', name: 'Flawless', kind: 'craft', describe: 'Finish {n} episodes without a single miss', tiers: [1, 5, 20], measure: s => s.perfect },
+  { id: 'boss-slayer', name: 'Boss slayer', kind: 'craft', describe: 'Pass {n} boss project{s}', tiers: [1, 5, 15], measure: s => s.bossesPassed.size },
+  { id: 'distinction', name: 'With distinction', kind: 'craft', describe: 'Pass {n} boss project{s} with distinction', tiers: [1, 3, 10], measure: s => s.bossesDistinction.size },
+  { id: 'flawless', name: 'Flawless', kind: 'craft', describe: 'Finish {n} episode{s} without a single miss', tiers: [1, 5, 20], measure: s => s.perfect },
   // Habit: showing up.
   { id: 'on-fire', name: 'On fire', kind: 'habit', describe: 'Reach a {n}-day streak', tiers: [7, 30, 100], measure: s => s.longestStreak },
-  { id: 'reviewer', name: 'Sharp memory', kind: 'habit', describe: 'Finish {n} review sessions', tiers: [5, 25, 100], measure: s => s.reviews },
-  { id: 'regular', name: 'Regular', kind: 'habit', describe: 'Learn on {n} different days', tiers: [10, 50, 150], measure: s => s.activeDays.size },
+  { id: 'reviewer', name: 'Sharp memory', kind: 'habit', describe: 'Finish {n} review session{s}', tiers: [5, 25, 100], measure: s => s.reviews },
+  { id: 'regular', name: 'Regular', kind: 'habit', describe: 'Learn on {n} different day{s}', tiers: [10, 50, 150], measure: s => s.activeDays.size },
   // Social: sharing the work.
-  { id: 'show-off', name: 'Proud of it', kind: 'social', describe: 'Share {n} grade cards', tiers: [1, 5, 20], measure: s => s.shares },
+  { id: 'show-off', name: 'Proud of it', kind: 'social', describe: 'Share {n} grade card{s}', tiers: [1, 5, 20], measure: s => s.shares },
   // Secret: hidden until earned; the shelf only says how many are left to find.
   { id: 'night-owl', name: 'Night owl', kind: 'secret', describe: 'Finish a lesson between midnight and 4 am', tiers: [1], measure: s => (s.nightOwl ? 1 : 0) },
   { id: 'comeback', name: 'The comeback', kind: 'secret', describe: 'Come back after two weeks away', tiers: [1], measure: s => (s.longestBreak >= 14 ? 1 : 0) },
@@ -147,7 +147,11 @@ export function newlyEarned(before: BadgeState[], after: BadgeState[]) {
   return after.filter(b => b.tier && b.tier !== was.get(b.def.id));
 }
 
-export const describeBadge = (b: BadgeState) => b.def.describe.replace('{n}', String(b.next ?? b.def.tiers.at(-1)));
+/** The badge's goal in words, for the next tier (or the top one once it's held). */
+export function describeBadge(b: BadgeState) {
+  const n = b.next ?? b.def.tiers.at(-1) ?? 1;
+  return b.def.describe.replace('{n}', String(n)).replace('{s}', n === 1 ? '' : 's');
+}
 
 // ——— Weekly quests ———
 

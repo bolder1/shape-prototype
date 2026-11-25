@@ -42,6 +42,7 @@ describe('badges', () => {
     expect(b.tier).toBe('bronze');
     expect(b.next).toBe(25);
     expect(describeBadge(b)).toBe('Finish 25 lessons');
+    expect(describeBadge(badge([], 'lessons'))).toBe('Finish 1 lesson');
   });
   it('uses the streak from the progress store', () => {
     expect(badge([], 'on-fire', 31).tier).toBe('silver');

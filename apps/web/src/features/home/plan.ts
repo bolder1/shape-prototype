@@ -10,9 +10,12 @@ export const AVG_LESSON_MINUTES = 8;
  * Shown on the plan-ready screen and as the weekly goal ring on the dashboard.
  */
 export function weeklyLessonGoal(a: Pick<SurveyAnswers, 'minutesPerDay' | 'daysPerWeek'>): number {
-  // TODO(human): turn the learner's weekly time into a lesson target they will actually hit.
-  // The placeholder below spends every minute on new lessons, so 30 min × 5 days gives 19 a week.
-  return Math.max(1, Math.round((a.minutesPerDay * a.daysPerWeek) / AVG_LESSON_MINUTES));
+  // Not every minute goes on new lessons: reviews, the Daily Brief and boss projects share the time, and a goal
+  // people actually hit keeps them coming back better than an ambitious one they miss. So: about 60% of the time
+  // on new lessons, at most two a day, and at least one a week. 30 min × 5 days → 10; 15 min × 3 days → 3.
+  const minutes = a.minutesPerDay * a.daysPerWeek;
+  const lessons = Math.round((minutes * 0.6) / AVG_LESSON_MINUTES);
+  return Math.max(1, Math.min(a.daysPerWeek * 2, lessons));
 }
 
 const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;

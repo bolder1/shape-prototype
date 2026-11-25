@@ -18,6 +18,8 @@ import { XP, bossUnlocked, doneToday, dueReviews, liveStreak, useProgress } from
 import { tierName, timeLeft, useLeague } from '../league/store';
 import { lessonsThisWeek, thisWeek, weeklyLessonGoal } from './plan';
 import { TIER_LABEL } from '../syllabus/model';
+import { useRewards } from '../rewards/useRewards';
+import { AccountCard, BadgeShelf, DailyCard, NextUnlockCard, QuestsCard, QuickActions, nextUnlock, useDailyToday } from './Today';
 
 const DEFAULT_PATH = ['fd.1', 'fd.2', 'rs.1', 'ia.1', 'ui.1', 'cw.1', 'st.1', 'rs.2'];
 type Tab = 'progress' | 'next' | 'done';
@@ -60,6 +62,9 @@ export default function HomeScreen() {
   const week = thisWeek(ledger);
   const doneWeek = lessonsThisWeek(ledger);
   const nextChapter = next ? CONTENT[next.chapterId] : null;
+  const rewards = useRewards(goal);
+  const daily = useDailyToday();
+  const unlock = nextUnlock(rewards.badges, lessons, path);
 
   return (
     <div className="min-h-dvh bg-secondary">
@@ -78,6 +83,8 @@ export default function HomeScreen() {
             {profile ? 'Customize syllabus' : 'Set up my plan'}
           </Button>
         </section>
+
+        <div className="mt-5"><QuickActions next={next ?? null} due={due} dailyDone={!!daily.result} /></div>
 
         {/* Stats */}
         <dl className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -135,6 +142,13 @@ export default function HomeScreen() {
                 <p className="text-sm text-tertiary">New chapters are being written. Your review deck keeps your skills sharp meanwhile.</p>
               </section>
             )}
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <DailyCard number={daily.number} result={daily.result} />
+              {unlock && <NextUnlockCard unlock={unlock} />}
+            </div>
+
+            <QuestsCard quests={rewards.quests} chest={rewards.chest} />
 
             {bossDue && (
               <section className="flex flex-col gap-4 rounded-2xl bg-primary p-5 shadow-xs ring-1 ring-secondary ring-inset sm:flex-row sm:items-center">
@@ -227,6 +241,8 @@ export default function HomeScreen() {
               {profile && <p className="mt-4 text-xs text-quaternary">{profile.answers.daysPerWeek} days × {profile.answers.minutesPerDay} min. <Link href="/syllabus" className="font-semibold text-brand-secondary">Change</Link></p>}
             </section>
 
+            <BadgeShelf earned={rewards.earned} secretsLeft={rewards.secretsLeft} total={rewards.badges.length} />
+
             <Link href="/league" className="group rounded-2xl bg-primary p-5 shadow-xs ring-1 ring-secondary transition ring-inset hover:bg-primary_hover">
               <div className="flex items-center gap-2"><TrophyIcon className="size-5 text-brand-secondary" weight="duotone" /><h2 className="text-md font-semibold text-primary">{tierName(league.tier)} league</h2>
                 <ArrowRightIcon className="ml-auto size-4 text-fg-quaternary transition group-hover:translate-x-0.5" /></div>
@@ -251,7 +267,7 @@ export default function HomeScreen() {
               </p>
               <div className="mt-4"><Button size="md" color="secondary" iconLeading={SlidersHorizontalIcon} href={profile ? '/syllabus' : '/onboarding'}>{profile ? 'Customize' : 'Set up my plan'}</Button></div>
             </section>
-            <p className="px-1 text-xs text-quaternary">Progress is saved in this browser until accounts arrive.</p>
+            <AccountCard />
           </aside>
         </div>
       </main>
