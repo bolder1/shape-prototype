@@ -1670,9 +1670,65 @@ const dc3: BossBriefInput = {
   },
 };
 
+const ld1: BossBriefInput = {
+  chapterId: 'ld.1',
+  title: 'Plan and run a 90-minute workshop',
+  minutes: 120,
+  scenario: [
+    'Your Studio product’s team has a question it keeps arguing about and never settles (or use Rasoi’s: why do tiffin subscribers pause, and which two ideas do we test first?). Plan a 90-minute workshop that ends in a decision.',
+    'Start from what the room must leave with. Choose who comes and who decides, plan every block back from the outputs with times that add up, and say how you’ll handle the moments that usually derail a workshop. Then say what happens in the week after. If you can, run it and add what actually happened.',
+  ],
+  fields: [
+    { id: 'goal', label: 'The question and the decision', kind: 'text', minWords: 15, hint: 'The one question the workshop answers, the decision it ends in, and why it needs a workshop rather than a meeting or one person’s call.' },
+    { id: 'outputs', label: 'What the room leaves with', kind: 'list', items: 3, minWords: 6, hint: 'One per line, each something you could hold up at the end and check is there.' },
+    { id: 'people', label: 'Who’s in the room', kind: 'list', items: 4, minWords: 6, hint: 'One person or role per line and why they’re needed. Name the decider. Say who joins remotely.' },
+    { id: 'agenda', label: 'The agenda', kind: 'list', items: 6, minWords: 8, hint: 'One block per line: minutes, the activity, and what it produces. The minutes add up to 90.' },
+    { id: 'facilitation', label: 'When it goes off track', kind: 'list', items: 3, minWords: 10, hint: 'One per line: a moment you expect (the boss speaks first, someone stays quiet, a tangent, a loop, running over) and your move.' },
+    { id: 'after', label: 'The week after', kind: 'long', minWords: 30, hint: 'What gets sent when, who owns each output and by what date, what happens to the parking lot, and how you’ll know it worked.' },
+  ],
+  rubric: [
+    { id: 'outputs', label: 'Planned back from concrete outputs', strong: 'The outputs are specific and checkable (decisions, owners, artefacts), not “alignment”, and every agenda block produces part of one. The workshop ends in a decision by a named decider.', weight: 3, required: true },
+    { id: 'flow', label: 'Facts, then open, then narrow, then decide', strong: 'Shared evidence comes before ideas; people generate alone before discussing; convergence uses a method (dot vote at the same time, impact against effort) before the decider chooses. Time per block is realistic and adds up to 90 minutes.', weight: 3, required: true },
+    { id: 'room', label: 'The room is steered', strong: 'Names likely failure moments for this group (anchoring by the most senior person, quiet or remote people, tangents, loops, overruns) with a specific move for each, so every voice is heard and the time holds.', weight: 2 },
+    { id: 'people', label: 'The right people', strong: 'People who know the problem from different sides, including the ones closest to customers or operations, plus the decider; kept small enough to work, with remote people planned for.', weight: 1 },
+    { id: 'after', label: 'Follow-through', strong: 'Notes go out the same day; every output and parking-lot item has an owner and a date; there’s a way to check the decision was acted on.', weight: 1 },
+  ],
+  tips: ['Write the email you’ll send at minute 91 before you plan the agenda. The agenda is whatever gets you to that email.', 'Rehearse the timings with a colleague. Every activity takes longer with eight people than it does in your head.'],
+  example: {
+    goal: 'Why do Rasoi’s subscribers pause their tiffins, and which two ideas should we test first to reduce it? Pauses are up 30% since June and everyone has a different theory; Vikram, the founder, wants to decide this month, and the answer touches the kitchens, support and the app, so one person can’t settle it alone.',
+    outputs: [
+      'The top reasons people pause, grouped, each backed by tickets, data or interviews',
+      'Two ideas to test, each with an owner and a start date',
+      'A parking lot with an owner for every item',
+    ],
+    people: [
+      'Vikram, founder: the decider, there for the whole 90 minutes',
+      'Arjun, PM, and Devika, engineering lead (on the call): what it takes to build',
+      'Sunita, support lead: hears from pausing subscribers every day',
+      'Ashok, head chef: plans the menus and hears from delivery riders',
+      'Meghna, marketing, and Rohan, Android: offers and the app itself. Eight people, Nisha facilitating.',
+    ],
+    agenda: [
+      '10 min · Goal, outputs and how we’ll work (write alone first, phones down, parking lot) → everyone knows what we leave with',
+      '15 min · What we know: pause data by week, 40 support tickets, three interview clips → shared facts on the wall',
+      '15 min · Why do people pause? One reason per note, written alone, then grouped together → reasons, grouped',
+      '20 min · Ideas: four quick sketches each, alone, then each person shares their best in a minute → about 30 ideas',
+      '15 min · Dot vote, everyone at once, then the top ideas on impact against effort → a shortlist of five',
+      '10 min · Vikram picks two to test; an owner and start date for each → two ideas, two owners',
+      '5 min · Recap, parking lot owners, thank-you → notes out the same day',
+    ],
+    facilitation: [
+      'Vikram says “it’s price” before anyone writes: thank him, and start the silent notes straight away so everyone’s view is on the wall before discussion.',
+      'Devika and Karthik on the call stay quiet: they share first in every round, by name, on the same online board everyone uses.',
+      'A tangent like the payment gateway, or a debate going in circles: it goes on the parking lot with an owner, or gets a two-minute timer and then Vikram decides.',
+    ],
+    after: 'Notes go to everyone by 6 pm: the grouped reasons, the two ideas with owners and start dates, and the parking lot with owners. Nisha owns testing a one-day pause from Monday; Ashok owns a daily-changing menu in one kitchen for two weeks. Each parking lot owner replies by Friday with a date. We’ll know it worked if both tests start on time and the pause rate in those groups is reviewed at the end of the month.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

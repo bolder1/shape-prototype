@@ -4,6 +4,7 @@ import { twoProp } from './stats';
 import { GUIDE_SECTIONS, KIT_SLOTS, MARK_VERDICTS, SUKOON_KIT, SUKOON_MARKS, SUKOON_USES, kitFlaw, markVerdict, sectionBroken, type KitOption, type SukoonKitKey, type SukoonMark, type SukoonUse } from './identity';
 import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_ASSETS, SUKOON_DRAFTS, SUKOON_SECTIONS, SUKOON_SEO_BEFORE, copyFlaws, copyLine, seoIssues, type CopyDraft, type SeoIssue, type SukoonAsset, type SukoonDraft, type SukoonSection } from './marketing';
 import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, PROMPT_PARTS, aiRole, fieldTreatment, type HisaabCase, type HisaabField, type HisaabTask } from './ai';
+import { CEREMONIES, MOVES, RASOI_ITEMS, RASOI_MOMENTS, RASOI_QUESTIONS, SPRINT_CALLS, ceremonyFor, moveFor, sprintCall, type RasoiItem, type RasoiMoment, type RasoiQuestion } from './team';
 import { GAADI_CODE, GAADI_QA, GAADI_SPEC, QA_LANES, REF_KINDS, SPEC_SOURCES, qaLane, refKind, type GaadiCode, type GaadiQa, type GaadiSpecItem } from './handoff';
 import { PARCHA_BUYERS, PARCHA_SIGNALS, PLAN_IDS, ROUTES, SUNRISE_MOMENTS, demoFlaws, planFor, type ParchaBuyer, type ParchaSignal, type SunriseMoment } from './sales';
 import { OBJECTION_KINDS, PITCH_PARTS, SAMAN_BEATS, SAMAN_OBJECTIONS, SAMAN_UPDATE, SUMMARY_PARTS, replyFlaw, type Objection, type SamanBeat, type SamanLine, type SamanObjection } from './pitch';
@@ -966,6 +967,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...PROMPT_PARTS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(HISAAB_EVALS).sort());
         for (const c of ep.game.cards) { const e = HISAAB_EVALS[c.visual as HisaabCase]; expect(c.lane).toBe(e.fix); expect(c.label).toContain(e.ask); expect(c.label).toContain(e.bad); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'ceremony-route') {   // every sprint item once, with its day, raised where the rule says
+        expect(lanes).toEqual([...CEREMONIES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RASOI_ITEMS).sort());
+        for (const c of ep.game.cards) { const i = RASOI_ITEMS[c.visual as RasoiItem]; expect(c.lane).toBe(ceremonyFor(i)); expect(c.label).toContain(i.text); expect(c.label).toContain(`Day ${i.day}`); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'room-read') {   // every workshop moment once, in minute order, met with the right move
+        expect(lanes).toEqual([...MOVES]);
+        expect(ep.game.cards.map(c => c.visual)).toEqual(Object.keys(RASOI_MOMENTS));
+        for (const c of ep.game.cards) { const m = RASOI_MOMENTS[c.visual as RasoiMoment]; expect(c.lane).toBe(moveFor(m)); expect(c.label).toContain(m.text); expect(c.label).toContain(`Minute ${m.minute}`); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'sprint-fit') {   // every question once, written out, with the call the rule gives
+        expect(lanes).toEqual([...SPRINT_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(RASOI_QUESTIONS).sort());
+        for (const c of ep.game.cards) { const q = RASOI_QUESTIONS[c.visual as RasoiQuestion]; expect(c.label).toBe(q.text); expect(c.lane).toBe(sprintCall(q)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

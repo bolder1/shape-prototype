@@ -154,6 +154,9 @@ import { TokenTrace } from './games/TokenTrace';
 import { AiDelegate } from './games/AiDelegate';
 import { GuessFlag } from './games/GuessFlag';
 import { EvalFix } from './games/EvalFix';
+import { CeremonyRoute } from './games/CeremonyRoute';
+import { RoomRead } from './games/RoomRead';
+import { SprintFit } from './games/SprintFit';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -317,6 +320,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'ai-delegate': AiDelegate,
   'guess-flag': GuessFlag,
   'eval-fix': EvalFix,
+  'ceremony-route': CeremonyRoute,
+  'room-read': RoomRead,
+  'sprint-fit': SprintFit,
 };
 
 interface Props {

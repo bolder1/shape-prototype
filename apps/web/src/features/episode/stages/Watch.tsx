@@ -152,6 +152,9 @@ import { TokenPipelineScene } from '../scenes/TokenPipeline';
 import { AiWorkflowScene } from '../scenes/AiWorkflow';
 import { BillScanScene } from '../scenes/BillScan';
 import { PromptEvalsScene } from '../scenes/PromptEvals';
+import { SprintCadenceScene } from '../scenes/SprintCadence';
+import { WorkshopRoomScene } from '../scenes/WorkshopRoom';
+import { SprintWeekScene } from '../scenes/SprintWeek';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -297,6 +300,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'ai-workflow': AiWorkflowScene,
   'bill-scan': BillScanScene,
   'prompt-evals': PromptEvalsScene,
+  'sprint-cadence': SprintCadenceScene,
+  'workshop-room': WorkshopRoomScene,
+  'sprint-week': SprintWeekScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
