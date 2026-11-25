@@ -62,7 +62,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'practice-loop', 'nudge-week', 'streak-trap', 'viral-loop',
   'campaign-arc', 'brand-spectrum', 'brand-tracker',
   'impact-chain', 'case-shape', 'studio-rate',
-  'state-lift', 'frame-budget', 'agent-loop']);
+  'state-lift', 'frame-budget', 'agent-loop',
+  'debrief-room', 'skill-will', 'ritual-week']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -255,6 +256,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `data-home`: lanes are `DATA_HOMES` in order; every card is a piece of data Chakki's product card shows or uses, its `visual` a key of `CHAKKI_DATA` (each used once), its `label` that datum's `text`, and its lane `dataHome` of it: computable is derived, then the parent's is a prop, then shared state is lifted, the rest is the card's own state. Right calls write its line into the component `componentCode` builds. Every card needs a `note`.
  *  - `anim-fix`: lanes are `ANIM_FIXES` in order; every card is an animation in Chakki's app, its `visual` a key of `CHAKKI_MOTIONS` (each used once), its `label` that animation's `text`, and its lane `animFix` of it: geometry (`worstWork` is layout) moves to transform, then an exit unmounted too early, then a restart that jumps. Each card shows its code and the browser's work per frame; right calls show the fixed code. Every card needs a `note`.
  *  - `agent-review`: lanes are `REVIEW_CALLS` in order; every card is a change in a coding agent's pull request, its `visual` a key of `CHAKKI_CHANGES` (each used once), its `label` that change's `text`, and its lane `reviewCall` of it: not asked for or weakening a check is reverted, then a broken convention becomes a rule, then what only a person can prove is checked by hand. Right calls build the reviewed pull request and the rules file (`rulesFile`). Every card needs a `note`.
+ *  - `level-call`: lanes are `BAR_CALLS` in order; every card is a note from a candidate's interview loop for a senior role, its `visual` a key of `KAARIGAR_NOTES` (each used once), its `label` that note's `text`, and its lane `barCall` of it: no behaviour is noise, then the rung `noteLevel` gives (its scope, one lower if someone else framed it) against the senior bar. Right calls place the note on the `DESIGN_LADDER`; the finished loop shows `offerLevel`. Every card needs a `note`.
+ *  - `style-pick`: lanes are `LEAD_STYLES` in order; every card is one designer on one piece of work, its `visual` a key of `KAARIGAR_SITUATIONS` (each used once), its `label` that situation's `text`, and its lane `leadStyle` of it: skill on the task splits direct and coach from support and delegate, and will decides within each. Right calls plot the designer on a skill × will grid and show Shalini's `move`; the end shows `stylesByPerson`. Every card needs a `note`.
+ *  - `ritual-crit`: lanes are `RITUAL_CALLS` in order; every card is a ritual on the design team's calendar, its `visual` a key of `KAARIGAR_RITUALS` (each used once), its `label` that ritual's `text`, and its lane `ritualCall` of it: no reason or a duplicate is cut, then unsafe is made safe, then no output is reshaped. Right calls fix the week with its `fixed` version, and the hours come from `ritualMinutes`. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -313,7 +317,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'habit-zone', 'nudge-crit', 'reward-pick', 'referral-math',
   'arc-map', 'family-sort', 'search-share',
   'value-size', 'case-edit', 'engage-sort',
-  'data-home', 'anim-fix', 'agent-review']);
+  'data-home', 'anim-fix', 'agent-review',
+  'level-call', 'style-pick', 'ritual-crit']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

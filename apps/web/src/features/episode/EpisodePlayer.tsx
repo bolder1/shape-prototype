@@ -207,6 +207,9 @@ import { EngageSort } from './games/EngageSort';
 import { DataHome } from './games/DataHome';
 import { AnimFix } from './games/AnimFix';
 import { AgentReview } from './games/AgentReview';
+import { LevelCall } from './games/LevelCall';
+import { StylePick } from './games/StylePick';
+import { RitualCrit } from './games/RitualCrit';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -423,6 +426,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'data-home': DataHome,
   'anim-fix': AnimFix,
   'agent-review': AgentReview,
+  'level-call': LevelCall,
+  'style-pick': StylePick,
+  'ritual-crit': RitualCrit,
 };
 
 interface Props {

@@ -9,6 +9,7 @@ import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPP
 import { OUTPUT_METHODS, PROTO_TOOLS, THELA_BEHAVIOURS, THELA_QUESTIONS, THELA_STUDIES, TOOL_CAN, WIRE_KINDS, missingNeeds, outputMethod, protoTool, wireKind, type ThelaBehaviour, type ThelaQuestion, type ThelaStudy } from './advproto';
 import { ADVANTAGE_CALLS, BET_CALLS, MUNIM_BETS, MUNIM_CAPABILITIES, MUNIM_CLAIMS, PLATFORM_CALLS, advantageCall, betCall, platformCall, type MunimBet, type MunimCapability, type MunimClaim } from './designstrategy';
 import { ANIM_FIXES, CHAKKI_CHANGES, CHAKKI_DATA, CHAKKI_MOTIONS, DATA_HOMES, REVIEW_CALLS, animFix, dataHome, reviewCall, type ChakkiChange, type ChakkiDatum, type ChakkiMotion } from './designeng';
+import { BAR_CALLS, KAARIGAR_NOTES, KAARIGAR_RITUALS, KAARIGAR_SITUATIONS, LEAD_STYLES, RITUAL_CALLS, barCall, leadStyle, ritualCall, type KaarigarNote, type KaarigarRitual, type KaarigarSituation } from './leadership';
 import { CASE_FIXES, ENGAGE_CALLS, IMPACT_BANDS, KOLAM_ENQUIRIES, RAAHI_CASE, RAAHI_IMPACTS, caseFix, engageCall, impactBand, type KolamEnquiry, type RaahiCaseLine, type RaahiImpact } from './designroi';
 import { ARCH_CALLS, CAMPAIGN_ROLES, SOS_CALLS, SUKOON_OFFERS, SUKOON_PIECES, SUKOON_READINGS, arcRole, archCall, sosCall, type SukoonOffer, type SukoonPiece, type SukoonReading } from './brandstrategy';
 import { HABIT_CALLS, NUDGE_CALLS, REFERRAL_CALLS, REWARD_CALLS, RIYAAZ_BEHAVIOURS, RIYAAZ_MECHANICS, RIYAAZ_NUDGES, RIYAAZ_REFERRALS, habitCall, nudgeCall, referralCall, rewardCall, type RiyaazBehaviour, type RiyaazMechanic, type RiyaazNudge, type RiyaazReferral } from './retention';
@@ -1224,6 +1225,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...SOS_CALLS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUKOON_READINGS).sort());
         for (const c of ep.game.cards) { const k = c.visual as SukoonReading; expect(c.label).toBe(SUKOON_READINGS[k].text); expect(c.lane).toBe(sosCall(SUKOON_READINGS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'level-call') {   // every note once, called against the senior bar by barCall
+        expect(lanes).toEqual([...BAR_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(KAARIGAR_NOTES).sort());
+        for (const c of ep.game.cards) { const k = c.visual as KaarigarNote; expect(c.label).toBe(KAARIGAR_NOTES[k].text); expect(c.lane).toBe(barCall(KAARIGAR_NOTES[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'style-pick') {   // every situation once, led by leadStyle
+        expect(lanes).toEqual([...LEAD_STYLES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(KAARIGAR_SITUATIONS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as KaarigarSituation; expect(c.label).toBe(KAARIGAR_SITUATIONS[k].text); expect(c.lane).toBe(leadStyle(KAARIGAR_SITUATIONS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'ritual-crit') {   // every ritual once, judged by ritualCall
+        expect(lanes).toEqual([...RITUAL_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(KAARIGAR_RITUALS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as KaarigarRitual; expect(c.label).toBe(KAARIGAR_RITUALS[k].text); expect(c.lane).toBe(ritualCall(KAARIGAR_RITUALS[k])); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'data-home') {   // every datum once, homed by dataHome
         expect(lanes).toEqual([...DATA_HOMES]);

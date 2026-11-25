@@ -205,6 +205,9 @@ import { StudioRateScene } from '../scenes/StudioRate';
 import { StateLiftScene } from '../scenes/StateLift';
 import { FrameBudgetScene } from '../scenes/FrameBudget';
 import { AgentLoopScene } from '../scenes/AgentLoop';
+import { DebriefRoomScene } from '../scenes/DebriefRoom';
+import { SkillWillScene } from '../scenes/SkillWill';
+import { RitualWeekScene } from '../scenes/RitualWeek';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -403,6 +406,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'state-lift': StateLiftScene,
   'frame-budget': FrameBudgetScene,
   'agent-loop': AgentLoopScene,
+  'debrief-room': DebriefRoomScene,
+  'skill-will': SkillWillScene,
+  'ritual-week': RitualWeekScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;

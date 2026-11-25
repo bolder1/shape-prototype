@@ -2497,9 +2497,61 @@ const dc4: BossBriefInput = {
   },
 };
 
+const ld3: BossBriefInput = {
+  chapterId: 'ld.3',
+  title: 'A team charter and career ladder for a 6-person design team',
+  minutes: 120,
+  scenario: [
+    'You have just become the manager of a six-person design team: your own, a past one, or Kaarigar’s (Shalini Verma, head of design at a Pune home-services marketplace, with two seniors, two product designers, an associate, and a sixth hire on the way). The team has no written charter, no ladder, and a calendar that grew by accident. Two people want to know what it takes to be promoted, and you have a senior role to fill.',
+    'Write the team’s charter and its career ladder. The charter says why the team exists, what it owns, how decisions get made and which rituals it keeps. The ladder says what each level means in behaviour you can see, so the same document can be used to hire, to give feedback and to promote. Then show it working on one real case: a hire or a promotion.',
+  ],
+  fields: [
+    { id: 'team', label: 'The team today', kind: 'text', minWords: 30, hint: 'The six people by level and what each works on, who the team serves, and the one or two problems that made a charter necessary now.' },
+    { id: 'mission', label: 'Why the team exists', kind: 'text', minWords: 25, hint: 'One or two sentences on who you serve and the change you are there to make, and what the team owns and does not own.' },
+    { id: 'decisions', label: 'Who decides what', kind: 'list', items: 3, minWords: 12, hint: 'One decision per line (shipping a design, changing the design system, hiring, priorities across squads): who decides, who is consulted, and how a disagreement is settled.' },
+    { id: 'rituals', label: 'Rituals you keep', kind: 'list', items: 3, minWords: 15, hint: 'One ritual per line: what it is for, how often and how long, what comes out of it, and what keeps it safe to bring rough work. Say what you cut, too.' },
+    { id: 'ladder', label: 'The career ladder', kind: 'list', items: 4, minWords: 25, hint: 'One level per line, lowest first: the scope someone works at, how independently, how they work with PM and engineering, and how they grow others. Write behaviour you could see, not adjectives.' },
+    { id: 'process', label: 'How people move up', kind: 'long', minWords: 50, hint: 'How hiring and promotion both use the ladder: evidence, who calibrates, how often, pay bands by level, and how you keep bias out (rubrics before interviews, notes before debriefs). Say whether there is an individual contributor track above senior.' },
+    { id: 'case', label: 'One case, through the ladder', kind: 'long', minWords: 50, hint: 'Take one real hire or promotion and walk it through: the evidence, where each piece sits on the ladder, what level you land on and why, and what you tell the person.' },
+    { id: 'review', label: 'How you’ll know it works', kind: 'text', minWords: 25, hint: 'What you will look at in a quarter and in a year, and when the charter and ladder are next revised.' },
+  ],
+  rubric: [
+    { id: 'ladder', label: 'A ladder of behaviour', strong: 'Each level is defined by scope, independence and influence in observable behaviour; levels differ in kind, not in adjectives like “strong” or “excellent”; craft is expected throughout; tenure is not a criterion.', weight: 3, required: true },
+    { id: 'process', label: 'Hiring and promotion use it fairly', strong: 'The same ladder drives interviews and promotions; rubrics come before candidates, notes before debriefs, and calibration across managers; pay follows level; there is a path above senior that doesn’t require managing.', weight: 2, required: true },
+    { id: 'charter', label: 'A charter that settles questions', strong: 'The mission names who the team serves and what changes; ownership and non-ownership are explicit; decision rights say who decides, who is consulted and how disagreements end.', weight: 2, required: true },
+    { id: 'rituals', label: 'Rituals with a reason, safety and an output', strong: 'Each kept ritual has a purpose nothing else covers, an output, and something that keeps it safe for rough work; at least one ritual is cut or reshaped, with the reason.', weight: 2 },
+    { id: 'case', label: 'Shown working on a real case', strong: 'The case places specific behavioural evidence on the ladder, sets aside non-evidence, lands on a level where most of the evidence sits, and says what the person is told and what they would need for the next level.', weight: 2 },
+    { id: 'review', label: 'It will be checked', strong: 'Names signals to watch (rough work in critique, promotion outcomes by group, an anonymous safety pulse) and a date to revise both documents.', weight: 1 },
+  ],
+  tips: ['Write each level as what someone does on a normal Tuesday. If two levels could swap descriptions without anyone noticing, they aren’t different yet.', 'Test the ladder on your own team before you publish it: place each person, and see whether anyone lands somewhere that surprises you. Either the ladder or your view of them is wrong.'],
+  example: {
+    team: 'Kaarigar design, Pune: Neelam (senior, design system), Irfan (senior, customer booking), Pooja (product designer, partner app), Aditya (product designer, payments), Tanmay (associate), and a senior hire for the partner app. We serve customers booking home services and 18,000 kaarigars taking jobs. Two things made this urgent: our last senior hire was levelled on “culture fit” and struggled, and Pooja and Aditya both asked what promotion takes and got different answers.',
+    mission: 'We make booking a trustworthy home service feel as easy for a customer as getting paid fairly and fast feels for a kaarigar. We own the experience of both apps, the design system and design research. We don’t own pricing or the support script, but we are consulted on both.',
+    decisions: [
+      'Shipping a design: the designer on the squad decides, with the PM and tech lead consulted. If they disagree after one round, the PM decides on scope and the designer on the experience, and Shalini breaks a tie within two days.',
+      'Changing the design system: Neelam decides, after a proposal is open for comments for a week. Anyone can propose; breaking changes need a migration plan.',
+      'Hiring and levels: Shalini decides after a written-notes debrief, with level calibrated against the ladder; the CEO is informed, not consulted, below lead.',
+    ],
+    rituals: [
+      'Monday critique, 90 minutes: two pieces of work, the presenter says what stage it is at and what feedback they need, and decisions go in the log. No leadership in the room and no scores, so rough work is welcome.',
+      'Kaarigar day, half a day a month: every designer goes on real jobs with an electrician or plumber, then posts notes and one change they’d make. It keeps both apps grounded in the people using them.',
+      'Weekly 1:1s, 30 minutes, the designer’s agenda, actions in a shared doc. We cut the daily design stand-up (squads already have one), the status sync (the board does it) and replaced the CEO’s Friday walk-through with a monthly showcase of shipped work.',
+    ],
+    ladder: [
+      'Associate: delivers tasks someone else has framed, to the design system, and asks for help early. Takes feedback in critique and applies it. Works with one squad on one flow at a time.',
+      'Product designer: owns a feature end to end: frames it with the PM, designs it, tests it with users and ships it with engineering. Brings their own questions to critique. Needs a manager for cross-squad trade-offs.',
+      'Senior: owns a product area over quarters: finds its problems in evidence, changes what the squad measures, and moves PM and engineering with data rather than escalation. Raises the craft of designers around them through critique and pairing.',
+      'Lead (manager or principal): shapes how several teams work, through principles, systems, hiring or managing. Grows other designers to promotion. A principal does this without reports; it is a peer of the manager track, not below it.',
+    ],
+    process: 'Hiring and promotion use the same ladder. Every interview tests named parts of it, with questions and a rubric written before the first candidate, and interviewers write their notes before the debrief. Only behaviour counts: pedigree, years and “fit” are set aside. We level where most of the evidence sits, not where the best interview put it. Promotions happen twice a year: the designer and manager write a short case with examples from the last six months at the next level, and Shalini calibrates with the engineering and product managers who work with them. Each level has a pay band, and offers go into the band for the level. Above senior there is a principal track for people who want to grow without managing. We review promotion outcomes by gender and by hiring source each cycle.',
+    case: 'Ritu Bhandari, for the senior partner-app role. Twelve notes from five interviews. Three were not evidence: “ex-Flipkart and NID”, “great culture fit”, “eight years, so senior already”. Three sat below senior: a critique that fixed spacing without asking who uses the screen, a payments case where the PM framed the problem, and handing a scope fight to her manager. Three were at senior: a year owning seller onboarding with drop-off from 41% to 23%, redrawing the whole accept-a-job flow when asked for one card, and changing a PM’s metric with Play Store reviews. Three were above: starting a critique others now run, mentoring two designers to promotion, and principles an org of 60 uses. The middle of the nine is senior, so we offered senior at the senior band. We told her what we saw above the bar and that negotiating scope directly with engineering is the thing we’d expect her to grow in her first six months.',
+    review: 'In a quarter: is rough work showing up in critique, are decisions in the log sticking, and what does the anonymous pulse say about safety to speak up? In a year: did people promoted under the ladder succeed at the new level, and do promotion outcomes differ by group? Both documents are revised every January with the team.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4, br4, bz4, dc4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4, br4, bz4, dc4, ld3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
