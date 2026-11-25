@@ -54,7 +54,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'optical-centre', 'light-source', 'detail-pass',
   'chart-forms', 'colour-jobs', 'decision-board',
   'contribution-models', 'deprecation-path', 'adoption-signals',
-  'theme-stack', 'platform-parity', 'sync-loop']);
+  'theme-stack', 'platform-parity', 'sync-loop',
+  'logic-cart', 'proto-ladder', 'output-range']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -222,6 +223,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `brand-tune`: lanes are `BRAND_CALLS` in order; every card is a request from Sawari's brand team, its `visual` a key of `SAWARI_REQUESTS` (each used once), its `label` that request's `text`, and its lane `brandCall` of it. Right calls apply it to a Sawari preview in light and dark (`BRAND_THEMES`); a `tune` card then gets a slider along its ramp (`SAWARI_RAMPS`), checked live by `tuneCheck`. Every card needs a `note`.
  *  - `parity-sort`: lanes are `PARITY_CALLS` in order; every card is a decision in Sawari's booking flow, its `visual` a key of `SAWARI_DECISIONS` (each used once), its `label` that decision's `text`, and its lane `parityCall` of it. Right calls draw what each platform shows (`show`, across `PARITY_PLATFORMS`). Every card needs a `note`.
  *  - `sync-flow`: lanes are `SYNC_MOVES` in order; every card is a difference the nightly check found between Figma and code, its `visual` a key of `SAWARI_DRIFTS` (each used once), its `label` that drift's `text`, and its lane `syncMove` of it. Right calls animate the change along the flow to the side it acts on (`driftSide`) and count `DRIFTS_FOUND` down. Every card needs a `note`.
+ *  - `logic-wire`: lanes are `WIRE_KINDS` in order; every card is a behaviour Thela's cart prototype needs, its `visual` a key of `THELA_BEHAVIOURS` (each used once), its `label` that behaviour's `text`, and its lane `wireKind` of it. Right calls switch the behaviour on in a working cart prototype beside the deck, computed by `cartTotals` and `canAdd`. Every card needs a `note`.
+ *  - `proto-fit`: lanes are `PROTO_TOOLS` in order; every card is a research question, its `visual` a key of `THELA_QUESTIONS` (each used once), its `label` that question's `text`, and its lane `protoTool` of its needs. Every pick shows the question's needs against what that tool makes real (`TOOL_CAN`, `missingNeeds`); right calls add the tool's `TOOL_DAYS` to the plan. Every card needs a `note`.
+ *  - `output-plan`: lanes are `OUTPUT_METHODS` in order; every card is an Ask Thela study, its `visual` a key of `THELA_STUDIES` (each used once), its `label` that study's `text`, and its lane `outputMethod` of it. Right calls show what three participants were shown (`seen`). Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -272,7 +276,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'optical-nudge', 'elevation-lift', 'detail-loupe',
   'chart-pick', 'palette-tune', 'dash-critique',
   'contribution-route', 'release-plan', 'adoption-read',
-  'brand-tune', 'parity-sort', 'sync-flow']);
+  'brand-tune', 'parity-sort', 'sync-flow',
+  'logic-wire', 'proto-fit', 'output-plan']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

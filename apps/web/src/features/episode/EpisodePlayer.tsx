@@ -182,6 +182,9 @@ import { AdoptionRead } from './games/AdoptionRead';
 import { BrandTune } from './games/BrandTune';
 import { ParitySort } from './games/ParitySort';
 import { SyncFlow } from './games/SyncFlow';
+import { LogicWire } from './games/LogicWire';
+import { ProtoFit } from './games/ProtoFit';
+import { OutputPlan } from './games/OutputPlan';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -373,6 +376,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'brand-tune': BrandTune,
   'parity-sort': ParitySort,
   'sync-flow': SyncFlow,
+  'logic-wire': LogicWire,
+  'proto-fit': ProtoFit,
+  'output-plan': OutputPlan,
 };
 
 interface Props {

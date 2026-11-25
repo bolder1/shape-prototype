@@ -6,6 +6,7 @@ import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_A
 import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, PROMPT_PARTS, aiRole, fieldTreatment, type HisaabCase, type HisaabField, type HisaabTask } from './ai';
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
+import { OUTPUT_METHODS, PROTO_TOOLS, THELA_BEHAVIOURS, THELA_QUESTIONS, THELA_STUDIES, TOOL_CAN, WIRE_KINDS, missingNeeds, outputMethod, protoTool, wireKind, type ThelaBehaviour, type ThelaQuestion, type ThelaStudy } from './advproto';
 import { BRAND_CALLS, PARITY_CALLS, SAWARI_DECISIONS, SAWARI_DRIFTS, SAWARI_REQUESTS, SYNC_MOVES, brandCall, parityCall, passingSteps, syncMove, type SawariDecision, type SawariDrift, type SawariRequest } from './multibrand';
 import { ADOPTION_READS, CONTRIBUTION_PATHS, RASTA_CHANGES, RASTA_REQUESTS, RASTA_SCANS, VERSION_BUMPS, adoptionRead, bumpFor, contributionPath, type RastaChange, type RastaRequest, type RastaScan } from './governance';
 import { CHART_FORMS, PALETTE_JOBS, ROSHNI_CHARTS, ROSHNI_QUESTIONS, ROSHNI_TILES, TILE_VERDICTS, chartFor, paletteFor, tileVerdict, type RoshniChart, type RoshniQuestion, type RoshniTile } from './dataviz';
@@ -1126,6 +1127,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...SYNC_MOVES]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAWARI_DRIFTS).sort());
         for (const c of ep.game.cards) { const d = SAWARI_DRIFTS[c.visual as SawariDrift]; expect(c.label).toBe(d.text); expect(c.lane).toBe(syncMove(d)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'logic-wire') {   // every cart behaviour once, wired as a variable, conditional or mode
+        expect(lanes).toEqual([...WIRE_KINDS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(THELA_BEHAVIOURS).sort());
+        for (const c of ep.game.cards) { const b = THELA_BEHAVIOURS[c.visual as ThelaBehaviour]; expect(c.label).toBe(b.text); expect(c.lane).toBe(wireKind(b)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'proto-fit') {   // every research question once, on the cheapest tool that makes its needs real
+        expect(lanes).toEqual([...PROTO_TOOLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(THELA_QUESTIONS).sort());
+        for (const c of ep.game.cards) { const q = THELA_QUESTIONS[c.visual as ThelaQuestion]; expect(c.label).toBe(q.text); expect(c.lane).toBe(protoTool(q.needs)); expect(missingNeeds(c.lane as (typeof PROTO_TOOLS)[number], q.needs)).toEqual([]); expect(q.needs.every(n => TOOL_CAN.code.includes(n))).toBe(true); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'output-plan') {   // every Ask Thela study once, by how its outputs reach participants
+        expect(lanes).toEqual([...OUTPUT_METHODS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(THELA_STUDIES).sort());
+        for (const c of ep.game.cards) { const st = THELA_STUDIES[c.visual as ThelaStudy]; expect(c.label).toBe(st.text); expect(c.lane).toBe(outputMethod(st)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

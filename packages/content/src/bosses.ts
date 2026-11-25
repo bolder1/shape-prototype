@@ -2115,9 +2115,54 @@ const ds5: BossBriefInput = {
   },
 };
 
+const pr4: BossBriefInput = {
+  chapterId: 'pr.4',
+  title: 'A prototype real enough to test',
+  minutes: 120,
+  scenario: [
+    'Pick one flow in your Studio product whose test depends on real behaviour: a cart with fees and thresholds, a search, a form that validates, a feed, or an AI feature. If you don’t have a product yet, use Thela, the Hyderabad grocery app from this chapter, and its cart and “Ask Thela” feature, which turns “biryani for 6” into a cart.',
+    'Build a data-driven prototype of it that a researcher could put in front of five participants next week: real values and rules, realistic content, and the states the flow really has. Choose the tool on purpose, say what is real and what is still fake, and plan the test it is for. Share a link or a screen recording.',
+  ],
+  fields: [
+    { id: 'link', label: 'Prototype or recording', kind: 'text', minWords: 6, hint: 'The link, the tool, and how a researcher starts and resets a session.' },
+    { id: 'question', label: 'The research question', kind: 'text', minWords: 20, hint: 'What the test must find out, and the decision its answer will change.' },
+    { id: 'needs', label: 'What must be real', kind: 'list', items: 3, minWords: 10, hint: 'One per line: something the answer depends on (rules, typing, real content, live data, timing, device) and how the prototype makes it real.' },
+    { id: 'tool', label: 'Why this tool', kind: 'text', minWords: 30, hint: 'Figma with variables, Framer or code, and why the cheaper tools wouldn’t make the needs real and the dearer ones would add nothing. Give the days it took.' },
+    { id: 'logic', label: 'State and rules', kind: 'long', minWords: 50, hint: 'The variables, with names and starting values; every conditional, with its threshold; the modes, and what each switches. Enough for an engineer to check against.' },
+    { id: 'content', label: 'Data and dynamic content', kind: 'text', minWords: 35, hint: 'Where the content comes from, and the extremes you stocked it with: long and short, other languages, prices, empty and error cases. For AI: which outputs, and whether they are wizarded, recorded or live.' },
+    { id: 'fake', label: 'What is still fake', kind: 'list', items: 2, minWords: 8, hint: 'One per line: something the prototype fakes or leaves out, and why that doesn’t affect the answer.' },
+    { id: 'plan', label: 'The test', kind: 'long', minWords: 45, hint: 'Participants, tasks, what you will observe or measure, how each session starts in a known state, and what you will tell participants afterwards about what was real.' },
+  ],
+  rubric: [
+    { id: 'realness', label: 'Real where the answer depends on it', strong: 'Starts from a research question and lists what must be real for its answer to be true; the prototype makes each of those real and the brief names what is still fake and why it doesn’t matter.', weight: 3, required: true },
+    { id: 'logic', label: 'State and rules that hold up', strong: 'Uses variables, conditionals and modes (or their code equivalents) so any reasonable sequence of actions gives correct results; thresholds and limits are explicit and named, and each session starts from a known state.', weight: 3, required: true },
+    { id: 'tool', label: 'The right tool, on purpose', strong: 'Picks the cheapest tool that makes every need real and explains why cheaper ones fall short and dearer ones add nothing, with the time it cost. A code prototype is scoped to the tested screens and treated as disposable.', weight: 2 },
+    { id: 'content', label: 'Realistic content and outputs', strong: 'Content comes from real data and covers its extremes (length, language, price, empty and error). AI outputs cover the range, not the demo, and the method (Wizard of Oz, recorded, live) fits each question.', weight: 2 },
+    { id: 'test', label: 'Ready for a usability test', strong: 'A concrete plan: participants, tasks, what is observed, how sessions reset, and an honest debrief about wizarded or recorded parts and any personal data used.', weight: 1 },
+  ],
+  tips: ['Write the research question before you open a tool. Most over-built prototypes answer a question nobody wrote down.', 'Click every path in every mode before the first participant does. A prototype that breaks mid-session teaches you about the prototype.'],
+  example: {
+    link: 'Figma prototype with variables, plus a small Framer page for search: figma.com/proto/… and thela-search.framer.website. The researcher opens the Start frame, picks New or Returning and English or Telugu, and the prototype resets every variable.',
+    question: 'Does the free-delivery bar make people add one more useful item, rather than an impulse snack, to reach ₹199, and do they understand the ₹15 small-cart fee? The answer decides whether we ship the bar in the next release or lower the threshold to ₹149.',
+    needs: [
+      'Values and rules: the subtotal, delivery fee and small-cart fee have to follow whatever people add, in any order, so they are variables and conditionals on one cart frame.',
+      'Real content: 40 real products from three aisles, with real prices from ₹9 to ₹420 and the real MRPs, so people choose as they would at home.',
+      'Two languages: half the participants shop in Telugu, so every label is a string variable with English and Telugu modes, using the real translations.',
+    ],
+    tool: 'Figma with variables, about a day and a half. The question needs a flow and rules, which Figma makes real. Framer would add real scrolling on the web, which this mobile test doesn’t need, and React would add live stock and timing, which don’t affect whether people notice a bar. Search is a separate question and got a small Framer page for real typing.',
+    logic: 'Variables: `itemCount` 0, `subtotal` 0, `delivery` 0, `smallCartFee` 0, and `freeDeliveryAt` 199 and `smallCartBelow` 99 as their own variables so a threshold changes in one place. Each + sets itemCount + 1 and subtotal + price; each − does the reverse. After every change: if subtotal < freeDeliveryAt, show the bar with freeDeliveryAt − subtotal and set delivery to 25, else 0; if subtotal is above 0 and below smallCartBelow, set smallCartFee to 15; butter’s + stops at its stock of 2 with “Only 2 left”. Modes: English / Telugu for labels, Regular / Plus for prices and fees, New / Returning for the saved address and the Buy again row.',
+    content: 'Products, prices and MRPs come from a copy of the Kukatpally store’s catalogue for one morning, loaded as variables. I included the shortest name (Jeera) and a 64-character atta name, Telugu names on every item, a ₹9 sachet and a ₹420 ghee tin, one item out of stock and an empty search. No AI in this test; the next one, for Ask Thela, uses recorded real outputs including one with a wrong item.',
+    fake: [
+      'Payment: Pay goes to a static success screen. The question ends at the cart, so payment doesn’t change the answer.',
+      'Stock and timing: stock is fixed and nothing loads slowly. That matters for the slots test, which is in code, not for this one.',
+    ],
+    plan: 'Eight Hyderabad households who order groceries at least weekly, four shopping in Telugu, four returning Thela customers. Task: “Get what you’d need for tomorrow’s breakfast and lunch for your family.” We note whether they see the bar, what they add after seeing it and why, and how they explain the small-cart fee. Each session starts from the Start frame in the participant’s mode. Afterwards, we explain that prices were a snapshot and nothing was charged.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

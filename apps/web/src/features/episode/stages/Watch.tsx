@@ -180,6 +180,9 @@ import { AdoptionSignalsScene } from '../scenes/AdoptionSignals';
 import { ThemeStackScene } from '../scenes/ThemeStack';
 import { PlatformParityScene } from '../scenes/PlatformParity';
 import { SyncLoopScene } from '../scenes/SyncLoop';
+import { LogicCartScene } from '../scenes/LogicCart';
+import { ProtoLadderScene } from '../scenes/ProtoLadder';
+import { OutputRangeScene } from '../scenes/OutputRange';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -353,6 +356,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'theme-stack': ThemeStackScene,
   'platform-parity': PlatformParityScene,
   'sync-loop': SyncLoopScene,
+  'logic-cart': LogicCartScene,
+  'proto-ladder': ProtoLadderScene,
+  'output-range': OutputRangeScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
