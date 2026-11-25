@@ -215,6 +215,7 @@ export const EPISODES: Record<string, Episode> = { 'fd.1-1': fd1_1, 'fd.1-2': fd
   'ld.3-1': ld3_1, 'ld.3-2': ld3_2, 'ld.3-3': ld3_3,
   'ld.4-1': ld4_1, 'ld.4-2': ld4_2, 'ld.4-3': ld4_3 };
 export * from './grade';
+export * from './daily';
 export * from './boss';
 export * from './boss-grade';
 export * from './bosses';
