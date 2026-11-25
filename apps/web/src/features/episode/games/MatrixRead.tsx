@@ -133,7 +133,7 @@ export function MatrixRead({ game, onDone }: { game: Game; onDone: (results: Gam
     <div className="flex flex-col gap-5">
       <StageTitle eyebrow="Play" title={game.title}>{game.instructions}</StageTitle>
       <div className="grid gap-5 md:grid-cols-[1fr_minmax(0,18rem)]">
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4">
           <div className="flex items-baseline justify-between">
             <span className="text-sm font-semibold text-tertiary">Open at Haat</span>
             <span className="text-sm font-semibold text-tertiary tabular-nums">{done} / {game.cards.length}</span>

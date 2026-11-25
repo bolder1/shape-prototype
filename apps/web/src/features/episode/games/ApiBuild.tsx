@@ -1,5 +1,5 @@
 'use client';
-// Mini-game for ds.3-1: each card is a prop from Rasta's old Button ("isDanger Â· Cancel passâ€¦"). Decide what it becomes:
+// Mini-game for ds.3-1: each card is a prop from Rasta's old Button ("isDanger · Cancel pass…"). Decide what it becomes:
 // an option of a choice, a boolean, a slot, or not a prop at all. The props panel is rebuilt from your decisions so far
 // by `apiFrom` (mistakes included: isDanger as a boolean stays a boolean, isLoading as an option becomes variant
 // "loading"), the props still undecided wait underneath, and `comboCount` counts the buttons the API can describe.
@@ -14,9 +14,9 @@ import type { GameResult } from './DiamondSort';
 import { play } from '@/lib/sound';
 
 type Game = Episode['game'];
-const oldOf = (label: string) => label.split(' Â· ')[0];
-const purposeOf = (label: string) => label.split(' Â· ').slice(1).join(' Â· ');
-const fmt = (n: number) => (n === Infinity ? 'âˆž' : n.toLocaleString('en-IN'));
+const oldOf = (label: string) => label.split(' · ')[0];
+const purposeOf = (label: string) => label.split(' · ').slice(1).join(' · ');
+const fmt = (n: number) => (n === Infinity ? '∞' : n.toLocaleString('en-IN'));
 const KIND_TEXT: Record<ApiProp['kind'], string> = { enum: 'text-brand-secondary', boolean: 'text-primary', slot: 'text-primary', free: 'text-error-primary' };
 
 function PropsPanel({ api, waiting, fresh }: { api: ApiProp[]; waiting: string[]; fresh?: string }) {
