@@ -170,6 +170,9 @@ import { PlanCritique } from './games/PlanCritique';
 import { BlueprintBuild } from './games/BlueprintBuild';
 import { RoleSwim } from './games/RoleSwim';
 import { ScaleDial } from './games/ScaleDial';
+import { OpticalNudge } from './games/OpticalNudge';
+import { ElevationLift } from './games/ElevationLift';
+import { DetailLoupe } from './games/DetailLoupe';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -349,6 +352,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'blueprint-build': BlueprintBuild,
   'role-swim': RoleSwim,
   'scale-dial': ScaleDial,
+  'optical-nudge': OpticalNudge,
+  'elevation-lift': ElevationLift,
+  'detail-loupe': DetailLoupe,
 };
 
 interface Props {

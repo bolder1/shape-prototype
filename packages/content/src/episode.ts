@@ -50,7 +50,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'tradeoff-matrix', 'principle-poster', 'rule-break',
   'survey-sample', 'margin-band', 'dashboard-dig', 'source-weave',
   'roadmap-plan', 'atom-repo', 'research-guardrails',
-  'service-blueprint', 'role-swimlane', 'scale-up']);
+  'service-blueprint', 'role-swimlane', 'scale-up',
+  'optical-centre', 'light-source', 'detail-pass']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -206,6 +207,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `blueprint-build`: lanes are `BLUEPRINT_ROWS` in order; every card is a step of Nabz's home blood test, its `visual` a key of `NABZ_STEPS` (each used once, in time order), its `label` that step's `text`, and its lane `blueprintRow` of it. Right calls pin the step to a blueprint board in its row and phase column (`BLUEPRINT_PHASES`) between the three lines (`BLUEPRINT_LINES`), and fail points (`failPoints`) light up once placed. Every card needs a `note`.
  *  - `role-swim`: lanes are `NABZ_ROLES` in order; every card is a step of Tarang's check-up on Nabz for Business, its `visual` a key of `NABZ_DUTIES` (each used once, in workflow order), its `label` that step's `text`, and its lane `dutyOwner` of it. Right calls draw the step on a swimlane with an arrow from the last one, counting hand-offs (`roleHandoffs`); spending shows HR's limit (`HR_SPEND_LIMIT`) and group numbers the reporting floor (`MIN_REPORT_GROUP`). Every card needs a `note`.
  *  - `scale-dial`: lanes are `SCALE_PATTERNS` in order; every card is a Nabz screen, its `visual` a key of `NABZ_TASKS` (each used once), its `label` that screen's `text`, and its lane `scalePattern` of it. A dial counts up to the screen's real size and the game draws the pattern picked at that size, with the scrolling a plain list would cost (`scrollScreens`). Every card needs a `note`.
+ *  - `optical-nudge`: lanes are `OPTICAL_FIXES` in order; every card is a shape on Bunkar's screens placed by its box, its `visual` a key of `BUNKAR_CASES` (each used once), its `label` that case's `text`, and its lane `opticalFix` of it. Right calls apply the correction, measured where it can be (`centroidShift`, `equalAreaDiameter`), with a toggle between the maths and the eye. Every card needs a `note`.
+ *  - `elevation-lift`: lanes are `ELEVATIONS` in order; every card is a surface on Bunkar's sari page or checkout, its `visual` a key of `BUNKAR_SURFACES` (each used once), its `label` that surface's `text`, and its lane `elevationOf` of it. Right calls lift it in a side view and give it its shadow token (`SHADOWS`, `shadowCss`); a dark-mode switch shows height as lightness (`DARK_LIGHTNESS`), with a scrim for overlays (`SCRIM_ALPHA`). Every card needs a `note`.
+ *  - `detail-loupe`: lanes are `CRAFT_CHECKS` in order; every card is a detail on Bunkar's Diwali screens, its `visual` a key of `BUNKAR_DETAILS` (each used once), its `label` that detail's `text`, and its lane `craftCheck` of it. The game draws the detail under a loupe; a right call shows it fixed and adds `craftFix` to a running change list (`changeList`). Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -252,7 +256,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'matrix-read', 'principle-test', 'rule-call',
   'survey-spot', 'gap-read', 'signal-gate', 'source-triangle',
   'roadmap-slot', 'atom-build', 'plan-critique',
-  'blueprint-build', 'role-swim', 'scale-dial']);
+  'blueprint-build', 'role-swim', 'scale-dial',
+  'optical-nudge', 'elevation-lift', 'detail-loupe']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

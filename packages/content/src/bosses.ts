@@ -1915,9 +1915,61 @@ const ia5: BossBriefInput = {
   },
 };
 
+const ui5: BossBriefInput = {
+  chapterId: 'ui.5',
+  title: 'Polish pass on three screens',
+  minutes: 120,
+  scenario: [
+    'Chai Kahani sells loose-leaf tea from Assam and Darjeeling estates through an app. Its screens work, test well and have been reviewed, but in interviews people describe the app as “a bit cheap” next to the brands they compare it with, and the average order is ₹640 against a category average of ₹900. The founders want it to feel as careful as the tea before the winter gifting season.',
+    'Pick three connected screens from Chai Kahani, or from a real app you use if you prefer (say which): for example a product page, the cart and the order confirmation. Run a full polish pass. Describe each screen before, list every change you’d make with the before, the after and why, show the optical, elevation and state decisions you took, say which fixes belong in the design system, and rank them for a team that can only ship two-thirds before the season.',
+  ],
+  fields: [
+    { id: 'screens', label: 'The three screens and how you looked', kind: 'text', minWords: 35, hint: 'Which screens, why these three, and how you inspected them: zoom, real content (the longest names, real prices), both themes, real device.' },
+    { id: 'before', label: 'Before, screen by screen', kind: 'list', items: 3, minWords: 30, hint: 'One item per screen: what’s on it, and what makes it feel unfinished, in specifics, not adjectives.' },
+    { id: 'changes', label: 'The change list', kind: 'list', items: 10, minWords: 12, hint: 'One change per line: the screen and element, before → after, and why. Cover type, shape and state. Include anything you checked and left alone on purpose, marked “keep”.' },
+    { id: 'optical', label: 'Optical corrections', kind: 'text', minWords: 30, hint: 'Where the maths looked wrong, what you corrected and by how much, where the correction lives (asset, component), and what you deliberately kept exact.' },
+    { id: 'depth', label: 'Elevation and light', kind: 'text', minWords: 30, hint: 'The light source, the heights you used and which surface sits at each, the shadow tokens, and what changes in dark mode.' },
+    { id: 'system', label: 'Fixes that belong in the system', kind: 'text', minWords: 25, hint: 'Which changes repeat across screens and should be fixed once in tokens or components, and what you’d send to the design system team.' },
+    { id: 'priority', label: 'What ships first, and how you’d know', kind: 'long', minWords: 40, hint: 'With time for two-thirds of the list: what goes first and why (harm, reach, effort), what waits, and what you’d measure after.' },
+  ],
+  rubric: [
+    { id: 'changes', label: 'A complete, specific change list', strong: 'Every change names the screen and element, before → after with real values (px, characters, the actual glyphs), and a reason. Covers type (quotes, dashes, figures, rags), shape (nested radii, strokes, alignment) and state (focus, long content, empty, error, loading). Things checked and kept are marked, not changed for show.', weight: 3, required: true },
+    { id: 'before', label: 'An honest before', strong: 'Describes each screen as it is with real content, pointing at specific flaws rather than “looks dated”, and says how it was inspected: zoomed, both themes, on device, with the longest real data.', weight: 2, required: true },
+    { id: 'optical', label: 'Optical judgment', strong: 'Corrects single shapes where box and mass disagree (play icons, capitals in buttons, circles beside squares, hung punctuation) by measured amounts, puts the correction in the asset or component, and keeps data and repeating parts exact on purpose.', weight: 2 },
+    { id: 'depth', label: 'Depth with a rule', strong: 'One light source from above; a few heights assigned by behaviour (flat, low, raised, overlay); shadow tokens that grow offset and blur with height; fields kept flat; a dark-mode plan where higher surfaces lighten.', weight: 2 },
+    { id: 'system', label: 'Fixes at the source', strong: 'Spots changes that repeat (tabular figures in price styles, radius rules, one icon stroke, focus rings) and moves them into tokens or components, with a clear note to the system team.', weight: 1 },
+    { id: 'priority', label: 'Prioritised by harm and reach', strong: 'Ships first what breaks use or trust (focus, overflow, wrong or misaligned prices), then what repeats across many screens, then the cosmetic rest; defers with reasons; names a measure such as conversion, average order or how people describe the app in a follow-up round.', weight: 1 },
+  ],
+  tips: ['Fill every screen with the worst real content before you look: the longest product name, a ₹12,450 order, an address with three lines. Most polish problems only show up there.', 'Write each change as you make it, not at the end. A change you can’t write down as before → after → why is usually a change you don’t need.'],
+  example: {
+    screens: 'Chai Kahani’s product page (Assam Second Flush, 100 g), the cart and the order confirmation: the three screens every buyer passes through, so fixes there reach everyone. I filled them with the longest product name in the catalogue (“Halmari Estate Assam Second Flush Golden Tips FTGFOP1, 100 g”), a five-item ₹3,840 cart and a three-line Bengaluru address, then inspected each at 400% in Figma, in light and dark mode, and on a mid-range Android phone at arm’s length.',
+    before: [
+      'Product page: hero photo, name, price, weight chips, “Add to cart”, tasting notes and reviews. The long name breaks across three lines with “100 g” alone on the last; the play icon on the brewing video sits left; reviews use straight quotes; the price range for sizes reads “₹340-₹1,150”; the sticky cart bar has a 12 px shadow falling down-left; the photo inside the notes card has the card’s 16 px corners inside 8 px padding.',
+      'Cart: line items with thumbnails, quantity steppers, prices and a total. Prices are right-aligned but the digits drift because the figures are proportional; the stepper’s minus and plus icons use 2 px strokes against 1.5 px elsewhere; removing an item shows a dialog with no scrim; the empty cart is a grey box with “No items”.',
+      'Confirmation: a tick in a circle, the order number, delivery dates and a “Track order” button. The tick is box-centred and looks low-left; “TRACK ORDER” in capitals sits high in the button; tabbing to the button shows no focus style; dark mode makes the delivery card vanish into the page because only its shadow separated it.',
+    ],
+    changes: [
+      'Product page, name: “100 g” alone on line three → balance the lines (text-wrap: balance) and drop the weight from the name, since the size chips already show it.',
+      'Product page, reviews: "straight quotes" and I\'ve → curly “ ” and ’, set once in the review component.',
+      'Product page, price range: ₹340-₹1,150 → ₹340–₹1,150 (en dash): ranges take an en dash.',
+      'Product page, video play icon: box-centred 20 px triangle → 3 px toward the point, drawn into the icon asset.',
+      'Product page, notes card photo: 16 px inner radius → 8 px (16 outer minus 8 padding), so the gap stays even at the corners.',
+      'Product page, sticky cart bar: 12 px shadow down-left → the raised token (straight down), shown only while content scrolls under it.',
+      'Cart, prices and total: proportional figures → tabular figures in the price style, so every column lines up.',
+      'Cart, stepper icons: 2 px strokes → 1.5 px, matching the rest of the set; remove dialog: no scrim → overlay token with a 50% scrim.',
+      'Cart, empty state: “No items” in a grey box → “Your cart is empty. Our Darjeeling first flush is back”, with one product and a link to the shop.',
+      'Confirmation: tick nudged 1 px up and right to its mass; “TRACK ORDER” centred on cap height; a 2 px focus ring with a 2 px gap; dark-mode delivery card lifted to the low surface lightness with a hairline. Keep: the 24 px grid gutters and the order number’s tabular digits.',
+    ],
+    optical: 'Four corrections. The brewing video’s play triangle (20 px) moved 3 px toward its point, a little under its centroid offset of 3.3 px, judged on device; the offset lives in the icon file so it travels with it. The confirmation tick moved 1 px up and right, since its long stroke pulls the mass that way. Capitals in “TRACK ORDER” are centred on the cap height inside the button component, not the line box. The circular estate badge beside square tea thumbnails went from 48 to 54 px so the areas match. Kept exact on purpose: prices and the total, the grid gutters and the order number, because people compare them row by row.',
+    depth: 'One light source above, so every shadow falls straight down. Four heights: flat for the page, sections and form fields (border, no shadow); low for product and cart cards (1 px and 2 px key and ambient shadows); raised for the sticky cart bar, menus and toasts (2/4 px and 8/20 px); overlay for the remove dialog and the address sheet (4/8 px and 20/44 px, with a 50% scrim). That replaces nine hand-tuned shadows. In dark mode, shadows are dropped and fills lighten by height (8%, 12%, 16%, 20% lightness), with a hairline border on raised surfaces where they overlap.',
+    system: 'Four changes repeat across the app and go to the design system rather than these screens: tabular figures on the price and number text styles; the nested-radius rule (inner = outer − padding) in the card and sheet components; one 1.5 px stroke for the icon set, with the stepper icons redrawn; a focus ring token used by every interactive component. Plus the four elevation tokens to replace the nine shadows. I’d send them as one proposal with before and after crops, so other squads pick them up.',
+    priority: 'With time for about two-thirds: first what breaks use or trust, the focus ring, the long-name and empty-cart states, and tabular figures on prices, because misaligned money looks like an error on a screen where people decide to pay. Then what repeats across many screens: the elevation tokens, the radius rule, the icon stroke, since one fix reaches dozens of places. Then the single-screen optical corrections and the quote and dash fixes, which are quick and can ride along. Deferred to after the season: the dark-mode lightness for rarely used surfaces. I’d measure conversion from product page to cart and average order value against the same weeks last year, and rerun six of the original interviews asking people to describe the app in three words.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

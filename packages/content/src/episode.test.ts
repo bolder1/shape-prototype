@@ -6,6 +6,7 @@ import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_A
 import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, PROMPT_PARTS, aiRole, fieldTreatment, type HisaabCase, type HisaabField, type HisaabTask } from './ai';
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
+import { BUNKAR_CASES, BUNKAR_DETAILS, BUNKAR_SURFACES, CRAFT_CHECKS, ELEVATIONS, OPTICAL_FIXES, craftCheck, craftFix, elevationOf, opticalFix, type BunkarCase, type BunkarDetail, type BunkarSurface } from './polish';
 import { BLUEPRINT_ROWS, NABZ_DUTIES, NABZ_ROLES, NABZ_STEPS, NABZ_TASKS, SCALE_PATTERNS, blueprintRow, dutyOwner, scalePattern, type NabzDuty, type NabzStep, type NabzTask } from './service';
 import { BOLO_CLAIMS, BOLO_GAPS, BOLO_ITEMS, BOLO_SIGNALS, GAP_CALLS, GATES, MARGIN_MAX, SURVEY_PARTS, WEIGHTS, gapCall, gapInterval, signalGate, surveyFlaw, triangulate, type BoloClaim, type BoloGap, type BoloItem, type BoloSignal } from './survey';
 import { CEREMONIES, MOVES, RASOI_ITEMS, RASOI_MOMENTS, RASOI_QUESTIONS, SPRINT_CALLS, ceremonyFor, moveFor, sprintCall, type RasoiItem, type RasoiMoment, type RasoiQuestion } from './team';
@@ -1062,6 +1063,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...SCALE_PATTERNS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(NABZ_TASKS).sort());
         for (const c of ep.game.cards) { const t = NABZ_TASKS[c.visual as NabzTask]; expect(c.label).toBe(t.text); expect(c.lane).toBe(scalePattern(t)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'optical-nudge') {   // every case once, given the correction its shape and edge need
+        expect(lanes).toEqual([...OPTICAL_FIXES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(BUNKAR_CASES).sort());
+        for (const c of ep.game.cards) { const o = BUNKAR_CASES[c.visual as BunkarCase]; expect(c.label).toBe(o.text); expect(c.lane).toBe(opticalFix(o)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'elevation-lift') {   // every surface once, at the height its behaviour gives it
+        expect(lanes).toEqual([...ELEVATIONS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(BUNKAR_SURFACES).sort());
+        for (const c of ep.game.cards) { const sf = BUNKAR_SURFACES[c.visual as BunkarSurface]; expect(c.label).toBe(sf.text); expect(c.lane).toBe(elevationOf(sf)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'detail-loupe') {   // every detail once, in the check it fails; only shipped details have no fix
+        expect(lanes).toEqual([...CRAFT_CHECKS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(BUNKAR_DETAILS).sort());
+        for (const c of ep.game.cards) { const d = BUNKAR_DETAILS[c.visual as BunkarDetail]; expect(c.label).toBe(d.text); expect(c.lane).toBe(craftCheck(d)); expect(craftFix(d) === null).toBe(c.lane === 'ship'); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);
