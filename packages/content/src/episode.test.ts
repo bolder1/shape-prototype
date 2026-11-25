@@ -6,6 +6,7 @@ import { ASSET_FORMATS, HERO_SLOTS, PAGE_ZONES, SEO_AREAS, SEO_AREA_OF, SUKOON_A
 import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, PROMPT_PARTS, aiRole, fieldTreatment, type HisaabCase, type HisaabField, type HisaabTask } from './ai';
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
+import { BLUEPRINT_ROWS, NABZ_DUTIES, NABZ_ROLES, NABZ_STEPS, NABZ_TASKS, SCALE_PATTERNS, blueprintRow, dutyOwner, scalePattern, type NabzDuty, type NabzStep, type NabzTask } from './service';
 import { BOLO_CLAIMS, BOLO_GAPS, BOLO_ITEMS, BOLO_SIGNALS, GAP_CALLS, GATES, MARGIN_MAX, SURVEY_PARTS, WEIGHTS, gapCall, gapInterval, signalGate, surveyFlaw, triangulate, type BoloClaim, type BoloGap, type BoloItem, type BoloSignal } from './survey';
 import { CEREMONIES, MOVES, RASOI_ITEMS, RASOI_MOMENTS, RASOI_QUESTIONS, SPRINT_CALLS, ceremonyFor, moveFor, sprintCall, type RasoiItem, type RasoiMoment, type RasoiQuestion } from './team';
 import { GAADI_CODE, GAADI_QA, GAADI_SPEC, QA_LANES, REF_KINDS, SPEC_SOURCES, qaLane, refKind, type GaadiCode, type GaadiQa, type GaadiSpecItem } from './handoff';
@@ -1046,6 +1047,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...SUPPORT]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(MUSAFIR_PLANS).sort());
         for (const c of ep.game.cards) { const pl = MUSAFIR_PLANS[c.visual as MusafirPlan]; expect(c.label).toBe(pl.text); expect(c.lane).toBe(support(pl)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'blueprint-build') {   // every step once, in time order, in the row the customer's view puts it
+        expect(lanes).toEqual([...BLUEPRINT_ROWS]);
+        expect(ep.game.cards.map(c => c.visual)).toEqual(Object.keys(NABZ_STEPS));
+        for (const c of ep.game.cards) { const s = NABZ_STEPS[c.visual as NabzStep]; expect(c.label).toBe(s.text); expect(c.lane).toBe(blueprintRow(s)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'role-swim') {   // every step once, in workflow order, owned by the role the data and limits say
+        expect(lanes).toEqual([...NABZ_ROLES]);
+        expect(ep.game.cards.map(c => c.visual)).toEqual(Object.keys(NABZ_DUTIES));
+        for (const c of ep.game.cards) { const d = NABZ_DUTIES[c.visual as NabzDuty]; expect(c.label).toBe(d.text); expect(c.lane).toBe(dutyOwner(d)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'scale-dial') {   // every screen once, given the pattern its job needs at its size
+        expect(lanes).toEqual([...SCALE_PATTERNS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(NABZ_TASKS).sort());
+        for (const c of ep.game.cards) { const t = NABZ_TASKS[c.visual as NabzTask]; expect(c.label).toBe(t.text); expect(c.lane).toBe(scalePattern(t)); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

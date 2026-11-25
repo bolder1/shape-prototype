@@ -49,7 +49,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'sprint-cadence', 'workshop-room', 'sprint-week',
   'tradeoff-matrix', 'principle-poster', 'rule-break',
   'survey-sample', 'margin-band', 'dashboard-dig', 'source-weave',
-  'roadmap-plan', 'atom-repo', 'research-guardrails']);
+  'roadmap-plan', 'atom-repo', 'research-guardrails',
+  'service-blueprint', 'role-swimlane', 'scale-up']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -202,6 +203,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `roadmap-slot`: lanes are `SLOTS` in order; every card is a request from Musafir's research inbox, its `visual` a key of `MUSAFIR_REQUESTS` (each used once), its `label` that request's `text`, and its lane `roadmapSlot` of it. The game draws the January–June timeline with the decision's week (`weekDate`) and, on a right call, the study scheduled backwards from it (`studyWeeks`), with the team's load per week (`weekLoad`, up to `RESEARCHERS`). Every card needs a `note`.
  *  - `atom-build`: lanes are `ATOM_LANES` in order; every card is a draft note for Musafir's repository, its `visual` a key of `MUSAFIR_ATOMS` (each used once), its `label` that note's `text`, and its lane `atomLane` of it. Right calls add the note to a graph linked to the notes it rests on, with the studies behind each (`studiesBehind`, `MUSAFIR_STUDIES`). Every card needs a `note`.
  *  - `plan-critique`: lanes are `SUPPORT` in order; every card is a squad's research plan, its `visual` a key of `MUSAFIR_PLANS` (each used once), its `label` that plan's `text`, and its lane `support` of it. The game draws the plan's lines (who, method, people, stakes, data) and a right call puts the red pen on `decidingLine`; the end totals researcher hours (`researcherHours`). Every card needs a `note`.
+ *  - `blueprint-build`: lanes are `BLUEPRINT_ROWS` in order; every card is a step of Nabz's home blood test, its `visual` a key of `NABZ_STEPS` (each used once, in time order), its `label` that step's `text`, and its lane `blueprintRow` of it. Right calls pin the step to a blueprint board in its row and phase column (`BLUEPRINT_PHASES`) between the three lines (`BLUEPRINT_LINES`), and fail points (`failPoints`) light up once placed. Every card needs a `note`.
+ *  - `role-swim`: lanes are `NABZ_ROLES` in order; every card is a step of Tarang's check-up on Nabz for Business, its `visual` a key of `NABZ_DUTIES` (each used once, in workflow order), its `label` that step's `text`, and its lane `dutyOwner` of it. Right calls draw the step on a swimlane with an arrow from the last one, counting hand-offs (`roleHandoffs`); spending shows HR's limit (`HR_SPEND_LIMIT`) and group numbers the reporting floor (`MIN_REPORT_GROUP`). Every card needs a `note`.
+ *  - `scale-dial`: lanes are `SCALE_PATTERNS` in order; every card is a Nabz screen, its `visual` a key of `NABZ_TASKS` (each used once), its `label` that screen's `text`, and its lane `scalePattern` of it. A dial counts up to the screen's real size and the game draws the pattern picked at that size, with the scrolling a plain list would cost (`scrollScreens`). Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -247,7 +251,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'ceremony-route', 'room-read', 'sprint-fit',
   'matrix-read', 'principle-test', 'rule-call',
   'survey-spot', 'gap-read', 'signal-gate', 'source-triangle',
-  'roadmap-slot', 'atom-build', 'plan-critique']);
+  'roadmap-slot', 'atom-build', 'plan-critique',
+  'blueprint-build', 'role-swim', 'scale-dial']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

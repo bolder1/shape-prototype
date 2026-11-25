@@ -1864,9 +1864,60 @@ const rs6: BossBriefInput = {
   },
 };
 
+const ia5: BossBriefInput = {
+  chapterId: 'ia.5',
+  title: 'Blueprint a food delivery service',
+  minutes: 120,
+  scenario: [
+    'Thali Express delivers lunch from 1,200 restaurants in Hyderabad. Every order involves at least four parties: the customer in the app, the restaurant on a tablet at the counter, a delivery partner on a bike, and Thali’s own systems and support team. Between 12:30 and 2 pm, when offices order at once, one order in five arrives more than 15 minutes after the time the app promised, and refund requests double. The app’s screens test well. Leadership wants to know why the service fails at lunch and what to change.',
+    'Blueprint one scenario: an office worker in HITEC City orders lunch at 12:40 on a weekday and expects it by 1:15. Cover the whole service, front and back stage, from opening the app to eating (or asking for a refund). Then find where it breaks, show how the roles hand work to each other, check what changes at lunch-rush volume, and propose fixes. Use real or realistic research; say where you assumed something.',
+  ],
+  fields: [
+    { id: 'scenario', label: 'The scenario and the evidence', kind: 'text', minWords: 35, hint: 'Who the customer is, what they’re trying to do and by when, and what research or data your blueprint stands on.' },
+    { id: 'blueprint', label: 'The blueprint, phase by phase', kind: 'list', items: 4, minWords: 45, hint: 'One item per phase (for example order, prepare, pick up, deliver, after). In each: the customer’s action, the frontstage (people, screens, messages), the backstage, and the support processes, with who does each.' },
+    { id: 'failures', label: 'Fail points and waits', kind: 'list', items: 4, minWords: 25, hint: 'One per line: where it fails or someone waits, which row and which line it sits on, the cause, and the evidence for it.' },
+    { id: 'roles', label: 'The roles and their hand-offs', kind: 'long', minWords: 50, hint: 'Each role, what it needs to do its part, and what it may see (the customer’s number and address, for one). Every hand-off: the message, the wait, and what happens if nobody acts.' },
+    { id: 'scale', label: 'At lunch-rush volume', kind: 'text', minWords: 30, hint: 'What changes when 8,000 orders land in 90 minutes: which screens or processes break, and the pattern each needs (exceptions, rules, queues).' },
+    { id: 'fixes', label: 'What you’d change', kind: 'list', items: 3, minWords: 25, hint: 'Your three most important changes, each tied to a fail point, saying which row it changes and what the customer would notice, if anything.' },
+    { id: 'measure', label: 'How you’d know', kind: 'text', minWords: 15, hint: 'The numbers you’d watch, for the customer and for the staff, and what you’d compare them with.' },
+  ],
+  rubric: [
+    { id: 'blueprint', label: 'A complete, layered blueprint', strong: 'Follows one customer through one scenario in time order. Every phase has customer actions, frontstage, backstage and support steps with named actors; screens and messages the customer sees are frontstage; the three lines are respected; physical evidence (notifications, the bag, the receipt) is shown.', weight: 3, required: true },
+    { id: 'failures', label: 'Fail points with causes', strong: 'Finds real fail points and waits, most at hand-offs on or below the line of visibility (prep times the app can’t see, partners waiting at the counter, support blind to the order’s state), each with a cause and evidence rather than a symptom.', weight: 3, required: true },
+    { id: 'roles', label: 'Roles and hand-offs designed', strong: 'Names each role’s goal, data and moment; sets what each may see from the data (masked numbers, address only after pickup); designs every hand-off with a message, a fallback when nobody acts, and a status the waiting party can see.', weight: 2 },
+    { id: 'scale', label: 'Thinks at real volume', strong: 'Uses rush-hour numbers, says which screens and processes break at that size, and moves them to the right pattern: counts and exceptions for watching, rules and queues for acting on many.', weight: 2 },
+    { id: 'fixes', label: 'Fixes the causes', strong: 'Each fix ties to a fail point and changes the row where the cause is, often backstage or support, instead of explaining the failure better on the frontstage. Trade-offs for restaurants and partners are named.', weight: 2 },
+    { id: 'measure', label: 'A way to tell', strong: 'Watches on-time delivery against the promised time and refund requests at lunch, plus a staff-side number such as partner wait at the counter, compared with before or between areas.', weight: 1 },
+  ],
+  tips: ['Draw the customer’s row first and stop. Then, under each step, ask “what has to happen for this to work, and who does it?” until you reach the systems.', 'For every arrow between two people or systems, write what happens if the receiver does nothing for ten minutes. If the answer is “nobody knows”, you’ve found a fail point.'],
+  example: {
+    scenario: 'Ananya, a product analyst in HITEC City, orders a ₹240 biryani at 12:40 from a restaurant 3 km away, expecting it by 1:15 before a 1:30 meeting. The blueprint stands on 14 interviews with customers, restaurant staff and partners, two lunch shifts shadowing at three restaurants, and order logs for March: at lunch, 21% of orders arrive more than 15 minutes late, against 7% in the evening.',
+    blueprint: [
+      'Order (12:40). Customer: picks a restaurant, pays by UPI. Frontstage: the app promises “by 1:15”, then an order-placed message. Backstage: none yet. Support: the ETA engine sets 1:15 from distance and the restaurant’s average prep time; the payment gateway confirms; the order goes to the restaurant’s tablet.',
+      'Prepare (12:41–1:00). Customer: waits, checks the app. Frontstage: “Restaurant is preparing your food” with a progress bar. Backstage: the counter person accepts the order on the tablet, among 40 others, and calls it to the kitchen. Support: the dispatch system assigns a partner at 12:44 based on the expected ready time.',
+      'Pick up (1:00–1:12). Customer: waits. Frontstage: “Ravi is on the way to the restaurant”, his location on a map. Backstage: Ravi arrives at 12:52, waits at the counter for 20 minutes because the food isn’t ready, and can’t tell anyone. The counter person marks “ready” once the bag is packed. Support: dispatch sees the restaurant as “preparing” and holds Ravi there.',
+      'Deliver and after (1:12–1:35). Customer: meets Ravi at the gate, eats, rates, or asks for a refund for the late order. Frontstage: live tracking, Ravi’s masked call, the sealed bag, the receipt, the support chat. Backstage: Ravi finds the right tower using the delivery note. Support: the support agent sees the order timeline and decides the refund within policy; ratings feed the restaurant’s and partner’s scores.',
+    ],
+    failures: [
+      'The ETA is set before the restaurant has looked at the order (support row, below the line). It uses an all-day average prep time, but at lunch prep is twice as long, so 1:15 was never possible. Evidence: prep time logged in March is 11 minutes at 4 pm and 23 minutes at 1 pm.',
+      'Ravi waits 20 minutes at the counter (backstage, at the line of internal interaction). The tablet’s “ready” is pressed when the bag is packed, often late, and partners have no way to say they’re waiting. Evidence: shadowing showed partners waiting a median 14 minutes at lunch; three restaurants said they mark ready “when we remember”.',
+      'Ananya waits without news (frontstage, a wait). The progress bar moves on a timer, not on what is happening in the kitchen, so it says “almost ready” at 1:05 when the food isn’t. Evidence: 9 of 14 customers said they stopped trusting the bar.',
+      'The support agent can’t see the counter wait (frontstage hand-off to support). She sees “out for delivery” while the partner is still at the counter, and promises five minutes. Evidence: 40 support transcripts from lunch shifts in March.',
+    ],
+    roles: 'Customer: wants food by a time she can rely on; sees the order’s real state, the partner’s first name, location and a masked number. Restaurant counter: wants to clear 40 orders without mistakes; sees the order, the prep time Thali expects and when the partner arrives, never the customer’s address or number. Delivery partner: wants more orders per hour and no waiting; sees the pickup, and the address and delivery note only after pickup. Support agent: wants to resolve issues in one contact; sees the whole timeline, including counter waits. Hand-offs: the order to the restaurant must be accepted in two minutes, or Thali calls the restaurant and tells the customer; “food ready” to dispatch comes from the counter, with a nudge when the partner checks in; if a partner has waited ten minutes, dispatch is alerted and can reassign him to a nearby order; a refund request goes to an agent with the timeline already open.',
+    scale: 'Between 12:30 and 2 pm about 8,000 orders land in 90 minutes, so the restaurant tablet goes from a short list to 40 open orders. It needs a queue sorted by promised pickup time, with late ones on top, not a list newest first. Dispatch can’t watch 1,500 partners on a map; it needs counts (waiting, riding, idle) by area and the exceptions: partners waiting over ten minutes, orders not accepted after two. Refund decisions for late lunch orders go from case-by-case to a rule: over 20 minutes late, an automatic ₹50 credit with a preview of the cost per day.',
+    fixes: [
+      'Set the promise from lunch-hour prep times and the restaurant’s current queue, and let the restaurant confirm it on accept (support row). Customers would see a slightly later but honest time: 1:25 that arrives at 1:22.',
+      'Add a one-tap “I’m here” for partners at the counter and a queue on the tablet sorted by pickup time, so the restaurant sees who is waiting (backstage). The customer notices nothing except fewer late orders; restaurants need a shorter accept flow to make room for it.',
+      'Drive the progress bar from real events (accepted, cooking, packed, picked up) and show support the same timeline (frontstage and support). When an order is late, the customer gets the new time and a credit before she has to ask.',
+    ],
+    measure: 'Share of lunch orders delivered within five minutes of the promised time (from 79% on time today), refund requests per 1,000 lunch orders, and partners’ median wait at the counter, compared across four weeks with the old flow in a matched set of areas.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];
