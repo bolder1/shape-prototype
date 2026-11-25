@@ -191,6 +191,9 @@ import { AnswerCrit } from './games/AnswerCrit';
 import { StudyFix } from './games/StudyFix';
 import { PersonaCrit } from './games/PersonaCrit';
 import { ProgramRoad } from './games/ProgramRoad';
+import { MoatCrit } from './games/MoatCrit';
+import { BetBook } from './games/BetBook';
+import { LayerPick } from './games/LayerPick';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -391,6 +394,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'study-fix': StudyFix,
   'persona-crit': PersonaCrit,
   'program-road': ProgramRoad,
+  'moat-crit': MoatCrit,
+  'bet-book': BetBook,
+  'layer-pick': LayerPick,
 };
 
 interface Props {

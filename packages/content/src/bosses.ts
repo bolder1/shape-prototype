@@ -2250,9 +2250,69 @@ const ax3: BossBriefInput = {
   },
 };
 
+const st4: BossBriefInput = {
+  chapterId: 'st.4',
+  title: 'A 12-month design strategy pitch',
+  minutes: 120,
+  scenario: [
+    'Pitch next year’s design strategy to an executive team: the CEO, the CFO and the heads of product and engineering. Use your own company, your Studio product’s company, or Munim, the Pune small-business software company from this chapter, with three products (Books, Pay and Stock), a rival that copies its screens within weeks, three teams that have each built their own sign-in and invoice, and ₹3 crore for design bets.',
+    'Say where design will compete and why that lasts, which bets you will fund, probe and kill with the numbers behind each, what gets built once for every product and what doesn’t, and how the year runs quarter by quarter. Then make the ask, and answer the objections you expect from the room. The executives have ten minutes and will read your summary first.',
+  ],
+  fields: [
+    { id: 'summary', label: 'The summary the CEO reads first', kind: 'text', minWords: 40, hint: 'Three or four sentences: the challenge, where design will compete, what you’ll do this year, and what you need from the room.' },
+    { id: 'diagnosis', label: 'Diagnosis', kind: 'long', minWords: 50, hint: 'What is really going on: what rivals do and copy, what customers choose you for (with evidence), and what has gone wrong inside (duplicated work, slow delivery).' },
+    { id: 'advantage', label: 'Where design competes, and why it lasts', kind: 'list', items: 3, minWords: 15, hint: 'One advantage per line: what customers value about it, the evidence, and why a funded rival would need a year or more to match it.' },
+    { id: 'policy', label: 'Guiding policy', kind: 'text', minWords: 25, hint: 'The one approach that follows from the diagnosis, and two things it means you will stop or say no to.' },
+    { id: 'bets', label: 'The bets', kind: 'list', items: 5, minWords: 15, hint: 'One bet per line: cost, payoff if it works, a cautious and a hopeful chance, and the call (fund, probe with what test and pass mark, or kill). Include the mix across core, adjacent and new.' },
+    { id: 'platform', label: 'Built once, or not', kind: 'long', minWords: 50, hint: 'What moves into a shared platform now, what you’ll harvest later, what stays in one product and what you’ll buy; who owns the platform and how you’ll measure it.' },
+    { id: 'roadmap', label: 'The year, quarter by quarter', kind: 'list', items: 4, minWords: 20, hint: 'One quarter per line: what starts, what is decided (which probes are scaled or stopped), and who owns it.' },
+    { id: 'measures', label: 'How the room will know it worked', kind: 'text', minWords: 30, hint: 'The few outcomes the diagnosis points at, with today’s number and a target, and when you’ll report them.' },
+    { id: 'objections', label: 'The objections, answered', kind: 'list', items: 3, minWords: 20, hint: 'One per line: the objection you expect from the CFO, product or engineering, and your answer in a sentence or two.' },
+  ],
+  rubric: [
+    { id: 'diagnosis', label: 'A diagnosis, not a goal', strong: 'Names the real challenge with evidence (what rivals copy, why customers choose or leave, what is duplicated inside); the policy and actions follow from it, and it says what the company will stop doing.', weight: 3, required: true },
+    { id: 'advantage', label: 'Advantages that last', strong: 'Each claimed advantage is valued by the customers the company serves, backed by evidence, and hard to copy for a reason (research and data, a network, hard capability); polish is treated as expected, not as the strategy.', weight: 2, required: true },
+    { id: 'bets', label: 'Bets priced and called', strong: 'Every bet has a cost, a payoff and a range of chances; the calls follow from expected value at both ends; probes have cheap tests, pass marks and kill criteria; the mix is balanced and money is held back to scale what passes.', weight: 3, required: true },
+    { id: 'platform', label: 'Sound platform calls', strong: 'Shares what several products need once it has settled, harvests what is still changing, keeps single-product needs in the product, buys commodities, and runs the platform as a product with an owner and adoption measures.', weight: 2 },
+    { id: 'plan', label: 'A year that can be run', strong: 'Quarters in a sensible order with owners, decision points for each probe, and outcome measures with baselines and targets that the room can check.', weight: 1 },
+    { id: 'pitch', label: 'Made for the room', strong: 'The summary stands alone; the ask is specific; objections from finance, product and engineering are answered with the company’s own numbers rather than industry averages.', weight: 1 },
+  ],
+  tips: ['Write the summary last and read it alone: if the CEO stopped there, would they know what you want and why?', 'For every advantage, ask how long a rival with twice your budget would need to match it. If the answer is a quarter, it belongs in the quality you keep up, not in the strategy.'],
+  example: {
+    summary: 'Rivals copy our screens within weeks, but not what we know about CAs and small shops. Next year design competes there: returns right first time, the CA and the shop working together, and billing that works offline. We fund three bets, probe four for ₹27 lakh, kill three, and build sign-in and the GST invoice once for all three products. We ask for ₹3 crore and a four-person platform team.',
+    diagnosis: 'Hisaably matched our new invoices six weeks after launch, and will match anything else it can see. In 120 switching interviews, shops chose Munim for three things: fewer rejected GST returns, their CA already using Munim, and billing that works on patchy 4G. Nobody mentioned our animations or awards. Inside, Books, Pay and Stock have each built their own sign-in, invoice and payment link, so every GST rule change is made three times, and customers like Ganpat in Nashik sign in twice and see two invoices for one sale.',
+    advantage: [
+      'Clean GST returns: returns filed through Munim are rejected 70% less often; the review screen came from 140 hours with CAs and data from 2 lakh returns, which a rival would need years to gather.',
+      'The CA’s view: 4,000 CAs close their clients’ books in Munim, and 38% of new customers arrive through one; a network like that grows with every client and takes years to rebuild.',
+      'Offline billing: the top reason in switching interviews; reliable sync without duplicate invoices took three years of design and engineering, and a rival can’t buy it off the shelf.',
+    ],
+    policy: 'Design for the CA and the shop together, and make every return right first time. That means we stop work on the enterprise design language and the Gen Z brand, and we don’t start a rebrand: none of them serves the businesses and CAs we have chosen.',
+    bets: [
+      'Fund, core: GST review redesign. Cost ₹40 lakh, payoff ₹1.8 crore a year in kept customers, chance 60–80%, so worth ₹68 lakh to ₹1.04 crore.',
+      'Fund, core: one design system for Books, Pay and Stock. Cost ₹80 lakh, payoff ₹2 crore in engineering time saved, chance 70–90%: worth at least ₹60 lakh.',
+      'Fund, adjacent: invoices with a payment link on WhatsApp. Cost ₹20 lakh, payoff ₹1.2 crore, chance 50–80%: worth at least ₹40 lakh.',
+      'Probe: voice invoices (new, −₹40 to +₹60 lakh) with an ₹8 lakh Wizard of Oz test, pass mark 60% of invoices finished by voice; the AI cash forecast (new, −₹35 to +₹70 lakh) with ₹10 lakh of hand-made forecasts for 30 businesses; invite your CA (adjacent) with a ₹5 lakh fake door, pass mark 8%; barcode counts (adjacent) with a ₹4 lakh prototype in ten shops.',
+      'Kill: dark mode (₹9 lakh back on ₹25 lakh at best), the rebrand (₹48 lakh on ₹90 lakh at best) and the 3D dashboard (₹12 lakh on ₹35 lakh). Mix: 72% core, 17% adjacent, 11% new of ₹1.67 crore committed, with ₹1.33 crore held back to scale probes that pass.',
+    ],
+    platform: 'Platform now, because all three products need them and they have settled: one sign-in and business profile, the GST invoice and its tax lines, and the form controls in the design system. Harvest later: the payment link (Books reuses Pay’s until both settle), alert settings and first-run setup, which are still being tested. Keep in the product: barcode counts and the reorder report in Stock, the forecast experiment in Books. Buy: SMS one-time passwords, maps and the help chat. A four-person platform team owns it with a roadmap and a support channel; we measure the share of new screens built on it and the time to ship a common flow, and ask teams that go around it why.',
+    roadmap: [
+      'Q1 (Jan–Mar): start the GST review and the design system; set up the platform team (owner: Aarti); run all four probes, with pass marks and review dates agreed with Farhan.',
+      'Q2 (Apr–Jun): ship shared sign-in and the GST invoice in all three products; launch WhatsApp invoices; review the probes, scale or stop each one, and move the held-back money to those that passed.',
+      'Q3 (Jul–Sep): the GST review ships to every Books customer; build the probes that passed; harvest the payment link into the platform if Books and Pay have converged (owner: Neha).',
+      'Q4 (Oct–Dec): report outcomes to the exec team, review every platform, product and buy call, and set next year’s bets from what this year taught.',
+    ],
+    measures: 'GST return rejection rate from 6.1% to under 4% by December; share of new customers who arrive through a CA from 38% to 45%; monthly churn among shops that bill offline from 2.4% to under 2%; and the time for a product team to ship a common flow from three weeks to one. Reported to the exec team every quarter, next to revenue.',
+    objections: [
+      'CFO: “Why hold back ₹1.33 crore?” So that the probes which pass can be built this year without a new budget round; if none pass, it comes back to you in Q3.',
+      'Head of product: “A platform team will slow us down.” It owns only what must match, like identity, tax and money; anything still changing stays with your teams, and we measure the platform by how much faster you ship.',
+      'CEO: “Why not just make everything look better than Hisaably?” They copied our invoices in six weeks. We’ll keep quality high, but we’ll compete where they need years: CA research, return data and offline sync.',
+    ],
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

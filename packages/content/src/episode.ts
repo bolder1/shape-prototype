@@ -57,7 +57,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'theme-stack', 'platform-parity', 'sync-loop',
   'logic-cart', 'proto-ladder', 'output-range',
   'content-model', 'content-lifecycle', 'grounded-answer',
-  'study-session', 'persona-rewrite', 'maturity-road']);
+  'study-session', 'persona-rewrite', 'maturity-road',
+  'moat-map', 'bet-portfolio', 'platform-layers']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -234,6 +235,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `study-fix`: lanes are `STUDY_FLAWS` in order; every card is a choice in Hazri's plan for sessions with disabled participants, its `visual` a key of `HAZRI_CHOICES` (each used once), its `label` that choice's `text`, and its lane `studyFlaw` of it. The study's stages (`STUDY_STEPS`) fill in as you go; right calls show the plan's `fix`. Every card needs a `note`.
  *  - `persona-crit`: lanes are `PERSONA_FLAWS` in order; every card is a line from a draft persona, its `visual` a key of `HAZRI_LINES` (each used once), its `label` that line's `text`, and its lane `personaFlaw` of it. Each card shows its evidence (of `PERSONA_SESSIONS`); right calls rebuild Revathi's card with the line, its `rewrite` or nothing. Every card needs a `note`.
  *  - `program-road`: lanes are `PROGRAM_QUARTERS` in order; every card is a step of Hazri's accessibility programme, its `visual` a key of `HAZRI_PROGRAM` (each used once), its `label` that step's `text`, and its lane `programLane` of it, the earliest quarter its `needs` allow. Too-early calls name what isn't done yet (`unmetNeeds`); right calls add it to a roadmap beside the deck. Every card needs a `note`.
+ *  - `moat-crit`: lanes are `ADVANTAGE_CALLS` in order; every card is a claim from Munim's draft design strategy, its `visual` a key of `MUNIM_CLAIMS` (each used once), its `label` that claim's `text`, and its lane `advantageCall` of it. Each card shows its evidence and months to copy (against `COPY_MONTHS`); right calls plot it on a value × time-to-copy moat map. Every card needs a `note`.
+ *  - `bet-book`: lanes are `BET_CALLS` in order; every card is a design bet, its `visual` a key of `MUNIM_BETS` (each used once), its `label` that bet's `text`, and its lane `betCall` of it, from its expected value (`betRange`) on the cautious and hopeful chance. Right calls draw the range against zero and fill the budget (`MUNIM_BUDGET`, `betSpend`, `portfolioMix`). Every card needs a `note`.
+ *  - `layer-pick`: lanes are `PLATFORM_CALLS` in order; every card is a capability Munim's products need, its `visual` a key of `MUNIM_CAPABILITIES` (each used once), its `label` that capability's `text`, and its lane `platformCall` of it. Right calls place it on a product map: the shared platform layer, a product's column (dashed for harvest), or the vendor shelf. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -287,7 +291,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'brand-tune', 'parity-sort', 'sync-flow',
   'logic-wire', 'proto-fit', 'output-plan',
   'model-build', 'rot-audit', 'answer-crit',
-  'study-fix', 'persona-crit', 'program-road']);
+  'study-fix', 'persona-crit', 'program-road',
+  'moat-crit', 'bet-book', 'layer-pick']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

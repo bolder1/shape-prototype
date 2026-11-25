@@ -7,6 +7,7 @@ import { AI_ROLES, FIELD_TREATMENTS, HISAAB_EVALS, HISAAB_FIELDS, HISAAB_TASKS, 
 import { HAAT_BREAKS, HAAT_DECISIONS, HAAT_PRINCIPLES, MATRIX_CALLS, PRINCIPLE_VERDICTS, RULE_CALLS, matrixCall, principleVerdict, ruleCall, type HaatBreak, type HaatDecision, type HaatPrinciple } from './judgment';
 import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPPORT, atomLane, roadmapSlot, studyWeeks, support, type MusafirAtom, type MusafirPlan, type MusafirRequest } from './researchops';
 import { OUTPUT_METHODS, PROTO_TOOLS, THELA_BEHAVIOURS, THELA_QUESTIONS, THELA_STUDIES, TOOL_CAN, WIRE_KINDS, missingNeeds, outputMethod, protoTool, wireKind, type ThelaBehaviour, type ThelaQuestion, type ThelaStudy } from './advproto';
+import { ADVANTAGE_CALLS, BET_CALLS, MUNIM_BETS, MUNIM_CAPABILITIES, MUNIM_CLAIMS, PLATFORM_CALLS, advantageCall, betCall, platformCall, type MunimBet, type MunimCapability, type MunimClaim } from './designstrategy';
 import { HAZRI_CHOICES, HAZRI_LINES, HAZRI_PROGRAM, PERSONA_FLAWS, PROGRAM_QUARTERS, STUDY_FLAWS, personaFlaw, programLane, studyFlaw, type HazriChoice, type HazriLine, type HazriStep } from './inclusive';
 import { ANSWER_FLAWS, AUDIT_CALLS, MODEL_PLACES, TAAR_ANSWERS, TAAR_AUDIT, TAAR_CHUNKS, answerFlaw, auditCall, modelPlace, ungrounded, type TaarAnswer, type TaarAuditItem, type TaarChunk } from './contentstrategy';
 import { BRAND_CALLS, PARITY_CALLS, SAWARI_DECISIONS, SAWARI_DRIFTS, SAWARI_REQUESTS, SYNC_MOVES, brandCall, parityCall, passingSteps, syncMove, type SawariDecision, type SawariDrift, type SawariRequest } from './multibrand';
@@ -1174,6 +1175,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...PROGRAM_QUARTERS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(HAZRI_PROGRAM).sort());
         for (const c of ep.game.cards) { const k = c.visual as HazriStep; expect(c.label).toBe(HAZRI_PROGRAM[k].text); expect(c.lane).toBe(programLane(k)); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'moat-crit') {   // every claim once, judged by advantageCall
+        expect(lanes).toEqual([...ADVANTAGE_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(MUNIM_CLAIMS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as MunimClaim; expect(c.label).toBe(MUNIM_CLAIMS[k].text); expect(c.lane).toBe(advantageCall(MUNIM_CLAIMS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'bet-book') {   // every bet once, called by its expected value range
+        expect(lanes).toEqual([...BET_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(MUNIM_BETS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as MunimBet; expect(c.label).toBe(MUNIM_BETS[k].text); expect(c.lane).toBe(betCall(MUNIM_BETS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'layer-pick') {   // every capability once, placed by platformCall
+        expect(lanes).toEqual([...PLATFORM_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(MUNIM_CAPABILITIES).sort());
+        for (const c of ep.game.cards) { const k = c.visual as MunimCapability; expect(c.label).toBe(MUNIM_CAPABILITIES[k].text); expect(c.lane).toBe(platformCall(MUNIM_CAPABILITIES[k])); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'story-strip') {   // every beat once, written out, on its part of the spine
         expect(lanes).toEqual([...PITCH_PARTS]);

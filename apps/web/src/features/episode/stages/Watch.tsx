@@ -189,6 +189,9 @@ import { GroundedAnswerScene } from '../scenes/GroundedAnswer';
 import { StudySessionScene } from '../scenes/StudySession';
 import { PersonaRewriteScene } from '../scenes/PersonaRewrite';
 import { MaturityRoadScene } from '../scenes/MaturityRoad';
+import { MoatMapScene } from '../scenes/MoatMap';
+import { BetPortfolioScene } from '../scenes/BetPortfolio';
+import { PlatformLayersScene } from '../scenes/PlatformLayers';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -371,6 +374,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'study-session': StudySessionScene,
   'persona-rewrite': PersonaRewriteScene,
   'maturity-road': MaturityRoadScene,
+  'moat-map': MoatMapScene,
+  'bet-portfolio': BetPortfolioScene,
+  'platform-layers': PlatformLayersScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
