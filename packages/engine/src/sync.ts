@@ -67,10 +67,31 @@ export function mergeBosses<A extends BossAttemptLike>(a: Record<string, BossRec
  * `today` is passed in so the rule is testable.
  */
 export function mergeStreak(local: Streak, remote: Streak, today: string): Streak {
-  // TODO(human): decide which streak survives a merge.
-  void remote; void today;
-  return local;
+  void today;   // the merge is about what happened; whether it's still alive today is decided when it's shown (liveStreak)
+  const longest = (s: Streak) => Math.max(local.longest, remote.longest, s.current);
+  if (!local.lastDay) return { ...remote, longest: longest(remote) };
+  if (!remote.lastDay) return { ...local, longest: longest(local) };
+
+  // Each device's streak is an unbroken run of days ending on its lastDay. If the two runs touch or overlap,
+  // the learner kept one longer run across both devices: join them. If there's a gap, the later run is the streak.
+  const [late, early] = local.lastDay >= remote.lastDay ? [local, remote] : [remote, local];
+  const startOf = (s: Streak) => addDays(s.lastDay!, -(Math.max(s.current, 1) - 1));
+  const lateStart = startOf(late);
+  if (early.current > 0 && early.lastDay! >= addDays(lateStart, -1)) {
+    const start = [lateStart, startOf(early)].sort()[0];
+    const current = daysBetween(start, late.lastDay!) + 1;
+    return { current, longest: Math.max(longest(late), current), lastDay: late.lastDay };
+  }
+  return { ...late, longest: longest(late) };
 }
+
+/** `YYYY-MM-DD` plus n days (calendar days, no time zone drift). */
+function addDays(day: string, n: number) {
+  const d = new Date(`${day}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+const daysBetween = (a: string, b: string) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86_400_000);
 
 /** Merges two progress snapshots. XP is re-derived from the merged ledger, so it can't drift from it. */
 export function mergeProgress<A extends BossAttemptLike, D>(local: ProgressSnapshot<A, D>, remote: ProgressSnapshot<A, D>, today: string): ProgressSnapshot<A, D> {

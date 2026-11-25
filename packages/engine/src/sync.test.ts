@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mergeBosses, mergeLedger, mergeLessons, mergeProgress, mergeReview, type ProgressSnapshot } from './index';
+import { mergeBosses, mergeLedger, mergeLessons, mergeProgress, mergeReview, mergeStreak, type ProgressSnapshot } from './index';
 
 const ev = (at: string, amount: number, kind: 'lesson' | 'review' | 'boss' = 'lesson', ref?: string) => ({ at, amount, kind, ...(ref ? { ref } : {}) });
 const empty = (): ProgressSnapshot => ({ xp: 0, ledger: [], streak: { current: 0, longest: 0, lastDay: null }, lessons: {}, review: {}, bosses: {}, bossDrafts: {} });
@@ -51,5 +51,32 @@ describe('mergeProgress', () => {
     const m = mergeProgress(a, b, '2026-11-25');
     expect(m.xp).toBe(80);
     expect(m.bossDrafts).toEqual({ 'fd.1': 'mine', 'fd.2': 'other' });
+  });
+});
+
+describe('mergeStreak', () => {
+  const T = '2026-11-25';
+  const st = (current: number, lastDay: string | null, longest = current) => ({ current, longest, lastDay });
+  it('joins two devices whose runs overlap: phone 20–24, laptop 23–25 is one 6-day run', () => {
+    expect(mergeStreak(st(5, '2026-11-24'), st(3, '2026-11-25'), T)).toEqual({ current: 6, longest: 6, lastDay: '2026-11-25' });
+  });
+  it('joins runs that touch end to end: phone 21–22, laptop 23–25', () => {
+    expect(mergeStreak(st(2, '2026-11-22'), st(3, '2026-11-25'), T).current).toBe(5);
+  });
+  it('takes the later run when there is a gap between them', () => {
+    expect(mergeStreak(st(9, '2026-11-15', 12), st(2, '2026-11-25'), T)).toEqual({ current: 2, longest: 12, lastDay: '2026-11-25' });
+  });
+  it('same last day: the longer run wins (it contains the shorter one)', () => {
+    expect(mergeStreak(st(4, '2026-11-25'), st(7, '2026-11-25'), T).current).toBe(7);
+  });
+  it('a device that never started has nothing to add', () => {
+    expect(mergeStreak(st(0, null), st(3, '2026-11-25', 8), T)).toEqual({ current: 3, longest: 8, lastDay: '2026-11-25' });
+  });
+  it('is symmetric', () => {
+    const a = st(5, '2026-11-24', 6), b = st(3, '2026-11-25');
+    expect(mergeStreak(a, b, T)).toEqual(mergeStreak(b, a, T));
+  });
+  it('handles month ends', () => {
+    expect(mergeStreak(st(3, '2026-11-30'), st(2, '2026-12-02'), '2026-12-02').current).toBe(5);
   });
 });
