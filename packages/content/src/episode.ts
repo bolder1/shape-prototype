@@ -63,7 +63,8 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
   'campaign-arc', 'brand-spectrum', 'brand-tracker',
   'impact-chain', 'case-shape', 'studio-rate',
   'state-lift', 'frame-budget', 'agent-loop',
-  'debrief-room', 'skill-will', 'ritual-week']);
+  'debrief-room', 'skill-will', 'ritual-week',
+  'wait-time', 'health-pulse', 'hub-spoke']);
 /**
  * Mini-games (one per lesson).
  *  - `swipe-sort`: exactly two lanes; the first is swipe-left, the second swipe-right.
@@ -259,6 +260,9 @@ export const SceneId = z.enum(['double-diamond', 'problem-solution', 'design-thi
  *  - `level-call`: lanes are `BAR_CALLS` in order; every card is a note from a candidate's interview loop for a senior role, its `visual` a key of `KAARIGAR_NOTES` (each used once), its `label` that note's `text`, and its lane `barCall` of it: no behaviour is noise, then the rung `noteLevel` gives (its scope, one lower if someone else framed it) against the senior bar. Right calls place the note on the `DESIGN_LADDER`; the finished loop shows `offerLevel`. Every card needs a `note`.
  *  - `style-pick`: lanes are `LEAD_STYLES` in order; every card is one designer on one piece of work, its `visual` a key of `KAARIGAR_SITUATIONS` (each used once), its `label` that situation's `text`, and its lane `leadStyle` of it: skill on the task splits direct and coach from support and delegate, and will decides within each. Right calls plot the designer on a skill × will grid and show Shalini's `move`; the end shows `stylesByPerson`. Every card needs a `note`.
  *  - `ritual-crit`: lanes are `RITUAL_CALLS` in order; every card is a ritual on the design team's calendar, its `visual` a key of `KAARIGAR_RITUALS` (each used once), its `label` that ritual's `text`, and its lane `ritualCall` of it: no reason or a duplicate is cut, then unsafe is made safe, then no output is reshaped. Right calls fix the week with its `fixed` version, and the hours come from `ritualMinutes`. Every card needs a `note`.
+ *  - `flow-fix`: lanes are `FLOW_FIXES` in order; every card is a step where a Saathi design request loses time, its `visual` a key of `SAATHI_STEPS` (each used once), its `label` that step's `text`, and its lane `flowFix` of it: a step with no value is removed, then a gate is unblocked, then what varies by squad is standardised, and only the rest is automated. Right calls swap the step for its `fixed` version and shrink the journey (`flowHours`, `flowEfficiency`). Every card needs a `note`.
+ *  - `health-read`: lanes are `HEALTH_CALLS` in order; every card is a reading on Saathi's design health check, its `visual` a key of `SAATHI_READINGS` (each used once), its `label` that reading's `text`, and its lane `healthCall` of it: output counts and per-person numbers are dropped, then a team measure inside its line is healthy, one over it for a single quarter or from fewer than `MIN_GROUP` people is watched, and the rest is acted on. Each card draws its three quarters against the line; the end shows `healthCheck`. Every card needs a `note`.
+ *  - `org-shape`: lanes are `ORG_FIXES` in order; every card is a problem Saathi hit scaling design, its `visual` a key of `SAATHI_PROBLEMS` (each used once), its `label` that problem's `text`, and its lane `orgFix` of it: needing a squad's context is embedded, then a shared asset goes to the hub, then coordination to DesignOps, and craft drift to a guild. Right calls place the fix's owner in the org chart `orgShape` builds. Every card needs a `note`.
  *  - `contrast-check`: lanes `pass`, `large`, `fail`; every card's `visual` is "#fg|#bg" and its lane is what WCAG says (see `contrastLane`).
  */
 export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-route', 'gestalt-hunt', 'squint-test', 'law-lab', 'chunk-lab',
@@ -318,7 +322,8 @@ export const GameId = z.enum(['diamond-sort', 'swipe-sort', 'myth-pop', 'role-ro
   'arc-map', 'family-sort', 'search-share',
   'value-size', 'case-edit', 'engage-sort',
   'data-home', 'anim-fix', 'agent-review',
-  'level-call', 'style-pick', 'ritual-crit']);
+  'level-call', 'style-pick', 'ritual-crit',
+  'flow-fix', 'health-read', 'org-shape']);
 
 const Option = z.object({ id: z.string().min(1), label: z.string().min(1) });
 const Question = z.object({

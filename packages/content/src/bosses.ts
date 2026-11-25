@@ -2549,9 +2549,56 @@ const ld3: BossBriefInput = {
   },
 };
 
+const ld4: BossBriefInput = {
+  chapterId: 'ld.4',
+  title: 'An ops plan that removes one bottleneck from a real team',
+  minutes: 120,
+  scenario: [
+    'You run operations for a design team: your own, one you know well, or Saathi’s (Megha Pillai, DesignOps lead at a Hyderabad healthtech with 38 designers in 11 squads, a patient app, a doctor app and a pharmacy portal). Squads say design is slow, managers spend their weeks on admin, and nobody can say whether the team is healthy. You have one quarter and no new headcount.',
+    'Pick one bottleneck and remove it. Measure where the work actually waits, name the cause, and change the workflow, the tools or the shape of the org to fix it, in the right order. Say how you will know it worked without measuring people, how you will roll it out with the squads, and what could go wrong.',
+  ],
+  fields: [
+    { id: 'team', label: 'The team today', kind: 'text', minWords: 30, hint: 'How many designers, in which squads or products, how they are organised and who they report to, and the tools they use. Say whether it is real (and which) or Saathi.' },
+    { id: 'bottleneck', label: 'Where the work waits', kind: 'long', minWords: 50, hint: 'Follow real requests from the first ask to live. For each step, hours of work and hours of waiting. Name the one bottleneck you will remove, and the flow efficiency before.' },
+    { id: 'cause', label: 'Why it waits', kind: 'text', minWords: 30, hint: 'The cause, not the symptom: a step that changes nothing, a gate on one person, too much in progress, every squad doing it differently, or a manual job. Show the evidence.' },
+    { id: 'changes', label: 'What you change, in order', kind: 'list', items: 3, minWords: 15, hint: 'One change per line, in the order you will make it: what goes, what gets unblocked, what gets standardised with the squads, and only then what gets automated. Say who owns each.' },
+    { id: 'shape', label: 'Who owns it in the org', kind: 'text', minWords: 25, hint: 'Where the fix lives once you have made it: in the squads, a central hub, DesignOps or a guild across squads, and why there and not elsewhere.' },
+    { id: 'health', label: 'How you’ll know it worked', kind: 'list', items: 3, minWords: 12, hint: 'One measure per line: what it is, the line you agree with the team, and how often you read it. Team measures only, nothing per named person. Include at least one people measure.' },
+    { id: 'rollout', label: 'Rolling it out', kind: 'long', minWords: 50, hint: 'Who you agree it with first, a pilot squad, what you will stop doing, how you will tell the team, and when you re-measure the flow.' },
+    { id: 'risks', label: 'What could go wrong', kind: 'text', minWords: 25, hint: 'How the change or its measure could be gamed or drift back, and what you will watch for.' },
+  ],
+  rubric: [
+    { id: 'evidence', label: 'The bottleneck is measured', strong: 'Real requests are followed end to end with work and waiting time per step; the bottleneck is the step that loses the most time, not the most annoying one; flow efficiency is stated before and expected after.', weight: 3, required: true },
+    { id: 'order', label: 'Fixes in the right order', strong: 'Steps that change nothing are removed before anything is automated; queues and gates are cleared and work in progress limited before standardising; standards are agreed with the squads; automation comes last and only for what is the same everywhere.', weight: 3, required: true },
+    { id: 'health', label: 'Healthy measures, read well', strong: 'Team measures across delivery, quality and people, each with an agreed line; no counts of output or numbers by name; one quarter over the line is watched and two acted on; small groups are kept anonymous; numbers go back to the team.', weight: 2, required: true },
+    { id: 'shape', label: 'The fix has the right home', strong: 'Ownership follows context, shared assets, coordination and craft: squad work stays in squads, shared assets in a hub, coordination with DesignOps, craft in guilds; no new central queue is created.', weight: 2 },
+    { id: 'rollout', label: 'A rollout people will follow', strong: 'Agreed with the squads and a pilot first, with something stopped as well as started, a clear message, and a date to re-measure the flow the same way.', weight: 1 },
+    { id: 'risks', label: 'Honest about the risks', strong: 'Names how the measure could be gamed and pairs it with one that catches it, and how the workflow could drift back as the team grows.', weight: 1 },
+  ],
+  tips: ['Time the waits, not the work. Use timestamps from Jira and the files rather than people’s memories: people remember the annoying steps, not the long ones.', 'Write your measures as if the team will read them, because they will. If a measure would make someone feel watched, it is measuring the wrong thing.'],
+  example: {
+    team: 'Saathi, Hyderabad: 38 designers in 11 product squads across a patient app, a doctor app and a portal for 2,600 partner pharmacies, with about 410 engineers. Designers sit in squads and report to Vandana Reddy, head of design, through four design managers. One accessibility specialist, Sana, works across all squads. Tools: Figma, FigJam and Jira, plus three whiteboard tools and two prototyping tools that squads picked themselves.',
+    bottleneck: 'I followed 20 requests from the first ask to live, using Jira timestamps and file history. The median took 27 working days, with 44 hours of work and 170 hours of waiting: a flow efficiency of 21%. The single biggest wait is accessibility review: every screen queues for Sana, 44 hours on average, a quarter of all the waiting. Next come designers with five requests open at once (40 hours) and a weekly sign-off meeting (20 hours). I am removing the accessibility queue, and clearing the sign-off on the way because it costs nothing.',
+    cause: 'The review itself matters: it catches real contrast and label bugs. The cause is a gate on one person. Sana reviews every screen, and four in five of her 300 comments last quarter were routine checks a designer could run, from her own tracker. New patterns, which actually need her, wait in the same queue.',
+    changes: [
+      'Remove: the weekly sign-off meeting, which has not sent a design back in a year. Vandana sees the work in critique instead. Owner: Vandana, from next week.',
+      'Unblock: designers run the contrast and label checks themselves with a plug-in and a checklist; Sana reviews only new patterns and holds office hours twice a week. Owner: Sana, with me.',
+      'Standardise, then automate: the checks go into one ready-for-dev checklist agreed with the squads, and an automated contrast check runs on every build. Owner: me, with the design system team.',
+    ],
+    shape: 'Accessibility is a shared standard every squad needs, so it lives in the hub with Sana, who sets it, trains the squads and reviews new patterns. Running the routine checks belongs in each squad, because only the squad designer knows when a screen is ready. DesignOps owns the checklist and the workflow.',
+    health: [
+      'Request to ready for dev, median days, line of 8, read monthly from Jira.',
+      'Accessibility bugs found after release, per 100 tickets, line of 2, read each quarter, so speed doesn’t come at the cost of quality.',
+      'The anonymous pulse item “I know how to make my screens accessible”, line of 70% agree, quarterly, reported only for groups of five or more.',
+    ],
+    rollout: 'I agree it first with Sana and the four design managers, then pilot it with the medicines squad for a month, because it has the longest queue and a PM who wants it. The sign-off meeting stops in week one. Sana runs two training sessions before the pilot and reviews the pilot squad’s screens after release to check nothing slipped. At the end of the month I share the pilot’s numbers with the whole team at the design all-hands and roll it out squad by squad. I re-measure the flow the same way, on 20 requests, at the end of the quarter.',
+    risks: 'Designers could tick the checklist without running the checks, so lead time improves and quality drops; the accessibility bugs measure catches that, and Sana samples five screens a month. Gates also creep back: as squads grow, someone will add a review. I re-map the flow every half-year and remove what has grown.',
+  },
+};
+
 /** Boss briefs keyed by chapter id. */
 export const BOSSES: Record<string, BossBrief> = Object.fromEntries(
-  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4, br4, bz4, dc4, ld3].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
+  [fd1, fd2, rs1, ia1, ui1, cw1, st1, rs2, ui2, ui3, ds1, pr1, ax1, gr1, br1, bz1, dc1, ld2, ia2, fd3, rs3, rs4, ia3, ia4, ui4, ds2, ds3, pr2, pr3, cw2, ax2, st2, st3, gr2, gr3, br2, br3, bz2, bz3, dc2, dc3, ld1, fd4, rs5, rs6, ia5, ui5, ui6, ds4, ds5, pr4, cw3, ax3, st4, gr4, br4, bz4, dc4, ld3, ld4].map(b => { const brief = BossBrief.parse(b); return [brief.chapterId, brief]; }),
 );
 
 export const getBoss = (chapterId: string): BossBrief | undefined => BOSSES[chapterId];

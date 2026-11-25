@@ -9,6 +9,7 @@ import { ATOM_LANES, MUSAFIR_ATOMS, MUSAFIR_PLANS, MUSAFIR_REQUESTS, SLOTS, SUPP
 import { OUTPUT_METHODS, PROTO_TOOLS, THELA_BEHAVIOURS, THELA_QUESTIONS, THELA_STUDIES, TOOL_CAN, WIRE_KINDS, missingNeeds, outputMethod, protoTool, wireKind, type ThelaBehaviour, type ThelaQuestion, type ThelaStudy } from './advproto';
 import { ADVANTAGE_CALLS, BET_CALLS, MUNIM_BETS, MUNIM_CAPABILITIES, MUNIM_CLAIMS, PLATFORM_CALLS, advantageCall, betCall, platformCall, type MunimBet, type MunimCapability, type MunimClaim } from './designstrategy';
 import { ANIM_FIXES, CHAKKI_CHANGES, CHAKKI_DATA, CHAKKI_MOTIONS, DATA_HOMES, REVIEW_CALLS, animFix, dataHome, reviewCall, type ChakkiChange, type ChakkiDatum, type ChakkiMotion } from './designeng';
+import { FLOW_FIXES, HEALTH_CALLS, ORG_FIXES, SAATHI_PROBLEMS, SAATHI_READINGS, SAATHI_STEPS, flowFix, healthCall, orgFix, type SaathiProblem, type SaathiReading, type SaathiStep } from './designops';
 import { BAR_CALLS, KAARIGAR_NOTES, KAARIGAR_RITUALS, KAARIGAR_SITUATIONS, LEAD_STYLES, RITUAL_CALLS, barCall, leadStyle, ritualCall, type KaarigarNote, type KaarigarRitual, type KaarigarSituation } from './leadership';
 import { CASE_FIXES, ENGAGE_CALLS, IMPACT_BANDS, KOLAM_ENQUIRIES, RAAHI_CASE, RAAHI_IMPACTS, caseFix, engageCall, impactBand, type KolamEnquiry, type RaahiCaseLine, type RaahiImpact } from './designroi';
 import { ARCH_CALLS, CAMPAIGN_ROLES, SOS_CALLS, SUKOON_OFFERS, SUKOON_PIECES, SUKOON_READINGS, arcRole, archCall, sosCall, type SukoonOffer, type SukoonPiece, type SukoonReading } from './brandstrategy';
@@ -1225,6 +1226,21 @@ describe('episodes', () => {
         expect(lanes).toEqual([...SOS_CALLS]);
         expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SUKOON_READINGS).sort());
         for (const c of ep.game.cards) { const k = c.visual as SukoonReading; expect(c.label).toBe(SUKOON_READINGS[k].text); expect(c.lane).toBe(sosCall(SUKOON_READINGS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'flow-fix') {   // every step once, fixed by flowFix
+        expect(lanes).toEqual([...FLOW_FIXES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAATHI_STEPS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as SaathiStep; expect(c.label).toBe(SAATHI_STEPS[k].text); expect(c.lane).toBe(flowFix(SAATHI_STEPS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'health-read') {   // every reading once, called by healthCall
+        expect(lanes).toEqual([...HEALTH_CALLS]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAATHI_READINGS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as SaathiReading; expect(c.label).toBe(SAATHI_READINGS[k].text); expect(c.lane).toBe(healthCall(SAATHI_READINGS[k])); expect(c.note).toBeTruthy(); }
+      }
+      if (ep.game.id === 'org-shape') {   // every problem once, placed by orgFix
+        expect(lanes).toEqual([...ORG_FIXES]);
+        expect(ep.game.cards.map(c => c.visual).sort()).toEqual(Object.keys(SAATHI_PROBLEMS).sort());
+        for (const c of ep.game.cards) { const k = c.visual as SaathiProblem; expect(c.label).toBe(SAATHI_PROBLEMS[k].text); expect(c.lane).toBe(orgFix(SAATHI_PROBLEMS[k])); expect(c.note).toBeTruthy(); }
       }
       if (ep.game.id === 'level-call') {   // every note once, called against the senior bar by barCall
         expect(lanes).toEqual([...BAR_CALLS]);

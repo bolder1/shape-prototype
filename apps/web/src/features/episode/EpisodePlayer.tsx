@@ -210,6 +210,9 @@ import { AgentReview } from './games/AgentReview';
 import { LevelCall } from './games/LevelCall';
 import { StylePick } from './games/StylePick';
 import { RitualCrit } from './games/RitualCrit';
+import { FlowFix } from './games/FlowFix';
+import { HealthRead } from './games/HealthRead';
+import { OrgShape } from './games/OrgShape';
 import { GradeCard } from './stages/GradeCard';
 import { Ladder } from './stages/Ladder';
 import { Quiz } from './stages/Quiz';
@@ -429,6 +432,9 @@ const GAMES: Record<Episode['game']['id'], React.ComponentType<{ game: Episode['
   'level-call': LevelCall,
   'style-pick': StylePick,
   'ritual-crit': RitualCrit,
+  'flow-fix': FlowFix,
+  'health-read': HealthRead,
+  'org-shape': OrgShape,
 };
 
 interface Props {

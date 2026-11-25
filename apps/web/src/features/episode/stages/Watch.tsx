@@ -208,6 +208,9 @@ import { AgentLoopScene } from '../scenes/AgentLoop';
 import { DebriefRoomScene } from '../scenes/DebriefRoom';
 import { SkillWillScene } from '../scenes/SkillWill';
 import { RitualWeekScene } from '../scenes/RitualWeek';
+import { WaitTimeScene } from '../scenes/WaitTime';
+import { HealthPulseScene } from '../scenes/HealthPulse';
+import { HubSpokeScene } from '../scenes/HubSpoke';
 import { play } from '@/lib/sound';
 
 /** One scene per episode, chosen by the episode's `scene.id`. */
@@ -409,6 +412,9 @@ const SCENES: Record<Episode['scene']['id'], React.ComponentType<{ t: number }>>
   'debrief-room': DebriefRoomScene,
   'skill-will': SkillWillScene,
   'ritual-week': RitualWeekScene,
+  'wait-time': WaitTimeScene,
+  'health-pulse': HealthPulseScene,
+  'hub-spoke': HubSpokeScene,
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
