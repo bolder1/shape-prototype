@@ -120,13 +120,13 @@ function ChapterCard({ id, i, selected, relation, dim, next, onSelect }: {
           : relation === 'opens' ? 'bg-primary ring-2 ring-mint-600'
           : onPath ? 'bg-primary ring-primary hover:shadow-md' : 'bg-secondary ring-transparent hover:ring-secondary')}>
       <span className={cx('mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold tabular-nums',
-        i.status === 'done' ? 'bg-mint-600 text-white' : onPath ? 'bg-brand-solid text-white' : 'text-quaternary ring-1 ring-secondary ring-inset')}>
-        {i.status === 'done' ? <CheckIcon className="size-3.5" weight="bold" /> : onPath ? i.pathIndex! + 1 : i.contentLessons ? '' : <LockSimpleIcon className="size-3" />}
+        i.status === 'done' ? 'bg-mint-600 text-white' : i.locked.length ? 'bg-tertiary text-quaternary' : onPath ? 'bg-brand-solid text-white' : 'text-quaternary ring-1 ring-secondary ring-inset')}>
+        {i.status === 'done' ? <CheckIcon className="size-3.5" weight="bold" /> : i.locked.length ? <LockSimpleIcon className="size-3" /> : onPath ? i.pathIndex! + 1 : i.contentLessons ? '' : <LockSimpleIcon className="size-3" />}
       </span>
       <span className="min-w-0 flex-1">
         <span className={cx('block text-sm leading-5 font-semibold', onPath || i.status === 'done' ? 'text-primary' : 'text-tertiary')}>{ch.title}</span>
         <span className="mt-0.5 block text-xs text-quaternary">
-          {relation === 'needs' ? 'Needed first' : relation === 'opens' ? 'Unlocks next' : i.contentLessons ? `${ch.lessons.length} lessons` : 'Coming soon'}
+          {relation === 'needs' ? 'Needed first' : relation === 'opens' ? 'Unlocks next' : i.locked.length ? `Locked · finish ${chapterById[i.locked[0]].title}${i.locked.length > 1 ? ` +${i.locked.length - 1}` : ''}` : i.contentLessons ? `${ch.lessons.length} lessons` : 'Coming soon'}
           {i.status === 'progress' && ` · ${i.doneLessons}/${i.contentLessons} done`}
         </span>
         {i.status === 'progress' && <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-tertiary"><span className="block h-full rounded-full bg-brand-solid" style={{ width: `${pct}%` }} /></span>}

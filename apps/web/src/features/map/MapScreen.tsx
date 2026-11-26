@@ -3,7 +3,7 @@ import { useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import type { Icon } from '@phosphor-icons/react';
 import dynamic from 'next/dynamic';
-import { GlobeHemisphereWestIcon, CheckCircleIcon, GraphIcon, PlayCircleIcon, RowsIcon, TreeStructureIcon } from '@phosphor-icons/react/ssr';
+import { GlobeHemisphereWestIcon, CheckCircleIcon, LockSimpleIcon, GraphIcon, PlayCircleIcon, RowsIcon, TreeStructureIcon } from '@phosphor-icons/react/ssr';
 import { Button } from '@/components/base/buttons/button';
 import { chapterById, chapters } from '@shape/engine';
 import { Toggle } from '@/components/base/toggle/toggle';
@@ -46,21 +46,21 @@ function Legend() {
 /** Client-only: reads the saved profile and progress. */
 export default function MapScreen() {
   const [profile] = useState(readProfile);
-  const lessons = useProgress(s => s.lessons);
-  const model = useMemo(() => buildModel(profile, lessons), [profile, lessons]);
+  const lessons = useProgress(s => s.lessons), bosses = useProgress(s => s.bosses);
+  const model = useMemo(() => buildModel(profile, lessons, bosses), [profile, lessons, bosses]);
   const [view, setViewState] = useState<View>(() => {
     try { const v = localStorage.getItem(VIEW_KEY) as View | null; return v && VIEWS.some(x => x.id === v) ? v : 'skills'; } catch { return 'skills'; }
   });
   const [focusPath, setFocusPath] = useState(!!profile);
   const [selected, setSelected] = useState<string | null>(null);
   const canvas = useRef<MapCanvasHandle>(null);
-  const nextId = model.path.find(id => ['path', 'progress'].includes(model.info[id]?.status) && model.info[id].contentLessons > 0) ?? null;
+  const nextId = model.path.find(id => ['path', 'progress'].includes(model.info[id]?.status) && model.info[id].contentLessons > 0 && !model.info[id].locked.length) ?? null;
   const doneCount = Object.values(model.info).filter(i => i.status === 'done').length;
 
   const setView = (v: View) => { setViewState(v); try { localStorage.setItem(VIEW_KEY, v); } catch { /* storage blocked */ } };
   const select = (id: string) => { setSelected(id); if (view === 'graph') canvas.current?.focusNode(id); };
   const toggle = (id: string) => setSelected(s => (s === id ? null : id));
-  const props = { info: model.info, cols: model.cols, path: model.path, selectedId: selected, nextId, focusPath, onSelect: toggle };
+  const props = { info: model.info, cols: model.cols, path: model.path, selectedId: selected, nextId, focusPath, guided: model.guided, onSelect: toggle };
 
   return (
     <div className="flex h-dvh flex-col bg-secondary">
@@ -75,6 +75,7 @@ export default function MapScreen() {
           </div>
           <div className="hidden xl:block"><Legend /></div>
           <div className="flex items-center gap-4 sm:ml-auto">
+            {model.guided && <Link href="/syllabus" className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary ring-1 ring-secondary ring-inset hover:bg-secondary_hover"><LockSimpleIcon className="size-3.5" />Guided path on</Link>}
             {model.hasProfile && <Toggle size="sm" label="Focus on my path" isSelected={focusPath} onChange={setFocusPath} />}
             <Button size="sm" color="secondary" href="/map/journey" iconLeading={PlayCircleIcon}>Play journey</Button>
           </div>

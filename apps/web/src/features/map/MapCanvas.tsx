@@ -145,7 +145,7 @@ export function MapCanvas({ layout, info, selectedId, focusPath, onSelect, ref }
             const done = i.status === 'done';
             const stroke = isSel ? C.brand : i.pathIndex != null ? C.brand : done ? C.mint : C.line;
             const label = `${ch.title}. ${domainById[ch.domain].name}, ${TIER_NAME[ch.tier]}. ${
-              done ? 'Done.' : i.status === 'progress' ? `In progress, ${i.doneLessons} of ${i.contentLessons} lessons.` : i.pathIndex != null ? `Stop ${i.pathIndex + 1} on your path.` : i.contentLessons ? 'Available.' : 'Coming later.'}`;
+              done ? 'Done.' : i.locked.length ? `Locked until you finish ${i.locked.map(p => chapterById[p].title).join(' and ')}.` : i.status === 'progress' ? `In progress, ${i.doneLessons} of ${i.contentLessons} lessons.` : i.pathIndex != null ? `Stop ${i.pathIndex + 1} on your path.` : i.contentLessons ? 'Available.' : 'Coming later.'}`;
             return (
               <g key={n.id} data-node transform={`translate(${n.x}, ${n.y})`} opacity={dim ? 0.4 : 1}
                 role="button" tabIndex={0} aria-label={label} aria-pressed={isSel} className="cursor-pointer outline-none"
@@ -154,7 +154,7 @@ export function MapCanvas({ layout, info, selectedId, focusPath, onSelect, ref }
                 {focused === n.id && <rect x={-5} y={-5} width={NODE_W + 10} height={NODE_H + 10} rx={16} fill="none" stroke={C.brand} strokeWidth={2} strokeDasharray="4 3" />}
                 <rect width={NODE_W} height={NODE_H} rx={12} fill={done ? C.mintSoft : C.surface} stroke={stroke} strokeWidth={isSel ? 3 : i.pathIndex != null || done ? 2 : 1} />
                 <rect x={0} y={12} width={4} height={NODE_H - 24} rx={2} fill={FAMILIES[n.family].color} />
-                {lines.map((l, li) => <text key={li} x={14} y={22 + li * 16} fontSize={13} fontWeight={600} fill={i.status === 'later' && i.pathIndex == null ? C.textMuted : C.text}>{l}</text>)}
+                {lines.map((l, li) => <text key={li} x={14} y={22 + li * 16} fontSize={13} fontWeight={600} fill={(i.status === 'later' && i.pathIndex == null) || i.locked.length ? C.textMuted : C.text}>{l}</text>)}
                 <text x={14} y={NODE_H - 9} fontSize={11} fill={C.textFaint}>{TIER_NAME[ch.tier]} · {ch.lessons.length} lessons</text>
                 {i.status === 'progress' && i.contentLessons > 0 && (
                   <rect x={0} y={NODE_H - 3} width={(NODE_W * i.doneLessons) / i.contentLessons} height={3} rx={1.5} fill={C.mint} />

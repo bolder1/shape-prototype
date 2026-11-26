@@ -17,6 +17,7 @@ export interface SavedProfile {
   ready: number;
   path: string[];   // chapter ids in path order, edits applied
   edits?: SyllabusEdits;
+  guided?: boolean;  // Guided path: chapters stay locked until their prerequisites are covered
   savedAt: string;
 }
 
@@ -32,6 +33,7 @@ export function readProfile(): SavedProfile | null {
   } catch { return null; }
 }
 
+/** Saves the profile. Settings the caller didn't pass (like the Guided switch) are kept from the stored one. */
 export function writeProfile(p: SavedProfile) {
-  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch { /* storage blocked */ }
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify({ guided: readProfile()?.guided, ...p })); } catch { /* storage blocked */ }
 }

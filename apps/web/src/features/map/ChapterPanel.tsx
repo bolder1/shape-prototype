@@ -25,6 +25,8 @@ export function ChapterPanel({ id, info, lessons, onClose, onSelect }: {
   const boss = BOSSES[id];
   const bossRecord = useProgress(s => s.bosses[id]);
   const bossOpen = bossUnlocked(content.map(l => l.id), lessons);
+  const locked = info.locked.length > 0;
+  const needs = info.locked.map(p => chapterById[p].title);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -50,7 +52,9 @@ export function ChapterPanel({ id, info, lessons, onClose, onSelect }: {
           <p className="text-xs font-semibold text-tertiary">{domainById[ch.domain].name} · {TIER_NAME[ch.tier]}</p>
           <h2 className="text-lg font-semibold text-primary">{ch.title}</h2>
           <div className="mt-2 flex flex-wrap gap-1.5">
-            <Badge type="pill-color" color={info.status === 'done' ? 'success' : info.pathIndex != null ? 'brand' : 'gray'} size="sm">{STATUS_LABEL[info.status]}</Badge>
+            {locked
+              ? <Badge type="pill-color" color="gray" size="sm"><LockSimpleIcon className="mr-1 size-3" />Locked</Badge>
+              : <Badge type="pill-color" color={info.status === 'done' ? 'success' : info.pathIndex != null ? 'brand' : 'gray'} size="sm">{STATUS_LABEL[info.status]}</Badge>}
             {info.pathIndex != null && <Badge type="modern" color="gray" size="sm">Stop {info.pathIndex + 1}</Badge>}
           </div>
         </div>
@@ -98,7 +102,13 @@ export function ChapterPanel({ id, info, lessons, onClose, onSelect }: {
       </div>
 
       <footer className="border-t border-secondary p-4">
-        {content.length ? (
+        {locked ? (
+          <div className="flex flex-col gap-3">
+            <p className="flex gap-2 text-sm text-secondary"><LockSimpleIcon className="mt-0.5 size-4 shrink-0 text-fg-quaternary" />
+              <span>Guided path is on. Finish {needs.join(' and ')} first, and this chapter opens.</span></p>
+            <Button size="lg" color="secondary" className="w-full" iconTrailing={ArrowRightIcon} onPress={() => onSelect(info.locked[0])}>Go to {needs[0]}</Button>
+          </div>
+        ) : content.length ? (
           <Button size="lg" className="w-full" href={`/learn/${id}/${firstOpen + 1}`} iconLeading={info.status === 'done' ? ArrowRightIcon : PlayIcon}>
             {info.status === 'done' ? 'Revisit chapter' : info.status === 'progress' ? 'Continue chapter' : 'Start chapter'}
           </Button>

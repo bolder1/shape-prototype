@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { CONTENT, getLesson } from "@shape/content";
 import { LessonScreen } from "@/features/lessons/LessonScreen";
+import { GuidedGate } from "@/features/guided/GuidedGate";
 
 // Every lesson with content is prerendered.
 export function generateStaticParams() {
@@ -26,5 +27,5 @@ async function Lesson({ params }: { params: PageProps<"/learn/[chapter]/[lesson]
   const { chapter: raw, lesson } = await params;
   const chapter = decodeURIComponent(raw);
   if (!getLesson(chapter, Number(lesson))) notFound();
-  return <LessonScreen chapterId={chapter} n={Number(lesson)} />;
+  return <GuidedGate chapterId={chapter}><LessonScreen chapterId={chapter} n={Number(lesson)} /></GuidedGate>;
 }

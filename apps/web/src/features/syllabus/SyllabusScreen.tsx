@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'motion/react';
 import {
-  ArrowCounterClockwiseIcon, CheckCircleIcon, ListChecksIcon, MagnifyingGlassIcon, MinusCircleIcon, PlusIcon, SlidersHorizontalIcon, SparkleIcon, UserIcon,
+  ArrowCounterClockwiseIcon, CheckCircleIcon, ListChecksIcon, LockSimpleIcon, MagnifyingGlassIcon, MinusCircleIcon, PlusIcon, SlidersHorizontalIcon, SparkleIcon, UserIcon,
 } from '@phosphor-icons/react/ssr';
 import { CONTENT } from '@shape/content';
 import { chapterById, chapters, type DomainId } from '@shape/engine';
@@ -38,6 +38,8 @@ export default function SyllabusScreen() {
   const a = plan.answers;
   const edits = plan.edits ?? NO_EDITS;
 
+  const [guided, setGuidedState] = useState(() => !!readProfile()?.guided);
+  const setGuided = (on: boolean) => { setGuidedState(on); writeProfile({ ...plan, guided: on }); };
   const update = (answers: SurveyAnswers, nextEdits = edits) => { const next = replan(answers, nextEdits); setPlan(next); writeProfile(next); };
   const set = (p: Partial<SurveyAnswers>) => update({ ...a, ...p });
   const edit = (e: typeof edits) => update(a, e);
@@ -185,6 +187,14 @@ export default function SyllabusScreen() {
                   <Segmented label="Days a week" segments={DAYS} value={String(a.daysPerWeek)} onChange={v => set({ daysPerWeek: Number(v) })} />
                 </div>
                 <Toggle size="sm" label="Start every skill from the basics" hint="Ignores your skill levels" isSelected={a.fromZero} onChange={fromZero => set({ fromZero })} />
+              </div>
+            </section>
+
+            <section className="rounded-2xl bg-primary p-5 shadow-xs ring-1 ring-secondary ring-inset">
+              <h2 className="flex items-center gap-2 text-md font-semibold text-primary"><LockSimpleIcon className="size-5 text-brand-secondary" weight="duotone" />How chapters open</h2>
+              <p className="mt-1 text-sm text-tertiary">Everything is open by default. Guided path keeps a chapter locked until the ones it builds on are behind you.</p>
+              <div className="mt-4">
+                <Toggle size="sm" label="Guided path" hint="Chapters you’ve started stay open" isSelected={guided} onChange={setGuided} />
               </div>
             </section>
 

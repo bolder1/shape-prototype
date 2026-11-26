@@ -13,7 +13,7 @@ import { chaptersOf, isUnlocked, SKILL_ORDER, skillColor, type ViewProps } from 
 const TIERS: Tier[] = ['bar', 'stem', 'deep'];
 const ROW = 190, TOP = 70;
 
-export function TreeView({ info, cols, selectedId, nextId, onSelect }: ViewProps) {
+export function TreeView({ info, cols, selectedId, nextId, guided, onSelect }: ViewProps) {
   const first = (selectedId && chapterById[selectedId]?.domain) || (nextId && chapterById[nextId]?.domain) || SKILL_ORDER[0];
   const [skill, setSkill] = useState<DomainId>(first as DomainId);
   const color = skillColor(skill);
@@ -77,7 +77,7 @@ export function TreeView({ info, cols, selectedId, nextId, onSelect }: ViewProps
               })}
             </svg>
             {list.map((c, k) => {
-              const i = info[c.id], p = pos[c.id], open = isUnlocked(c.id, info), picked = c.id === selectedId;
+              const i = info[c.id], p = pos[c.id], open = isUnlocked(c.id, info, guided), picked = c.id === selectedId;
               const outside = c.prereqs.filter(x => !pos[x]);
               const state = i.status === 'done' ? 'done' : !open ? 'locked' : 'open';
               return (

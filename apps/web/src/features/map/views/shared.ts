@@ -10,6 +10,7 @@ export interface ViewProps {
   selectedId: string | null;
   nextId: string | null;
   focusPath: boolean;
+  guided?: boolean;   // Guided path on: info[id].locked decides what's open
   onSelect: (id: string) => void;
 }
 
@@ -20,8 +21,9 @@ export const colorOf = (chapterId: string) => FAMILIES[SKILL_META[chapterById[ch
 export const skillColor = (d: DomainId) => FAMILIES[SKILL_META[d].family].color;
 export const chaptersOf = (d: DomainId) => chapters.filter(c => c.domain === d);
 
-/** A chapter is open once every prerequisite is done. */
-export const isUnlocked = (id: string, info: Record<string, ChapterInfo>) => chapterById[id].prereqs.every(p => info[p]?.status === 'done');
+/** A chapter is open once every prerequisite is done; with Guided path on, the guided rule decides instead. */
+export const isUnlocked = (id: string, info: Record<string, ChapterInfo>, guided = false) =>
+  guided ? !info[id].locked.length : chapterById[id].prereqs.every(p => info[p]?.status === 'done');
 
 /** Faded when focusing on the path and the chapter is neither on it nor done. */
 export const offPath = (i: ChapterInfo, focusPath: boolean) => focusPath && i.pathIndex == null && i.status !== 'done';
