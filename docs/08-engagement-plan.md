@@ -116,7 +116,7 @@ D1 / D7 / D30 retention · weekly active learners · Daily Brief completion and 
 2. **Unlocking: both.** Soft by default: lessons are open and only *extra* content (Deep Cuts, Practice Gym, Remix, Masterclass) is earned. There's also an optional **Guided path** switch that locks chapters until their prerequisites are done, using the skill map's existing lock states.
 3. **First release = Daily Brief + share grid, new dashboard, badges + weekly quests, and the Skill Passport.** In the phasing table that's phases 1–3 shipping together after the foundation.
 4. **Passports are private until opt-in.** One switch makes `/@handle` public.
-5. *Still open:* does a "verified" credential need only an AI-reviewed boss pass, or a peer or mentor review too?
+5. *Answered for Release 1 (2026-11-26):* "verified" means the project was reviewed by the server's AI reviewer against the rubric, and the server signed the verdict for that signed-in learner (a review receipt, checked again whenever the passport is shown). Self-reviewed passes still appear, labelled as such. A peer or mentor review can become a higher tier later, once the Design Jam brings reviewers.
 
 ## Release 1 build order
 

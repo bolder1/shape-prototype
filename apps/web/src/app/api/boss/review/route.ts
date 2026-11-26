@@ -4,7 +4,9 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod';
 import { z } from 'zod';
-import { LEVELS, getBoss, type BossAnswers, type BossBrief } from '@shape/content';
+import { LEVELS, getBoss, scoreBoss, type BossAnswers, type BossBrief, type Level } from '@shape/content';
+import { bossReceiptFields, signFields } from '@/lib/share-sign';
+import { getServerSupabase } from '@/lib/supabase/server';
 
 const Body = z.object({
   chapterId: z.string().max(10),
@@ -95,11 +97,26 @@ export async function POST(request: Request) {
       levels[c.id] = Math.max(0, Math.min(LEVELS.length - 1, Math.round(r?.level ?? 0)));
       notes[c.id] = r?.note ?? '';
     }
-    return Response.json({ levels, notes, summary: out.summary, next: out.next });
+    return Response.json({ levels, notes, summary: out.summary, next: out.next, receipt: await receiptFor(parsed.data.chapterId, brief, levels) });
   } catch (error) {
     if (error instanceof Anthropic.AuthenticationError) return Response.json({ error: 'no-key' }, { status: 503 });
     if (error instanceof Anthropic.RateLimitError) return Response.json({ error: 'busy' }, { status: 429 });
     console.error('boss review failed', error);
     return Response.json({ error: 'no-review' }, { status: 502 });
   }
+}
+
+/**
+ * A signed receipt for this review, so the learner's passport can later show the project as verified: the verdict
+ * came from this server's AI review, not from the browser. Issued only to a signed-in learner (the receipt names
+ * them, so it can't be copied onto someone else's passport) and only when signing is set up.
+ */
+async function receiptFor(chapterId: string, brief: BossBrief, levels: Record<string, number>) {
+  const supabase = await getServerSupabase();
+  const user = supabase ? (await supabase.auth.getUser()).data.user : null;
+  if (!user) return null;
+  const { verdict, percent } = scoreBoss(brief.rubric, levels as Record<string, Level>);
+  const at = new Date().toISOString();
+  const sig = await signFields(bossReceiptFields(user.id, chapterId, verdict, percent, at));
+  return sig ? { at, sig } : null;
 }

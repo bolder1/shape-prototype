@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { motion } from 'motion/react';
 import {
   ArrowRightIcon, CardsThreeIcon, CheckIcon, CloudArrowUpIcon, FlagIcon, GiftIcon, PlayIcon, PuzzlePieceIcon,
-  SlidersHorizontalIcon, TrophyIcon,
+  SlidersHorizontalIcon, TrophyIcon, IdentificationCardIcon,
 } from '@phosphor-icons/react/ssr';
 import { BOSSES, CONTENT, dailyBrief } from '@shape/content';
 import { chapterById, describeBadge, type BadgeState, type Quest } from '@shape/engine';
@@ -32,6 +32,7 @@ export function QuickActions({ next, due, dailyDone }: { next: { chapterId: stri
     { href: '/review', icon: CardsThreeIcon, label: due ? `Review · ${due}` : 'Review' },
     { href: '/league', icon: TrophyIcon, label: 'League' },
     { href: '/badges', icon: FlagIcon, label: 'Badges' },
+    { href: '/passport', icon: IdentificationCardIcon, label: 'Passport' },
     { href: '/syllabus', icon: SlidersHorizontalIcon, label: 'Syllabus' },
   ].filter(Boolean) as { href: string; icon: typeof PlayIcon; label: string; primary?: boolean }[];
   return (

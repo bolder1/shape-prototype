@@ -10,7 +10,9 @@ import { logEvent } from './events';
 export interface StepResult { exerciseKey: string; firstTry: boolean; attempts: number }
 export interface LessonRecord { completedAt: string; xp: number; firstTry: number; total: number }
 export interface ReviewItem { exerciseKey: string; due: string; interval: number }
-export interface BossReview { levels: Record<string, Level>; notes: Record<string, string>; summary: string; next: string; by: 'ai' | 'self' }
+export interface BossReview { levels: Record<string, Level>; notes: Record<string, string>; summary: string; next: string; by: 'ai' | 'self';
+  /** Server-signed proof of an AI review (signed-in learners only); makes the project a verified credential. */
+  receipt?: { at: string; sig: string } | null }
 export interface BossAttempt { at: string; answers: BossAnswers; review: BossReview; percent: number; verdict: BossVerdict }
 export type XpKind = 'lesson' | 'review' | 'boss' | 'carryover';
 export interface XpEvent { at: string; amount: number; kind: XpKind; ref?: string }
@@ -81,7 +83,7 @@ export const useProgress = create<ProgressState>()(persist((set, get) => ({
       xp: s.xp + gained, ledger: earn(s.ledger, gained, 'boss', chapterId), streak, bossDrafts,
       bosses: { ...s.bosses, [chapterId]: { attempts: [...(prev?.attempts ?? []), attempt], best, bestPercent: Math.max(prev?.bestPercent ?? 0, attempt.percent), xp: (prev?.xp ?? 0) + gained } },
     });
-    logEvent('boss_submitted', chapterId, { verdict: attempt.verdict, percent: attempt.percent, xp: gained });
+    logEvent('boss_submitted', chapterId, { verdict: attempt.verdict, percent: attempt.percent, xp: gained, by: attempt.review.by, ...(attempt.review.receipt ? { receipt: attempt.review.receipt } : {}) });
     return { xp: gained, streak: streak.current, newDay, improved: !prev || RANK[attempt.verdict] > RANK[prev.best] };
   },
 

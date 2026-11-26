@@ -34,3 +34,25 @@ export async function verifyCode(signed: string) {
   if (!secret || !code || !sig) return false;
   return same(sig, await hmac(code, secret));
 }
+
+// ——— Receipts ———
+// A receipt is a signature over a list of fields, issued by a server route when it does something worth trusting
+// later (an AI project review). Fields are joined with "|", which no field may contain.
+
+/** Signature for these fields, or null when signing is off. */
+export async function signFields(fields: string[]) {
+  const secret = process.env.SHARE_SIGNING_SECRET;
+  if (!secret || fields.some(f => f.includes('|'))) return null;
+  return hmac(fields.join('|'), secret);
+}
+
+/** True only when `sig` is the signature for exactly these fields. */
+export async function verifyFields(fields: string[], sig: unknown) {
+  const secret = process.env.SHARE_SIGNING_SECRET;
+  if (!secret || typeof sig !== 'string' || fields.some(f => f.includes('|'))) return false;
+  return same(sig, await hmac(fields.join('|'), secret));
+}
+
+/** The fields a project-review receipt covers: who, which project, what verdict, when. */
+export const bossReceiptFields = (userId: string, chapterId: string, verdict: string, percent: number, at: string) =>
+  ['boss', userId, chapterId, verdict, String(percent), at];

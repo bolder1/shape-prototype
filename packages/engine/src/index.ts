@@ -6,3 +6,4 @@ export * from './league';
 export * from './sync';
 export * from './rewards';
 export * from './guided';
+export * from './passport';
